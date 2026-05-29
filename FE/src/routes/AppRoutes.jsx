@@ -1,9 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import HomePage from "../pages/HomePage.jsx";
+import HomePage from "../pages/homePage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
-import MenuPage from "../pages/MenuPage.jsx";
+import MenuPage from "../pages/menuPage.jsx";
 import MenuDetailPage from "../pages/MenuDetailPage.jsx";
 import BookingPage from "../pages/BookingPage.jsx";
 import BookingConfirmPage from "../pages/BookingConfirmPage.jsx";

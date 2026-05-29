@@ -1,24 +1,19 @@
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import muiTheme from "./theme/muiTheme";
 import AppRoutes from "./routes/AppRoutes.jsx";
 import Navbar from "./components/common/Navbar.jsx";
 import Footer from "./components/common/Footer.jsx";
 import AppShell from "./routes/AppShell.jsx";
-import "./App.css";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
+import "./index.css";
 
 export default function App() {
   return (
-    <ThemeProvider theme={muiTheme}>
-      <CssBaseline />
+    <ThemeProvider>
       <AppShell>
-        <div className="vizza-app">
-          <Navbar />
-          <main className="vizza-main">
-            <AppRoutes />
-          </main>
-          <Footer />
-        </div>
+        <Navbar />
+        <main style={{ minHeight: "calc(100vh - 68px)" }}>
+          <AppRoutes />
+        </main>
+        <Footer />
       </AppShell>
     </ThemeProvider>
   );

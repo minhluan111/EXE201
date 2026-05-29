@@ -1,293 +1,148 @@
 import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Link,
-  IconButton,
-  Divider,
-  Stack,
-} from "@mui/material";
-import { MapPin, Phone, Mail, Star, Heart, Share2 } from "lucide-react";
+import { Leaf, MapPin, Clock, Phone, Mail, Heart, Share2, MessageCircle } from "lucide-react";
 
-const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  teal: "#3E6A7A",
-  cream: "#E9E5D4",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
+const LINKS = {
+  "Khám phá": [
+    { label: "Trang chủ",   to: "/" },
+    { label: "Menu",        to: "/menu" },
+    { label: "Đặt bàn",     to: "/booking" },
+    { label: "Liên hệ",     to: "/contact" },
+  ],
+  "Tài khoản": [
+    { label: "Đăng nhập",   to: "/login" },
+    { label: "Đăng ký",     to: "/register" },
+    { label: "Hồ sơ",       to: "/profile" },
+    { label: "Lịch sử đặt", to: "/booking/history" },
+  ],
 };
 
-const FooterLink = ({ to, children }) => (
-  <Link
-    component={RouterLink}
-    to={to}
-    sx={{
-      color: "#666",
-      textDecoration: "none",
-      fontWeight: 500,
-      fontSize: "14px",
-      "&:hover": {
-        color: COLORS.moss,
-        transition: "color 0.3s",
-      },
-    }}
-  >
-    {children}
-  </Link>
-);
+const SOCIALS = [
+  { icon: Heart,         label: "Instagram", href: "#" },
+  { icon: Share2,        label: "Facebook",  href: "#" },
+  { icon: MessageCircle, label: "Twitter",   href: "#" },
+];
 
 export default function Footer() {
   return (
-    <Box
-      component="footer"
-      sx={{
-        backgroundImage: `linear-gradient(180deg, ${COLORS.soft} 0%, white 100%)`,
-        borderTop: `2px solid ${COLORS.cream}`,
-      }}
-    >
-      <Container maxWidth="lg" sx={{ py: 10 }}>
-        <Grid container spacing={6} sx={{ mb: 6 }}>
+    <footer style={{
+      background: "var(--forest-dark)",
+      color: "rgba(255,255,255,0.75)",
+      position: "relative", overflow: "hidden",
+    }}>
+      {/* Orbs */}
+      <div style={{ position: "absolute", top: -80, right: -80, width: 300, height: 300, borderRadius: "50%", background: "rgba(141,175,90,0.07)", filter: "blur(70px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: -60, left: -60, width: 250, height: 250, borderRadius: "50%", background: "rgba(255,255,255,0.03)", filter: "blur(60px)", pointerEvents: "none" }} />
+
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "72px 24px 40px", position: "relative", zIndex: 1 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1.5fr", gap: 48, marginBottom: 56 }} className="footer-grid">
           {/* Brand */}
-          <Grid item xs={12} md={3}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
-              >
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "8px",
-                    backgroundImage: `linear-gradient(135deg, ${COLORS.moss} 0%, ${COLORS.forest} 100%)`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+              <Leaf size={22} style={{ color: "rgba(175,215,120,0.85)" }} />
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 700, color: "#fff" }}>
+                yakishime
+              </span>
+            </div>
+            <p style={{ fontSize: 14, lineHeight: 1.8, maxWidth: 260, marginBottom: 24 }}>
+              Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ.
+              Từng tách trà là một hành trình thiền định.
+            </p>
+            {/* Socials */}
+            <div style={{ display: "flex", gap: 10 }}>
+              {SOCIALS.map(({ icon: Icon, label, href }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  whileHover={{ y: -4, scale: 1.1 }}
+                  aria-label={label}
+                  style={{
+                    width: 38, height: 38, borderRadius: 10,
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "rgba(255,255,255,0.7)", transition: "all 0.2s",
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(141,175,90,0.2)"; e.currentTarget.style.color = "rgba(175,215,120,0.9)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "rgba(255,255,255,0.7)"; }}
                 >
-                  <Typography sx={{ color: "white", fontWeight: "bold" }}>
-                    V
-                  </Typography>
-                </Box>
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "18px",
-                    color: COLORS.dark,
-                  }}
-                >
-                  VIZZA
-                </Typography>
-              </Box>
-              <Typography
-                sx={{ fontSize: "14px", color: "#666", mb: 2, lineHeight: 1.6 }}
-              >
-                Premium restaurant experience with authentic flavors and elegant
-                ambiance.
-              </Typography>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                {[Star, Heart, Share2].map((Icon, idx) => (
-                  <IconButton
-                    key={idx}
-                    size="small"
-                    sx={{
-                      backgroundColor: COLORS.cream,
-                      color: COLORS.dark,
-                      "&:hover": {
-                        backgroundColor: COLORS.moss,
-                        color: "white",
-                      },
-                    }}
-                  >
-                    <Icon size={16} />
-                  </IconButton>
+                  <Icon size={16} />
+                </motion.a>
+              ))}
+            </div>
+          </div>
+
+          {/* Nav links */}
+          {Object.entries(LINKS).map(([heading, links]) => (
+            <div key={heading}>
+              <h4 style={{ color: "rgba(175,215,120,0.85)", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>
+                {heading}
+              </h4>
+              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                {links.map((l) => (
+                  <li key={l.to} style={{ marginBottom: 12 }}>
+                    <RouterLink
+                      to={l.to}
+                      style={{ color: "rgba(255,255,255,0.65)", textDecoration: "none", fontSize: 14, transition: "color 0.2s" }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(175,215,120,0.9)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.65)"; }}
+                    >
+                      {l.label}
+                    </RouterLink>
+                  </li>
                 ))}
-              </Box>
-            </motion.div>
-          </Grid>
-
-          {/* Explore */}
-          <Grid item xs={12} md={3}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  color: COLORS.dark,
-                  mb: 2,
-                  fontSize: "16px",
-                }}
-              >
-                Khám phá
-              </Typography>
-              <Stack spacing={1}>
-                <FooterLink to="/">Trang chủ</FooterLink>
-                <FooterLink to="/menu">Menu</FooterLink>
-                <FooterLink to="/booking">Đặt bàn</FooterLink>
-                <FooterLink to="/contact">Liên hệ</FooterLink>
-              </Stack>
-            </motion.div>
-          </Grid>
-
-          {/* Account */}
-          <Grid item xs={12} md={3}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  color: COLORS.dark,
-                  mb: 2,
-                  fontSize: "16px",
-                }}
-              >
-                Tài khoản
-              </Typography>
-              <Stack spacing={1}>
-                <FooterLink to="/login">Đăng nhập</FooterLink>
-                <FooterLink to="/register">Đăng ký</FooterLink>
-                <FooterLink to="/profile">Hồ sơ</FooterLink>
-                <FooterLink to="/booking/history">Lịch sử đặt bàn</FooterLink>
-              </Stack>
-            </motion.div>
-          </Grid>
+              </ul>
+            </div>
+          ))}
 
           {/* Contact */}
-          <Grid item xs={12} md={3}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  color: COLORS.dark,
-                  mb: 2,
-                  fontSize: "16px",
-                }}
-              >
-                Liên hệ
-              </Typography>
-              <Stack spacing={1.5}>
-                <Box
-                  sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}
-                >
-                  <MapPin
-                    size={20}
-                    style={{
-                      color: COLORS.moss,
-                      marginTop: "2px",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography sx={{ fontSize: "14px", color: "#666" }}>
-                    123 Zen Garden, District 1, HCM
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
-                  <Phone size={20} style={{ color: COLORS.moss }} />
-                  <Link
-                    href="tel:+84123456789"
-                    sx={{
-                      fontSize: "14px",
-                      color: "#666",
-                      textDecoration: "none",
-                      "&:hover": { color: COLORS.moss },
-                    }}
-                  >
-                    +84 (0) 123 456 789
-                  </Link>
-                </Box>
-                <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
-                  <Mail size={20} style={{ color: COLORS.moss }} />
-                  <Link
-                    href="mailto:info@vizza.com"
-                    sx={{
-                      fontSize: "14px",
-                      color: "#666",
-                      textDecoration: "none",
-                      "&:hover": { color: COLORS.moss },
-                    }}
-                  >
-                    info@vizza.com
-                  </Link>
-                </Box>
-              </Stack>
-            </motion.div>
-          </Grid>
-        </Grid>
+          <div>
+            <h4 style={{ color: "rgba(175,215,120,0.85)", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>
+              Thông tin
+            </h4>
+            {[
+              { icon: MapPin, text: "57 Nguyễn Cư Trinh,\nNinh Kiều, Cần Thơ" },
+              { icon: Clock,  text: "Mở cửa: 08:00 – 22:00\nMỗi ngày trong tuần" },
+              { icon: Phone,  text: "0909 123 456" },
+              { icon: Mail,   text: "hello@yakishime.vn" },
+            ].map(({ icon: Icon, text }) => (
+              <div key={text} style={{ display: "flex", gap: 12, marginBottom: 16, alignItems: "flex-start" }}>
+                <Icon size={15} style={{ color: "rgba(175,215,120,0.7)", marginTop: 1, flexShrink: 0 }} />
+                <span style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(255,255,255,0.65)", whiteSpace: "pre-line" }}>
+                  {text}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        {/* Divider */}
-        <Divider sx={{ my: 3, backgroundColor: COLORS.cream }} />
+        {/* Bottom bar */}
+        <div style={{
+          borderTop: "1px solid rgba(255,255,255,0.1)",
+          paddingTop: 24,
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          flexWrap: "wrap", gap: 12,
+        }}>
+          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+            © 2026 Yakishime Matcha. Mọi quyền được bảo lưu.
+          </span>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <Leaf size={13} style={{ color: "rgba(175,215,120,0.5)" }} />
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
+              Crafted with love in Cần Thơ 🍵
+            </span>
+          </div>
+        </div>
+      </div>
 
-        {/* Bottom */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          <Typography sx={{ fontSize: "14px", color: "#666" }}>
-            © {new Date().getFullYear()} VIZZA Restaurant. All rights reserved.
-          </Typography>
-          <Box sx={{ display: "flex", gap: 3 }}>
-            <Link
-              href="#"
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-                textDecoration: "none",
-                "&:hover": { color: COLORS.moss },
-              }}
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="#"
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-                textDecoration: "none",
-                "&:hover": { color: COLORS.moss },
-              }}
-            >
-              Terms of Service
-            </Link>
-            <Link
-              href="#"
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-                textDecoration: "none",
-                "&:hover": { color: COLORS.moss },
-              }}
-            >
-              Cookie Policy
-            </Link>
-          </Box>
-        </Box>
-      </Container>
-    </Box>
+      <style>{`
+        @media (max-width: 900px) {
+          .footer-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 520px) {
+          .footer-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </footer>
   );
 }

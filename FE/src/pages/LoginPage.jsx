@@ -1,334 +1,209 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Alert,
-  FormControlLabel,
-  Checkbox,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Lock, Eye, EyeOff, AlertCircle, Leaf } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
-const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  teal: "#3E6A7A",
-  cream: "#E9E5D4",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
-};
+function InputField({ icon: Icon, type, placeholder, value, onChange, error, rightAction }) {
+  return (
+    <div style={{ marginBottom: 4 }}>
+      <div style={{
+        display: "flex", alignItems: "center", gap: 12,
+        padding: "14px 18px",
+        border: `1.5px solid ${error ? "#EF4444" : "var(--border)"}`,
+        borderRadius: 14, background: "var(--bg-alt)",
+        transition: "border-color 0.2s",
+      }}
+        onFocus={(e) => { if (!error) e.currentTarget.style.borderColor = "var(--matcha)"; }}
+        onBlur={(e) => { if (!error) e.currentTarget.style.borderColor = "var(--border)"; }}
+      >
+        <Icon size={18} style={{ color: error ? "#EF4444" : "var(--text-muted)", flexShrink: 0 }} />
+        <input
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          style={{
+            flex: 1, border: "none", background: "transparent",
+            color: "var(--text)", fontSize: 15, outline: "none",
+            fontFamily: "Inter, sans-serif",
+          }}
+        />
+        {rightAction}
+      </div>
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            style={{ display: "flex", gap: 5, alignItems: "center", color: "#EF4444", fontSize: 12, marginTop: 5 }}
+          >
+            <AlertCircle size={12} /> {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const [login_val, setLoginVal] = useState("");
+  const [password, setPassword]  = useState("");
+  const [showPw, setShowPw]      = useState(false);
+  const [errors, setErrors]      = useState({});
+  const [globalErr, setGlobalErr] = useState("");
+  const [loading, setLoading]    = useState(false);
+  const [shake, setShake]        = useState(false);
+
+  const validate = () => {
+    const e = {};
+    if (!login_val.trim()) e.login = "Vui lòng nhập email hoặc số điện thoại.";
+    if (!password)         e.password = "Vui lòng nhập mật khẩu.";
+    return e;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); setShake(true); setTimeout(() => setShake(false), 500); return; }
+    setErrors({}); setGlobalErr(""); setLoading(true);
 
-    try {
-      const result = await login({ login: email, password });
-      if (result?.ok) {
-        navigate("/");
-      } else {
-        setError("Invalid email or password");
-      }
-    } catch (err) {
-      setError(err.message || "Login failed");
-    } finally {
-      setLoading(false);
+    const res = await login({ login: login_val, password });
+    setLoading(false);
+    if (res.ok) {
+      navigate("/");
+    } else {
+      setGlobalErr(res.message);
+      setShake(true); setTimeout(() => setShake(false), 500);
     }
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundImage: `linear-gradient(135deg, ${COLORS.soft} 0%, ${COLORS.cream} 100%)`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        px: 2,
-        position: "relative",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: "-160px",
-          right: "-160px",
-          width: "320px",
-          height: "320px",
-          borderRadius: "50%",
-          backgroundColor: "rgba(120, 139, 69, 0.1)",
-          filter: "blur(60px)",
-        },
-        "&::after": {
-          content: '""',
-          position: "absolute",
-          bottom: "-160px",
-          left: "-160px",
-          width: "320px",
-          height: "320px",
-          borderRadius: "50%",
-          backgroundColor: "rgba(62, 106, 122, 0.05)",
-          filter: "blur(60px)",
-        },
-      }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        style={{
-          width: "100%",
-          maxWidth: "420px",
-          position: "relative",
-          zIndex: 10,
-        }}
-      >
-        <Card
-          sx={{
-            boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-            borderRadius: 3,
-          }}
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "100vh" }} className="auth-grid">
+      {/* Left image panel */}
+      <div style={{
+        position: "relative", overflow: "hidden",
+        backgroundImage: "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')",
+        backgroundSize: "cover", backgroundPosition: "center",
+      }}>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
+          <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
+            <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff" }}>
+              yakishime
+            </span>
+          </RouterLink>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#fff", margin: "0 0 14px", lineHeight: 1.15 }}>
+            Trà đạo chính thống<br />từ Uji, Kyoto
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.7 }}>
+            Đăng nhập để đặt bàn, theo dõi lịch sử và viết đánh giá.
+          </p>
+        </div>
+      </div>
+
+      {/* Right form panel */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: "var(--bg)", padding: "40px 24px",
+      }}>
+        <motion.div
+          animate={shake ? { x: [-10, 10, -8, 8, -4, 4, 0] } : { x: 0 }}
+          transition={{ duration: 0.4 }}
+          style={{ width: "100%", maxWidth: 400 }}
         >
-          <CardContent sx={{ p: 4 }}>
-            <Link
-              to="/"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "24px",
-                textDecoration: "none",
-                color: "inherit",
-              }}
-            >
-              <Box
-                sx={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "8px",
-                  backgroundImage: `linear-gradient(135deg, ${COLORS.moss} 0%, ${COLORS.forest} 100%)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography sx={{ color: "white", fontWeight: "bold" }}>
-                  V
-                </Typography>
-              </Box>
-              <Typography sx={{ fontWeight: "bold", fontSize: "18px" }}>
-                VIZZA
-              </Typography>
-            </Link>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 40, fontWeight: 700, color: "var(--text)", margin: "0 0 6px" }}>
+            Chào mừng trở lại
+          </h1>
+          <p style={{ color: "var(--text-muted)", margin: "0 0 36px", fontSize: 15 }}>
+            Chưa có tài khoản?{" "}
+            <RouterLink to="/register" style={{ color: "var(--matcha)", fontWeight: 700, textDecoration: "none" }}>
+              Đăng ký ngay
+            </RouterLink>
+          </p>
 
-            <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-              Welcome Back
-            </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-              Sign in to your account to continue
-            </Typography>
-
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-              {/* Email */}
-              <TextField
-                fullWidth
-                id="email"
-                type="email"
-                label="Email Address"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Mail size={20} style={{ color: COLORS.moss }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  mb: 2.5,
-                  "& .MuiOutlinedInput-root": {
-                    "&:hover fieldset": { borderColor: COLORS.moss },
-                    "&.Mui-focused fieldset": { borderColor: COLORS.moss },
-                  },
-                  "& .MuiOutlinedInput-input::placeholder": {
-                    opacity: 0.7,
-                  },
-                }}
+          <form onSubmit={handleSubmit} noValidate>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 8 }}>
+                Email / Số điện thoại
+              </label>
+              <InputField
+                icon={Mail}
+                type="text"
+                placeholder="email@example.com"
+                value={login_val}
+                onChange={(e) => setLoginVal(e.target.value)}
+                error={errors.login}
               />
+            </div>
 
-              {/* Password */}
-              <TextField
-                fullWidth
-                id="password"
-                type={showPassword ? "text" : "password"}
-                label="Password"
+            <div style={{ marginBottom: 28 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>Mật khẩu</label>
+              </div>
+              <InputField
+                icon={Lock}
+                type={showPw ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock size={20} style={{ color: COLORS.moss }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                        sx={{ color: COLORS.moss }}
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <Eye size={20} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  mb: 2,
-                  "& .MuiOutlinedInput-root": {
-                    "&:hover fieldset": { borderColor: COLORS.moss },
-                    "&.Mui-focused fieldset": { borderColor: COLORS.moss },
-                  },
-                }}
+                error={errors.password}
+                rightAction={
+                  <button type="button" onClick={() => setShowPw((v) => !v)}
+                    style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex" }}>
+                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                }
               />
+            </div>
 
-              {/* Remember & Forgot */}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 2,
-                }}
-              >
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="Remember me"
-                  sx={{
-                    "& .MuiCheckbox-root": {
-                      color: COLORS.moss,
-                      "&.Mui-checked": { color: COLORS.moss },
-                    },
-                  }}
-                />
-                <Link
-                  to="#"
-                  style={{
-                    color: COLORS.moss,
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                  }}
-                >
-                  Forgot password?
-                </Link>
-              </Box>
+            {globalErr && (
+              <div style={{ padding: "12px 16px", borderRadius: 12, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444", fontSize: 14, marginBottom: 20, display: "flex", gap: 8, alignItems: "center" }}>
+                <AlertCircle size={15} /> {globalErr}
+              </div>
+            )}
 
-              {/* Error */}
-              {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                  {error}
-                </Alert>
-              )}
+            <motion.button
+              type="submit"
+              disabled={loading}
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                width: "100%", padding: "16px", borderRadius: 50,
+                background: loading ? "var(--bg-alt)" : "linear-gradient(135deg,var(--matcha),var(--forest))",
+                color: loading ? "var(--text-muted)" : "#fff",
+                border: "none", fontSize: 16, fontWeight: 700,
+                cursor: loading ? "not-allowed" : "pointer",
+                boxShadow: loading ? "none" : "0 8px 28px rgba(107,143,62,0.35)",
+                transition: "all 0.2s",
+              }}
+            >
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </motion.button>
+          </form>
 
-              {/* Login Button */}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={loading}
-                sx={{
-                  backgroundImage: `linear-gradient(135deg, ${COLORS.moss} 0%, ${COLORS.forest} 100%)`,
-                  color: "white",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  fontSize: "16px",
-                  mb: 2,
-                }}
-              >
-                {loading ? "Signing in..." : "Sign In"}
-              </Button>
-
-              {/* Sign Up Link */}
-              <Box
-                sx={{
-                  textAlign: "center",
-                  pt: 2,
-                  borderTop: `1px solid ${COLORS.cream}`,
-                }}
-              >
-                <Typography variant="body2" color="textSecondary">
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    style={{
-                      color: COLORS.moss,
-                      fontWeight: 600,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Sign up now
-                  </Link>
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-
-        {/* Demo Credentials */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Card
-            sx={{
-              mt: 3,
-              backgroundColor: "rgba(255,255,255,0.5)",
-              backdropFilter: "blur(8px)",
-              border: `1px solid ${COLORS.cream}`,
-              textAlign: "center",
-            }}
-          >
-            <CardContent sx={{ p: 2 }}>
-              <Typography sx={{ fontWeight: 600, mb: 1, color: COLORS.dark }}>
-                Demo Credentials
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Email: demo@vizza.com
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Password: demo123
-              </Typography>
-            </CardContent>
-          </Card>
+          {/* Demo credentials */}
+          <div style={{ marginTop: 28, padding: "16px", borderRadius: 14, background: "var(--bg-alt)", border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-muted)", marginBottom: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              Tài khoản demo
+            </div>
+            <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.8 }}>
+              <b>Customer:</b> demo@yakishime.vn / 123456<br />
+              <b>Admin:</b> admin@yakishime.vn / admin123
+            </div>
+          </div>
         </motion.div>
-      </motion.div>
-    </Box>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .auth-grid { grid-template-columns: 1fr !important; }
+          .auth-grid > div:first-child { display: none !important; }
+        }
+      `}</style>
+    </div>
   );
 }
