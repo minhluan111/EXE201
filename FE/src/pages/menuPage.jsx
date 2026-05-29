@@ -7,12 +7,12 @@ import MenuCard from "../components/menu/MenuCard.jsx";
 import QuickViewModal from "../components/menu/QuickViewModal.jsx";
 
 const CATEGORIES = [
-  { key: "all",        label: "Tất cả",     emoji: "🍵" },
-  { key: "Traditional",label: "Traditional", emoji: "🎋" },
-  { key: "Latte",      label: "Latte",       emoji: "☕" },
-  { key: "Hojicha",    label: "Hojicha",     emoji: "🍂" },
-  { key: "Desserts",   label: "Desserts",    emoji: "🍡" },
-  { key: "Food",       label: "Food",        emoji: "🍙" },
+  { key: "all",        label: "Tất cả",      },
+  { key: "Traditional",label: "Traditional",  },
+  { key: "Latte",      label: "Latte",        },
+  { key: "Hojicha",    label: "Hojicha",     },
+  { key: "Desserts",   label: "Desserts",     },
+  { key: "Food",       label: "Food",       },
 ];
 
 const TAGS = [

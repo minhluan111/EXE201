@@ -56,7 +56,7 @@ function seedMenu() {
       id: 1,
       name: "Usucha – Thin Matcha",
       category: "Traditional",
-      image_url: "",
+      image_url: "https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=600&q=80",
       price: 65000,
       description: "Matcha bột Uji pha mỏng theo nghi thức Chado truyền thống. Vị nhẹ, xanh thuần khiết.",
       tag: "signature",
@@ -67,7 +67,7 @@ function seedMenu() {
       id: 2,
       name: "Koicha – Thick Matcha",
       category: "Traditional",
-      image_url: "https://imgs.search.brave.com/hgnlOzUwSQcyDPFlyYcG2jX8bxU83A9dY_4D0SakP8U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/c2hvcGlmeS5jb20v/cy9maWxlcy8xLzAw/MTkvODAyMy81ODQ5/L2ZpbGVzL2Jvd2xf/b2Zfa29pY2hhXzI0/MHgyNDAuanBnP3Y9/MTc2NTgzMTA2Mw",
+      image_url: "https://imgs.search.brave.com/Art24bxBFSZ9KLo3pphGK897EHf_oczZVVnvWwG5Poo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/c2hvcGlmeS5jb20v/cy9maWxlcy8xLzA3/NDgvMjk5NS81MzA3/L2ZpbGVzL0tvaWNo/YV9UaGlja19UZWEu/cG5nP3Y9MTc1NDE5/NDk5Mw",
       price: 85000,
       description: "Matcha pha đặc theo phong cách trà đạo cao cấp. Hương thơm mạnh mẽ, hậu vị ngọt sâu.",
       tag: "signature",
@@ -78,7 +78,7 @@ function seedMenu() {
       id: 3,
       name: "Tencha Leaf Brew",
       category: "Traditional",
-      image_url: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/iKr4fQ7TBGFNdkoPY136KWw7C_-ZnFM4zTQJ_pstsFM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zaG9w/LmZ1cnVrYXdhc2Vp/Y2hhLmNvbS9jZG4v/c2hvcC9wcm9kdWN0/cy9EU0MwMTQ2OF8x/X2dyYW5kZS5qcGc_/dj0xNzYxNTM1NDQy",
       price: 75000,
       description: "Lá trà Tencha nguyên chất, ủ lạnh 8 tiếng – umami sâu, không đắng.",
       tag: "normal",
@@ -90,7 +90,7 @@ function seedMenu() {
       id: 4,
       name: "Matcha Oat Latte",
       category: "Latte",
-      image_url: "https://images.unsplash.com/photo-1631898039254-d91a35c32f1a?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/UHX8B3XPAfYOqBcEspKwzMVBB7jeAF0rAAFDy9Q_hhI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93aG9s/ZWZvb2Rzb3VsZm9v/ZGtpdGNoZW4uY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIy/LzA1L29hdC1taWxr/LW1hdGNoYS1sYXR0/ZS5qcGc",
       price: 79000,
       description: "Matcha grade A pha với sữa yến mạch tạo lớp bọt mịn. Cân bằng hoàn hảo giữa đắng & ngọt.",
       tag: "best_seller",
@@ -101,7 +101,7 @@ function seedMenu() {
       id: 5,
       name: "Iced Matcha Latte",
       category: "Latte",
-      image_url: "https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/-KjiacBr8fMHTcl-QwPxffC80WqAAN0TSnB8HNmBMrE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/bG92ZWFuZGxlbW9u/cy5jb20vd3AtY29u/dGVudC91cGxvYWRz/LzIwMjMvMDYvaWNl/ZC1tYXRjaGEtbGF0/dGUtcmVjaXBlLmpw/Zw",
       price: 69000,
       description: "Matcha lạnh được pha đặc, đổ lên đá viên, rót sữa tươi tạo lớp gradient đẹp mắt.",
       tag: "best_seller",
@@ -112,7 +112,7 @@ function seedMenu() {
       id: 6,
       name: "Hojicha Latte",
       category: "Latte",
-      image_url: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/LPFW03hftFJYwy5a-demmCsf31YU-acs27-ckDZL3Vc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9iaXRl/c2J5YmlhbmNhLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/Ni8wMS9ob2ppY2hh/LWxhdHRlLXN0ZXAt/Mi1zY2FsZWQuanBn",
       price: 72000,
       description: "Trà Hojicha rang trên chảo gang, pha cùng sữa yến mạch. Vị caramel ấm áp, thơm khói nhẹ.",
       tag: "trending",
@@ -124,7 +124,7 @@ function seedMenu() {
       id: 7,
       name: "Cold Brew Hojicha",
       category: "Hojicha",
-      image_url: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/X-i0wFrcF9UxVMp7sHdYx5k5tkYUXZg_si-pZiMFd6o/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/YWxsZGF5aWVhdC5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjYvMDMvY29sZC1i/cmV3LWhvamljaGEt/bWV0aG9kLWZlYXR1/cmVkLmpwZw",
       price: 68000,
       description: "Hojicha cold brew 12 tiếng, vị thuần khiết, không đắng. Uống không đường vẫn thơm ngon.",
       tag: "trending",
@@ -135,7 +135,7 @@ function seedMenu() {
       id: 8,
       name: "Hojicha Tonic",
       category: "Hojicha",
-      image_url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/RLSE7ydcGXD-CEoVX3w1sbnPwbSb1FYZxODERPadyCY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuZ2V0cmVjaXBl/a2l0LmNvbS8yMDIx/MTExODE3MTYzNS1z/cGFya2xpbmdfaG9q/aWNoYV9yZWNpcGUu/anBlZz9hc3BlY3Rf/cmF0aW89MTY6OSZx/dWFsaXR5PTkwJg",
       price: 74000,
       description: "Hojicha đặc trộn với nước tonic có gas, thêm lát chanh và sả. Rất sảng khoái mùa hè.",
       tag: "new",
@@ -147,7 +147,7 @@ function seedMenu() {
       id: 9,
       name: "Matcha Parfait",
       category: "Desserts",
-      image_url: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/tDTldYE9U7EDv0Gon6-7qaLLsGCeG3S7LMzrQ-lQOLY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9taW5k/eWFtYXRjaGEuY29t/LmF1L2Nkbi9zaG9w/L2FydGljbGVzL0hM/TjAzMDgxLmpwZz92/PTE3MTA4MTgzNjMm/d2lkdGg9MTEwMA",
       price: 95000,
       description: "Parfait 5 lớp: kem matcha, granola, đậu đỏ azuki, thạch matcha, kem tươi. Đẳng cấp Tokyo.",
       tag: "signature",
@@ -158,7 +158,7 @@ function seedMenu() {
       id: 10,
       name: "Warabi Mochi",
       category: "Desserts",
-      image_url: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/MLQ2UAivL-a-0soRhznEMUGW22KRJfSMkLeSAoQFrxQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdWRh/Y2hpcmVjaXBlcy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMDgvd2FyYWJp/LW1vY2hpLTkuanBn",
       price: 65000,
       description: "Mochi làm từ bột dương xỉ (warabiko), phủ bột matcha Kinako. Mềm tan trên lưỡi.",
       tag: "best_seller",
@@ -169,7 +169,7 @@ function seedMenu() {
       id: 11,
       name: "Matcha Roll Cake",
       category: "Desserts",
-      image_url: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/O28FknZ1gJ1lbpavsZzz4IWOM7fITyBjBov0TIfhV4U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzE3LzMwLzYzLzk5/LzM2MF9GXzE3MzA2/Mzk5ODZfVjVCTTJm/R21QemtiV3FUWUgy/bG5XM3Z0OThFTDdx/ZWMuanBn",
       price: 55000,
       description: "Bánh cuộn matcha mềm mịn, nhân kem tươi nhẹ. Slice đẹp, hương trà xanh dịu nhẹ.",
       tag: "normal",
@@ -181,7 +181,7 @@ function seedMenu() {
       id: 12,
       name: "Onigiri Matcha Tuna",
       category: "Food",
-      image_url: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80",
+      image_url: "https://imgs.search.brave.com/hLQvX4J_oMIAuyHn7WMjqyLd57QmEUpHNQz-BDRvXjk/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMC53/cC5jb20veW9rb3Nr/aXRjaGVuLmNvbS93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyMy8x/MC9EZWNvbnN0cnVj/dGVkLUhhbGxvd2Vl/bi1PbmlnaXJpLVJp/Y2UtQmFsbHMtb24t/YS1wbGF0ZS5qcGc_/cmVzaXplPTc2OCwx/MDI0JnNzbD0x",
       price: 45000,
       description: "Cơm nắm tam giác trộn matcha nhẹ, nhân cá ngừ mayo Nhật. Ăn nhẹ tuyệt vời.",
       tag: "normal",
@@ -275,9 +275,9 @@ function makeRandomBookings(tables) {
 function ensureSeeded() {
   // Force re-seed menu to get Matcha data (version bump)
   const menuVersion = localStorage.getItem("vizza.menu.v");
-  if (menuVersion !== "3") {
+  if (menuVersion !== "4") {
     writeLS(LS_KEYS.menu, seedMenu());
-    localStorage.setItem("vizza.menu.v", "3");
+    localStorage.setItem("vizza.menu.v", "4");
   }
 
   if (!readLS(LS_KEYS.tables, null))    writeLS(LS_KEYS.tables, seedTables());

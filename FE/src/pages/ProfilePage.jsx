@@ -110,7 +110,7 @@ export default function ProfilePage() {
                     sx={{ pb: 2, borderBottom: `1px solid ${COLORS.cream}` }}
                   >
                     <Typography sx={{ fontSize: "12px", color: "#666", mb: 1 }}>
-                      📧 Email
+                       Email
                     </Typography>
                     <Typography
                       sx={{
@@ -131,7 +131,7 @@ export default function ProfilePage() {
                     }}
                   >
                     <Typography sx={{ fontSize: "12px", color: "#666", mb: 1 }}>
-                      📱 Số điện thoại
+                     Số điện thoại
                     </Typography>
                     <Typography
                       sx={{
@@ -152,7 +152,7 @@ export default function ProfilePage() {
                     }}
                   >
                     <Typography sx={{ fontSize: "12px", color: "#666", mb: 1 }}>
-                      👤 Vai trò
+                       Vai trò
                     </Typography>
                     <Typography
                       sx={{
@@ -162,14 +162,14 @@ export default function ProfilePage() {
                       }}
                     >
                       {info.role === "admin"
-                        ? "👨‍💼 Quản trị viên"
-                        : "👤 Khách hàng"}
+                        ? " Quản trị viên"
+                        : " Khách hàng"}
                     </Typography>
                   </Box>
 
                   <Box sx={{ pt: 2 }}>
                     <Typography sx={{ fontSize: "12px", color: "#666", mb: 1 }}>
-                      📅 Ngày tham gia
+                       Ngày tham gia
                     </Typography>
                     <Typography
                       sx={{
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                     }}
                   >
                     <Typography sx={{ fontWeight: 600, mb: 0.5 }}>
-                      ✨ Chào mừng bạn!
+                       Chào mừng bạn!
                     </Typography>
                     <Typography sx={{ fontSize: "14px" }}>
                       Cảm ơn bạn đã là thành viên của VIZZA. Hãy khám phá menu

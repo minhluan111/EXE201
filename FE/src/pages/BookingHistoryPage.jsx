@@ -82,11 +82,11 @@ export default function BookingHistoryPage() {
   const getStatusLabel = (status) => {
     switch (status) {
       case "pending":
-        return "⏳ Chờ xác nhận";
+        return " Chờ xác nhận";
       case "confirmed":
-        return "✅ Đã xác nhận";
+        return " Đã xác nhận";
       case "cancelled":
-        return "❌ Đã hủy";
+        return " Đã hủy";
       default:
         return status;
     }
@@ -95,14 +95,14 @@ export default function BookingHistoryPage() {
   const tabs = [
     {
       key: "upcoming",
-      label: "📅 Sắp Diễn Ra",
+      label: " Sắp Diễn Ra",
       count: list.filter(
         (b) => b.status === "pending" || b.status === "confirmed",
       ).length,
     },
     {
       key: "complete",
-      label: "✅ Đã Hoàn Thành",
+      label: " Đã Hoàn Thành",
       count: list.filter((b) => b.status === "confirmed").length,
     },
     {
@@ -203,7 +203,7 @@ export default function BookingHistoryPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <Box sx={{ textAlign: "center", py: 12 }}>
                 <Typography variant="h2" sx={{ mb: 2 }}>
-                  🚪
+                  
                 </Typography>
                 <Typography variant="h5" sx={{ mb: 1, opacity: 0.7 }}>
                   Chưa có lịch đặt bàn

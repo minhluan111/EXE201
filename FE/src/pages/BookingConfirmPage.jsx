@@ -52,7 +52,7 @@ export default function BookingConfirmPage() {
       >
         <Container maxWidth="lg" sx={{ textAlign: "center" }}>
           <Typography variant="h2" sx={{ mb: 2 }}>
-            🚪
+            
           </Typography>
           <Typography variant="h5" sx={{ mb: 3, opacity: 0.7 }}>
             Không có thông tin bàn đã chọn
@@ -185,7 +185,7 @@ export default function BookingConfirmPage() {
                         <Typography
                           sx={{ fontSize: "12px", color: "#666", mb: 0.5 }}
                         >
-                          🪑 Bàn
+                           Bàn
                         </Typography>
                         <Typography
                           sx={{
@@ -202,7 +202,7 @@ export default function BookingConfirmPage() {
                         <Typography
                           sx={{ fontSize: "12px", color: "#666", mb: 0.5 }}
                         >
-                          📍 Khu vực
+                           Khu vực
                         </Typography>
                         <Typography
                           sx={{ fontWeight: 600, color: COLORS.dark }}
@@ -215,7 +215,7 @@ export default function BookingConfirmPage() {
                         <Typography
                           sx={{ fontSize: "12px", color: "#666", mb: 0.5 }}
                         >
-                          📅 Ngày giờ
+                           Ngày giờ
                         </Typography>
                         <Typography
                           sx={{ fontWeight: 600, color: COLORS.dark }}
@@ -228,7 +228,7 @@ export default function BookingConfirmPage() {
                         <Typography
                           sx={{ fontSize: "12px", color: "#666", mb: 0.5 }}
                         >
-                          👥 Số khách
+                           Số khách
                         </Typography>
                         <Typography
                           sx={{
@@ -251,7 +251,7 @@ export default function BookingConfirmPage() {
                           mb: 1,
                         }}
                       >
-                        📝 Ghi chú (tuỳ chọn)
+                         Ghi chú (tuỳ chọn)
                       </Typography>
                       <TextField
                         fullWidth
@@ -385,7 +385,7 @@ export default function BookingConfirmPage() {
                             mb: 1,
                           }}
                         >
-                          📱 Số điện thoại
+                           Số điện thoại
                         </Typography>
                         <TextField
                           fullWidth
@@ -412,7 +412,7 @@ export default function BookingConfirmPage() {
                             mb: 1,
                           }}
                         >
-                          📧 Email
+                           Email
                         </Typography>
                         <TextField
                           fullWidth
@@ -445,7 +445,7 @@ export default function BookingConfirmPage() {
                       }}
                     >
                       <Typography sx={{ fontWeight: 600, mb: 0.5 }}>
-                        💡 Thông tin về Demo
+                         Thông tin về Demo
                       </Typography>
                       <Typography sx={{ fontSize: "14px" }}>
                         Thông tin người nhận chỉ hiển thị để tham khảo, không

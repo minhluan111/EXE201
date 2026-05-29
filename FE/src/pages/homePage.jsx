@@ -115,12 +115,12 @@ const TESTIMONIALS = [
 
 // ── Gallery images ───────────────────────────────────────────────────────────
 const GALLERY = [
-  { url: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80", h: 280, label: "Không gian thiền" },
-  { url: "https://images.unsplash.com/photo-1593038756742-48c34b3b0e33?w=400&q=80", h: 200, label: "Trà đạo" },
-  { url: "https://images.unsplash.com/photo-1631898039254-d91a35c32f1a?w=400&q=80", h: 260, label: "Matcha Latte" },
-  { url: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80", h: 220, label: "Parfait" },
-  { url: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&q=80", h: 300, label: "Warabi Mochi" },
-  { url: "https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&q=80", h: 240, label: "Iced Matcha" },
+  { url: "https://imgs.search.brave.com/nTZibCbHKyQSraEMU2MAzAEziZ-y9K35CDdVCpxGs-I/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly92aWV0/bmFtYXJjaC5jb20u/dm4vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMTAva2hvbmct/Z2lhbi10aGllbi10/cmEtZGVwLmpwZw", h: 280, label: "Không gian thiền" },
+  { url: "https://imgs.search.brave.com/Y-9f4uxZZqgy5YIHHx6LKLjvunXzfBKrFkeaUK68zV0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/dGl0YS5hcnQvd3At/Y29udGVudC91cGxv/YWRzLzIwMjMvMDgv/Mi5qcGc", h: 200, label: "Trà đạo" },
+  { url: "https://imgs.search.brave.com/SVBz95D_b-DyW6HRqkjrLgEtzeZCXe6_07ZsumAMBMU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc3F1YXJlc3Bh/Y2UtY2RuLmNvbS9j/b250ZW50L3YxLzY0/NDAzZTkzZDY0MGU0/MjkxMjE3MzBjYy8x/NzA2NTY2MDk5MDU0/LURZR0c5QVE0TVNT/QkNNVUo0OURZL3Ro/ZStiZXN0K2FsbW9u/ZCttaWxrK21hdGNo/YStsYXR0ZQ", h: 260, label: "Matcha Latte" },
+  { url: "https://imgs.search.brave.com/CaTKE1--sKezfaX7eVSH-_a718ySle-BQBONIi0chkY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9oaXBz/LmhlYXJzdGFwcHMu/Y29tL2RlbC5oLWNk/bi5jby9hc3NldHMv/Y20vMTUvMTEvNTRm/ZGVmMDlkNzhhNS1j/b3R0YWdlLWNoZWVz/ZS1wYXJmYWl0LXJl/Y2lwZS1tc2xvMDcx/MC14bC4_Y3JvcD0x/eHc6MS4weGg7Y2Vu/dGVyLHRvcA", h: 220, label: "Parfait" },
+  { url: "https://imgs.search.brave.com/MLQ2UAivL-a-0soRhznEMUGW22KRJfSMkLeSAoQFrxQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdWRh/Y2hpcmVjaXBlcy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMDgvd2FyYWJp/LW1vY2hpLTkuanBn", h: 300, label: "Warabi Mochi" },
+  { url: "https://imgs.search.brave.com/uR59C0bPwmr-cYAgrm4P9w__zNE55WtXbgXHB44K1kg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9kYXZp/ZHN0ZWEuY29tL2Nk/bi9zaG9wL2ZpbGVz/L3N0ZXBfNC1Ib3df/dG9fbWFrZV9hbl9p/Y2VkX21hdGNoYV9s/YXR0ZS5naWY_dj0x/NzI2ODYxMDMzJndp/ZHRoPTM4NDA.jpeg", h: 240, label: "Iced Matcha" },
 ];
 
 // ── Features ─────────────────────────────────────────────────────────────────

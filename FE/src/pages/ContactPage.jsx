@@ -74,7 +74,7 @@ export default function ContactPage() {
       >
         <Box sx={{ textAlign: "center" }}>
           <Typography variant="h4" sx={{ mb: 1 }}>
-            ⏳
+            
           </Typography>
           <Typography>Đang tải thông tin...</Typography>
         </Box>
@@ -304,7 +304,7 @@ export default function ContactPage() {
                             mb: 1,
                           }}
                         >
-                          💬 Tiêu đề
+                          Tiêu đề
                         </Typography>
                         <TextField
                           fullWidth
@@ -331,7 +331,7 @@ export default function ContactPage() {
                             mb: 1,
                           }}
                         >
-                          ✍️ Nội dung
+                           Nội dung
                         </Typography>
                         <TextField
                           fullWidth

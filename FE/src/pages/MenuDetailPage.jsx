@@ -394,7 +394,7 @@ export default function MenuDetailPage() {
                           mb: 1,
                         }}
                       >
-                        ⭐ Xếp hạng
+                         Xếp hạng
                       </Typography>
                       <Rating
                         value={rating}
@@ -411,7 +411,7 @@ export default function MenuDetailPage() {
                           mb: 1,
                         }}
                       >
-                        💬 Bình luận
+                         Bình luận
                       </Typography>
                       <TextField
                         fullWidth
