@@ -186,15 +186,7 @@ export default function LoginPage() {
           </form>
 
           {/* Demo credentials */}
-          <div style={{ marginTop: 28, padding: "16px", borderRadius: 14, background: "var(--bg-alt)", border: "1px solid var(--border)" }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-muted)", marginBottom: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              Tài khoản demo
-            </div>
-            <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.8 }}>
-              <b>Customer:</b> demo@yakishime.vn / 123456<br />
-              <b>Admin:</b> admin@yakishime.vn / admin123
-            </div>
-          </div>
+          
         </motion.div>
       </div>
 

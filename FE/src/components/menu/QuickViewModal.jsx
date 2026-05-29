@@ -138,28 +138,31 @@ export default function QuickViewModal({ item, onClose }) {
             }}
           />
 
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, y: 60, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 60, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 260, damping: 26 }}
-            style={{
-              position: "fixed",
-              top: "50%", left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 1101,
-              width: "min(96vw, 960px)",
-              maxHeight: "90vh",
-              background: "var(--bg-card)",
-              borderRadius: 28,
-              border: "1px solid var(--border)",
-              boxShadow: "0 40px 120px rgba(0,0,0,0.25)",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          {/* Centering Wrapper */}
+          <div style={{
+            position: "fixed", inset: 0, zIndex: 1101,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            pointerEvents: "none"
+          }}>
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 60, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 260, damping: 26 }}
+              style={{
+                pointerEvents: "auto",
+                width: "min(96vw, 960px)",
+                maxHeight: "90vh",
+                background: "var(--bg-card)",
+                borderRadius: 28,
+                border: "1px solid var(--border)",
+                boxShadow: "0 40px 120px rgba(0,0,0,0.25)",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
             {/* Close button */}
             <button
               onClick={onClose}
@@ -349,8 +352,9 @@ export default function QuickViewModal({ item, onClose }) {
               </div>
             </div>
           </motion.div>
-        </>
-      )}
+        </div>
+      </>
+    )}
 
       <style>{`
         @media (max-width: 640px) {

@@ -107,7 +107,7 @@ export default function BookingHistoryPage() {
     },
     {
       key: "cancelled",
-      label: "❌ Đã Hủy",
+      label: "Đã Hủy",
       count: list.filter((b) => b.status === "cancelled").length,
     },
   ];
