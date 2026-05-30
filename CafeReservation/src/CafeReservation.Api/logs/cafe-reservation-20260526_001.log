@@ -1,0 +1,548 @@
+2026-05-26 15:11:48.690 +07:00 [INF] Executed DbCommand (52ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:11:48.760 +07:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:11:48.790 +07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:11:48.822 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:11:48.826 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:11:48.842 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:11:48.848 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:11:49.045 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:11:49.351 +07:00 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address https://127.0.0.1:52817: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(ListenOptions[] listenOptions, AddressBindContext context, Func`2 useHttps, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-05-26 15:13:55.768 +07:00 [INF] Executed DbCommand (52ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:13:55.823 +07:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:13:55.848 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:13:55.867 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:13:55.870 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:13:55.881 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:13:55.883 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:13:55.997 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:13:56.174 +07:00 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address https://127.0.0.1:52817: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(ListenOptions[] listenOptions, AddressBindContext context, Func`2 useHttps, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-05-26 15:15:55.480 +07:00 [INF] Executed DbCommand (51ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:15:55.663 +07:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:15:55.690 +07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:15:55.710 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:15:55.723 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:15:55.748 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:15:55.752 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:15:55.828 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:15:55.925 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:15:55.926 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:15:55.970 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:15:55.972 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:15:55.973 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:15:56.856 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/ - null null
+2026-05-26 15:15:57.025 +07:00 [INF] HTTP GET / responded 404 in 17.8042 ms
+2026-05-26 15:15:57.029 +07:00 [INF] GET / responded 404 in 26ms
+2026-05-26 15:15:57.034 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/ - 404 0 null 180.9987ms
+2026-05-26 15:15:57.039 +07:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:52817/, Response status code: 404
+2026-05-26 15:17:07.700 +07:00 [INF] Executed DbCommand (62ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:07.802 +07:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:17:07.931 +07:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:07.971 +07:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:07.976 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:17:07.995 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:17:08.000 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:17:08.146 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:17:08.336 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:17:08.337 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:17:08.392 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:17:08.393 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:17:08.395 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:17:09.064 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/ - null null
+2026-05-26 15:17:09.259 +07:00 [INF] HTTP GET / responded 404 in 50.4258 ms
+2026-05-26 15:17:09.263 +07:00 [INF] GET / responded 404 in 59ms
+2026-05-26 15:17:09.268 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/ - 404 0 null 210.8301ms
+2026-05-26 15:17:09.272 +07:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:52817/, Response status code: 404
+2026-05-26 15:17:18.479 +07:00 [INF] Executed DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:18.534 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:17:18.553 +07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:18.566 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:18.569 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:17:18.579 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:17:18.582 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:17:18.699 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:17:18.858 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:17:18.859 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:17:18.910 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:17:18.911 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:17:18.912 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:17:20.488 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/ - null null
+2026-05-26 15:17:20.658 +07:00 [INF] HTTP GET / responded 404 in 59.6027 ms
+2026-05-26 15:17:20.664 +07:00 [INF] GET / responded 404 in 69ms
+2026-05-26 15:17:20.673 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/ - 404 0 null 196.4247ms
+2026-05-26 15:17:20.678 +07:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:52817/, Response status code: 404
+2026-05-26 15:17:37.251 +07:00 [INF] Executed DbCommand (49ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:37.309 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:17:37.332 +07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:37.349 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:17:37.352 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:17:37.363 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:17:37.366 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:17:37.469 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:17:37.614 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:17:37.615 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:17:37.661 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:17:37.662 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:17:37.663 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:17:38.441 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/ - null null
+2026-05-26 15:17:38.596 +07:00 [INF] HTTP GET / responded 404 in 53.8068 ms
+2026-05-26 15:17:38.600 +07:00 [INF] GET / responded 404 in 61ms
+2026-05-26 15:17:38.604 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/ - 404 0 null 171.3152ms
+2026-05-26 15:17:38.609 +07:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:52817/, Response status code: 404
+2026-05-26 15:19:56.724 +07:00 [INF] Executed DbCommand (48ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:19:56.780 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:19:56.803 +07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:19:56.819 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:19:56.822 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:19:56.832 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:19:56.835 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:19:56.944 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:19:57.093 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:19:57.094 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:19:57.144 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:19:57.145 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:19:57.146 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:19:57.723 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger - null null
+2026-05-26 15:19:57.831 +07:00 [INF] GET /swagger responded 301 in 6ms
+2026-05-26 15:19:57.838 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger - 301 0 null 129.3916ms
+2026-05-26 15:19:57.848 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/index.html - null null
+2026-05-26 15:19:57.912 +07:00 [INF] GET /swagger/index.html responded 200 in 57ms
+2026-05-26 15:19:57.915 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/index.html - 200 null text/html;charset=utf-8 67.4311ms
+2026-05-26 15:19:57.938 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/swagger-ui.css - null null
+2026-05-26 15:19:57.945 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/swagger-ui-bundle.js - null null
+2026-05-26 15:19:57.947 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - null null
+2026-05-26 15:19:57.947 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/swagger-ui-standalone-preset.js - null null
+2026-05-26 15:19:57.974 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_vs/browserLink - null null
+2026-05-26 15:19:57.983 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - 200 16523 application/javascript; charset=utf-8 36.0801ms
+2026-05-26 15:19:58.007 +07:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-05-26 15:19:58.007 +07:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-05-26 15:19:58.026 +07:00 [INF] GET /swagger/swagger-ui.css responded 200 in 84ms
+2026-05-26 15:19:58.026 +07:00 [INF] GET /swagger/swagger-ui-standalone-preset.js responded 200 in 47ms
+2026-05-26 15:19:58.028 +07:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-05-26 15:19:58.036 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 89.3195ms
+2026-05-26 15:19:58.051 +07:00 [INF] GET /swagger/swagger-ui-bundle.js responded 200 in 97ms
+2026-05-26 15:19:58.032 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/swagger-ui.css - 200 152034 text/css 94.942ms
+2026-05-26 15:19:58.063 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 118.1061ms
+2026-05-26 15:19:58.244 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_vs/browserLink - 200 null text/javascript; charset=UTF-8 270.2386ms
+2026-05-26 15:19:58.469 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - null null
+2026-05-26 15:19:58.485 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/favicon-32x32.png - null null
+2026-05-26 15:19:58.499 +07:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-05-26 15:19:58.505 +07:00 [INF] GET /swagger/favicon-32x32.png responded 200 in 6ms
+2026-05-26 15:19:58.508 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/favicon-32x32.png - 200 628 image/png 22.288ms
+2026-05-26 15:19:58.515 +07:00 [INF] GET /swagger/v1/swagger.json responded 200 in 40ms
+2026-05-26 15:19:58.517 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 48.2801ms
+2026-05-26 15:46:37.007 +07:00 [INF] Executed DbCommand (58ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:46:37.069 +07:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:46:37.095 +07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:46:37.108 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-26 15:46:37.111 +07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-26 15:46:37.123 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-26 15:46:37.126 +07:00 [INF] Database migration completed successfully.
+2026-05-26 15:46:37.339 +07:00 [ERR] Failed executing DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'admin@yakicafe.com')
+2026-05-26 15:46:37.366 +07:00 [ERR] An exception occurred while iterating over the results of a query for context type 'CafeReservation.Infrastructure.Persistence.AppDbContext'.
+Npgsql.PostgresException (0x80004005): 42P01: relation "users" does not exist
+
+POSITION: 41
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+  Exception data:
+    Severity: ERROR
+    SqlState: 42P01
+    MessageText: relation "users" does not exist
+    Position: 41
+    File: parse_relation.c
+    Line: 1449
+    Routine: parserOpenTable
+Npgsql.PostgresException (0x80004005): 42P01: relation "users" does not exist
+
+POSITION: 41
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+  Exception data:
+    Severity: ERROR
+    SqlState: 42P01
+    MessageText: relation "users" does not exist
+    Position: 41
+    File: parse_relation.c
+    Line: 1449
+    Routine: parserOpenTable
+2026-05-26 15:46:37.495 +07:00 [ERR] Database migration/seeding failed. The API will start but DB features may not work.
+Npgsql.PostgresException (0x80004005): 42P01: relation "users" does not exist
+
+POSITION: 41
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at CafeReservation.Infrastructure.Persistence.DataSeeder.SeedAdminAsync(CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Infrastructure\Persistence\DataSeeder.cs:line 37
+   at CafeReservation.Infrastructure.Persistence.DataSeeder.SeedAsync(CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Infrastructure\Persistence\DataSeeder.cs:line 26
+   at Program.<Main>$(String[] args) in D:\PRN222\CafeReservation\src\CafeReservation.Api\Program.cs:line 119
+  Exception data:
+    Severity: ERROR
+    SqlState: 42P01
+    MessageText: relation "users" does not exist
+    Position: 41
+    File: parse_relation.c
+    Line: 1449
+    Routine: parserOpenTable
+2026-05-26 15:46:37.674 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:46:37.872 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:46:37.873 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:46:37.927 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:46:37.929 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:46:37.930 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:46:38.474 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/index.html - null null
+2026-05-26 15:46:38.668 +07:00 [INF] GET /swagger/index.html responded 200 in 63ms
+2026-05-26 15:46:38.674 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/index.html - 200 null text/html;charset=utf-8 206.6712ms
+2026-05-26 15:46:38.692 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - null null
+2026-05-26 15:46:38.716 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - 200 16523 application/javascript; charset=utf-8 24.154ms
+2026-05-26 15:46:38.736 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_vs/browserLink - null null
+2026-05-26 15:46:38.823 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_vs/browserLink - 200 null text/javascript; charset=UTF-8 86.4388ms
+2026-05-26 15:46:39.083 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - null null
+2026-05-26 15:46:39.143 +07:00 [INF] GET /swagger/v1/swagger.json responded 200 in 56ms
+2026-05-26 15:46:39.147 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 64.1635ms
+2026-05-26 15:48:29.239 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/reservations/me - null null
+2026-05-26 15:48:29.336 +07:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-05-26 15:48:29.340 +07:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-05-26 15:48:29.342 +07:00 [INF] HTTP GET /api/reservations/me responded 401 in 90.5371 ms
+2026-05-26 15:48:29.344 +07:00 [INF] GET /api/reservations/me responded 401 in 94ms
+2026-05-26 15:48:29.346 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/reservations/me - 401 0 null 109.235ms
+2026-05-26 15:48:42.361 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/admin/stats - null null
+2026-05-26 15:48:42.369 +07:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Admin|Staff)
+2026-05-26 15:48:42.371 +07:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-05-26 15:48:42.372 +07:00 [INF] HTTP GET /api/admin/stats responded 401 in 6.5977 ms
+2026-05-26 15:48:42.374 +07:00 [INF] GET /api/admin/stats responded 401 in 8ms
+2026-05-26 15:48:42.375 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/admin/stats - 401 0 null 14.0796ms
+2026-05-26 15:48:43.322 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/admin/stats - null null
+2026-05-26 15:48:43.327 +07:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Admin|Staff)
+2026-05-26 15:48:43.328 +07:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-05-26 15:48:43.328 +07:00 [INF] HTTP GET /api/admin/stats responded 401 in 2.8989 ms
+2026-05-26 15:48:43.330 +07:00 [INF] GET /api/admin/stats responded 401 in 4ms
+2026-05-26 15:48:43.331 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/admin/stats - 401 0 null 9.7067ms
+2026-05-26 15:49:15.018 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/index.html - null null
+2026-05-26 15:49:15.052 +07:00 [INF] GET /swagger/index.html responded 200 in 4ms
+2026-05-26 15:49:15.069 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/index.html - 200 null text/html;charset=utf-8 51.1193ms
+2026-05-26 15:49:15.097 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_vs/browserLink - null null
+2026-05-26 15:49:15.097 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - null null
+2026-05-26 15:49:15.106 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - 200 16523 application/javascript; charset=utf-8 8.8724ms
+2026-05-26 15:49:15.129 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_vs/browserLink - 200 null text/javascript; charset=UTF-8 32.6008ms
+2026-05-26 15:49:15.409 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - null null
+2026-05-26 15:49:15.451 +07:00 [INF] GET /swagger/v1/swagger.json responded 200 in 33ms
+2026-05-26 15:49:15.453 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 44.2241ms
+2026-05-26 15:49:27.996 +07:00 [ERR] Database migration/seeding failed. The API will start but DB features may not work.
+Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5432
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.ExistsAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.GetAppliedMigrationsAsync(CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Program.<Main>$(String[] args) in D:\PRN222\CafeReservation\src\CafeReservation.Api\Program.cs:line 115
+2026-05-26 15:49:28.193 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-26 15:49:28.360 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-26 15:49:28.361 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-26 15:49:28.405 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-26 15:49:28.407 +07:00 [INF] Hosting environment: Development
+2026-05-26 15:49:28.408 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-26 15:49:28.777 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/index.html - null null
+2026-05-26 15:49:28.934 +07:00 [INF] GET /swagger/index.html responded 200 in 60ms
+2026-05-26 15:49:28.941 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/index.html - 200 null text/html;charset=utf-8 169.9681ms
+2026-05-26 15:49:28.967 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - null null
+2026-05-26 15:49:28.992 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - 200 16523 application/javascript; charset=utf-8 24.7638ms
+2026-05-26 15:49:29.003 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_vs/browserLink - null null
+2026-05-26 15:49:29.049 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_vs/browserLink - 200 null text/javascript; charset=UTF-8 46.2837ms
+2026-05-26 15:49:29.247 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - null null
+2026-05-26 15:49:29.305 +07:00 [INF] GET /swagger/v1/swagger.json responded 200 in 54ms
+2026-05-26 15:49:29.308 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 61.447ms

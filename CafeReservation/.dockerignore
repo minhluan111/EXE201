@@ -1,0 +1,22 @@
+# Build artifacts
+**/bin/
+**/obj/
+
+# Runtime
+**/logs/
+
+# IDE
+.vs/
+.vscode/
+*.user
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Misc
+**/*.md

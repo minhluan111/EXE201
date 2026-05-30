@@ -1,0 +1,434 @@
+2026-05-30 15:40:38.869 +07:00 [INF] Executed DbCommand (435ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-30 15:40:39.647 +07:00 [INF] Executed DbCommand (666ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-30 15:40:42.733 +07:00 [INF] Executed DbCommand (590ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-30 15:40:44.581 +07:00 [INF] Executed DbCommand (297ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-30 15:40:44.976 +07:00 [INF] Executed DbCommand (392ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-30 15:40:44.990 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-30 15:40:44.992 +07:00 [INF] Database migration completed successfully.
+2026-05-30 15:40:45.544 +07:00 [INF] Executed DbCommand (323ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'admin@yakicafe.com')
+2026-05-30 15:40:46.025 +07:00 [INF] Executed DbCommand (471ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM seating_areas AS s)
+2026-05-30 15:40:46.341 +07:00 [INF] Executed DbCommand (309ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM "RestaurantInfo" AS r)
+2026-05-30 15:40:46.960 +07:00 [INF] Executed DbCommand (594ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM "MenuItems" AS m)
+2026-05-30 15:40:46.975 +07:00 [INF] Data seeding completed.
+2026-05-30 15:40:47.163 +07:00 [INF] User profile is available. Using 'C:\Users\thien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-30 15:40:47.169 +07:00 [INF] AutoCancelReservationWorker is starting.
+2026-05-30 15:40:47.508 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-30 15:40:47.509 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-30 15:40:47.566 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-30 15:40:47.567 +07:00 [INF] Hosting environment: Development
+2026-05-30 15:40:47.568 +07:00 [INF] Content root path: D:\PRN222\CafeReservation\src\CafeReservation.Api
+2026-05-30 15:40:47.907 +07:00 [INF] Executed DbCommand (680ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:40:48.118 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger - null null
+2026-05-30 15:40:48.297 +07:00 [INF] GET /swagger responded 301 in 4ms
+2026-05-30 15:40:48.304 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger - 301 0 null 199.8226ms
+2026-05-30 15:40:48.312 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/index.html - null null
+2026-05-30 15:40:48.378 +07:00 [INF] GET /swagger/index.html responded 200 in 58ms
+2026-05-30 15:40:48.380 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/index.html - 200 null text/html;charset=utf-8 67.5083ms
+2026-05-30 15:40:48.401 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/swagger-ui.css - null null
+2026-05-30 15:40:48.402 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/swagger-ui-bundle.js - null null
+2026-05-30 15:40:48.404 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/swagger-ui-standalone-preset.js - null null
+2026-05-30 15:40:48.405 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - null null
+2026-05-30 15:40:48.435 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_framework/aspnetcore-browser-refresh.js - 200 16523 application/javascript; charset=utf-8 30.5841ms
+2026-05-30 15:40:48.457 +07:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-05-30 15:40:48.457 +07:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-05-30 15:40:48.461 +07:00 [INF] GET /swagger/swagger-ui.css responded 200 in 48ms
+2026-05-30 15:40:48.462 +07:00 [INF] GET /swagger/swagger-ui-standalone-preset.js responded 200 in 43ms
+2026-05-30 15:40:48.466 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/swagger-ui.css - 200 152034 text/css 64.1321ms
+2026-05-30 15:40:48.473 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/_vs/browserLink - null null
+2026-05-30 15:40:48.466 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 62.8789ms
+2026-05-30 15:40:48.479 +07:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-05-30 15:40:48.485 +07:00 [INF] GET /swagger/swagger-ui-bundle.js responded 200 in 69ms
+2026-05-30 15:40:48.493 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 91.1984ms
+2026-05-30 15:40:48.564 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/_vs/browserLink - 200 null text/javascript; charset=UTF-8 91.3819ms
+2026-05-30 15:40:48.651 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - null null
+2026-05-30 15:40:48.689 +07:00 [INF] GET /swagger/v1/swagger.json responded 200 in 33ms
+2026-05-30 15:40:48.690 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 39.404ms
+2026-05-30 15:40:48.873 +07:00 [INF] Executed DbCommand (820ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:41:44.697 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/admin/stats - null null
+2026-05-30 15:41:46.267 +07:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Admin|Staff)
+2026-05-30 15:41:46.276 +07:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-05-30 15:41:46.281 +07:00 [INF] HTTP GET /api/admin/stats responded 401 in 1566.7647 ms
+2026-05-30 15:41:46.283 +07:00 [INF] GET /api/admin/stats responded 401 in 1574ms
+2026-05-30 15:41:46.286 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/admin/stats - 401 0 null 1588.7866ms
+2026-05-30 15:41:49.297 +07:00 [INF] Executed DbCommand (358ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:41:49.572 +07:00 [INF] Executed DbCommand (272ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:42:49.721 +07:00 [INF] Executed DbCommand (134ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:42:49.856 +07:00 [INF] Executed DbCommand (133ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:43:50.301 +07:00 [INF] Executed DbCommand (436ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:43:50.649 +07:00 [INF] Executed DbCommand (346ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:44:28.922 +07:00 [INF] Request starting HTTP/2 POST https://localhost:52817/api/auth/login - application/json 54
+2026-05-30 15:44:28.940 +07:00 [INF] CORS policy execution successful.
+2026-05-30 15:44:28.946 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.AuthController.Login (CafeReservation.Api)'
+2026-05-30 15:44:28.979 +07:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(CafeReservation.Application.DTOs.LoginRequest, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.AuthController (CafeReservation.Api).
+2026-05-30 15:44:29.082 +07:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-05-30 15:44:29.106 +07:00 [INF] Executed action CafeReservation.Api.Controllers.AuthController.Login (CafeReservation.Api) in 120.8372ms
+2026-05-30 15:44:29.107 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.AuthController.Login (CafeReservation.Api)'
+2026-05-30 15:44:29.108 +07:00 [INF] HTTP POST /api/auth/login responded 400 in 170.6190 ms
+2026-05-30 15:44:29.109 +07:00 [INF] POST /api/auth/login responded 400 in 172ms
+2026-05-30 15:44:29.113 +07:00 [INF] Request finished HTTP/2 POST https://localhost:52817/api/auth/login - 400 null application/json; charset=utf-8 191.388ms
+2026-05-30 15:44:47.073 +07:00 [INF] Request starting HTTP/2 POST https://localhost:52817/api/auth/login - application/json 62
+2026-05-30 15:44:47.079 +07:00 [INF] CORS policy execution successful.
+2026-05-30 15:44:47.088 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.AuthController.Login (CafeReservation.Api)'
+2026-05-30 15:44:47.093 +07:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(CafeReservation.Application.DTOs.LoginRequest, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.AuthController (CafeReservation.Api).
+2026-05-30 15:44:47.258 +07:00 [INF] Executed DbCommand (149ms) [Parameters=[@__email_0='?'], CommandType='"Text"', CommandTimeout='60']
+SELECT u.id, u.created_at, u.email, u.full_name, u.password_hash, u.phone, u.role
+FROM users AS u
+WHERE u.email = @__email_0
+LIMIT 1
+2026-05-30 15:44:47.919 +07:00 [INF] Executing OkObjectResult, writing value of type 'CafeReservation.Application.DTOs.AuthResponse'.
+2026-05-30 15:44:47.930 +07:00 [INF] Executed action CafeReservation.Api.Controllers.AuthController.Login (CafeReservation.Api) in 835.1749ms
+2026-05-30 15:44:47.932 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.AuthController.Login (CafeReservation.Api)'
+2026-05-30 15:44:47.935 +07:00 [INF] HTTP POST /api/auth/login responded 200 in 856.1090 ms
+2026-05-30 15:44:47.936 +07:00 [INF] POST /api/auth/login responded 200 in 857ms
+2026-05-30 15:44:47.940 +07:00 [INF] Request finished HTTP/2 POST https://localhost:52817/api/auth/login - 200 null application/json; charset=utf-8 867.5042ms
+2026-05-30 15:44:50.871 +07:00 [INF] Executed DbCommand (215ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:44:51.019 +07:00 [INF] Executed DbCommand (146ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:45:06.995 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/auth/me - null null
+2026-05-30 15:45:07.000 +07:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-05-30 15:45:07.001 +07:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-05-30 15:45:07.003 +07:00 [INF] HTTP GET /api/auth/me responded 401 in 5.3426 ms
+2026-05-30 15:45:07.004 +07:00 [INF] GET /api/auth/me responded 401 in 7ms
+2026-05-30 15:45:07.006 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/auth/me - 401 0 null 11.5608ms
+2026-05-30 15:45:38.064 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/public/restaurant-info - null null
+2026-05-30 15:45:38.071 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api)'
+2026-05-30 15:45:38.078 +07:00 [INF] Route matched with {action = "GetInfo", controller = "Info"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetInfo(System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.InfoController (CafeReservation.Api).
+2026-05-30 15:45:38.084 +07:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-05-30 15:45:38.229 +07:00 [INF] Executed DbCommand (141ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Address", r."MapUrl", r."OpeningHours", r."Phone", r."UpdatedAt"
+FROM "RestaurantInfo" AS r
+LIMIT 1
+2026-05-30 15:45:38.232 +07:00 [INF] Executing OkObjectResult, writing value of type 'CafeReservation.Application.DTOs.RestaurantInfoDto'.
+2026-05-30 15:45:38.234 +07:00 [INF] Executed action CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api) in 154.9109ms
+2026-05-30 15:45:38.241 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api)'
+2026-05-30 15:45:38.241 +07:00 [INF] HTTP GET /api/public/restaurant-info responded 200 in 170.0505 ms
+2026-05-30 15:45:38.243 +07:00 [INF] GET /api/public/restaurant-info responded 200 in 171ms
+2026-05-30 15:45:38.245 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/public/restaurant-info - 200 null application/json; charset=utf-8 180.6326ms
+2026-05-30 15:45:47.180 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/public/menu - null null
+2026-05-30 15:45:47.184 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-30 15:45:47.188 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-30 15:45:48.262 +07:00 [INF] Executed DbCommand (132ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-30 15:45:48.276 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-30 15:45:48.285 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 1095.4825ms
+2026-05-30 15:45:48.286 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-30 15:45:48.287 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 1103.8050 ms
+2026-05-30 15:45:48.289 +07:00 [INF] GET /api/public/menu responded 200 in 1105ms
+2026-05-30 15:45:48.290 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/public/menu - 200 null application/json; charset=utf-8 1110.4496ms
+2026-05-30 15:45:51.171 +07:00 [INF] Executed DbCommand (148ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:45:51.305 +07:00 [INF] Executed DbCommand (130ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:46:12.322 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/public/menu?category=drink - null null
+2026-05-30 15:46:12.336 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-30 15:46:12.337 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-30 15:46:12.507 +07:00 [INF] Executed DbCommand (158ms) [Parameters=[@__catEnum_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive" AND m."Category" = @__catEnum_0
+2026-05-30 15:46:12.510 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-30 15:46:12.511 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 172.2421ms
+2026-05-30 15:46:12.512 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-30 15:46:12.513 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 177.4772 ms
+2026-05-30 15:46:12.514 +07:00 [INF] GET /api/public/menu responded 200 in 178ms
+2026-05-30 15:46:12.516 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/public/menu?category=drink - 200 null application/json; charset=utf-8 193.7292ms
+2026-05-30 15:46:31.177 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/public/menu/248c383f-1615-4c00-ab70-487fd9cd1392 - null null
+2026-05-30 15:46:31.182 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetById (CafeReservation.Api)'
+2026-05-30 15:46:31.186 +07:00 [INF] Route matched with {action = "GetById", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetById(System.Guid, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-30 15:46:31.340 +07:00 [INF] Executed DbCommand (145ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."Id" = @__id_0 AND m."IsActive"
+LIMIT 1
+2026-05-30 15:46:31.343 +07:00 [INF] Executing OkObjectResult, writing value of type 'CafeReservation.Application.DTOs.MenuItemDto'.
+2026-05-30 15:46:31.344 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetById (CafeReservation.Api) in 156.5753ms
+2026-05-30 15:46:31.346 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetById (CafeReservation.Api)'
+2026-05-30 15:46:31.347 +07:00 [INF] HTTP GET /api/public/menu/248c383f-1615-4c00-ab70-487fd9cd1392 responded 200 in 165.5896 ms
+2026-05-30 15:46:31.350 +07:00 [INF] GET /api/public/menu/248c383f-1615-4c00-ab70-487fd9cd1392 responded 200 in 167ms
+2026-05-30 15:46:31.351 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/public/menu/248c383f-1615-4c00-ab70-487fd9cd1392 - 200 null application/json; charset=utf-8 174.967ms
+2026-05-30 15:46:42.963 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/public/seating-areas - null null
+2026-05-30 15:46:42.965 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.PublicController.GetSeatingAreas (CafeReservation.Api)'
+2026-05-30 15:46:42.977 +07:00 [INF] Route matched with {action = "GetSeatingAreas", controller = "Public"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSeatingAreas(System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.PublicController (CafeReservation.Api).
+2026-05-30 15:46:43.130 +07:00 [INF] Executed DbCommand (134ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM seating_areas AS s
+WHERE s.is_active
+ORDER BY s.area, s.table_type
+2026-05-30 15:46:43.154 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CafeReservation.Application.DTOs.SeatingAreaResponse, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-30 15:46:43.157 +07:00 [INF] Executed action CafeReservation.Api.Controllers.PublicController.GetSeatingAreas (CafeReservation.Api) in 175.6212ms
+2026-05-30 15:46:43.158 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.PublicController.GetSeatingAreas (CafeReservation.Api)'
+2026-05-30 15:46:43.160 +07:00 [INF] HTTP GET /api/public/seating-areas responded 200 in 194.3624 ms
+2026-05-30 15:46:43.161 +07:00 [INF] GET /api/public/seating-areas responded 200 in 195ms
+2026-05-30 15:46:43.162 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/public/seating-areas - 200 null application/json; charset=utf-8 199.7069ms
+2026-05-30 15:46:51.459 +07:00 [INF] Executed DbCommand (149ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:46:51.620 +07:00 [INF] Executed DbCommand (155ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:47:51.833 +07:00 [INF] Executed DbCommand (210ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:47:52.033 +07:00 [INF] Executed DbCommand (195ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:47:59.007 +07:00 [INF] Request starting HTTP/2 POST https://localhost:52817/api/reservations - application/json 328
+2026-05-30 15:47:59.029 +07:00 [INF] CORS policy execution successful.
+2026-05-30 15:47:59.030 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReservationsController.Create (CafeReservation.Api)'
+2026-05-30 15:47:59.033 +07:00 [INF] Route matched with {action = "Create", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CafeReservation.Application.DTOs.CreateReservationRequest, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReservationsController (CafeReservation.Api).
+2026-05-30 15:47:59.084 +07:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-05-30 15:47:59.085 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReservationsController.Create (CafeReservation.Api) in 50.1904ms
+2026-05-30 15:47:59.086 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReservationsController.Create (CafeReservation.Api)'
+2026-05-30 15:47:59.087 +07:00 [INF] HTTP POST /api/reservations responded 400 in 58.8641 ms
+2026-05-30 15:47:59.089 +07:00 [INF] POST /api/reservations responded 400 in 60ms
+2026-05-30 15:47:59.091 +07:00 [INF] Request finished HTTP/2 POST https://localhost:52817/api/reservations - 400 null application/json; charset=utf-8 84.0823ms
+2026-05-30 15:48:19.356 +07:00 [INF] Request starting HTTP/2 POST https://localhost:52817/api/reservations - application/json 328
+2026-05-30 15:48:19.364 +07:00 [INF] CORS policy execution successful.
+2026-05-30 15:48:19.365 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReservationsController.Create (CafeReservation.Api)'
+2026-05-30 15:48:19.365 +07:00 [INF] Route matched with {action = "Create", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CafeReservation.Application.DTOs.CreateReservationRequest, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReservationsController (CafeReservation.Api).
+2026-05-30 15:48:19.538 +07:00 [INF] Executed DbCommand (161ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM seating_areas AS s
+WHERE s.id = @__id_0
+LIMIT 1
+2026-05-30 15:48:19.704 +07:00 [INF] Executed DbCommand (160ms) [Parameters=[@__seatingAreaId_0='?' (DbType = Guid), @__date_1='?' (DbType = Date), @__start_2='?' (DbType = Time), @__end_3='?' (DbType = Time)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.seating_area_id = @__seatingAreaId_0 AND r.reservation_date = @__date_1 AND r.status = 0 AND @__start_2 < r.end_time AND @__end_3 > r.start_time
+2026-05-30 15:48:19.988 +07:00 [INF] Executed DbCommand (154ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = Time), @p3='?' (DbType = Int32), @p4='?', @p5='?', @p6='?', @p7='?', @p8='?' (DbType = Date), @p9='?' (DbType = Guid), @p10='?', @p11='?' (DbType = Time), @p12='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+INSERT INTO reservations (id, created_at, end_time, guest_count, guest_email, guest_name, guest_phone, reservation_code, reservation_date, seating_area_id, special_note, start_time, status)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+2026-05-30 15:48:20.013 +07:00 [INF] Reservation YAKI-3601 created for guest Trịnh Văn D
+2026-05-30 15:48:20.465 +07:00 [INF] Executing ObjectResult, writing value of type 'CafeReservation.Application.DTOs.ReservationResponse'.
+2026-05-30 15:48:20.472 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReservationsController.Create (CafeReservation.Api) in 1105.0152ms
+2026-05-30 15:48:20.483 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReservationsController.Create (CafeReservation.Api)'
+2026-05-30 15:48:20.484 +07:00 [INF] HTTP POST /api/reservations responded 201 in 1119.9569 ms
+2026-05-30 15:48:20.486 +07:00 [INF] POST /api/reservations responded 201 in 1122ms
+2026-05-30 15:48:20.488 +07:00 [INF] Request finished HTTP/2 POST https://localhost:52817/api/reservations - 201 null application/json; charset=utf-8 1132.0728ms
+2026-05-30 15:48:23.678 +07:00 [ERR] Failed to send email to trinhvand@gmail.com
+MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2bf23b00e7fsm44147855ad.38 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2bf23b00e7fsm44147855ad.38 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at CafeReservation.Infrastructure.Services.EmailService.SendAsync(String toEmail, String toName, String subject, String htmlBody, CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Infrastructure\Services\EmailService.cs:line 109
+2026-05-30 15:48:48.332 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/reservations/3fa85f64-5717-4562-b3fc-2c963f66afa6 - null null
+2026-05-30 15:48:48.343 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReservationsController.GetById (CafeReservation.Api)'
+2026-05-30 15:48:48.360 +07:00 [INF] Route matched with {action = "GetById", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetById(System.Guid, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReservationsController (CafeReservation.Api).
+2026-05-30 15:48:48.502 +07:00 [INF] Executed DbCommand (130ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM reservations AS r
+INNER JOIN seating_areas AS s ON r.seating_area_id = s.id
+WHERE r.id = @__id_0
+LIMIT 1
+2026-05-30 15:48:48.591 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReservationsController.GetById (CafeReservation.Api) in 229.4817ms
+2026-05-30 15:48:48.594 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReservationsController.GetById (CafeReservation.Api)'
+2026-05-30 15:48:48.597 +07:00 [ERR] HTTP GET /api/reservations/3fa85f64-5717-4562-b3fc-2c963f66afa6 responded 500 in 253.1783 ms
+CafeReservation.Domain.Exceptions.NotFoundException: Entity 'Reservation' with key '3fa85f64-5717-4562-b3fc-2c963f66afa6' was not found.
+   at CafeReservation.Application.Services.ReservationService.GetByIdAsync(Guid reservationId, CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Application\Services\ReservationService.cs:line 110
+   at CafeReservation.Api.Controllers.ReservationsController.GetById(Guid id, CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Api\Controllers\ReservationsController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-05-30 15:48:48.702 +07:00 [INF] GET /api/reservations/3fa85f64-5717-4562-b3fc-2c963f66afa6 responded 200 in 359ms
+2026-05-30 15:48:48.775 +07:00 [WRN] Handled domain exception: Entity 'Reservation' with key '3fa85f64-5717-4562-b3fc-2c963f66afa6' was not found.
+CafeReservation.Domain.Exceptions.NotFoundException: Entity 'Reservation' with key '3fa85f64-5717-4562-b3fc-2c963f66afa6' was not found.
+   at CafeReservation.Application.Services.ReservationService.GetByIdAsync(Guid reservationId, CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Application\Services\ReservationService.cs:line 110
+   at CafeReservation.Api.Controllers.ReservationsController.GetById(Guid id, CancellationToken ct) in D:\PRN222\CafeReservation\src\CafeReservation.Api\Controllers\ReservationsController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at CafeReservation.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in D:\PRN222\CafeReservation\src\CafeReservation.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at CafeReservation.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in D:\PRN222\CafeReservation\src\CafeReservation.Api\Middleware\ExceptionMiddleware.cs:line 22
+2026-05-30 15:48:48.783 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/reservations/3fa85f64-5717-4562-b3fc-2c963f66afa6 - 404 null application/json 451.5172ms
+2026-05-30 15:48:52.193 +07:00 [INF] Executed DbCommand (160ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-30 15:48:52.349 +07:00 [INF] Executed DbCommand (152ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-30 15:49:00.299 +07:00 [INF] Request starting HTTP/2 GET https://localhost:52817/api/reservations/646e65b0-69ce-4627-9013-114a88e122b7 - null null
+2026-05-30 15:49:00.301 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReservationsController.GetById (CafeReservation.Api)'
+2026-05-30 15:49:00.301 +07:00 [INF] Route matched with {action = "GetById", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetById(System.Guid, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReservationsController (CafeReservation.Api).
+2026-05-30 15:49:00.455 +07:00 [INF] Executed DbCommand (151ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM reservations AS r
+INNER JOIN seating_areas AS s ON r.seating_area_id = s.id
+WHERE r.id = @__id_0
+LIMIT 1
+2026-05-30 15:49:00.458 +07:00 [INF] Executing OkObjectResult, writing value of type 'CafeReservation.Application.DTOs.ReservationResponse'.
+2026-05-30 15:49:00.459 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReservationsController.GetById (CafeReservation.Api) in 155.7557ms
+2026-05-30 15:49:00.460 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReservationsController.GetById (CafeReservation.Api)'
+2026-05-30 15:49:00.461 +07:00 [INF] HTTP GET /api/reservations/646e65b0-69ce-4627-9013-114a88e122b7 responded 200 in 160.4573 ms
+2026-05-30 15:49:00.462 +07:00 [INF] GET /api/reservations/646e65b0-69ce-4627-9013-114a88e122b7 responded 200 in 161ms
+2026-05-30 15:49:00.463 +07:00 [INF] Request finished HTTP/2 GET https://localhost:52817/api/reservations/646e65b0-69ce-4627-9013-114a88e122b7 - 200 null application/json; charset=utf-8 164.8281ms
+2026-05-30 15:49:20.521 +07:00 [INF] Request starting HTTP/2 POST https://localhost:52817/api/reservations/646e65b0-69ce-4627-9013-114a88e122b7/reschedule - application/json 56
+2026-05-30 15:49:20.529 +07:00 [INF] CORS policy execution successful.
+2026-05-30 15:49:20.530 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReservationsController.Reschedule (CafeReservation.Api)'
+2026-05-30 15:49:20.534 +07:00 [INF] Route matched with {action = "Reschedule", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Reschedule(System.Guid, CafeReservation.Application.DTOs.RescheduleReservationRequest, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReservationsController (CafeReservation.Api).
