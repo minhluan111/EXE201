@@ -161,6 +161,14 @@ export default function HomePage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
 
+  // Shoji door state
+  const [shojiOpen, setShojiOpen] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShojiOpen(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+
   // States for Quick Booking Form
   const [quickGuests, setQuickGuests] = useState(2);
   const [quickDate, setQuickDate]     = useState("Hôm nay");
@@ -196,6 +204,27 @@ export default function HomePage() {
 
   return (
     <div style={{ background: "var(--bg)", overflowX: "hidden" }}>
+      {/* Shoji screen door entrance reveal */}
+      <AnimatePresence>
+        {!shojiOpen && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none", display: "flex" }}>
+            <motion.div
+              initial={{ x: 0 }}
+              animate={{ x: "-100%" }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.4, ease: [0.645, 0.045, 0.355, 1] }}
+              className="shoji-door shoji-door-left"
+            />
+            <motion.div
+              initial={{ x: 0 }}
+              animate={{ x: "100%" }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.4, ease: [0.645, 0.045, 0.355, 1] }}
+              className="shoji-door shoji-door-right"
+            />
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════
           HERO SECTION
@@ -222,6 +251,27 @@ export default function HomePage() {
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)" }} />
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)" }} />
 
+        {/* Falling Leaves Background Layer */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 1 }}>
+          {[...Array(8)].map((_, i) => {
+            const delay = i * 2.8;
+            const left = 5 + (i * 12);
+            const scale = 0.5 + (i % 3) * 0.25;
+            return (
+              <div
+                key={i}
+                className="falling-leaf"
+                style={{
+                  left: `${left}%`,
+                  animationDelay: `${delay}s`,
+                  transform: `scale(${scale})`,
+                  animationDuration: `${14 + (i % 4) * 4}s`
+                }}
+              />
+            );
+          })}
+        </div>
+
         {/* Content */}
         <div
           style={{
@@ -247,7 +297,10 @@ export default function HomePage() {
             </motion.div>
 
             {/* Headline */}
-            <motion.h1 variants={fadeUp} style={{
+            <motion.h1 
+              className="sumie-fade"
+              variants={fadeUp} 
+              style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 700,
               color: "#fff", margin: "0 0 16px",
@@ -490,7 +543,7 @@ export default function HomePage() {
             <span style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
               Không gian quán
             </span>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
+            <h2 className="sumie-fade" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
               Zen trong từng góc nhỏ
             </h2>
           </motion.div>

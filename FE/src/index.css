@@ -345,3 +345,145 @@ html.dark .seating-map {
   gap: 2px;
   color: #F59E0B;
 }
+
+/* ─────────────────────────────────────────────
+   JAPANESE & ZEN ANIMATIONS SYSTEM
+   ───────────────────────────────────────────── */
+
+/* 1. Falling Matcha Tea Leaves */
+.falling-leaf {
+  position: absolute;
+  top: -60px;
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238DAF5A' opacity='0.35'%3E%3Cpath d='M17,8C8,10 5.9,16.1 5.1,18C6.9,17.2 13,15.1 15,6.2C16.2,7.3 17,8 17,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0;
+  animation: leaf-fall linear infinite;
+  z-index: 1;
+}
+
+@keyframes leaf-fall {
+  0% {
+    top: -50px;
+    transform: rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.65;
+  }
+  90% {
+    opacity: 0.65;
+  }
+  100% {
+    top: 105vh;
+    transform: rotate(360deg) translateX(100px);
+    opacity: 0;
+  }
+}
+
+/* 2. Sumi-e Ink Bleed Text Reveal */
+.sumie-fade {
+  animation: sumie-bleed 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes sumie-bleed {
+  0% {
+    filter: blur(12px) contrast(3);
+    letter-spacing: 0.15em;
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  50% {
+    filter: blur(3px) contrast(1.5);
+    opacity: 0.75;
+  }
+  100% {
+    filter: blur(0) contrast(1);
+    letter-spacing: normal;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 3. Zen Concentric Ripple (Karesansui concentric wave) */
+.zen-ripple {
+  position: relative;
+}
+
+.zen-ripple::before, .zen-ripple::after {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  border: 1px dashed rgba(107, 143, 62, 0.22);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: zen-wave 4s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.zen-ripple::after {
+  animation-delay: 2s;
+  inset: -25px;
+  border-style: solid;
+}
+
+@keyframes zen-wave {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* 4. Japanese Shoji Sliding Screen Doors */
+.shoji-door {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  height: 100vh;
+  background-color: var(--bg); /* Matches site background, e.g. off-white */
+  background-image: 
+    /* Horizontal wood slats */
+    linear-gradient(to bottom, transparent 97%, rgba(58, 47, 46, 0.2) 97%, rgba(58, 47, 46, 0.25) 100%),
+    /* Vertical wood slats */
+    linear-gradient(to right, transparent 97%, rgba(58, 47, 46, 0.2) 97%, rgba(58, 47, 46, 0.25) 100%);
+  background-size: 90px 150px; /* Standard shoji slide dimension */
+  box-shadow: inset 0 0 100px rgba(107, 143, 62, 0.04);
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.shoji-door::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+.shoji-door-left {
+  left: 0;
+  border-right: 8px solid #3A2F2E; /* Wood frame accent */
+}
+
+.shoji-door-right {
+  right: 0;
+  border-left: 8px solid #3A2F2E; /* Wood frame accent */
+}
