@@ -59,7 +59,7 @@ export default function LoginPage() {
 
   const validate = () => {
     const e = {};
-    if (!login_val.trim()) e.login = "Vui lòng nhập email hoặc số điện thoại.";
+    if (!login_val.trim()) e.login = "Vui lòng nhập email.";
     if (!password)         e.password = "Vui lòng nhập mật khẩu.";
     return e;
   };
@@ -128,7 +128,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} noValidate>
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 8 }}>
-                Email / Số điện thoại
+                Email
               </label>
               <InputField
                 icon={Mail}

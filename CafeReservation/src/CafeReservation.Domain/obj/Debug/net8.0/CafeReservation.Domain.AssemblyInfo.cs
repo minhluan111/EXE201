@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CafeReservation.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ae0cc7a795d3f3a94024443e38c5e94712e00a1")]
 [assembly: System.Reflection.AssemblyProductAttribute("CafeReservation.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CafeReservation.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

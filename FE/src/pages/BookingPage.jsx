@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, Users, MapPin, ChevronRight, CheckCircle } from "lucide-react";
-import { bookingCheckStatus, tablesList } from "../services/mockApi.js";
+import { bookingCheckStatus, tablesList } from "../services/apiClient.js";
 import { useBookingContext } from "../context/useBookingContext.js";
 import TableMap from "../components/booking/TableMap.jsx";
 
@@ -61,6 +61,7 @@ function StepBar({ step }) {
 // ═══════════════════════════════════════════════════════════════════════════
 export default function BookingPage() {
   const nav = useNavigate();
+  const location = useLocation();
   const { selected, setSelected } = useBookingContext();
 
   const todayStr = useMemo(() => {
@@ -70,9 +71,9 @@ export default function BookingPage() {
   }, []);
 
   const [step, setStep]           = useState(0); // 0 = date/time, 1 = seat
-  const [bookingDate, setBookingDate] = useState(todayStr);
+  const [bookingDate, setBookingDate] = useState(() => location.state?.date || todayStr);
   const [bookingTime, setBookingTime] = useState("");
-  const [numPeople, setNumPeople]     = useState(2);
+  const [numPeople, setNumPeople]     = useState(() => location.state?.guests || 2);
   const [floorTables, setFloorTables] = useState([]);
   const [loading, setLoading]         = useState(false);
   const [error, setError]             = useState("");
@@ -82,7 +83,7 @@ export default function BookingPage() {
     if (step !== 1 || !bookingDate || !bookingTime) return;
     setLoading(true);
     setSelected(null);
-    bookingCheckStatus({ booking_date: bookingDate, booking_time: bookingTime })
+    bookingCheckStatus({ booking_date: bookingDate, booking_time: bookingTime, guestCount: numPeople })
       .then((res) => { setFloorTables(res.ok ? res.data : []); })
       .finally(() => setLoading(false));
   }, [step, bookingDate, bookingTime]);

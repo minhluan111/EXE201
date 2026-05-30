@@ -24,6 +24,8 @@ public class DataSeeder
     public async Task SeedAsync(CancellationToken ct = default)
     {
         await SeedAdminAsync(ct);
+        await SeedStaffAsync(ct);
+        await SeedManagerAsync(ct);
         await SeedSeatingAreasAsync(ct);
         await SeedRestaurantInfoAsync(ct);
         await SeedMenuItemsAsync(ct);
@@ -52,6 +54,53 @@ public class DataSeeder
 
         await _db.Users.AddAsync(admin, ct);
         _logger.LogInformation("Seeded admin account: {Email}", adminEmail);
+    }
+
+    // Staff account
+
+    private async Task SeedStaffAsync(CancellationToken ct)
+    {
+        const string staffEmail = "staff@yakicafe.com";
+
+        if (await _db.Users.AnyAsync(u => u.Email == staffEmail, ct))
+            return;
+
+        var staff = new User
+        {
+            Id = Guid.NewGuid(),
+            FullName = "Yaki Café Staff",
+            Email = staffEmail,
+            Phone = "0911111111",
+            PasswordHash = _hasher.Hash("Staff@123"),
+            Role = UserRole.Staff,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _db.Users.AddAsync(staff, ct);
+        _logger.LogInformation("Seeded staff account: {Email}", staffEmail);
+    }
+
+    // Manager account
+    private async Task SeedManagerAsync(CancellationToken ct)
+    {
+        const string managerEmail = "manager@yakicafe.com";
+
+        if (await _db.Users.AnyAsync(u => u.Email == managerEmail, ct))
+            return;
+
+        var manager = new User
+        {
+            Id = Guid.NewGuid(),
+            FullName = "Yaki Café Manager",
+            Email = managerEmail,
+            Phone = "0922222222",
+            PasswordHash = _hasher.Hash("Manager@123"),
+            Role = UserRole.Manager,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _db.Users.AddAsync(manager, ct);
+        _logger.LogInformation("Seeded manager account: {Email}", managerEmail);
     }
 
     // Seating areas
@@ -131,44 +180,108 @@ public class DataSeeder
     // Menu Items
     private async Task SeedMenuItemsAsync(CancellationToken ct)
     {
-        if (await _db.MenuItems.AnyAsync(ct))
-            return;
+        // Clear old mock menu items if they exist
+        var existing = await _db.MenuItems.ToListAsync(ct);
+        if (existing.Any(m => m.Name == "Cà phê sữa đá"))
+        {
+            _db.MenuItems.RemoveRange(existing);
+            await _db.SaveChangesAsync(ct);
+            existing = await _db.MenuItems.ToListAsync(ct);
+        }
 
         var menuItems = new List<MenuItem>
         {
             new()
             {
-                Id = Guid.NewGuid(),
-                Name = "Cà phê sữa đá",
+                Name = "Matcha Matsu (Premium Ceremonial Matcha)",
                 Category = MenuCategory.Drink,
-                Price = 35000,
-                Description = "Cà phê pha phin truyền thống với sữa đặc.",
+                ImageUrl = "https://imgs.search.brave.com/CBa6zUwbdQumxGeJeb64XvCRYy8S1px8NNVGlGB7-y4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tYXRj/aGFtYXRjaGEubmV0/L2Nkbi9zaG9wL2Zp/bGVzL1VKSU1BVENI/QS5wbmc_dj0xNzc1/MTA3OTkwJndpZHRo/PTE0NDU",
+                Price = 95000,
+                Description = "Bột Matcha loại lễ hội cao cấp nhất từ Uji, Kyoto. Hương thơm thanh khiết, hậu vị ngọt sâu dịu dàng.",
+                Tag = MenuTag.New,
+                SalesCount = 120
+            },
+            new()
+            {
+                Name = "Matcha Oat Latte",
+                Category = MenuCategory.Drink,
+                ImageUrl = "https://imgs.search.brave.com/UHX8B3XPAfYOqBcEspKwzMVBB7jeAF0rAAFDy9Q_hhI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93aG9s/ZWZvb2Rzb3VsZm9v/ZGtpdGNoZW4uY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIy/LzA1L29hdC1taWxr/LW1hdGNoYS1sYXR0/ZS5qcGc",
+                Price = 75000,
+                Description = "Matcha Uji hảo hạng kết hợp cùng sữa yến mạch béo bùi thanh nhẹ. Thức uống hoàn hảo cho ngày tĩnh lặng.",
                 Tag = MenuTag.BestSeller,
-                SalesCount = 150
+                SalesCount = 280
             },
             new()
             {
-                Id = Guid.NewGuid(),
-                Name = "Bạc xỉu",
+                Name = "Hojicha Roasted Latte",
                 Category = MenuCategory.Drink,
-                Price = 40000,
-                Description = "Nhiều sữa hơn cà phê, thơm béo.",
+                ImageUrl = "https://imgs.search.brave.com/BsvaTCKK6zQ17LiQi-nng3ZGRwl4kk78Rw5Q29ZsD4o/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9mbHlt/ZXRvdGhldmVnYW5i/dWZmZXQuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDIzLzAx/L0hvamljaGEtTGF0/dGUtdmVnYW4tMS04/MTl4MTAyNC5qcGc",
+                Price = 70000,
+                Description = "Trà xanh rang Hojicha thơm nồng hương khói tự nhiên kết hợp sữa tươi, mang lại cảm giác ấm áp dễ chịu.",
                 Tag = MenuTag.Trending,
-                SalesCount = 85
+                SalesCount = 160
             },
             new()
             {
-                Id = Guid.NewGuid(),
-                Name = "Bánh sừng bò (Croissant)",
-                Category = MenuCategory.Snack,
-                Price = 45000,
-                Description = "Bánh sừng bò nướng bơ Pháp thơm lừng.",
+                Name = "Mizu Shingen Mochi (Mochi Giọt Nước)",
+                Category = MenuCategory.Dessert,
+                ImageUrl = "https://imgs.search.brave.com/8FFP7626euFBp8qmJTS4Ogj8p2MjKWf7SdnGEvdWWVY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/cGV0cm90aW1lcy52/bi9zdG9yZXMvbmV3/c19kYXRhaW1hZ2Vz/L2xldGh1dHJhbmcv/MDQyMDIxLzAyLzE5/L2JhbmgtbW9jaGkt/Z2lvdC1udW9jLXN1/LXNhbmctdGFvLWFu/LXRyb25nLXZhbi1o/b2EtYW0tdGh1Yy1u/aGF0LWJhbl80Lmpw/Zz9ydD0yMDIxMDQw/MjE5NTk0Mw",
+                Price = 55000,
+                Description = "Mochi trong suốt như giọt nước sương mai, ăn kèm với siro đường đen Okinawa và bột đậu nành Kinako thơm bùi.",
                 Tag = MenuTag.Normal,
-                SalesCount = 40
+                SalesCount = 90
+            },
+            new()
+            {
+                Name = "Warabi Mochi Matcha",
+                Category = MenuCategory.Dessert,
+                ImageUrl = "https://imgs.search.brave.com/uDAh2tcJm3ZObZMcthTRFrqSfD9ALAz0M7QbGCp8DVA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9qYXBh/bmhhdWwuY29tL2Nk/bi9zaG9wL2ZpbGVz/LzQ1ODA1ODA3NjI2/NTAxX2xhcmdlLmpw/Zz92PTE3NDg1MDY3/NjQ",
+                Price = 65000,
+                Description = "Mochi dẻo mịn làm từ tinh bột củ sen, phủ ngập lớp bột Matcha xanh ngát và siro mật ong đen ngọt thanh.",
+                Tag = MenuTag.BestSeller,
+                SalesCount = 210
+            },
+            new()
+            {
+                Name = "Zen Uji Parfait",
+                Category = MenuCategory.Dessert,
+                ImageUrl = "https://imgs.search.brave.com/-mdftk1wdDfIoVeY_lX63gN5L7yV3dPnlk3PG5WyGFU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zb3Jh/bmV3czI0LmNvbS93/cC1jb250ZW50L3Vw/bG9hZHMvc2l0ZXMv/My8yMDIwLzA5L01h/dGNoYS1pY2UtY3Jl/YW0taXRvaGt5dWVt/b24tSmFwYW4tcGFy/ZmFpdC1KYXBhbmVz/ZS1zYWt1cmEtZnJ1/aXQtc3dlZXRzLXN1/bW1lci1LeW90by0z/NS5qcGc_dz02NDA",
+                Price = 85000,
+                Description = "Parfait nhiều tầng xa hoa với kem matcha Uji, thạch Kanten, đậu đỏ ngọt và bánh gạo Shiratama dẻo dai.",
+                Tag = MenuTag.Trending,
+                SalesCount = 145
+            },
+            new()
+            {
+                Name = "Matcha Tiramisu",
+                Category = MenuCategory.Dessert,
+                ImageUrl = "https://imgs.search.brave.com/dBfX0iXqINMivqIhzfDXsHdHU1gkP_iJB5ZACPcxF20/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/anVzdG9uZWNvb2ti/b29rLmNvbS9zcGFp/L3FfZ2xvc3N5K3Jl/dF9pbWcrdG9fYXV0/by93d3cuanVzdG9u/ZWNvb2tib29rLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAx/OS8xMS9NYXRjaGEt/VGlyYW1pc3UtNjM3/OS1JLTMuanBn",
+                Price = 75000,
+                Description = "Bánh Tiramisu Ý được biến tấu đầy tinh tế với các lớp kem phô mai Mascarpone mềm mịn và cốt bánh đẫm hương Matcha Uji.",
+                Tag = MenuTag.Normal,
+                SalesCount = 95
             }
         };
 
-        await _db.MenuItems.AddRangeAsync(menuItems, ct);
-        _logger.LogInformation("Seeded {Count} menu items", menuItems.Count);
+        foreach (var item in menuItems)
+        {
+            var dbItem = existing.FirstOrDefault(m => m.Name == item.Name);
+            if (dbItem != null)
+            {
+                dbItem.ImageUrl = item.ImageUrl;
+                dbItem.Price = item.Price;
+                dbItem.Description = item.Description;
+                dbItem.Tag = item.Tag;
+                dbItem.Category = item.Category;
+                _db.MenuItems.Update(dbItem);
+            }
+            else
+            {
+                item.Id = Guid.NewGuid();
+                await _db.MenuItems.AddAsync(item, ct);
+            }
+        }
+        await _db.SaveChangesAsync(ct);
+        _logger.LogInformation("Synced {Count} menu items in database", menuItems.Count);
     }
 }

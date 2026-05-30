@@ -51,6 +51,12 @@ namespace CafeReservation.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<string>("Reply")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReplyAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -170,6 +176,11 @@ namespace CafeReservation.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("status");
+
+                    b.Property<string>("TableName")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("table_name");
 
                     b.HasKey("Id");
 

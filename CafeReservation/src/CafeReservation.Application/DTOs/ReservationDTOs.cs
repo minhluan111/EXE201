@@ -10,10 +10,10 @@ public class CreateReservationRequest
     public int GuestCount { get; set; }
     public string? SpecialNote { get; set; }
 
-    // Guest info (required when booking without an account)
     public string? GuestName { get; set; }
     public string? GuestEmail { get; set; }
     public string? GuestPhone { get; set; }
+    public string? TableName { get; set; }
 }
 
 public class RescheduleReservationRequest
@@ -37,6 +37,7 @@ public class ReservationResponse
     public TimeOnly EndTime { get; set; }
     public int GuestCount { get; set; }
     public string Status { get; set; } = string.Empty;
+    public string? TableName { get; set; }
     public string? SpecialNote { get; set; }
     public DateTime CreatedAt { get; set; }
 }

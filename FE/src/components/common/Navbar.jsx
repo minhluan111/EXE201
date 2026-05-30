@@ -216,7 +216,9 @@ export default function Navbar() {
                       {[
                         { icon: User, label: "Hồ sơ", path: "/profile" },
                         { icon: Leaf, label: "Lịch sử đặt bàn", path: "/booking/history" },
-                        ...(user.role === "admin" ? [{ icon: LayoutDashboard, label: "Admin", path: "/admin" }] : []),
+                        ...(user.role === "admin" ? [{ icon: LayoutDashboard, label: "Quản trị", path: "/admin/accounts" }] : []),
+                        ...(user.role === "manager" ? [{ icon: LayoutDashboard, label: "Quản lý", path: "/admin" }] : []),
+                        ...(user.role === "staff" ? [{ icon: LayoutDashboard, label: "Nhân viên", path: "/admin/bookings" }] : []),
                       ].map((item) => (
                         <RouterLink
                           key={item.path}
@@ -362,6 +364,24 @@ export default function Navbar() {
                     <RouterLink to="/profile" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>
                       <User size={16} style={{ color: "var(--matcha)" }} /> Hồ sơ
                     </RouterLink>
+                    <RouterLink to="/booking/history" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>
+                      <Leaf size={16} style={{ color: "var(--matcha)" }} /> Lịch sử đặt bàn
+                    </RouterLink>
+                    {user.role === "admin" && (
+                      <RouterLink to="/admin/accounts" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>
+                        <LayoutDashboard size={16} style={{ color: "var(--matcha)" }} /> Quản trị
+                      </RouterLink>
+                    )}
+                    {user.role === "manager" && (
+                      <RouterLink to="/admin" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>
+                        <LayoutDashboard size={16} style={{ color: "var(--matcha)" }} /> Quản lý
+                      </RouterLink>
+                    )}
+                    {user.role === "staff" && (
+                      <RouterLink to="/admin/bookings" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>
+                        <LayoutDashboard size={16} style={{ color: "var(--matcha)" }} /> Nhân viên
+                      </RouterLink>
+                    )}
                     <button onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", border: "none", background: "transparent", color: "#EF4444", fontSize: 14, cursor: "pointer" }}>
                       <LogOut size={16} /> Đăng xuất
                     </button>

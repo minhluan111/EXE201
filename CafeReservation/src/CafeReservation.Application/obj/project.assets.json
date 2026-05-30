@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net8.0": {
       "FluentValidation/11.9.2": {
@@ -376,23 +376,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\thien\\.nuget\\packages\\": {},
+    "C:\\Users\\luanq\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\PRN222\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
+      "projectUniqueName": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
       "projectName": "CafeReservation.Application",
-      "projectPath": "D:\\PRN222\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
-      "packagesPath": "C:\\Users\\thien\\.nuget\\packages\\",
-      "outputPath": "D:\\PRN222\\CafeReservation\\src\\CafeReservation.Application\\obj\\",
+      "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
+      "packagesPath": "C:\\Users\\luanq\\.nuget\\packages\\",
+      "outputPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\thien\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\luanq\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -405,10 +405,11 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\PRN222\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj": {
-              "projectPath": "D:\\PRN222\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj"
+            "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj": {
+              "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj"
             }
           }
         }
@@ -423,10 +424,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "FluentValidation": {
@@ -465,12 +467,26 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

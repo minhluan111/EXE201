@@ -78,7 +78,13 @@ export default function RegisterPage() {
     if (!form.full_name.trim()) e.full_name = "Vui lòng nhập họ tên.";
     if (!form.email.includes("@")) e.email = "Email không hợp lệ.";
     if (!/^0\d{9}$/.test(form.phone)) e.phone = "Số điện thoại không hợp lệ (VD: 0909123456).";
-    if (form.password.length < 6) e.password = "Mật khẩu tối thiểu 6 ký tự.";
+    if (form.password.length < 8) {
+      e.password = "Mật khẩu phải chứa ít nhất 8 ký tự.";
+    } else if (!/[A-Z]/.test(form.password)) {
+      e.password = "Mật khẩu phải chứa ít nhất một chữ cái viết hoa (A-Z).";
+    } else if (!/[0-9]/.test(form.password)) {
+      e.password = "Mật khẩu phải chứa ít nhất một chữ số (0-9).";
+    }
     if (form.password !== form.confirm) e.confirm = "Mật khẩu không khớp.";
     return e;
   };

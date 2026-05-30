@@ -29,7 +29,13 @@ export function AuthProvider({ children }) {
       setToken(session.token);
       const res = await authMe(session.token);
       if (cancelled) return;
-      if (res.ok) setUser(res.user);
+      if (res.ok) {
+        setUser(res.user);
+      } else {
+        localStorage.removeItem("vizza.session");
+        setToken(null);
+        setUser(null);
+      }
       setLoading(false);
     };
 

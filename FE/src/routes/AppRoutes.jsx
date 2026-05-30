@@ -16,6 +16,7 @@ import AdminManageTablesPage from "../pages/admin/ManageTablesPage.jsx";
 import AdminManageBookingsPage from "../pages/admin/ManageBookingsPage.jsx";
 import AdminManageReviewsPage from "../pages/admin/ManageReviewsPage.jsx";
 import AdminManageFeedbacksPage from "../pages/admin/ManageFeedbacksPage.jsx";
+import AdminManageAccountsPage from "../pages/admin/ManageAccountsPage.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute.jsx";
 
 export default function AppRoutes() {
@@ -26,6 +27,8 @@ export default function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/menu" element={<MenuPage />} />
       <Route path="/menu/:id" element={<MenuDetailPage />} />
+      
+      {/* Standard Authenticated User Routes */}
       <Route
         path="/booking"
         element={
@@ -60,18 +63,37 @@ export default function AppRoutes() {
         }
       />
 
+      {/* Staff & Manager Shared Routes */}
+      <Route
+        path="/admin/bookings"
+        element={
+          <ProtectedRoute roleRequired="staff_or_manager">
+            <AdminManageBookingsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Manager Only Routes */}
       <Route
         path="/admin"
         element={
-          <ProtectedRoute adminOnly>
+          <ProtectedRoute roleRequired="manager">
             <AdminDashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/feedbacks"
+        element={
+          <ProtectedRoute roleRequired="manager">
+            <AdminManageFeedbacksPage />
           </ProtectedRoute>
         }
       />
       <Route
         path="/admin/menus"
         element={
-          <ProtectedRoute adminOnly>
+          <ProtectedRoute roleRequired="manager">
             <AdminManageMenuPage />
           </ProtectedRoute>
         }
@@ -79,32 +101,26 @@ export default function AppRoutes() {
       <Route
         path="/admin/tables"
         element={
-          <ProtectedRoute adminOnly>
+          <ProtectedRoute roleRequired="manager">
             <AdminManageTablesPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/bookings"
-        element={
-          <ProtectedRoute adminOnly>
-            <AdminManageBookingsPage />
           </ProtectedRoute>
         }
       />
       <Route
         path="/admin/reviews"
         element={
-          <ProtectedRoute adminOnly>
+          <ProtectedRoute roleRequired="manager">
             <AdminManageReviewsPage />
           </ProtectedRoute>
         }
       />
+
+      {/* Admin Only Routes */}
       <Route
-        path="/admin/feedbacks"
+        path="/admin/accounts"
         element={
-          <ProtectedRoute adminOnly>
-            <AdminManageFeedbacksPage />
+          <ProtectedRoute roleRequired="admin">
+            <AdminManageAccountsPage />
           </ProtectedRoute>
         }
       />

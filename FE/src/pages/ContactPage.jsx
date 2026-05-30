@@ -3,17 +3,15 @@ import { motion } from "framer-motion";
 import {
   MapPin, Phone, Mail, Clock, Send, MessageSquare, AlertCircle
 } from "lucide-react";
-import { restaurantInfoGet, feedbackCreate } from "../services/mockApi.js";
+import { restaurantInfoGet, feedbackCreate } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 
 export default function ContactPage() {
   const { token } = useAuth();
   const [info, setInfo] = useState(null);
 
-  const [title, setTitle] = useState("Góp ý chất lượng");
-  const [content, setContent] = useState(
-    "Quán phục vụ tốt, mong có thêm combo giảm giá.",
-  );
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

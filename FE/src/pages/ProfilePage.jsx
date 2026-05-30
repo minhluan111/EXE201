@@ -163,6 +163,10 @@ export default function ProfilePage() {
                     >
                       {info.role === "admin"
                         ? " Quản trị viên"
+                        : info.role === "manager"
+                        ? " Quản lý"
+                        : info.role === "staff"
+                        ? " Nhân viên"
                         : " Khách hàng"}
                     </Typography>
                   </Box>

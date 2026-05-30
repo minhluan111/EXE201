@@ -1,0 +1,12 @@
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\bin\Debug\net8.0\CafeReservation.Domain.deps.json
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\bin\Debug\net8.0\CafeReservation.Domain.dll
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\bin\Debug\net8.0\CafeReservation.Domain.pdb
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.AssemblyInfoInputs.cache
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.AssemblyInfo.cs
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.csproj.CoreCompileInputs.cache
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.sourcelink.json
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.dll
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\refint\CafeReservation.Domain.dll
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\CafeReservation.Domain.pdb
+E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Domain\obj\Debug\net8.0\ref\CafeReservation.Domain.dll

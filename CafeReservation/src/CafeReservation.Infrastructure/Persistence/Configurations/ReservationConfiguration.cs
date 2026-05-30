@@ -47,6 +47,10 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         builder.Property(r => r.Status)
             .HasColumnName("status")
             .IsRequired();
+            
+        builder.Property(r => r.TableName)
+            .HasColumnName("table_name")
+            .HasMaxLength(50);
 
         builder.Property(r => r.SpecialNote)
             .HasColumnName("special_note")

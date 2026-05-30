@@ -82,6 +82,7 @@ public class ReservationService : IReservationService
             EndTime = endTime,
             GuestCount = request.GuestCount,
             Status = ReservationStatus.Confirmed,
+            TableName = request.TableName,
             SpecialNote = request.SpecialNote,
             CreatedAt = DateTime.UtcNow
         };
@@ -111,6 +112,12 @@ public class ReservationService : IReservationService
             ?? throw new NotFoundException(nameof(Reservation), reservationId);
 
         return MapToResponse(reservation);
+    }
+
+    public async Task<IReadOnlyList<ReservationResponse>> GetMyAsync(string guestEmail, CancellationToken ct = default)
+    {
+        var reservations = await _reservationRepository.GetByGuestEmailAsync(guestEmail.Trim().ToLowerInvariant(), ct);
+        return reservations.Select(MapToResponse).ToList();
     }
 
     public async Task CancelAsync(Guid reservationId, CancellationToken ct = default)
@@ -302,7 +309,19 @@ public class ReservationService : IReservationService
         EndTime = r.EndTime,
         GuestCount = r.GuestCount,
         Status = r.Status.ToString(),
+        TableName = r.TableName,
         SpecialNote = r.SpecialNote,
         CreatedAt = r.CreatedAt
     };
+
+    public async Task<IReadOnlyList<string>> GetOccupiedTablesAsync(DateOnly date, TimeOnly time, CancellationToken ct = default)
+    {
+        var end = time.AddMinutes(AppConstants.ReservationDurationMinutes);
+        var overlapping = await _reservationRepository.GetOverlappingReservationsAsync(date, time, end, ct);
+        
+        return overlapping
+            .Where(r => !string.IsNullOrEmpty(r.TableName))
+            .Select(r => r.TableName!)
+            .ToList();
+    }
 }

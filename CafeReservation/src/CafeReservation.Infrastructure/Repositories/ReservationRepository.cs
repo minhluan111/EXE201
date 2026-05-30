@@ -17,6 +17,14 @@ public class ReservationRepository : IReservationRepository
             .Include(r => r.SeatingArea)
             .FirstOrDefaultAsync(r => r.Id == id, ct);
 
+    public async Task<IReadOnlyList<Reservation>> GetByGuestEmailAsync(string guestEmail, CancellationToken ct = default) =>
+        await _db.Reservations
+            .Include(r => r.SeatingArea)
+            .Where(r => r.GuestEmail == guestEmail)
+            .OrderByDescending(r => r.ReservationDate)
+            .ThenByDescending(r => r.StartTime)
+            .ToListAsync(ct);
+
     public async Task<IReadOnlyList<Reservation>> GetAllAsync(CancellationToken ct = default) =>
         await _db.Reservations
             .Include(r => r.SeatingArea)
@@ -82,6 +90,21 @@ public class ReservationRepository : IReservationRepository
             query = query.Where(r => r.Id != excludeId.Value);
 
         return await query.CountAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Reservation>> GetOverlappingReservationsAsync(
+        DateOnly date,
+        TimeOnly start,
+        TimeOnly end,
+        CancellationToken ct = default)
+    {
+        return await _db.Reservations
+            .Where(r =>
+                r.ReservationDate == date &&
+                r.Status == ReservationStatus.Confirmed &&
+                start < r.EndTime &&
+                end > r.StartTime)
+            .ToListAsync(ct);
     }
 
     public Task<int> CountByStatusAsync(ReservationStatus status, CancellationToken ct = default) =>

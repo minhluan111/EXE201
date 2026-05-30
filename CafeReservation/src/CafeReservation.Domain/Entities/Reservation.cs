@@ -20,6 +20,7 @@ public class Reservation
 
     public int GuestCount { get; set; }
     public ReservationStatus Status { get; set; } = ReservationStatus.Confirmed;
+    public string? TableName { get; set; }
     public string? SpecialNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

@@ -42,4 +42,15 @@ public class PublicController : ControllerBase
         var result  = await _reservationService.GetAvailabilityAsync(request, ct);
         return Ok(result);
     }
+
+    [HttpGet("occupied-tables")]
+    [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOccupiedTables(
+        [FromQuery] DateOnly date,
+        [FromQuery] TimeOnly time,
+        CancellationToken ct)
+    {
+        var result = await _reservationService.GetOccupiedTablesAsync(date, time, ct);
+        return Ok(result);
+    }
 }

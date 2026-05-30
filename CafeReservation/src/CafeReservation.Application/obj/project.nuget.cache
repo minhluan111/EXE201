@@ -1,17 +1,20 @@
 {
   "version": 2,
-  "dgSpecHash": "PZFL1eaxOQY=",
+  "dgSpecHash": "zZPW+X1iZA0=",
   "success": true,
-  "projectFilePath": "D:\\PRN222\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
+  "projectFilePath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\thien\\.nuget\\packages\\fluentvalidation\\11.9.2\\fluentvalidation.11.9.2.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.9.2\\fluentvalidation.dependencyinjectionextensions.11.9.2.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\mapster\\10.0.0\\mapster.10.0.0.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\mapster.core\\10.0.0\\mapster.core.10.0.0.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\mapster.dependencyinjection\\10.0.0\\mapster.dependencyinjection.10.0.0.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.0\\microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
-    "C:\\Users\\thien\\.nuget\\packages\\system.diagnostics.diagnosticsource\\9.0.0\\system.diagnostics.diagnosticsource.9.0.0.nupkg.sha512"
+    "C:\\Users\\luanq\\.nuget\\packages\\fluentvalidation\\11.9.2\\fluentvalidation.11.9.2.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.9.2\\fluentvalidation.dependencyinjectionextensions.11.9.2.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\mapster\\10.0.0\\mapster.10.0.0.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\mapster.core\\10.0.0\\mapster.core.10.0.0.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\mapster.dependencyinjection\\10.0.0\\mapster.dependencyinjection.10.0.0.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.0\\microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\system.diagnostics.diagnosticsource\\9.0.0\\system.diagnostics.diagnosticsource.9.0.0.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.27\\microsoft.netcore.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.27\\microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.27\\microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512"
   ],
   "logs": []
 }

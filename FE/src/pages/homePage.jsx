@@ -5,7 +5,7 @@ import {
   Leaf, Clock, MapPin, Star, ArrowRight, Award,
   ChevronLeft, ChevronRight, Quote, MessageSquare, Sparkles, Users, Flame, Calendar
 } from "lucide-react";
-import { menuList } from "../services/mockApi";
+import { menuList, getTestimonials } from "../services/apiClient";
 
 // ── Stagger variants ────────────────────────────────────────────────────────
 const fadeUp = {
@@ -158,6 +158,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const [products,  setProducts]  = useState([]);
   const [loading,   setLoading]   = useState(true);
+  const [reviewsList, setReviewsList] = useState(TESTIMONIALS);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
 
@@ -180,16 +181,42 @@ export default function HomePage() {
   useEffect(() => {
     (async () => {
       const res = await menuList();
-      setProducts(res.ok ? res.data : []);
+      const loadedProducts = res.ok ? res.data : [];
+      setProducts(loadedProducts);
+      
+      const testRes = await getTestimonials();
+      if (testRes.ok && Array.isArray(testRes.data) && testRes.data.length > 0) {
+        // Filter and sort by rating desc, slice top 5
+        const topReviews = [...testRes.data]
+          .sort((a, b) => b.rating - a.rating)
+          .slice(0, 5);
+
+        const mapped = topReviews.map(r => {
+          const product = loadedProducts.find(p => String(p.id) === String(r.menu_id));
+          return {
+            name: r.user?.full_name || "Khách Hàng Trải Nghiệm",
+            role: product ? `Khách hàng đánh giá · ${product.name}` : "Thành viên Yakishime",
+            rating: r.rating || 5,
+            text: r.comment || "Tuyệt vời!",
+            foodImage: product ? product.image_url : null,
+            foodName: product ? product.name : null,
+          };
+        });
+        setReviewsList(mapped);
+      }
+      
       setLoading(false);
     })();
   }, []);
 
   // Auto-rotate testimonials
   useEffect(() => {
-    const t = setInterval(() => setActiveTestimonial((i) => (i + 1) % TESTIMONIALS.length), 4500);
+    if (reviewsList.length === 0) return;
+    const t = setInterval(() => {
+      setActiveTestimonial((i) => (i + 1) % reviewsList.length);
+    }, 4500);
     return () => clearInterval(t);
-  }, []);
+  }, [reviewsList.length]);
 
   const bestSellers = products.filter((p) => ["best_seller", "signature"].includes(p.tag)).slice(0, 3);
 
@@ -682,8 +709,35 @@ export default function HomePage() {
                   “
                 </span>
 
-                <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
-                  {[...Array(TESTIMONIALS[activeTestimonial].rating)].map((_, i) => (
+                {reviewsList[activeTestimonial]?.foodImage && (
+                  <div style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 10,
+                    marginBottom: 20,
+                    background: "rgba(255, 255, 255, 0.04)",
+                    padding: "6px 14px",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                  }}>
+                    <img 
+                      src={reviewsList[activeTestimonial].foodImage} 
+                      alt={reviewsList[activeTestimonial].foodName} 
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 6,
+                        objectFit: "cover",
+                      }}
+                    />
+                    <span style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.85)", fontWeight: 600 }}>
+                      Món ăn đánh giá: {reviewsList[activeTestimonial].foodName}
+                    </span>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24, marginTop: reviewsList[activeTestimonial]?.foodImage ? 0 : 12 }}>
+                  {[...Array(reviewsList[activeTestimonial]?.rating || 5)].map((_, i) => (
                     <Star key={i} size={18} fill="#F59E0B" color="#F59E0B" />
                   ))}
                 </div>
@@ -698,7 +752,7 @@ export default function HomePage() {
                   fontWeight: 500,
                   letterSpacing: "0.01em"
                 }}>
-                  "{TESTIMONIALS[activeTestimonial].text}"
+                  "{reviewsList[activeTestimonial]?.text || ""}"
                 </p>
 
                 <div style={{
@@ -718,15 +772,15 @@ export default function HomePage() {
                     boxShadow: "var(--shadow-sm)",
                     flexShrink: 0
                   }}>
-                    {TESTIMONIALS[activeTestimonial].name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
+                    {(reviewsList[activeTestimonial]?.name || "U").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
                   </div>
 
                   <div style={{ textAlign: "left" }}>
                     <div style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
-                      {TESTIMONIALS[activeTestimonial].name}
+                      {reviewsList[activeTestimonial]?.name || ""}
                     </div>
                     <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 2 }}>
-                      {TESTIMONIALS[activeTestimonial].role}
+                      {reviewsList[activeTestimonial]?.role || ""}
                     </div>
                   </div>
                 </div>
@@ -736,7 +790,7 @@ export default function HomePage() {
 
           {/* Dots Indicator */}
           <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 36 }}>
-            {TESTIMONIALS.map((_, i) => (
+            {reviewsList.map((_, i) => (
               <motion.button
                 key={i}
                 onClick={() => setActiveTestimonial(i)}
@@ -858,7 +912,7 @@ export default function HomePage() {
                       Số lượng khách
                     </span>
                     <div style={{ display: "flex", gap: 8 }}>
-                      {[2, 4, 6].map((num) => {
+                      {[2, 3, 4].map((num) => {
                         const isSel = quickGuests === num;
                         return (
                           <button

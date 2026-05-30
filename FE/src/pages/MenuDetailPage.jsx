@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft, Star, Send, Sparkles } from "lucide-react";
-import { menuDetail, menuReviews, reviewCreate } from "../services/mockApi.js";
+import { menuDetail, menuReviews, reviewCreate } from "../services/apiClient.js";
 import Loading from "../components/common/Loading.jsx";
 import { useAuth } from "../context/useAuthContext.js";
 
