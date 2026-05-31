@@ -2,6 +2,7 @@ import AppRoutes from "./routes/AppRoutes.jsx";
 import Navbar from "./components/common/Navbar.jsx";
 import Footer from "./components/common/Footer.jsx";
 import AppShell from "./routes/AppShell.jsx";
+import FloatingChatBubble from "./components/common/FloatingChatBubble.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import "./index.css";
 
@@ -14,6 +15,7 @@ export default function App() {
           <AppRoutes />
         </main>
         <Footer />
+        <FloatingChatBubble />
       </AppShell>
     </ThemeProvider>
   );

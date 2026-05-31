@@ -11,9 +11,9 @@ import {
   Rating,
   Divider,
 } from "@mui/material";
-import { Star, MessageSquare, Coffee, Award } from "lucide-react";
+import { Star, MessageSquare, Coffee, Award, Send, Edit2, X } from "lucide-react";
 import { useAuth } from "../../context/useAuthContext.js";
-import { adminGetReviews } from "../../services/apiClient.js";
+import { adminGetReviews, adminReplyReview } from "../../services/apiClient.js";
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
 
 const COLORS = {
@@ -29,6 +29,11 @@ export default function ManageReviewsPage() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Reply states
+  const [activeReplyId, setActiveReplyId] = useState(null);
+  const [replyText, setReplyText] = useState({});
+  const [submitting, setSubmitting] = useState(null);
+
   const fetchReviews = async () => {
     setLoading(true);
     const res = await adminGetReviews({ token });
@@ -41,6 +46,20 @@ export default function ManageReviewsPage() {
   useEffect(() => {
     fetchReviews();
   }, [token]);
+
+  const handleSendReply = async (id) => {
+    const text = replyText[id];
+    if (!text?.trim()) return;
+
+    setSubmitting(id);
+    const res = await adminReplyReview({ token, id, reply: text });
+    setSubmitting(null);
+
+    if (res.ok) {
+      setActiveReplyId(null);
+      fetchReviews();
+    }
+  };
 
   // Statistics
   const totalReviews = list.length;
@@ -72,9 +91,19 @@ export default function ManageReviewsPage() {
               <Typography sx={{ color: "var(--text-muted)" }}>Đang tải đánh giá...</Typography>
             </Box>
           ) : (
-            <Grid container spacing={4}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "1fr 2.5fr"
+                },
+                gap: 4,
+                alignItems: "start",
+              }}
+            >
               {/* Left Statistics Panel */}
-              <Grid item xs={12} md={4}>
+              <Box>
                 <Card
                   sx={{
                     borderRadius: 4,
@@ -136,10 +165,10 @@ export default function ManageReviewsPage() {
                     </Box>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Box>
 
               {/* Right Reviews List */}
-              <Grid item xs={12} md={8}>
+              <Box>
                 {list.length === 0 ? (
                   <Card sx={{ borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-card)" }}>
                     <CardContent sx={{ textAlign: "center", py: 12 }}>
@@ -151,55 +180,65 @@ export default function ManageReviewsPage() {
                     </CardContent>
                   </Card>
                 ) : (
-                  <Grid container spacing={3}>
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)"
+                      },
+                      gap: 3,
+                    }}
+                  >
                     {list.map((review, i) => (
-                      <Grid item xs={12} sm={6} md={6} lg={4} key={review.id} sx={{ display: "flex" }}>
-                        <motion.div
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: i * 0.05 }}
-                          style={{ width: "100%", display: "flex" }}
+                      <motion.div
+                        key={review.id}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: i * 0.05 }}
+                        style={{ width: "100%", display: "flex" }}
+                      >
+                        <Card
+                          sx={{
+                            borderRadius: 4,
+                            border: "1px solid var(--border)",
+                            background: "var(--bg-card)",
+                            boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                          }}
                         >
-                          <Card
-                            sx={{
-                              borderRadius: 4,
-                              border: "1px solid var(--border)",
-                              background: "var(--bg-card)",
-                              boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
-                              width: "100%",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                              <div>
-                                {/* Star and name */}
-                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "start", mb: 1.5 }}>
-                                  <Box>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "var(--text)" }}>
-                                      {review.guestName || "Thực khách"}
-                                    </Typography>
-                                    <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                                      {new Date(review.createdAt).toLocaleDateString("vi-VN", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                      })}
-                                    </Typography>
-                                  </Box>
-                                  <Rating value={review.rating} readOnly size="small" sx={{ color: "#FBBF24" }} />
+                          <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                            <div>
+                              {/* Star and name */}
+                              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "start", mb: 1.5 }}>
+                                <Box>
+                                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "var(--text)" }}>
+                                    {review.guestName || "Thực khách"}
+                                  </Typography>
+                                  <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                                    {new Date(review.createdAt).toLocaleDateString("vi-VN", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                    })}
+                                  </Typography>
                                 </Box>
+                                <Rating value={review.rating} readOnly size="small" sx={{ color: "#FBBF24" }} />
+                              </Box>
 
-                                {/* Comment */}
-                                <Typography sx={{ color: "var(--text)", mb: 2, fontSize: "15px", fontStyle: "italic", lineHeight: 1.6 }}>
-                                  "{review.comment || "Không có nhận xét bằng văn bản."}"
-                                </Typography>
-                              </div>
+                              {/* Comment */}
+                              <Typography sx={{ color: "var(--text)", mb: 2, fontSize: "15px", fontStyle: "italic", lineHeight: 1.6 }}>
+                                "{review.comment || "Không có nhận xét bằng văn bản."}"
+                              </Typography>
+                            </div>
 
+                            <div>
                               {/* MenuItem Tag */}
-                              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2, pt: 1.5, borderTop: "1px solid var(--border)" }}>
-                                {review.menuItemName ? (
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1, pb: 2 }}>
+                                {review.menuItemId ? (
                                   <Box
                                     sx={{
                                       display: "flex",
@@ -216,7 +255,7 @@ export default function ManageReviewsPage() {
                                     }}
                                   >
                                     <Coffee size={12} />
-                                    Món ăn: {review.menuItemName}
+                                    Đánh giá món ăn
                                   </Box>
                                 ) : (
                                   <Box
@@ -239,15 +278,155 @@ export default function ManageReviewsPage() {
                                   </Box>
                                 )}
                               </Box>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      </Grid>
+
+                              {/* Manager Reply Section */}
+                              <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: 1.5 }}>
+                                {review.reply ? (
+                                  activeReplyId === review.id ? (
+                                    /* Edit existing reply */
+                                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                                      <textarea
+                                        value={replyText[review.id] ?? review.reply}
+                                        onChange={(e) => setReplyText({ ...replyText, [review.id]: e.target.value })}
+                                        placeholder="Nhập câu trả lời của quán..."
+                                        rows={3}
+                                        style={{
+                                          width: "100%", padding: "10px 12px", borderRadius: "10px",
+                                          border: "1px solid var(--matcha)", outline: "none", resize: "none",
+                                          fontFamily: "Inter, sans-serif", fontSize: "13.5px", background: "var(--bg-card)", color: "var(--text)",
+                                          boxSizing: "border-box"
+                                        }}
+                                      />
+                                      <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end", mt: 1 }}>
+                                        <button
+                                          onClick={() => setActiveReplyId(null)}
+                                          style={{
+                                            background: "rgba(0,0,0,0.05)", border: "none", color: "var(--text-muted)",
+                                            fontSize: "12px", padding: "6px 12px", borderRadius: "8px", fontWeight: 600, cursor: "pointer"
+                                          }}
+                                        >
+                                          Hủy
+                                        </button>
+                                        <button
+                                          onClick={() => handleSendReply(review.id)}
+                                          disabled={submitting === review.id}
+                                          style={{
+                                            background: "var(--matcha)", border: "none", color: "#fff",
+                                            fontSize: "12px", padding: "6px 12px", borderRadius: "8px", fontWeight: 600, cursor: "pointer"
+                                          }}
+                                        >
+                                          {submitting === review.id ? "Đang gửi..." : "Cập nhật"}
+                                        </button>
+                                      </Box>
+                                    </Box>
+                                  ) : (
+                                    /* Display existing reply */
+                                    <Box sx={{
+                                      background: "rgba(120, 139, 69, 0.05)",
+                                      borderLeft: "3px solid var(--matcha)",
+                                      borderRadius: "6px",
+                                      p: 2,
+                                      position: "relative"
+                                    }}>
+                                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.5 }}>
+                                        <Typography sx={{ fontSize: "11px", fontWeight: 700, color: "var(--matcha)", textTransform: "uppercase" }}>
+                                          Phản hồi từ Quán 🍵
+                                        </Typography>
+                                        <button
+                                          onClick={() => {
+                                            setActiveReplyId(review.id);
+                                            setReplyText({ ...replyText, [review.id]: review.reply });
+                                          }}
+                                          style={{
+                                            background: "transparent", border: "none", cursor: "pointer",
+                                            fontSize: "11px", fontWeight: 600, color: "var(--text-light)", display: "flex", alignItems: "center", gap: 3
+                                          }}
+                                        >
+                                          <Edit2 size={11} /> Sửa
+                                        </button>
+                                      </Box>
+                                      <Typography sx={{ fontSize: "13.5px", color: "var(--text-muted)", lineHeight: 1.5 }}>
+                                        {review.reply}
+                                      </Typography>
+                                    </Box>
+                                  )
+                                ) : activeReplyId === review.id ? (
+                                  /* Write new reply */
+                                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                                    <textarea
+                                      value={replyText[review.id] || ""}
+                                      onChange={(e) => setReplyText({ ...replyText, [review.id]: e.target.value })}
+                                      placeholder="Nhập phản hồi của quán cho khách hàng..."
+                                      rows={3}
+                                      style={{
+                                        width: "100%", padding: "10px 12px", borderRadius: "10px",
+                                        border: "1px solid var(--matcha)", outline: "none", resize: "none",
+                                        fontFamily: "Inter, sans-serif", fontSize: "13.5px", background: "var(--bg-card)", color: "var(--text)",
+                                        boxSizing: "border-box"
+                                      }}
+                                    />
+                                    <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end", mt: 1 }}>
+                                      <button
+                                        onClick={() => setActiveReplyId(null)}
+                                        style={{
+                                          background: "rgba(0,0,0,0.05)", border: "none", color: "var(--text-muted)",
+                                          fontSize: "12px", padding: "6px 12px", borderRadius: "8px", fontWeight: 600, cursor: "pointer"
+                                        }}
+                                      >
+                                        Hủy
+                                      </button>
+                                      <button
+                                        onClick={() => handleSendReply(review.id)}
+                                        disabled={submitting === review.id || !replyText[review.id]?.trim()}
+                                        style={{
+                                          background: "var(--matcha)", border: "none", color: "#fff",
+                                          fontSize: "12px", padding: "6px 12px", borderRadius: "8px", fontWeight: 600, cursor: "pointer",
+                                          opacity: (!replyText[review.id]?.trim() || submitting === review.id) ? 0.6 : 1
+                                        }}
+                                      >
+                                        {submitting === review.id ? "Đang gửi..." : "Gửi phản hồi"}
+                                      </button>
+                                    </Box>
+                                  </Box>
+                                ) : (
+                                  /* Show reply button */
+                                  <button
+                                    onClick={() => setActiveReplyId(review.id)}
+                                    style={{
+                                      alignSelf: "flex-start",
+                                      background: "transparent",
+                                      border: "1.5px solid var(--matcha)",
+                                      color: "var(--matcha)",
+                                      fontSize: "12.5px",
+                                      fontWeight: 700,
+                                      padding: "6px 16px",
+                                      borderRadius: "50px",
+                                      cursor: "pointer",
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: 6,
+                                      transition: "all 0.2s"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.background = "rgba(107, 143, 62, 0.08)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.background = "transparent";
+                                    }}
+                                  >
+                                    <MessageSquare size={13} /> Phản hồi đánh giá
+                                  </button>
+                                )}
+                              </Box>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
-                  </Grid>
+                  </Box>
                 )}
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           )}
         </Container>
       </Box>

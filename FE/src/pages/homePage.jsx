@@ -180,29 +180,68 @@ export default function HomePage() {
 
   useEffect(() => {
     (async () => {
-      const res = await menuList();
+      // Fetch both products and testimonials in parallel to eliminate sequential request waterfall
+      const [res, testRes] = await Promise.all([
+        menuList(),
+        getTestimonials()
+      ]);
+
       const loadedProducts = res.ok ? res.data : [];
       setProducts(loadedProducts);
       
-      const testRes = await getTestimonials();
-      if (testRes.ok && Array.isArray(testRes.data) && testRes.data.length > 0) {
-        // Filter and sort by rating desc, slice top 5
-        const topReviews = [...testRes.data]
-          .sort((a, b) => b.rating - a.rating)
-          .slice(0, 5);
+      const enrichFallback = () => {
+        if (loadedProducts.length > 0) {
+          const enriched = TESTIMONIALS.map(t => {
+            const product = loadedProducts.find(p => 
+              t.text.toLowerCase().includes(p.name.toLowerCase())
+            ) || loadedProducts[0];
 
-        const mapped = topReviews.map(r => {
-          const product = loadedProducts.find(p => String(p.id) === String(r.menu_id));
-          return {
-            name: r.user?.full_name || "Khách Hàng Trải Nghiệm",
-            role: product ? `Khách hàng đánh giá · ${product.name}` : "Thành viên Yakishime",
-            rating: r.rating || 5,
-            text: r.comment || "Tuyệt vời!",
-            foodImage: product ? product.image_url : null,
-            foodName: product ? product.name : null,
-          };
+            return {
+              ...t,
+              role: product ? `Khách hàng đánh giá · ${product.name}` : t.role,
+              foodImage: product ? product.image_url : null,
+              foodName: product ? product.name : null,
+              menu_id: product ? product.id : null,
+            };
+          });
+          setReviewsList(enriched);
+        }
+      };
+
+      if (testRes.ok && Array.isArray(testRes.data) && testRes.data.length > 0) {
+        // Only keep reviews associated with a valid menu item in our database
+        const menuReviews = testRes.data.filter(r => {
+          if (!r.menu_id) return false;
+          return loadedProducts.some(p => String(p.id) === String(r.menu_id));
         });
-        setReviewsList(mapped);
+
+        if (menuReviews.length > 0) {
+          // Filter and sort by rating desc, slice top 5
+          const topReviews = [...menuReviews]
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5);
+
+          const mapped = topReviews.map(r => {
+            const product = loadedProducts.find(p => String(p.id) === String(r.menu_id));
+            return {
+              id: r.id,
+              name: r.user?.full_name || "Khách Hàng Trải Nghiệm",
+              role: `Khách hàng đánh giá · ${product.name}`,
+              rating: r.rating || 5,
+              text: r.comment || "Tuyệt vời!",
+              foodImage: product ? product.image_url : null,
+              foodName: product ? product.name : null,
+              menu_id: r.menu_id,
+              reply: r.reply,
+              replyAt: r.replyAt,
+            };
+          });
+          setReviewsList(mapped);
+        } else {
+          enrichFallback();
+        }
+      } else {
+        enrichFallback();
       }
       
       setLoading(false);
@@ -710,30 +749,74 @@ export default function HomePage() {
                 </span>
 
                 {reviewsList[activeTestimonial]?.foodImage && (
-                  <div style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 10,
-                    marginBottom: 20,
-                    background: "rgba(255, 255, 255, 0.04)",
-                    padding: "6px 14px",
-                    borderRadius: "12px",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                  }}>
-                    <img 
-                      src={reviewsList[activeTestimonial].foodImage} 
-                      alt={reviewsList[activeTestimonial].foodName} 
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        objectFit: "cover",
-                      }}
-                    />
-                    <span style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.85)", fontWeight: 600 }}>
-                      Món ăn đánh giá: {reviewsList[activeTestimonial].foodName}
-                    </span>
-                  </div>
+                  <motion.div 
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      if (reviewsList[activeTestimonial]?.menu_id) {
+                        navigate(`/menu/${reviewsList[activeTestimonial].menu_id}`);
+                      }
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 14,
+                      marginBottom: 26,
+                      background: "rgba(107, 143, 62, 0.12)",
+                      backdropFilter: "blur(12px)",
+                      padding: "8px 18px 8px 10px",
+                      borderRadius: "20px",
+                      border: "1px solid rgba(141, 175, 90, 0.3)",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+                    }}
+                  >
+                    <div style={{ 
+                      position: "relative", 
+                      width: 44, 
+                      height: 44, 
+                      borderRadius: "14px", 
+                      overflow: "hidden", 
+                      flexShrink: 0, 
+                      border: "1px solid rgba(255,255,255,0.15)" 
+                    }}>
+                      <img 
+                        src={reviewsList[activeTestimonial].foodImage} 
+                        alt={reviewsList[activeTestimonial].foodName} 
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </div>
+                    <div style={{ textAlign: "left" }}>
+                      <span style={{ 
+                        display: "block", 
+                        fontSize: 11, 
+                        color: "var(--matcha-light)", 
+                        fontWeight: 700, 
+                        letterSpacing: "0.05em", 
+                        textTransform: "uppercase" 
+                      }}>
+                        Đánh giá món ăn
+                      </span>
+                      <span style={{ fontSize: 14, color: "#FFFFFF", fontWeight: 700 }}>
+                        {reviewsList[activeTestimonial].foodName}
+                      </span>
+                    </div>
+                    <div style={{
+                      marginLeft: 10,
+                      fontSize: 12,
+                      color: "rgba(255, 255, 255, 0.6)",
+                      fontWeight: 600,
+                      borderLeft: "1px solid rgba(255, 255, 255, 0.18)",
+                      paddingLeft: 12,
+                    }}>
+                      Chi tiết món ➔
+                    </div>
+                  </motion.div>
                 )}
 
                 <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24, marginTop: reviewsList[activeTestimonial]?.foodImage ? 0 : 12 }}>
@@ -747,13 +830,43 @@ export default function HomePage() {
                   fontSize: "clamp(18px, 2.5vw, 22px)",
                   color: "#E2E8F0",
                   lineHeight: 1.8,
-                  margin: "0 0 36px",
+                  margin: reviewsList[activeTestimonial]?.reply ? "0 0 20px" : "0 0 36px",
                   fontStyle: "italic",
                   fontWeight: 500,
                   letterSpacing: "0.01em"
                 }}>
                   "{reviewsList[activeTestimonial]?.text || ""}"
                 </p>
+
+                {reviewsList[activeTestimonial]?.reply && (
+                  <div style={{
+                    background: "rgba(107, 143, 62, 0.12)",
+                    borderLeft: "3px solid var(--matcha-light)",
+                    borderRadius: "10px",
+                    padding: "14px 20px",
+                    textAlign: "left",
+                    maxWidth: "560px",
+                    margin: "0 auto 36px",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+                    border: "1px solid rgba(141, 175, 90, 0.15)",
+                    boxSizing: "border-box"
+                  }}>
+                    <span style={{ 
+                      display: "block", 
+                      fontSize: 11, 
+                      color: "var(--matcha-light)", 
+                      fontWeight: 700, 
+                      textTransform: "uppercase", 
+                      letterSpacing: "0.05em", 
+                      marginBottom: 6 
+                    }}>
+                      🍵 Phản hồi từ Yakishime Manager
+                    </span>
+                    <p style={{ fontSize: 13.5, color: "#CBD5E1", margin: 0, lineHeight: 1.5, fontStyle: "normal" }}>
+                      {reviewsList[activeTestimonial].reply}
+                    </p>
+                  </div>
+                )}
 
                 <div style={{
                   display: "flex",

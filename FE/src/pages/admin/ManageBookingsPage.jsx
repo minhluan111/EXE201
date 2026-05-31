@@ -214,6 +214,17 @@ export default function ManageBookingsPage() {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={2.5}>
+                  <Typography
+                    sx={{
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      mb: 0.8,
+                      visibility: "hidden",
+                      display: { xs: "none", sm: "block" }
+                    }}
+                  >
+                    &nbsp;
+                  </Typography>
                   <Button
                     fullWidth
                     variant="outlined"

@@ -41,12 +41,6 @@ export default function AdminHeader({ title, subtitle }) {
       roles: ["manager", "staff"],
     },
     {
-      label: "Ý kiến phản hồi",
-      path: "/admin/feedbacks",
-      icon: MessageSquare,
-      roles: ["manager"],
-    },
-    {
       label: "Quản lý tài khoản",
       path: "/admin/accounts",
       icon: Users,

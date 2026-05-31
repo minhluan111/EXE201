@@ -1,5 +1,6 @@
 using CafeReservation.Application.DTOs;
 using CafeReservation.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeReservation.Api.Controllers;
@@ -26,6 +27,14 @@ public class ReviewController : ControllerBase
     public async Task<IActionResult> CreateReview([FromBody] CreateReviewRequest request, CancellationToken ct)
     {
         var review = await _reviewService.CreateReviewAsync(request, ct);
+        return Ok(review);
+    }
+
+    [HttpPatch("{id:guid}/reply")]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> ReplyReview(Guid id, [FromBody] ReplyReviewRequest request, CancellationToken ct)
+    {
+        var review = await _reviewService.ReplyReviewAsync(id, request.Reply, ct);
         return Ok(review);
     }
 }

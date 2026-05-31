@@ -331,6 +331,8 @@ public class AdminController : ControllerBase
                 r.GuestName,
                 r.Rating,
                 r.Comment,
+                r.Reply,
+                r.ReplyAt,
                 r.CreatedAt,
                 MenuItemId = r.MenuItemId,
                 MenuItemName = r.MenuItemId != null ? _db.MenuItems.Where(m => m.Id == r.MenuItemId).Select(m => m.Name).FirstOrDefault() : null

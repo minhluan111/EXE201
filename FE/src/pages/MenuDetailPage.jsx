@@ -67,9 +67,29 @@ function ReviewItem({ review }) {
           </div>
           <span style={{ fontSize: 13, color: "var(--text-light)" }}>{date}</span>
         </div>
-        <p style={{ fontSize: 14, color: "var(--text-muted)", margin: 0, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 14, color: "var(--text-muted)", margin: "0 0 4px", lineHeight: 1.6 }}>
           {review.comment}
         </p>
+
+        {review.reply && (
+          <div style={{
+            marginTop: 12,
+            background: "rgba(107, 143, 62, 0.05)",
+            borderLeft: "3px solid var(--matcha)",
+            borderRadius: "6px",
+            padding: "10px 14px",
+            boxShadow: "var(--shadow-sm)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "var(--matcha)", textTransform: "uppercase", letterSpacing: "0.02em" }}>
+                🍵 Phản hồi từ Yakishime Manager
+              </span>
+            </div>
+            <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0, lineHeight: 1.5 }}>
+              {review.reply}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

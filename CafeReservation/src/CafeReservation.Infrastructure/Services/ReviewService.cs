@@ -23,10 +23,6 @@ public class ReviewService : IReviewService
         {
             query = query.Where(r => r.MenuItemId == menuItemId.Value);
         }
-        else
-        {
-            query = query.Where(r => r.MenuItemId == null);
-        }
 
         var reviews = await query.OrderByDescending(r => r.CreatedAt).ToListAsync(ct);
 
@@ -37,6 +33,8 @@ public class ReviewService : IReviewService
             MenuItemId = r.MenuItemId,
             Rating = r.Rating,
             Comment = r.Comment,
+            Reply = r.Reply,
+            ReplyAt = r.ReplyAt,
             CreatedAt = r.CreatedAt
         });
     }
@@ -65,6 +63,32 @@ public class ReviewService : IReviewService
             MenuItemId = review.MenuItemId,
             Rating = review.Rating,
             Comment = review.Comment,
+            Reply = review.Reply,
+            ReplyAt = review.ReplyAt,
+            CreatedAt = review.CreatedAt
+        };
+    }
+
+    public async Task<ReviewDto> ReplyReviewAsync(Guid id, string reply, CancellationToken ct = default)
+    {
+        var review = await _db.Reviews.FindAsync(new object[] { id }, ct)
+            ?? throw new KeyNotFoundException($"Review with ID '{id}' not found.");
+
+        review.Reply = reply;
+        review.ReplyAt = DateTime.UtcNow;
+
+        _db.Reviews.Update(review);
+        await _db.SaveChangesAsync(ct);
+
+        return new ReviewDto
+        {
+            Id = review.Id,
+            GuestName = review.GuestName,
+            MenuItemId = review.MenuItemId,
+            Rating = review.Rating,
+            Comment = review.Comment,
+            Reply = review.Reply,
+            ReplyAt = review.ReplyAt,
             CreatedAt = review.CreatedAt
         };
     }

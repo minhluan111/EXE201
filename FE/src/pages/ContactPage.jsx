@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
-  MapPin, Phone, Mail, Clock, Send, MessageSquare, AlertCircle
+  MapPin, Phone, Mail, Clock, Send, MessageSquare, AlertCircle, Sparkles, MessageCircle
 } from "lucide-react";
-import { restaurantInfoGet, feedbackCreate } from "../services/apiClient.js";
+import { restaurantInfoGet, feedbackCreate, feedbackGetMy } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 
 export default function ContactPage() {
@@ -37,9 +37,12 @@ export default function ContactPage() {
     setLoading(false);
 
     if (!res.ok) return setError(res.message || "Gửi phản hồi thất bại");
-    setMessage("Cảm ơn bạn đã gửi đóng góp ý kiến cho quán");
+    setMessage("Cảm ơn bạn đã gửi đóng góp ý kiến cho quán. Ý kiến của bạn đã được gửi đến Manager!");
     setTitle("");
     setContent("");
+
+    // Notify the floating chat bubble to update in real-time
+    window.dispatchEvent(new Event("feedback-submitted"));
   };
 
   if (!info) {
@@ -219,12 +222,13 @@ export default function ContactPage() {
               </div>
             </motion.div>
 
-            {/* Right: Feedback Form */}
+            {/* Right Column: Feedback Form */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              style={{ height: "100%" }}
             >
               <div style={{
                 background: "var(--bg-card)",
@@ -313,6 +317,24 @@ export default function ContactPage() {
                     >
                       ✨ {message}
                     </motion.div>
+                  )}
+
+                  {token ? (
+                    <div style={{
+                      padding: "16px", borderRadius: 12,
+                      background: "rgba(107,143,62,0.06)", border: "1px solid rgba(107,143,62,0.15)",
+                      fontSize: 13.5, color: "var(--text-muted)", marginBottom: 4, lineHeight: 1.5
+                    }}>
+                      💡 <strong>Mẹo:</strong> Bạn có thể xem lại lịch sử phản hồi và chat trực tiếp với Manager qua <strong>bong bóng chat</strong> ở góc phải màn hình 🍵
+                    </div>
+                  ) : (
+                    <div style={{
+                      padding: "16px", borderRadius: 12,
+                      background: "rgba(107,143,62,0.06)", border: "1px solid rgba(107,143,62,0.15)",
+                      fontSize: 13.5, color: "var(--text-muted)", marginBottom: 4, lineHeight: 1.5
+                    }}>
+                      💡 <strong>Mẹo:</strong> Hãy <strong>Đăng nhập tài khoản</strong> để kích hoạt tính năng <strong>Chat trực tuyến & xem phản hồi trực tiếp</strong> từ Manager nhà hàng!
+                    </div>
                   )}
 
                   <motion.button

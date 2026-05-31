@@ -57,6 +57,46 @@ export default function ManageMenuPage() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Search, filter, and sort states
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [sortBy, setSortBy] = useState("default");
+
+  // Compute filtered and sorted list in memory
+  const filteredAndSortedList = [...list]
+    .filter((item) => {
+      const matchSearch =
+        !search.trim() ||
+        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(search.toLowerCase()));
+      const matchCategory = !selectedCategory || item.category === selectedCategory;
+      const matchTag = !selectedTag || item.tag === selectedTag;
+      return matchSearch && matchCategory && matchTag;
+    })
+    .sort((a, b) => {
+      if (sortBy === "default") {
+        const categoryOrder = ["Drink", "MainCourse", "Dessert", "Snack"];
+        const orderA = categoryOrder.indexOf(a.category);
+        const orderB = categoryOrder.indexOf(b.category);
+        if (orderA !== orderB) return orderA - orderB;
+        return a.name.localeCompare(b.name, "vi");
+      }
+      if (sortBy === "name-asc") {
+        return a.name.localeCompare(b.name, "vi");
+      }
+      if (sortBy === "name-desc") {
+        return b.name.localeCompare(a.name, "vi");
+      }
+      if (sortBy === "price-asc") {
+        return a.price - b.price;
+      }
+      if (sortBy === "price-desc") {
+        return b.price - a.price;
+      }
+      return 0;
+    });
+
   // Modal form states
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -177,9 +217,9 @@ export default function ManageMenuPage() {
       <Box sx={{ py: 6, bgcolor: COLORS.soft }}>
         <Container maxWidth="lg">
           {/* Action Bar */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4, alignItems: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3, alignItems: "center" }}>
             <Typography variant="h5" sx={{ fontWeight: 700, fontFamily: "'Cormorant Garamond', serif", color: "var(--matcha)" }}>
-              Danh sách thực đơn ({list.length})
+              Danh sách thực đơn ({filteredAndSortedList.length} / {list.length})
             </Typography>
             <Button
               variant="contained"
@@ -198,6 +238,164 @@ export default function ManageMenuPage() {
             </Button>
           </Box>
 
+          {/* Premium Filter & Search Card */}
+          <Card
+            sx={{
+              borderRadius: 3,
+              border: "1px solid var(--border)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
+              mb: 4,
+              background: "var(--bg-card)",
+            }}
+          >
+            <CardContent sx={{ p: 3 }}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={6} md={3.5}>
+                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
+                    Tìm kiếm món ăn
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    placeholder="Nhập tên món hoặc mô tả..."
+                    variant="outlined"
+                    size="small"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "12px",
+                        background: "var(--bg-alt)",
+                        "& fieldset": { border: "none" },
+                      },
+                      "& input": {
+                        fontSize: "14px",
+                        color: "var(--text)",
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={2.5}>
+                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
+                    Danh mục
+                  </Typography>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      displayEmpty
+                      sx={{
+                        borderRadius: "12px",
+                        background: "var(--bg-alt)",
+                        "& fieldset": { border: "none" },
+                        fontSize: "14px",
+                        color: "var(--text)",
+                      }}
+                    >
+                      <MenuItem value="">Tất cả danh mục</MenuItem>
+                      {CATEGORIES.map((cat) => (
+                        <MenuItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={2.5}>
+                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
+                    Nhãn đặc trưng
+                  </Typography>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      value={selectedTag}
+                      onChange={(e) => setSelectedTag(e.target.value)}
+                      displayEmpty
+                      sx={{
+                        borderRadius: "12px",
+                        background: "var(--bg-alt)",
+                        "& fieldset": { border: "none" },
+                        fontSize: "14px",
+                        color: "var(--text)",
+                      }}
+                    >
+                      <MenuItem value="">Tất cả nhãn</MenuItem>
+                      {TAGS.map((t) => (
+                        <MenuItem key={t.value} value={t.value}>
+                          {t.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={2.5}>
+                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
+                    Sắp xếp theo
+                  </Typography>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      sx={{
+                        borderRadius: "12px",
+                        background: "var(--bg-alt)",
+                        "& fieldset": { border: "none" },
+                        fontSize: "14px",
+                        color: "var(--text)",
+                      }}
+                    >
+                      <MenuItem value="default">Mặc định (Nhóm & Tên)</MenuItem>
+                      <MenuItem value="name-asc">Tên: A đến Z</MenuItem>
+                      <MenuItem value="name-desc">Tên: Z đến A</MenuItem>
+                      <MenuItem value="price-asc">Giá: Thấp đến Cao</MenuItem>
+                      <MenuItem value="price-desc">Giá: Cao đến Thấp</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={1}>
+                  <Typography
+                    sx={{
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      mb: 0.8,
+                      visibility: "hidden",
+                      display: { xs: "none", md: "block" }
+                    }}
+                  >
+                    &nbsp;
+                  </Typography>
+                  <Button
+                    fullWidth
+                    variant="text"
+                    onClick={() => {
+                      setSearch("");
+                      setSelectedCategory("");
+                      setSelectedTag("");
+                      setSortBy("default");
+                    }}
+                    sx={{
+                      borderRadius: "12px",
+                      height: "40px",
+                      textTransform: "none",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      color: "var(--matcha)",
+                      minWidth: "auto",
+                      whiteSpace: "nowrap",
+                      "&:hover": {
+                        background: "rgba(120, 139, 69, 0.08)",
+                      }
+                    }}
+                  >
+                    Xóa lọc
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+
           {loading ? (
             <Box sx={{ textAlign: "center", py: 12 }}>
               <CircularProgress sx={{ color: "var(--matcha)", mb: 2 }} />
@@ -213,113 +411,131 @@ export default function ManageMenuPage() {
                 </Typography>
               </CardContent>
             </Card>
+          ) : filteredAndSortedList.length === 0 ? (
+            <Card sx={{ borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-card)" }}>
+              <CardContent sx={{ textAlign: "center", py: 12 }}>
+                <Typography sx={{ fontSize: "56px", mb: 2 }}>🔍</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: "var(--text)" }}>Không tìm thấy món ăn phù hợp</Typography>
+                <Typography sx={{ mt: 1, fontSize: "14px", color: "var(--text-muted)" }}>
+                  Hãy thử điều chỉnh từ khóa hoặc bộ lọc của bạn.
+                </Typography>
+              </CardContent>
+            </Card>
           ) : (
-            <Grid container spacing={3}>
-              {list.map((item) => (
-                <Grid item xs={12} sm={6} md={4} key={item.id}>
-                  <Card
-                    sx={{
-                      borderRadius: 4,
-                      border: "1px solid var(--border)",
-                      background: "var(--bg-card)",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: "0 12px 30px rgba(107, 143, 62, 0.05)",
-                      },
-                    }}
-                  >
-                    {/* Image */}
-                    <Box sx={{ height: 180, width: "100%", bgcolor: "rgba(0,0,0,0.02)", overflow: "hidden", position: "relative" }}>
-                      {item.imageUrl ? (
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      ) : (
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-muted)" }}>
-                          <Coffee size={40} />
-                        </Box>
-                      )}
-                      {/* Tag label */}
-                      {item.tag && item.tag !== "Normal" && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            top: 12,
-                            left: 12,
-                            px: 1.5,
-                            py: 0.5,
-                            borderRadius: "50px",
-                            background: "rgba(107, 143, 62, 0.9)",
-                            color: "#fff",
-                            fontSize: "12px",
-                            fontWeight: 600,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 0.5,
-                          }}
-                        >
-                          <Tag size={12} />
-                          {TAGS.find((t) => t.value === item.tag)?.label || item.tag}
-                        </Box>
-                      )}
-                    </Box>
-
-                    {/* Card Content */}
-                    <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: "var(--text)", fontSize: "17px" }}>
-                          {item.name}
-                        </Typography>
-                        <Typography sx={{ fontWeight: 700, color: "var(--matcha)", fontSize: "16px" }}>
-                          {item.price.toLocaleString("vi-VN")}đ
-                        </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)"
+                },
+                gap: 3,
+              }}
+            >
+              {filteredAndSortedList.map((item) => (
+                <Card
+                  key={item.id}
+                  sx={{
+                    borderRadius: 4,
+                    border: "1px solid var(--border)",
+                    background: "var(--bg-card)",
+                    display: "flex",
+                    flexDirection: "column",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 12px 30px rgba(107, 143, 62, 0.05)",
+                    },
+                  }}
+                >
+                  {/* Image */}
+                  <Box sx={{ height: 180, width: "100%", bgcolor: "rgba(0,0,0,0.02)", overflow: "hidden", position: "relative" }}>
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-muted)" }}>
+                        <Coffee size={40} />
                       </Box>
-
-                      <Typography
-                        variant="body2"
+                    )}
+                    {/* Tag label */}
+                    {item.tag && item.tag !== "Normal" && (
+                      <Box
                         sx={{
-                          color: "var(--text-muted)",
-                          mb: 2,
-                          flex: 1,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
+                          position: "absolute",
+                          top: 12,
+                          left: 12,
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: "50px",
+                          background: "rgba(107, 143, 62, 0.9)",
+                          color: "#fff",
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 0.5,
                         }}
                       >
-                        {item.description || "Không có mô tả."}
-                      </Typography>
-
-                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1, borderTop: "1px solid var(--border)" }}>
-                        <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                          Mục: {CATEGORIES.find((c) => c.value === item.category)?.label || item.category}
-                        </Typography>
-                        <Box sx={{ display: "flex", gap: 0.5 }}>
-                          <Tooltip title="Chỉnh sửa">
-                            <IconButton size="small" onClick={() => handleOpenEdit(item)} sx={{ color: "var(--matcha)" }}>
-                              <Edit2 size={16} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Xóa món">
-                            <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: "#EF4444" }}>
-                              <Trash2 size={16} />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
+                        <Tag size={12} />
+                        {TAGS.find((t) => t.value === item.tag)?.label || item.tag}
                       </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                    )}
+                  </Box>
+
+                  {/* Card Content */}
+                  <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 700, color: "var(--text)", fontSize: "17px" }}>
+                        {item.name}
+                      </Typography>
+                      <Typography sx={{ fontWeight: 700, color: "var(--matcha)", fontSize: "16px" }}>
+                        {item.price.toLocaleString("vi-VN")}đ
+                      </Typography>
+                    </Box>
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "var(--text-muted)",
+                        mb: 2,
+                        flex: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      {item.description || "Không có mô tả."}
+                    </Typography>
+
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1, borderTop: "1px solid var(--border)" }}>
+                      <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                        Mục: {CATEGORIES.find((c) => c.value === item.category)?.label || item.category}
+                      </Typography>
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
+                        <Tooltip title="Chỉnh sửa">
+                          <IconButton size="small" onClick={() => handleOpenEdit(item)} sx={{ color: "var(--matcha)" }}>
+                            <Edit2 size={16} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Xóa món">
+                          <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: "#EF4444" }}>
+                            <Trash2 size={16} />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
               ))}
-            </Grid>
+            </Box>
           )}
         </Container>
       </Box>
@@ -369,6 +585,8 @@ export default function ManageMenuPage() {
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "12px",
                     background: "var(--bg-alt)",
+                    border: formErrors.name ? "1px solid #EF4444" : "1px solid transparent",
+                    transition: "border-color 0.2s",
                     "& fieldset": { border: "none" },
                   },
                 }}
@@ -439,6 +657,8 @@ export default function ManageMenuPage() {
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "12px",
                     background: "var(--bg-alt)",
+                    border: formErrors.price ? "1px solid #EF4444" : "1px solid transparent",
+                    transition: "border-color 0.2s",
                     "& fieldset": { border: "none" },
                   },
                 }}
@@ -464,6 +684,56 @@ export default function ManageMenuPage() {
                 }}
               />
             </Box>
+
+            {/* Live Image Preview */}
+            {formData.imageUrl && formData.imageUrl.trim() && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  p: 2,
+                  borderRadius: "16px",
+                  bgcolor: "var(--bg-alt)",
+                  border: "1px dashed var(--border)",
+                  textAlign: "center",
+                }}
+              >
+                <Typography sx={{ fontSize: "11px", fontWeight: 600, color: "var(--text-muted)", mb: 1.2 }}>
+                  🖼️ Xem trước ảnh món ăn
+                </Typography>
+                <Box
+                  sx={{
+                    width: "100%",
+                    maxHeight: 180,
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    bgcolor: "rgba(0,0,0,0.02)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={formData.imageUrl.trim()}
+                    alt="Xem trước ảnh"
+                    style={{ maxWidth: "100%", maxHeight: 180, objectFit: "contain", borderRadius: "12px" }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.style.display = "none";
+                      const msgDiv = document.createElement("div");
+                      msgDiv.style.color = "#EF4444";
+                      msgDiv.style.fontSize = "13px";
+                      msgDiv.style.fontWeight = "500";
+                      msgDiv.style.padding = "16px";
+                      msgDiv.innerText = "⚠️ Không tải được ảnh. Vui lòng kiểm tra lại liên kết.";
+                      e.target.parentElement.appendChild(msgDiv);
+                    }}
+                  />
+                </Box>
+              </Box>
+            )}
 
             <Box>
               <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>

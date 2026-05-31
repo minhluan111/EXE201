@@ -82,4 +82,23 @@ public class FeedbackService : IFeedbackService
             CreatedAt = feedback.CreatedAt
         };
     }
+
+    public async Task<IReadOnlyList<FeedbackDto>> GetMyFeedbacksAsync(string email, CancellationToken ct = default)
+    {
+        return await _db.Feedbacks
+            .AsNoTracking()
+            .Where(f => f.GuestEmail.ToLower() == email.ToLower())
+            .OrderBy(f => f.CreatedAt) // Oldest first for chat thread timeline ordering
+            .Select(f => new FeedbackDto
+            {
+                Id = f.Id,
+                GuestName = f.GuestName,
+                Title = f.Title,
+                Content = f.Content,
+                Reply = f.Reply,
+                ReplyAt = f.ReplyAt,
+                CreatedAt = f.CreatedAt
+            })
+            .ToListAsync(ct);
+    }
 }

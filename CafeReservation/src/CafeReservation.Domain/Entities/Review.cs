@@ -14,5 +14,8 @@ public class Review
     public int Rating { get; set; } // 1 to 5
     public string? Comment { get; set; }
     
+    public string? Reply { get; set; }
+    public DateTime? ReplyAt { get; set; }
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

@@ -113,18 +113,27 @@ function mapMenuItem(item, avgRating = 0) {
 }
 
 function mapReview(review) {
+  if (!review) return null;
+  const guestName = review.guestName ?? review.guest_name ?? review.GuestName ?? "";
+  const commentText = review.comment ?? review.Comment ?? "";
+  const ratingValue = review.rating ?? review.Rating ?? 5;
+  const menuItemId = review.menuItemId ?? review.menuItem_id ?? review.menu_id ?? review.MenuItemId ?? null;
+  const createdAt = review.createdAt ?? review.created_at ?? review.CreatedAt;
+
   return {
-    id: review.id,
-    user_id: review.userId ?? review.user_id ?? null,
-    menu_id: review.menuItemId ?? review.menu_id ?? null,
-    rating: Number(review.rating || 0),
-    comment: review.comment || "",
-    created_at: review.createdAt ?? review.created_at,
-    user: review.guestName
-      ? { id: null, full_name: review.guestName }
+    id: review.id ?? review.Id,
+    user_id: review.userId ?? review.user_id ?? review.UserId ?? null,
+    menu_id: menuItemId,
+    rating: Number(ratingValue),
+    comment: commentText,
+    reply: review.reply ?? review.Reply ?? null,
+    replyAt: review.replyAt ?? review.reply_at ?? review.ReplyAt ?? null,
+    created_at: createdAt,
+    user: guestName
+      ? { id: null, full_name: guestName }
       : review.user
-        ? { id: review.user.id ?? null, full_name: review.user.full_name ?? review.user.fullName ?? "" }
-        : null,
+        ? { id: review.user.id ?? null, full_name: review.user.full_name ?? review.user.fullName ?? review.user.FullName ?? "" }
+        : { id: null, full_name: "Khách hàng" },
   };
 }
 
@@ -569,6 +578,17 @@ export async function adminReplyFeedback({ token, id, reply }) {
   return { ok: true, data: mapFeedback(result.data) };
 }
 
+export async function feedbackGetMy({ token }) {
+  const bearer = token || currentToken();
+  if (!bearer) return { ok: false, message: "Unauthorized" };
+
+  const result = await requestJson("/api/public/feedbacks/my", { token: bearer });
+  if (!result.ok) return result;
+
+  const data = Array.isArray(result.data) ? result.data.map(mapFeedback) : [];
+  return { ok: true, data };
+}
+
 export async function adminGetStats({ token }) {
   const bearer = token || currentToken();
   if (!bearer) return { ok: false, message: "Unauthorized" };
@@ -735,4 +755,18 @@ export async function adminGetReviews({ token }) {
   if (!bearer) return { ok: false, message: "Unauthorized" };
 
   return await requestJson("/api/admin/reviews", { token: bearer });
+}
+
+export async function adminReplyReview({ token, id, reply }) {
+  const bearer = token || currentToken();
+  if (!bearer) return { ok: false, message: "Unauthorized" };
+
+  const result = await requestJson(`/api/public/reviews/${id}/reply`, {
+    method: "PATCH",
+    token: bearer,
+    body: { reply },
+  });
+
+  if (!result.ok) return result;
+  return { ok: true, data: mapReview(result.data) };
 }
