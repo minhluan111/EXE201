@@ -1,0 +1,1099 @@
+2026-05-31 17:27:31.070 +07:00 [INF] Executed DbCommand (146ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:27:31.234 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-31 17:27:31.913 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:27:32.583 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:27:32.677 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-31 17:27:32.693 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-31 17:27:32.696 +07:00 [INF] Database migration completed successfully.
+2026-05-31 17:27:33.006 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'admin@yakicafe.com')
+2026-05-31 17:27:33.111 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'staff@yakicafe.com')
+2026-05-31 17:27:33.212 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'manager@yakicafe.com')
+2026-05-31 17:27:33.312 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM seating_areas AS s)
+2026-05-31 17:27:33.410 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM "RestaurantInfo" AS r)
+2026-05-31 17:27:33.555 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+2026-05-31 17:27:33.833 +07:00 [INF] Executed DbCommand (113ms) [Parameters=[@p9='?' (DbType = Guid), @p0='?' (DbType = Int32), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?' (DbType = Boolean), @p5='?', @p6='?' (DbType = Decimal), @p7='?' (DbType = Int32), @p8='?' (DbType = Int32), @p19='?' (DbType = Guid), @p10='?' (DbType = Int32), @p11='?' (DbType = DateTime), @p12='?', @p13='?', @p14='?' (DbType = Boolean), @p15='?', @p16='?' (DbType = Decimal), @p17='?' (DbType = Int32), @p18='?' (DbType = Int32), @p29='?' (DbType = Guid), @p20='?' (DbType = Int32), @p21='?' (DbType = DateTime), @p22='?', @p23='?', @p24='?' (DbType = Boolean), @p25='?', @p26='?' (DbType = Decimal), @p27='?' (DbType = Int32), @p28='?' (DbType = Int32), @p39='?' (DbType = Guid), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?', @p33='?', @p34='?' (DbType = Boolean), @p35='?', @p36='?' (DbType = Decimal), @p37='?' (DbType = Int32), @p38='?' (DbType = Int32), @p49='?' (DbType = Guid), @p40='?' (DbType = Int32), @p41='?' (DbType = DateTime), @p42='?', @p43='?', @p44='?' (DbType = Boolean), @p45='?', @p46='?' (DbType = Decimal), @p47='?' (DbType = Int32), @p48='?' (DbType = Int32), @p59='?' (DbType = Guid), @p50='?' (DbType = Int32), @p51='?' (DbType = DateTime), @p52='?', @p53='?', @p54='?' (DbType = Boolean), @p55='?', @p56='?' (DbType = Decimal), @p57='?' (DbType = Int32), @p58='?' (DbType = Int32), @p69='?' (DbType = Guid), @p60='?' (DbType = Int32), @p61='?' (DbType = DateTime), @p62='?', @p63='?', @p64='?' (DbType = Boolean), @p65='?', @p66='?' (DbType = Decimal), @p67='?' (DbType = Int32), @p68='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+UPDATE "MenuItems" SET "Category" = @p0, "CreatedAt" = @p1, "Description" = @p2, "ImageUrl" = @p3, "IsActive" = @p4, "Name" = @p5, "Price" = @p6, "SalesCount" = @p7, "Tag" = @p8
+WHERE "Id" = @p9;
+UPDATE "MenuItems" SET "Category" = @p10, "CreatedAt" = @p11, "Description" = @p12, "ImageUrl" = @p13, "IsActive" = @p14, "Name" = @p15, "Price" = @p16, "SalesCount" = @p17, "Tag" = @p18
+WHERE "Id" = @p19;
+UPDATE "MenuItems" SET "Category" = @p20, "CreatedAt" = @p21, "Description" = @p22, "ImageUrl" = @p23, "IsActive" = @p24, "Name" = @p25, "Price" = @p26, "SalesCount" = @p27, "Tag" = @p28
+WHERE "Id" = @p29;
+UPDATE "MenuItems" SET "Category" = @p30, "CreatedAt" = @p31, "Description" = @p32, "ImageUrl" = @p33, "IsActive" = @p34, "Name" = @p35, "Price" = @p36, "SalesCount" = @p37, "Tag" = @p38
+WHERE "Id" = @p39;
+UPDATE "MenuItems" SET "Category" = @p40, "CreatedAt" = @p41, "Description" = @p42, "ImageUrl" = @p43, "IsActive" = @p44, "Name" = @p45, "Price" = @p46, "SalesCount" = @p47, "Tag" = @p48
+WHERE "Id" = @p49;
+UPDATE "MenuItems" SET "Category" = @p50, "CreatedAt" = @p51, "Description" = @p52, "ImageUrl" = @p53, "IsActive" = @p54, "Name" = @p55, "Price" = @p56, "SalesCount" = @p57, "Tag" = @p58
+WHERE "Id" = @p59;
+UPDATE "MenuItems" SET "Category" = @p60, "CreatedAt" = @p61, "Description" = @p62, "ImageUrl" = @p63, "IsActive" = @p64, "Name" = @p65, "Price" = @p66, "SalesCount" = @p67, "Tag" = @p68
+WHERE "Id" = @p69;
+2026-05-31 17:27:33.952 +07:00 [INF] Synced 7 menu items in database
+2026-05-31 17:27:33.962 +07:00 [INF] Data seeding completed.
+2026-05-31 17:27:34.745 +07:00 [INF] User profile is available. Using 'C:\Users\luanq\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-31 17:27:34.757 +07:00 [INF] AutoCancelReservationWorker is starting.
+2026-05-31 17:27:34.941 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-31 17:27:35.038 +07:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2026-05-31 17:27:35.355 +07:00 [INF] Executed DbCommand (308ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, t.table_name, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, r.table_name
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-31 17:27:35.361 +07:00 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address https://127.0.0.1:52817: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(ListenOptions[] listenOptions, AddressBindContext context, Func`2 useHttps, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-05-31 17:27:35.383 +07:00 [ERR] BackgroundService failed
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at CafeReservation.Api.Workers.AutoCancelReservationWorker.ExecuteAsync(CancellationToken stoppingToken) in E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Api\Workers\AutoCancelReservationWorker.cs:line 37
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-05-31 17:27:35.389 +07:00 [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at CafeReservation.Api.Workers.AutoCancelReservationWorker.ExecuteAsync(CancellationToken stoppingToken) in E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Api\Workers\AutoCancelReservationWorker.cs:line 37
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-05-31 17:29:36.384 +07:00 [INF] Executed DbCommand (146ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:29:36.563 +07:00 [INF] Executed DbCommand (95ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-31 17:29:37.248 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:29:37.919 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:29:38.013 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-31 17:29:38.027 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-31 17:29:38.031 +07:00 [INF] Database migration completed successfully.
+2026-05-31 17:29:38.320 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'admin@yakicafe.com')
+2026-05-31 17:29:38.422 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'staff@yakicafe.com')
+2026-05-31 17:29:38.519 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'manager@yakicafe.com')
+2026-05-31 17:29:38.617 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM seating_areas AS s)
+2026-05-31 17:29:38.713 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM "RestaurantInfo" AS r)
+2026-05-31 17:29:38.844 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+2026-05-31 17:29:39.111 +07:00 [INF] Executed DbCommand (109ms) [Parameters=[@p9='?' (DbType = Guid), @p0='?' (DbType = Int32), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?' (DbType = Boolean), @p5='?', @p6='?' (DbType = Decimal), @p7='?' (DbType = Int32), @p8='?' (DbType = Int32), @p19='?' (DbType = Guid), @p10='?' (DbType = Int32), @p11='?' (DbType = DateTime), @p12='?', @p13='?', @p14='?' (DbType = Boolean), @p15='?', @p16='?' (DbType = Decimal), @p17='?' (DbType = Int32), @p18='?' (DbType = Int32), @p29='?' (DbType = Guid), @p20='?' (DbType = Int32), @p21='?' (DbType = DateTime), @p22='?', @p23='?', @p24='?' (DbType = Boolean), @p25='?', @p26='?' (DbType = Decimal), @p27='?' (DbType = Int32), @p28='?' (DbType = Int32), @p39='?' (DbType = Guid), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?', @p33='?', @p34='?' (DbType = Boolean), @p35='?', @p36='?' (DbType = Decimal), @p37='?' (DbType = Int32), @p38='?' (DbType = Int32), @p49='?' (DbType = Guid), @p40='?' (DbType = Int32), @p41='?' (DbType = DateTime), @p42='?', @p43='?', @p44='?' (DbType = Boolean), @p45='?', @p46='?' (DbType = Decimal), @p47='?' (DbType = Int32), @p48='?' (DbType = Int32), @p59='?' (DbType = Guid), @p50='?' (DbType = Int32), @p51='?' (DbType = DateTime), @p52='?', @p53='?', @p54='?' (DbType = Boolean), @p55='?', @p56='?' (DbType = Decimal), @p57='?' (DbType = Int32), @p58='?' (DbType = Int32), @p69='?' (DbType = Guid), @p60='?' (DbType = Int32), @p61='?' (DbType = DateTime), @p62='?', @p63='?', @p64='?' (DbType = Boolean), @p65='?', @p66='?' (DbType = Decimal), @p67='?' (DbType = Int32), @p68='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+UPDATE "MenuItems" SET "Category" = @p0, "CreatedAt" = @p1, "Description" = @p2, "ImageUrl" = @p3, "IsActive" = @p4, "Name" = @p5, "Price" = @p6, "SalesCount" = @p7, "Tag" = @p8
+WHERE "Id" = @p9;
+UPDATE "MenuItems" SET "Category" = @p10, "CreatedAt" = @p11, "Description" = @p12, "ImageUrl" = @p13, "IsActive" = @p14, "Name" = @p15, "Price" = @p16, "SalesCount" = @p17, "Tag" = @p18
+WHERE "Id" = @p19;
+UPDATE "MenuItems" SET "Category" = @p20, "CreatedAt" = @p21, "Description" = @p22, "ImageUrl" = @p23, "IsActive" = @p24, "Name" = @p25, "Price" = @p26, "SalesCount" = @p27, "Tag" = @p28
+WHERE "Id" = @p29;
+UPDATE "MenuItems" SET "Category" = @p30, "CreatedAt" = @p31, "Description" = @p32, "ImageUrl" = @p33, "IsActive" = @p34, "Name" = @p35, "Price" = @p36, "SalesCount" = @p37, "Tag" = @p38
+WHERE "Id" = @p39;
+UPDATE "MenuItems" SET "Category" = @p40, "CreatedAt" = @p41, "Description" = @p42, "ImageUrl" = @p43, "IsActive" = @p44, "Name" = @p45, "Price" = @p46, "SalesCount" = @p47, "Tag" = @p48
+WHERE "Id" = @p49;
+UPDATE "MenuItems" SET "Category" = @p50, "CreatedAt" = @p51, "Description" = @p52, "ImageUrl" = @p53, "IsActive" = @p54, "Name" = @p55, "Price" = @p56, "SalesCount" = @p57, "Tag" = @p58
+WHERE "Id" = @p59;
+UPDATE "MenuItems" SET "Category" = @p60, "CreatedAt" = @p61, "Description" = @p62, "ImageUrl" = @p63, "IsActive" = @p64, "Name" = @p65, "Price" = @p66, "SalesCount" = @p67, "Tag" = @p68
+WHERE "Id" = @p69;
+2026-05-31 17:29:39.220 +07:00 [INF] Synced 7 menu items in database
+2026-05-31 17:29:39.227 +07:00 [INF] Data seeding completed.
+2026-05-31 17:29:39.405 +07:00 [INF] User profile is available. Using 'C:\Users\luanq\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-31 17:29:39.412 +07:00 [INF] AutoCancelReservationWorker is starting.
+2026-05-31 17:29:39.574 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-31 17:29:39.609 +07:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2026-05-31 17:29:39.623 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-31 17:29:39.624 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-31 17:29:39.625 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-31 17:29:39.626 +07:00 [INF] Hosting environment: Development
+2026-05-31 17:29:39.626 +07:00 [INF] Content root path: E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Api
+2026-05-31 17:29:39.731 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, t.table_name, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, r.table_name
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-31 17:29:42.735 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:29:42.735 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:42.799 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:42.799 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:42.854 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:42.855 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:42.896 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:29:42.896 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:43.117 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:29:43.132 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:43.201 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 298.1989ms
+2026-05-31 17:29:43.205 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:43.206 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:29:43.210 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 410.3609 ms
+2026-05-31 17:29:43.214 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:43.216 +07:00 [INF] GET /api/public/menu responded 200 in 445ms
+2026-05-31 17:29:43.220 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:43.222 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:29:43.225 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 491.8168ms
+2026-05-31 17:29:43.323 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:29:43.330 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:43.334 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 110.0156ms
+2026-05-31 17:29:43.336 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:43.338 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 125.3322 ms
+2026-05-31 17:29:43.342 +07:00 [INF] GET /api/public/menu responded 200 in 129ms
+2026-05-31 17:29:43.345 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 139.574ms
+2026-05-31 17:29:43.690 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:43.694 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:43.722 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 821.195ms
+2026-05-31 17:29:43.724 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:43.725 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:43.725 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 928.3620 ms
+2026-05-31 17:29:43.729 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:43.732 +07:00 [INF] GET /api/public/reviews responded 200 in 962ms
+2026-05-31 17:29:43.733 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:43.735 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 1001.8203ms
+2026-05-31 17:29:43.735 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:43.835 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:43.839 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:43.841 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 99.986ms
+2026-05-31 17:29:43.843 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:43.843 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:43.846 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:43.847 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 118.0954 ms
+2026-05-31 17:29:43.849 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:43.850 +07:00 [INF] GET /api/public/reviews responded 200 in 121ms
+2026-05-31 17:29:43.852 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:43.854 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 129.2641ms
+2026-05-31 17:29:43.953 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:43.956 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:43.959 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 103.1242ms
+2026-05-31 17:29:43.960 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:43.961 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:43.964 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:43.965 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 118.5263 ms
+2026-05-31 17:29:43.966 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:43.968 +07:00 [INF] GET /api/public/reviews responded 200 in 121ms
+2026-05-31 17:29:43.969 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:43.971 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 128.3401ms
+2026-05-31 17:29:44.066 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:44.069 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:44.072 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.6721ms
+2026-05-31 17:29:44.074 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:44.075 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 111.3641 ms
+2026-05-31 17:29:44.078 +07:00 [INF] GET /api/public/reviews responded 200 in 114ms
+2026-05-31 17:29:44.080 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 120.1342ms
+2026-05-31 17:29:52.381 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:52.381 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:29:52.385 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:52.388 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:52.389 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.390 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:52.391 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:52.393 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:29:52.490 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:52.491 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:29:52.494 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:52.496 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:52.498 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 102.8809ms
+2026-05-31 17:29:52.499 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:52.502 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.500 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 103.0633ms
+2026-05-31 17:29:52.503 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:29:52.505 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:52.506 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 121.3495 ms
+2026-05-31 17:29:52.508 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:52.512 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:52.513 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.515 +07:00 [INF] GET /api/public/reviews responded 200 in 130ms
+2026-05-31 17:29:52.516 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 128.9478 ms
+2026-05-31 17:29:52.518 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:52.519 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:52.521 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 140.1354ms
+2026-05-31 17:29:52.524 +07:00 [INF] GET /api/public/menu responded 200 in 136ms
+2026-05-31 17:29:52.526 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:29:52.536 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 155.3467ms
+2026-05-31 17:29:52.625 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:52.628 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:52.631 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 103.1261ms
+2026-05-31 17:29:52.632 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:29:52.634 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:52.635 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.638 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:52.641 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:52.642 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 136.8015 ms
+2026-05-31 17:29:52.644 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 104.9933ms
+2026-05-31 17:29:52.645 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.647 +07:00 [INF] GET /api/public/reviews responded 200 in 142ms
+2026-05-31 17:29:52.649 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:29:52.650 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:52.653 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 153.597ms
+2026-05-31 17:29:52.654 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 142.4495 ms
+2026-05-31 17:29:52.663 +07:00 [INF] GET /api/public/menu responded 200 in 151ms
+2026-05-31 17:29:52.665 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 162.4486ms
+2026-05-31 17:29:52.750 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:52.753 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:52.755 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.8518ms
+2026-05-31 17:29:52.757 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:29:52.757 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.761 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:29:52.763 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 121.8640 ms
+2026-05-31 17:29:52.764 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.766 +07:00 [INF] GET /api/public/reviews responded 200 in 125ms
+2026-05-31 17:29:52.768 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:29:52.770 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 135.8206ms
+2026-05-31 17:29:52.865 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:29:52.868 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:29:52.870 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.0219ms
+2026-05-31 17:29:52.872 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:29:52.874 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 112.8588 ms
+2026-05-31 17:29:52.876 +07:00 [INF] GET /api/public/reviews responded 200 in 115ms
+2026-05-31 17:29:52.878 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 121.2565ms
+2026-05-31 17:30:05.621 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:05.621 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:30:05.625 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:05.627 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:05.628 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:05.630 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:05.631 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:05.633 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:30:05.729 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:05.732 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:30:05.734 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:05.737 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:05.738 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 103.3886ms
+2026-05-31 17:30:05.740 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:05.740 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 102.7298ms
+2026-05-31 17:30:05.742 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:30:05.742 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:05.746 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:05.748 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:05.751 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:05.753 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 128.1199 ms
+2026-05-31 17:30:05.754 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:05.755 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 127.6887 ms
+2026-05-31 17:30:05.756 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:05.758 +07:00 [INF] GET /api/public/reviews responded 200 in 134ms
+2026-05-31 17:30:05.760 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:05.762 +07:00 [INF] GET /api/public/menu responded 200 in 135ms
+2026-05-31 17:30:05.764 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:30:05.766 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 144.4816ms
+2026-05-31 17:30:05.771 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 149.3583ms
+2026-05-31 17:30:05.862 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:05.866 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:05.867 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:30:05.868 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.1711ms
+2026-05-31 17:30:05.870 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:05.872 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:05.873 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:05.877 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:05.879 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 105.7904ms
+2026-05-31 17:30:05.880 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 134.1818 ms
+2026-05-31 17:30:05.881 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:05.883 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:05.886 +07:00 [INF] GET /api/public/reviews responded 200 in 139ms
+2026-05-31 17:30:05.887 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:05.889 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 137.4620 ms
+2026-05-31 17:30:05.891 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 151.4576ms
+2026-05-31 17:30:05.896 +07:00 [INF] GET /api/public/menu responded 200 in 144ms
+2026-05-31 17:30:05.902 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 160.3294ms
+2026-05-31 17:30:05.986 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:05.989 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:05.991 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 97.2938ms
+2026-05-31 17:30:05.992 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:05.993 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:05.996 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:05.997 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 120.5344 ms
+2026-05-31 17:30:05.998 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:06.000 +07:00 [INF] GET /api/public/reviews responded 200 in 123ms
+2026-05-31 17:30:06.001 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:06.003 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 132.3825ms
+2026-05-31 17:30:06.096 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:06.100 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:06.103 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.7279ms
+2026-05-31 17:30:06.105 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:06.107 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 110.3928 ms
+2026-05-31 17:30:06.109 +07:00 [INF] GET /api/public/reviews responded 200 in 112ms
+2026-05-31 17:30:06.111 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 119.2293ms
+2026-05-31 17:30:12.701 +07:00 [INF] Application is shutting down...
+2026-05-31 17:30:22.356 +07:00 [INF] Executed DbCommand (133ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:30:22.505 +07:00 [INF] Executed DbCommand (97ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-31 17:30:23.472 +07:00 [INF] Executed DbCommand (96ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:30:24.133 +07:00 [INF] Executed DbCommand (95ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2026-05-31 17:30:24.251 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-05-31 17:30:24.262 +07:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-31 17:30:24.265 +07:00 [INF] Database migration completed successfully.
+2026-05-31 17:30:24.518 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'admin@yakicafe.com')
+2026-05-31 17:30:24.622 +07:00 [INF] Executed DbCommand (95ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'staff@yakicafe.com')
+2026-05-31 17:30:24.723 +07:00 [INF] Executed DbCommand (95ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM users AS u
+    WHERE u.email = 'manager@yakicafe.com')
+2026-05-31 17:30:24.828 +07:00 [INF] Executed DbCommand (98ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM seating_areas AS s)
+2026-05-31 17:30:24.929 +07:00 [INF] Executed DbCommand (95ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT EXISTS (
+    SELECT 1
+    FROM "RestaurantInfo" AS r)
+2026-05-31 17:30:25.055 +07:00 [INF] Executed DbCommand (96ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+2026-05-31 17:30:25.403 +07:00 [INF] Executed DbCommand (208ms) [Parameters=[@p9='?' (DbType = Guid), @p0='?' (DbType = Int32), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?' (DbType = Boolean), @p5='?', @p6='?' (DbType = Decimal), @p7='?' (DbType = Int32), @p8='?' (DbType = Int32), @p19='?' (DbType = Guid), @p10='?' (DbType = Int32), @p11='?' (DbType = DateTime), @p12='?', @p13='?', @p14='?' (DbType = Boolean), @p15='?', @p16='?' (DbType = Decimal), @p17='?' (DbType = Int32), @p18='?' (DbType = Int32), @p29='?' (DbType = Guid), @p20='?' (DbType = Int32), @p21='?' (DbType = DateTime), @p22='?', @p23='?', @p24='?' (DbType = Boolean), @p25='?', @p26='?' (DbType = Decimal), @p27='?' (DbType = Int32), @p28='?' (DbType = Int32), @p39='?' (DbType = Guid), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?', @p33='?', @p34='?' (DbType = Boolean), @p35='?', @p36='?' (DbType = Decimal), @p37='?' (DbType = Int32), @p38='?' (DbType = Int32), @p49='?' (DbType = Guid), @p40='?' (DbType = Int32), @p41='?' (DbType = DateTime), @p42='?', @p43='?', @p44='?' (DbType = Boolean), @p45='?', @p46='?' (DbType = Decimal), @p47='?' (DbType = Int32), @p48='?' (DbType = Int32), @p59='?' (DbType = Guid), @p50='?' (DbType = Int32), @p51='?' (DbType = DateTime), @p52='?', @p53='?', @p54='?' (DbType = Boolean), @p55='?', @p56='?' (DbType = Decimal), @p57='?' (DbType = Int32), @p58='?' (DbType = Int32), @p69='?' (DbType = Guid), @p60='?' (DbType = Int32), @p61='?' (DbType = DateTime), @p62='?', @p63='?', @p64='?' (DbType = Boolean), @p65='?', @p66='?' (DbType = Decimal), @p67='?' (DbType = Int32), @p68='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+UPDATE "MenuItems" SET "Category" = @p0, "CreatedAt" = @p1, "Description" = @p2, "ImageUrl" = @p3, "IsActive" = @p4, "Name" = @p5, "Price" = @p6, "SalesCount" = @p7, "Tag" = @p8
+WHERE "Id" = @p9;
+UPDATE "MenuItems" SET "Category" = @p10, "CreatedAt" = @p11, "Description" = @p12, "ImageUrl" = @p13, "IsActive" = @p14, "Name" = @p15, "Price" = @p16, "SalesCount" = @p17, "Tag" = @p18
+WHERE "Id" = @p19;
+UPDATE "MenuItems" SET "Category" = @p20, "CreatedAt" = @p21, "Description" = @p22, "ImageUrl" = @p23, "IsActive" = @p24, "Name" = @p25, "Price" = @p26, "SalesCount" = @p27, "Tag" = @p28
+WHERE "Id" = @p29;
+UPDATE "MenuItems" SET "Category" = @p30, "CreatedAt" = @p31, "Description" = @p32, "ImageUrl" = @p33, "IsActive" = @p34, "Name" = @p35, "Price" = @p36, "SalesCount" = @p37, "Tag" = @p38
+WHERE "Id" = @p39;
+UPDATE "MenuItems" SET "Category" = @p40, "CreatedAt" = @p41, "Description" = @p42, "ImageUrl" = @p43, "IsActive" = @p44, "Name" = @p45, "Price" = @p46, "SalesCount" = @p47, "Tag" = @p48
+WHERE "Id" = @p49;
+UPDATE "MenuItems" SET "Category" = @p50, "CreatedAt" = @p51, "Description" = @p52, "ImageUrl" = @p53, "IsActive" = @p54, "Name" = @p55, "Price" = @p56, "SalesCount" = @p57, "Tag" = @p58
+WHERE "Id" = @p59;
+UPDATE "MenuItems" SET "Category" = @p60, "CreatedAt" = @p61, "Description" = @p62, "ImageUrl" = @p63, "IsActive" = @p64, "Name" = @p65, "Price" = @p66, "SalesCount" = @p67, "Tag" = @p68
+WHERE "Id" = @p69;
+2026-05-31 17:30:25.515 +07:00 [INF] Synced 7 menu items in database
+2026-05-31 17:30:25.521 +07:00 [INF] Data seeding completed.
+2026-05-31 17:30:25.614 +07:00 [INF] User profile is available. Using 'C:\Users\luanq\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-31 17:30:25.620 +07:00 [INF] AutoCancelReservationWorker is starting.
+2026-05-31 17:30:25.737 +07:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2026-05-31 17:30:25.745 +07:00 [INF] Now listening on: https://localhost:52817
+2026-05-31 17:30:25.747 +07:00 [INF] Now listening on: http://localhost:52818
+2026-05-31 17:30:25.748 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-31 17:30:25.749 +07:00 [INF] Hosting environment: Development
+2026-05-31 17:30:25.750 +07:00 [INF] Content root path: E:\IELTS\EXE201\CafeReservation\src\CafeReservation.Api
+2026-05-31 17:30:25.771 +07:00 [INF] Executed DbCommand (97ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-31 17:30:25.922 +07:00 [INF] Executed DbCommand (95ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, t.table_name, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, r.table_name
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-31 17:30:44.610 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:30:44.610 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:44.675 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:44.675 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:44.710 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:44.710 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:44.742 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:30:44.742 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:44.946 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:30:44.961 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:45.019 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 269.6335ms
+2026-05-31 17:30:45.020 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:30:45.024 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:45.030 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 354.9701 ms
+2026-05-31 17:30:45.031 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:45.035 +07:00 [INF] GET /api/public/menu responded 200 in 385ms
+2026-05-31 17:30:45.038 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:45.040 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:30:45.044 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 437.3307ms
+2026-05-31 17:30:45.141 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:30:45.146 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:45.149 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 107.3982ms
+2026-05-31 17:30:45.151 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:45.153 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 122.7065 ms
+2026-05-31 17:30:45.156 +07:00 [INF] GET /api/public/menu responded 200 in 126ms
+2026-05-31 17:30:45.159 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 138.9963ms
+2026-05-31 17:30:45.517 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:45.523 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:45.542 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 794.8769ms
+2026-05-31 17:30:45.544 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:45.545 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.548 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:45.549 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 875.6176 ms
+2026-05-31 17:30:45.550 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.552 +07:00 [INF] GET /api/public/reviews responded 200 in 903ms
+2026-05-31 17:30:45.554 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:45.556 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 950.1481ms
+2026-05-31 17:30:45.658 +07:00 [INF] Executed DbCommand (96ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:45.661 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:45.663 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 104.7279ms
+2026-05-31 17:30:45.665 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:45.665 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.668 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:45.669 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 121.2417 ms
+2026-05-31 17:30:45.671 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.673 +07:00 [INF] GET /api/public/reviews responded 200 in 125ms
+2026-05-31 17:30:45.674 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:45.676 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 131.4089ms
+2026-05-31 17:30:45.773 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:45.777 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:45.779 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 101.4843ms
+2026-05-31 17:30:45.780 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:45.781 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.784 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:45.785 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 117.3455 ms
+2026-05-31 17:30:45.787 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.789 +07:00 [INF] GET /api/public/reviews responded 200 in 121ms
+2026-05-31 17:30:45.790 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:45.793 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 128.0079ms
+2026-05-31 17:30:45.890 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:45.894 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:45.897 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 102.2848ms
+2026-05-31 17:30:45.899 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:45.901 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 116.8365 ms
+2026-05-31 17:30:45.904 +07:00 [INF] GET /api/public/reviews responded 200 in 119ms
+2026-05-31 17:30:45.906 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 126.1282ms
+2026-05-31 17:30:54.112 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:30:54.112 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:54.115 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:54.118 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:54.119 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:54.120 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.121 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:30:54.122 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:54.223 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:30:54.223 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:54.226 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:54.228 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:54.230 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 105.0286ms
+2026-05-31 17:30:54.231 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 104.0153ms
+2026-05-31 17:30:54.231 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:30:54.232 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:54.233 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.234 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:54.237 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:54.238 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 122.4698 ms
+2026-05-31 17:30:54.239 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 120.8208 ms
+2026-05-31 17:30:54.242 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:54.243 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:54.245 +07:00 [INF] GET /api/public/menu responded 200 in 129ms
+2026-05-31 17:30:54.247 +07:00 [INF] GET /api/public/reviews responded 200 in 129ms
+2026-05-31 17:30:54.248 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.249 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:30:54.251 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 139.1547ms
+2026-05-31 17:30:54.253 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 140.5956ms
+2026-05-31 17:30:54.254 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:54.350 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:30:54.355 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:54.357 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 101.6126ms
+2026-05-31 17:30:54.358 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:54.360 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:30:54.362 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:54.363 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 126.8797 ms
+2026-05-31 17:30:54.365 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 99.8894ms
+2026-05-31 17:30:54.367 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:54.367 +07:00 [INF] GET /api/public/menu responded 200 in 130ms
+2026-05-31 17:30:54.369 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.372 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:54.375 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 143.2703ms
+2026-05-31 17:30:54.375 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 133.3372 ms
+2026-05-31 17:30:54.376 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.382 +07:00 [INF] GET /api/public/reviews responded 200 in 139ms
+2026-05-31 17:30:54.383 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:54.385 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 151.1027ms
+2026-05-31 17:30:54.482 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:54.485 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:54.488 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.7272ms
+2026-05-31 17:30:54.489 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:30:54.491 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.494 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:30:54.496 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 123.3371 ms
+2026-05-31 17:30:54.497 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.499 +07:00 [INF] GET /api/public/reviews responded 200 in 127ms
+2026-05-31 17:30:54.501 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:30:54.503 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 135.8919ms
+2026-05-31 17:30:54.600 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:30:54.603 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:30:54.606 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.2146ms
+2026-05-31 17:30:54.608 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:30:54.609 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 114.9749 ms
+2026-05-31 17:30:54.612 +07:00 [INF] GET /api/public/reviews responded 200 in 117ms
+2026-05-31 17:30:54.614 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 125.0633ms
+2026-05-31 17:31:07.489 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:31:07.489 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:07.493 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:07.497 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:07.498 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:07.499 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.500 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:31:07.501 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:07.599 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:31:07.600 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:07.603 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:07.605 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:07.607 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 102.9759ms
+2026-05-31 17:31:07.608 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 101.7271ms
+2026-05-31 17:31:07.608 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:31:07.609 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:07.609 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:07.610 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.613 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:07.614 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 121.6128 ms
+2026-05-31 17:31:07.617 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:07.618 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 121.2319 ms
+2026-05-31 17:31:07.619 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:07.621 +07:00 [INF] GET /api/public/menu responded 200 in 128ms
+2026-05-31 17:31:07.622 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.624 +07:00 [INF] GET /api/public/reviews responded 200 in 127ms
+2026-05-31 17:31:07.625 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:31:07.627 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 137.5491ms
+2026-05-31 17:31:07.628 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:07.630 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 140.3187ms
+2026-05-31 17:31:07.726 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:31:07.730 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:07.730 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:07.733 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:07.734 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 102.2562ms
+2026-05-31 17:31:07.735 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.9048ms
+2026-05-31 17:31:07.736 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:07.736 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:07.738 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.740 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:07.741 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 128.0839 ms
+2026-05-31 17:31:07.743 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 125.8095 ms
+2026-05-31 17:31:07.744 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.746 +07:00 [INF] GET /api/public/menu responded 200 in 132ms
+2026-05-31 17:31:07.748 +07:00 [INF] GET /api/public/reviews responded 200 in 130ms
+2026-05-31 17:31:07.749 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:07.751 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 143.2011ms
+2026-05-31 17:31:07.753 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 143.6147ms
+2026-05-31 17:31:07.849 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:07.852 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:07.854 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.0341ms
+2026-05-31 17:31:07.856 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:07.857 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.860 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:07.861 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 120.8404 ms
+2026-05-31 17:31:07.862 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.864 +07:00 [INF] GET /api/public/reviews responded 200 in 124ms
+2026-05-31 17:31:07.865 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:07.867 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 131.2971ms
+2026-05-31 17:31:07.963 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:07.966 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:07.968 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 99.1597ms
+2026-05-31 17:31:07.969 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:07.971 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 110.7000 ms
+2026-05-31 17:31:07.973 +07:00 [INF] GET /api/public/reviews responded 200 in 112ms
+2026-05-31 17:31:07.975 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 118.8491ms
+2026-05-31 17:31:16.443 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:16.443 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:31:16.446 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:16.449 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:16.450 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:16.450 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:16.452 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:16.453 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:31:16.551 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:16.551 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:31:16.555 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:16.557 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:16.558 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 103.312ms
+2026-05-31 17:31:16.559 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:16.559 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 102.3737ms
+2026-05-31 17:31:16.560 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:16.561 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:31:16.563 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:16.564 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:16.566 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 119.1381 ms
+2026-05-31 17:31:16.568 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:16.569 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:16.570 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 121.2387 ms
+2026-05-31 17:31:16.572 +07:00 [INF] GET /api/public/reviews responded 200 in 125ms
+2026-05-31 17:31:16.573 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:16.575 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:16.576 +07:00 [INF] GET /api/public/menu responded 200 in 127ms
+2026-05-31 17:31:16.579 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 135.5678ms
+2026-05-31 17:31:16.580 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:31:16.584 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 140.5018ms
+2026-05-31 17:31:16.676 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:16.679 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:16.682 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.2637ms
+2026-05-31 17:31:16.682 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:31:16.684 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:16.687 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:16.688 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 124.9544 ms
+2026-05-31 17:31:16.690 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 101.7854ms
+2026-05-31 17:31:16.693 +07:00 [INF] GET /api/public/reviews responded 200 in 129ms
+2026-05-31 17:31:16.695 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:16.697 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 137.6782ms
+2026-05-31 17:31:16.699 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 130.3703 ms
+2026-05-31 17:31:16.706 +07:00 [INF] GET /api/public/menu responded 200 in 137ms
+2026-05-31 17:31:16.708 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 147.5205ms
+2026-05-31 17:31:22.951 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=858e5a65-1e5e-4e0f-9f8d-ae178b4bb37b - null null
+2026-05-31 17:31:22.955 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:22.956 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:22.957 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:23.071 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[@__menuItemId_Value_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+WHERE r."MenuItemId" = @__menuItemId_Value_0
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:23.074 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:23.077 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 118.4201ms
+2026-05-31 17:31:23.079 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:23.079 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=858e5a65-1e5e-4e0f-9f8d-ae178b4bb37b - null null
+2026-05-31 17:31:23.080 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 125.6392 ms
+2026-05-31 17:31:23.083 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:23.085 +07:00 [INF] GET /api/public/reviews responded 200 in 130ms
+2026-05-31 17:31:23.086 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:23.088 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=858e5a65-1e5e-4e0f-9f8d-ae178b4bb37b - 200 null application/json; charset=utf-8 136.767ms
+2026-05-31 17:31:23.089 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:23.190 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[@__menuItemId_Value_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+WHERE r."MenuItemId" = @__menuItemId_Value_0
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:23.192 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:23.194 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 99.5691ms
+2026-05-31 17:31:23.196 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:23.197 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 113.6929 ms
+2026-05-31 17:31:23.199 +07:00 [INF] GET /api/public/reviews responded 200 in 115ms
+2026-05-31 17:31:23.201 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=858e5a65-1e5e-4e0f-9f8d-ae178b4bb37b - 200 null application/json; charset=utf-8 122.162ms
+2026-05-31 17:31:26.031 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-31 17:31:26.128 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, t.table_name, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, r.table_name
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-31 17:31:26.583 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=9a8fae7d-5e88-4ee0-b608-a19f6166cf29 - null null
+2026-05-31 17:31:26.586 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:26.587 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:26.588 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:26.686 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[@__menuItemId_Value_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+WHERE r."MenuItemId" = @__menuItemId_Value_0
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:26.688 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:26.691 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.18ms
+2026-05-31 17:31:26.692 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=9a8fae7d-5e88-4ee0-b608-a19f6166cf29 - null null
+2026-05-31 17:31:26.693 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:26.696 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:26.697 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 110.8250 ms
+2026-05-31 17:31:26.698 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:26.700 +07:00 [INF] GET /api/public/reviews responded 200 in 113ms
+2026-05-31 17:31:26.701 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:26.703 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=9a8fae7d-5e88-4ee0-b608-a19f6166cf29 - 200 null application/json; charset=utf-8 120.0108ms
+2026-05-31 17:31:26.799 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[@__menuItemId_Value_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+WHERE r."MenuItemId" = @__menuItemId_Value_0
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:26.802 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:26.803 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.7167ms
+2026-05-31 17:31:26.805 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:26.807 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 111.0819 ms
+2026-05-31 17:31:26.809 +07:00 [INF] GET /api/public/reviews responded 200 in 113ms
+2026-05-31 17:31:26.812 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews?menuItemId=9a8fae7d-5e88-4ee0-b608-a19f6166cf29 - 200 null application/json; charset=utf-8 119.6613ms
+2026-05-31 17:31:38.463 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/restaurant-info - null null
+2026-05-31 17:31:38.466 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:38.467 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api)'
+2026-05-31 17:31:38.471 +07:00 [INF] Route matched with {action = "GetInfo", controller = "Info"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetInfo(System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.InfoController (CafeReservation.Api).
+2026-05-31 17:31:38.478 +07:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-05-31 17:31:38.577 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Address", r."MapUrl", r."OpeningHours", r."Phone", r."UpdatedAt"
+FROM "RestaurantInfo" AS r
+LIMIT 1
+2026-05-31 17:31:38.582 +07:00 [INF] Executing OkObjectResult, writing value of type 'CafeReservation.Application.DTOs.RestaurantInfoDto'.
+2026-05-31 17:31:38.586 +07:00 [INF] Executed action CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api) in 112.4975ms
+2026-05-31 17:31:38.587 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/restaurant-info - null null
+2026-05-31 17:31:38.589 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api)'
+2026-05-31 17:31:38.592 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:38.593 +07:00 [INF] HTTP GET /api/public/restaurant-info responded 200 in 127.0507 ms
+2026-05-31 17:31:38.594 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api)'
+2026-05-31 17:31:38.595 +07:00 [INF] GET /api/public/restaurant-info responded 200 in 129ms
+2026-05-31 17:31:38.596 +07:00 [INF] Route matched with {action = "GetInfo", controller = "Info"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetInfo(System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.InfoController (CafeReservation.Api).
+2026-05-31 17:31:38.598 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/restaurant-info - 200 null application/json; charset=utf-8 134.8413ms
+2026-05-31 17:31:38.693 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Address", r."MapUrl", r."OpeningHours", r."Phone", r."UpdatedAt"
+FROM "RestaurantInfo" AS r
+LIMIT 1
+2026-05-31 17:31:38.697 +07:00 [INF] Executing OkObjectResult, writing value of type 'CafeReservation.Application.DTOs.RestaurantInfoDto'.
+2026-05-31 17:31:38.699 +07:00 [INF] Executed action CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api) in 99.3871ms
+2026-05-31 17:31:38.700 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.InfoController.GetInfo (CafeReservation.Api)'
+2026-05-31 17:31:38.702 +07:00 [INF] HTTP GET /api/public/restaurant-info responded 200 in 110.2759 ms
+2026-05-31 17:31:38.704 +07:00 [INF] GET /api/public/restaurant-info responded 200 in 112ms
+2026-05-31 17:31:38.707 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/restaurant-info - 200 null application/json; charset=utf-8 120.1305ms
+2026-05-31 17:31:42.851 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:31:42.852 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:42.854 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:42.857 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:42.858 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:42.859 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:42.860 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:31:42.861 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:42.958 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:31:42.958 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:42.961 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:42.964 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:42.965 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 102.505ms
+2026-05-31 17:31:42.967 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/menu - null null
+2026-05-31 17:31:42.967 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 102.3748ms
+2026-05-31 17:31:42.968 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:42.968 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:42.971 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:42.972 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:42.974 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:42.975 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 121.1057 ms
+2026-05-31 17:31:42.976 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:42.977 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 119.8712 ms
+2026-05-31 17:31:42.978 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:42.980 +07:00 [INF] GET /api/public/menu responded 200 in 125ms
+2026-05-31 17:31:42.981 +07:00 [INF] Route matched with {action = "GetAll", controller = "Menu"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll(System.String, System.String, System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.MenuController (CafeReservation.Api).
+2026-05-31 17:31:42.982 +07:00 [INF] GET /api/public/reviews responded 200 in 125ms
+2026-05-31 17:31:42.983 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:42.986 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 134.7712ms
+2026-05-31 17:31:42.989 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 137.439ms
+2026-05-31 17:31:43.082 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT m."Id", m."Category", m."CreatedAt", m."Description", m."ImageUrl", m."IsActive", m."Name", m."Price", m."SalesCount", m."Tag"
+FROM "MenuItems" AS m
+WHERE m."IsActive"
+2026-05-31 17:31:43.083 +07:00 [INF] Executed DbCommand (91ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:43.085 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.MenuItem, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.MenuItemDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:43.087 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:43.089 +07:00 [INF] Executed action CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api) in 101.7125ms
+2026-05-31 17:31:43.090 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 99.3464ms
+2026-05-31 17:31:43.092 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:43.092 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.MenuController.GetAll (CafeReservation.Api)'
+2026-05-31 17:31:43.093 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:43.097 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:43.098 +07:00 [INF] HTTP GET /api/public/menu responded 200 in 127.0677 ms
+2026-05-31 17:31:43.099 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 124.5684 ms
+2026-05-31 17:31:43.100 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:43.102 +07:00 [INF] GET /api/public/menu responded 200 in 131ms
+2026-05-31 17:31:43.104 +07:00 [INF] GET /api/public/reviews responded 200 in 129ms
+2026-05-31 17:31:43.105 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:43.107 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/menu - 200 null application/json; charset=utf-8 140.2845ms
+2026-05-31 17:31:43.109 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 141.3548ms
+2026-05-31 17:31:43.206 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:43.210 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:43.212 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 100.8442ms
+2026-05-31 17:31:43.213 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:52818/api/public/reviews - null null
+2026-05-31 17:31:43.214 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:43.217 +07:00 [INF] CORS policy execution successful.
+2026-05-31 17:31:43.218 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 121.3669 ms
+2026-05-31 17:31:43.219 +07:00 [INF] Executing endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:43.221 +07:00 [INF] GET /api/public/reviews responded 200 in 124ms
+2026-05-31 17:31:43.222 +07:00 [INF] Route matched with {action = "GetReviews", controller = "Review"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReviews(System.Nullable`1[System.Guid], System.Threading.CancellationToken) on controller CafeReservation.Api.Controllers.ReviewController (CafeReservation.Api).
+2026-05-31 17:31:43.225 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 132.9041ms
+2026-05-31 17:31:43.320 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+SELECT r."Id", r."Comment", r."CreatedAt", r."GuestEmail", r."GuestName", r."GuestPhone", r."MenuItemId", r."Rating", r."Reply", r."ReplyAt"
+FROM "Reviews" AS r
+ORDER BY r."CreatedAt" DESC
+2026-05-31 17:31:43.323 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[CafeReservation.Domain.Entities.Review, CafeReservation.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CafeReservation.Application.DTOs.ReviewDto, CafeReservation.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-05-31 17:31:43.325 +07:00 [INF] Executed action CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api) in 98.5368ms
+2026-05-31 17:31:43.335 +07:00 [INF] Executed endpoint 'CafeReservation.Api.Controllers.ReviewController.GetReviews (CafeReservation.Api)'
+2026-05-31 17:31:43.339 +07:00 [INF] HTTP GET /api/public/reviews responded 200 in 121.5493 ms
+2026-05-31 17:31:43.343 +07:00 [INF] GET /api/public/reviews responded 200 in 126ms
+2026-05-31 17:31:43.346 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:52818/api/public/reviews - 200 null application/json; charset=utf-8 132.3187ms
+2026-05-31 17:32:26.234 +07:00 [INF] Executed DbCommand (94ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-31 17:32:26.330 +07:00 [INF] Executed DbCommand (92ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, t.table_name, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, r.table_name
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC
+2026-05-31 17:33:26.434 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT count(*)::int
+FROM reservations AS r
+WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+2026-05-31 17:33:26.530 +07:00 [INF] Executed DbCommand (93ms) [Parameters=[@__date_Value_0='?' (DbType = Date), @__parsedStatus_1='?' (DbType = Int32), @__p_3='?' (DbType = Int32), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='60']
+SELECT t.id, t.created_at, t.end_time, t.guest_count, t.guest_email, t.guest_name, t.guest_phone, t.reservation_code, t.reservation_date, t.seating_area_id, t.special_note, t.start_time, t.status, t.table_name, s.id, s.area, s.description, s.is_active, s.preview_image, s.reservable_tables, s.table_type, s.total_tables
+FROM (
+    SELECT r.id, r.created_at, r.end_time, r.guest_count, r.guest_email, r.guest_name, r.guest_phone, r.reservation_code, r.reservation_date, r.seating_area_id, r.special_note, r.start_time, r.status, r.table_name
+    FROM reservations AS r
+    WHERE r.reservation_date = @__date_Value_0 AND r.status = @__parsedStatus_1
+    ORDER BY r.reservation_date DESC, r.start_time DESC
+    LIMIT @__p_3 OFFSET @__p_2
+) AS t
+INNER JOIN seating_areas AS s ON t.seating_area_id = s.id
+ORDER BY t.reservation_date DESC, t.start_time DESC

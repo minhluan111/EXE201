@@ -179,73 +179,81 @@ export default function HomePage() {
   const heroY = useTransform(scrollY, [0, 600], [0, 160]);
 
   useEffect(() => {
+    let active = true;
     (async () => {
-      // Fetch both products and testimonials in parallel to eliminate sequential request waterfall
-      const [res, testRes] = await Promise.all([
-        menuList(),
-        getTestimonials()
-      ]);
+      try {
+        // Fetch both products and testimonials in parallel to eliminate sequential request waterfall
+        const [res, testRes] = await Promise.all([
+          menuList(),
+          getTestimonials()
+        ]);
 
-      const loadedProducts = res.ok ? res.data : [];
-      setProducts(loadedProducts);
-      
-      const enrichFallback = () => {
-        if (loadedProducts.length > 0) {
-          const enriched = TESTIMONIALS.map(t => {
-            const product = loadedProducts.find(p => 
-              t.text.toLowerCase().includes(p.name.toLowerCase())
-            ) || loadedProducts[0];
+        if (!active) return;
 
-            return {
-              ...t,
-              role: product ? `Khách hàng đánh giá · ${product.name}` : t.role,
-              foodImage: product ? product.image_url : null,
-              foodName: product ? product.name : null,
-              menu_id: product ? product.id : null,
-            };
+        const loadedProducts = res.ok ? res.data : [];
+        setProducts(loadedProducts);
+        
+        const enrichFallback = () => {
+          if (loadedProducts.length > 0) {
+            const enriched = TESTIMONIALS.map(t => {
+              const product = loadedProducts.find(p => 
+                t.text.toLowerCase().includes(p.name.toLowerCase())
+              ) || loadedProducts[0];
+
+              return {
+                ...t,
+                role: product ? `Khách hàng đánh giá · ${product.name}` : t.role,
+                foodImage: product ? product.image_url : null,
+                foodName: product ? product.name : null,
+                menu_id: product ? product.id : null,
+              };
+            });
+            setReviewsList(enriched);
+          }
+        };
+
+        if (testRes.ok && Array.isArray(testRes.data) && testRes.data.length > 0) {
+          // Only keep reviews associated with a valid menu item in our database
+          const menuReviews = testRes.data.filter(r => {
+            if (!r.menu_id) return false;
+            return loadedProducts.some(p => String(p.id) === String(r.menu_id));
           });
-          setReviewsList(enriched);
-        }
-      };
 
-      if (testRes.ok && Array.isArray(testRes.data) && testRes.data.length > 0) {
-        // Only keep reviews associated with a valid menu item in our database
-        const menuReviews = testRes.data.filter(r => {
-          if (!r.menu_id) return false;
-          return loadedProducts.some(p => String(p.id) === String(r.menu_id));
-        });
+          if (menuReviews.length > 0) {
+            // Filter and sort by rating desc, slice top 5
+            const topReviews = [...menuReviews]
+              .sort((a, b) => b.rating - a.rating)
+              .slice(0, 5);
 
-        if (menuReviews.length > 0) {
-          // Filter and sort by rating desc, slice top 5
-          const topReviews = [...menuReviews]
-            .sort((a, b) => b.rating - a.rating)
-            .slice(0, 5);
-
-          const mapped = topReviews.map(r => {
-            const product = loadedProducts.find(p => String(p.id) === String(r.menu_id));
-            return {
-              id: r.id,
-              name: r.user?.full_name || "Khách Hàng Trải Nghiệm",
-              role: `Khách hàng đánh giá · ${product.name}`,
-              rating: r.rating || 5,
-              text: r.comment || "Tuyệt vời!",
-              foodImage: product ? product.image_url : null,
-              foodName: product ? product.name : null,
-              menu_id: r.menu_id,
-              reply: r.reply,
-              replyAt: r.replyAt,
-            };
-          });
-          setReviewsList(mapped);
+            const mapped = topReviews.map(r => {
+              const product = loadedProducts.find(p => String(p.id) === String(r.menu_id));
+              return {
+                id: r.id,
+                name: r.user?.full_name || "Khách Hàng Trải Nghiệm",
+                role: `Khách hàng đánh giá · ${product.name}`,
+                rating: r.rating || 5,
+                text: r.comment || "Tuyệt vời!",
+                foodImage: product ? product.image_url : null,
+                foodName: product ? product.name : null,
+                menu_id: r.menu_id,
+                reply: r.reply,
+                replyAt: r.replyAt,
+              };
+            });
+            setReviewsList(mapped);
+          } else {
+            enrichFallback();
+          }
         } else {
           enrichFallback();
         }
-      } else {
-        enrichFallback();
+      } catch (err) {
+        console.error("Failed to load homepage data:", err);
+      } finally {
+        if (active) setLoading(false);
       }
-      
-      setLoading(false);
     })();
+    return () => { active = false; };
   }, []);
 
   // Auto-rotate testimonials

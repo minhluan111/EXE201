@@ -193,11 +193,17 @@ async function requestJson(path, options = {}) {
     ...(options.headers || {}),
   };
 
-  const response = await fetch(url, {
-    method: options.method || "GET",
-    headers,
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      method: options.method || "GET",
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+  } catch (err) {
+    console.error("Network error fetching API:", err);
+    return { ok: false, message: "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng." };
+  }
 
   const text = await response.text();
   const data = text ? JSON.parse(text) : null;
@@ -338,21 +344,37 @@ export async function authMe(token) {
   return { ok: true, user: mapUser(result.data) };
 }
 
-// MENU
 export async function menuList({ q = "", category = "all", tag = "all" } = {}) {
-  const result = await requestJson("/api/public/menu");
-  if (!result.ok) return result;
+  const [menuResult, reviewsResult] = await Promise.all([
+    requestJson("/api/public/menu"),
+    requestJson("/api/public/reviews")
+  ]);
 
-  const rawItems = Array.isArray(result.data) ? result.data : [];
-  const items = await Promise.all(
-    rawItems.map(async (item) => {
-      const reviews = await menuReviews({ id: item.id });
-      const avgRating = reviews.ok && reviews.data.length
-        ? Math.round((reviews.data.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.data.length) * 10) / 10
-        : 0;
-      return mapMenuItem(item, avgRating);
-    }),
-  );
+  if (!menuResult.ok) return menuResult;
+
+  const reviewsList = reviewsResult.ok && Array.isArray(reviewsResult.data) ? reviewsResult.data : [];
+  
+  // Group reviews by menuItemId
+  const ratingsByMenuId = {};
+  reviewsList.forEach(review => {
+    const mId = review.menuItemId || review.menuItem_id || review.menu_id || review.MenuItemId;
+    if (!mId) return;
+    const rating = Number(review.rating || review.Rating || 0);
+    if (!ratingsByMenuId[mId]) {
+      ratingsByMenuId[mId] = { sum: 0, count: 0 };
+    }
+    ratingsByMenuId[mId].sum += rating;
+    ratingsByMenuId[mId].count += 1;
+  });
+
+  const rawItems = Array.isArray(menuResult.data) ? menuResult.data : [];
+  const items = rawItems.map((item) => {
+    const stats = ratingsByMenuId[item.id];
+    const avgRating = stats && stats.count > 0
+      ? Math.round((stats.sum / stats.count) * 10) / 10
+      : 0;
+    return mapMenuItem(item, avgRating);
+  });
 
   const query = q.trim().toLowerCase();
   return {
