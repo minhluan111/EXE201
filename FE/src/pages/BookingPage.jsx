@@ -6,6 +6,16 @@ import { bookingCheckStatus, tablesList } from "../services/apiClient.js";
 import { useBookingContext } from "../context/useBookingContext.js";
 import TableMap from "../components/booking/TableMap.jsx";
 
+function translateArea(area) {
+  const map = {
+    Window: "Cửa sổ",
+    Corner: "Góc",
+    Indoor: "Trong nhà",
+    Outdoor: "Ngoài trời"
+  };
+  return map[area] || area;
+}
+
 const TIME_SLOTS = [
   "08:00","09:00","10:00","11:00",
   "12:00","13:00","14:00","15:00",
@@ -122,7 +132,7 @@ export default function BookingPage() {
               Đặt chỗ
             </span>
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 6vw, 64px)", fontWeight: 700, color: "#fff", margin: "8px 0 8px", lineHeight: 1 }}>
-              Reserve Your Table
+              Đặt Bàn Trà
             </h1>
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 16 }}>
               Chọn ngày, khung giờ và bàn yêu thích trên sơ đồ tương tác.
@@ -295,7 +305,7 @@ export default function BookingPage() {
                                 {selected.name}
                               </div>
                               <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                                {selected.max_seats} ghế · {selected.area}
+                                {selected.max_seats} ghế · {translateArea(selected.area)}
                               </div>
                             </div>
                           </div>

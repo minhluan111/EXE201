@@ -20,6 +20,16 @@ import {
 import { bookingCancel, bookingMe } from "../services/mockApi.js";
 import { useAuth } from "../context/useAuthContext.js";
 
+function translateArea(area) {
+  const map = {
+    Window: "Cửa sổ",
+    Corner: "Góc",
+    Indoor: "Trong nhà",
+    Outdoor: "Ngoài trời"
+  };
+  return map[area] || area;
+}
+
 export default function BookingHistoryPage() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -309,7 +319,7 @@ export default function BookingHistoryPage() {
                     <div>
                       <span className="info-label">Không gian & Bàn</span>
                       <span className="info-value">
-                        {b.table?.name || "Bàn trà"} <span style={{ color: "var(--text-light)", fontWeight: "normal" }}>•</span> {b.table?.area || "Khu vực"}
+                        {b.table?.name || "Bàn trà"} <span style={{ color: "var(--text-light)", fontWeight: "normal" }}>•</span> {translateArea(b.table?.area) || "Khu vực"}
                       </span>
                     </div>
                   </div>
@@ -716,7 +726,7 @@ export default function BookingHistoryPage() {
                     </div>
                     <div className="summary-row">
                       <span className="summary-label">Không Gian:</span>
-                      <span className="summary-value">{b.table?.name || "Bàn trà"} ({b.table?.area || "Khu vực"})</span>
+                      <span className="summary-value">{b.table?.name || "Bàn trà"} ({translateArea(b.table?.area) || "Khu vực"})</span>
                     </div>
                     <div className="summary-row">
                       <span className="summary-label">Thời Gian:</span>

@@ -6,6 +6,21 @@ import { menuDetail, menuReviews, reviewCreate } from "../services/apiClient.js"
 import Loading from "../components/common/Loading.jsx";
 import { useAuth } from "../context/useAuthContext.js";
 
+function translateCategory(cat) {
+  const map = {
+    Drink: "Trà đạo / Đồ uống",
+    MainCourse: "Món chính",
+    Dessert: "Tráng miệng / Wagashi",
+    Snack: "Ăn nhẹ",
+    Traditional: "Truyền thống",
+    Latte: "Latte",
+    Hojicha: "Hojicha",
+    Desserts: "Tráng miệng",
+    Food: "Món ăn"
+  };
+  return map[cat] || cat;
+}
+
 // ── Rating Input for the Review Form ──────────────────────────────────────────
 function InteractiveRating({ value, onChange }) {
   const [hover, setHover] = useState(0);
@@ -179,10 +194,10 @@ export default function MenuDetailPage() {
     : (menu.avg_rating || 0);
 
   const BADGE_MAP = {
-    best_seller: { label: "⭐ Best Seller", color: "#F59E0B" },
-    signature:   { label: "✦ Signature",   color: "var(--matcha)" },
-    trending:    { label: "🔥 Trending",    color: "#EF4444" },
-    new:         { label: "✨ New",         color: "#3B82F6" },
+    best_seller: { label: "⭐ Bán chạy nhất", color: "#F59E0B" },
+    signature:   { label: "✦ Đặc trưng",   color: "var(--matcha)" },
+    trending:    { label: "🔥 Xu hướng",    color: "#EF4444" },
+    new:         { label: "✨ Mới",         color: "#3B82F6" },
   };
   const badge = BADGE_MAP[menu.tag];
 
@@ -282,7 +297,7 @@ export default function MenuDetailPage() {
                 fontSize: 12, fontWeight: 700, textTransform: "uppercase",
                 letterSpacing: "0.06em", marginBottom: 12
               }}>
-                {menu.category}
+                {translateCategory(menu.category)}
               </span>
 
               {/* Title */}

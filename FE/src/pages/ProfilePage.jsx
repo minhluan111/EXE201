@@ -206,7 +206,7 @@ export default function ProfilePage() {
                        Chào mừng bạn!
                     </Typography>
                     <Typography sx={{ fontSize: "14px" }}>
-                      Cảm ơn bạn đã là thành viên của VIZZA. Hãy khám phá menu
+                      Cảm ơn bạn đã là thành viên của Yakishime. Hãy khám phá thực đơn
                       và đặt bàn ngay!
                     </Typography>
                   </Alert>

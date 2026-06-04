@@ -21,6 +21,16 @@ import { bookingCreate } from "../services/mockApi.js";
 import { useAuth } from "../context/useAuthContext.js";
 import { useBookingContext } from "../context/useBookingContext.js";
 
+function translateArea(area) {
+  const map = {
+    Window: "Cửa sổ",
+    Corner: "Góc",
+    Indoor: "Trong nhà",
+    Outdoor: "Ngoài trời"
+  };
+  return map[area] || area;
+}
+
 export default function BookingConfirmPage() {
   const nav = useNavigate();
   const location = useLocation();
@@ -197,7 +207,7 @@ export default function BookingConfirmPage() {
                 <div className="detail-icon"><MapPin size={16} /></div>
                 <div>
                   <span className="detail-label">KHU VỰC</span>
-                  <span className="detail-value">{table?.area || "Chưa xác định"}</span>
+                  <span className="detail-value">{translateArea(table?.area) || "Chưa xác định"}</span>
                 </div>
               </div>
 

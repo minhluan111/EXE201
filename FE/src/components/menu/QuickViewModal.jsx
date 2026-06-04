@@ -4,6 +4,21 @@ import { X, Star, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import { menuReviews, reviewCreate } from "../../services/mockApi";
 import { useAuth } from "@/context/AuthContext";
 
+function translateCategory(cat) {
+  const map = {
+    Drink: "Trà đạo / Đồ uống",
+    MainCourse: "Món chính",
+    Dessert: "Tráng miệng / Wagashi",
+    Snack: "Ăn nhẹ",
+    Traditional: "Truyền thống",
+    Latte: "Latte",
+    Hojicha: "Hojicha",
+    Desserts: "Tráng miệng",
+    Food: "Món ăn"
+  };
+  return map[cat] || cat;
+}
+
 // ── Star rating input ────────────────────────────────────────────────────────
 function StarInput({ value, onChange }) {
   const [hover, setHover] = useState(0);
@@ -135,10 +150,10 @@ export default function QuickViewModal({ item, onClose }) {
   };
 
   const BADGE_MAP = {
-    best_seller: { label: "⭐ Best Seller", color: "#F59E0B" },
-    signature:   { label: "✦ Signature",   color: "var(--matcha)" },
-    trending:    { label: "🔥 Trending",    color: "#EF4444" },
-    new:         { label: "✨ New",         color: "#3B82F6" },
+    best_seller: { label: "⭐ Bán chạy nhất", color: "#F59E0B" },
+    signature:   { label: "✦ Đặc trưng",   color: "var(--matcha)" },
+    trending:    { label: "🔥 Xu hướng",    color: "#EF4444" },
+    new:         { label: "✨ Mới",         color: "#3B82F6" },
   };
   const badge = BADGE_MAP[item.tag];
 
@@ -235,7 +250,7 @@ export default function QuickViewModal({ item, onClose }) {
                     background: "var(--bg-alt)", color: "var(--text-muted)",
                     fontSize: 12, fontWeight: 600, marginBottom: 10,
                   }}>
-                    {item.category}
+                    {translateCategory(item.category)}
                   </span>
                   <h2 style={{
                     fontFamily: "'Cormorant Garamond', serif",

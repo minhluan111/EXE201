@@ -39,10 +39,10 @@ const COLORS = {
 };
 
 const AREAS = [
-  { value: "Window", label: "Cửa sổ (Window)" },
-  { value: "Corner", label: "Góc tối (Corner)" },
-  { value: "Indoor", label: "Trong nhà (Indoor)" },
-  { value: "Outdoor", label: "Ngoài trời (Outdoor)" },
+  { value: "Window", label: "Cửa sổ" },
+  { value: "Corner", label: "Góc" },
+  { value: "Indoor", label: "Trong nhà" },
+  { value: "Outdoor", label: "Ngoài trời" },
 ];
 
 export default function ManageTablesPage() {
@@ -142,7 +142,7 @@ export default function ManageTablesPage() {
 
   const validate = () => {
     const errs = {};
-    if (!formData.tableType.trim()) errs.tableType = "Vui lòng nhập loại bàn (ví dụ: Window 2-seat).";
+    if (!formData.tableType.trim()) errs.tableType = "Vui lòng nhập loại bàn (ví dụ: Cửa sổ 2 chỗ).";
     if (!formData.totalTables || Number(formData.totalTables) <= 0) {
       errs.totalTables = "Tổng số bàn phải lớn hơn 0.";
     }
