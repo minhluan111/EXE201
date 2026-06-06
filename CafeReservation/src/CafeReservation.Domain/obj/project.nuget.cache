@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YGnxeoqlRj0=",
+  "dgSpecHash": "ku2NujjeHs8=",
   "success": true,
-  "projectFilePath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.27\\microsoft.netcore.app.ref.8.0.27.nupkg.sha512",
-    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.27\\microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512",
-    "C:\\Users\\luanq\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.27\\microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512"
-  ],
+  "projectFilePath": "D:\\Ky8\\EXE201\\PD\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
