@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Routing;
 using Serilog;
 using System.Text;
 
@@ -141,11 +142,8 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Yaki Café API v1"));
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseSerilogRequestLogging();
 app.UseCors();
@@ -154,4 +152,8 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<AvailabilityHub>("/hub/availability");
 
+app.MapGet("/debug/endpoints", (EndpointDataSource endpointSource) =>
+{
+    return endpointSource.Endpoints.Select(e => e.DisplayName);
+});
 await app.RunAsync();
