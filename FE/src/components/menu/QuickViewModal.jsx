@@ -4,6 +4,21 @@ import { X, Star, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import { menuReviews, reviewCreate } from "../../services/mockApi";
 import { useAuth } from "@/context/AuthContext";
 
+function translateCategory(cat) {
+  const map = {
+    Drink: "Trà đạo / Đồ uống",
+    MainCourse: "Món chính",
+    Dessert: "Tráng miệng / Wagashi",
+    Snack: "Ăn nhẹ",
+    Traditional: "Truyền thống",
+    Latte: "Latte",
+    Hojicha: "Hojicha",
+    Desserts: "Tráng miệng",
+    Food: "Món ăn"
+  };
+  return map[cat] || cat;
+}
+
 // ── Star rating input ────────────────────────────────────────────────────────
 function StarInput({ value, onChange }) {
   const [hover, setHover] = useState(0);
@@ -222,10 +237,17 @@ export default function QuickViewModal({ item, onClose }) {
   };
 
   const BADGE_MAP = {
+<<<<<<< HEAD
     best_seller: { label: "⭐ Best Seller", color: "#F59E0B" },
     signature: { label: "Signature", color: "var(--matcha)" },
     trending: { label: "Trending", color: "#EF4444" },
     new: { label: "New", color: "#3B82F6" },
+=======
+    best_seller: { label: "⭐ Bán chạy nhất", color: "#F59E0B" },
+    signature:   { label: "✦ Đặc trưng",   color: "var(--matcha)" },
+    trending:    { label: "🔥 Xu hướng",    color: "#EF4444" },
+    new:         { label: "✨ Mới",         color: "#3B82F6" },
+>>>>>>> origin/main
   };
   const badge = BADGE_MAP[item.tag];
 
@@ -332,6 +354,7 @@ export default function QuickViewModal({ item, onClose }) {
                     }}
                   />
 
+<<<<<<< HEAD
                   {/* Badge */}
                   {badge && (
                     <div
@@ -349,6 +372,45 @@ export default function QuickViewModal({ item, onClose }) {
                       }}
                     >
                       {badge.label}
+=======
+                {/* Badge */}
+                {badge && (
+                  <div style={{
+                    position: "absolute", bottom: 20, left: 20,
+                    padding: "6px 16px", borderRadius: 50,
+                    background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)",
+                    color: badge.color, fontSize: 13, fontWeight: 700,
+                  }}>
+                    {badge.label}
+                  </div>
+                )}
+              </div>
+
+              {/* Right – Details + Reviews */}
+              <div style={{ overflowY: "auto", padding: "32px 28px" }}>
+                {/* Header */}
+                <div style={{ marginBottom: 20 }}>
+                  <span style={{
+                    display: "inline-block", padding: "3px 12px", borderRadius: 50,
+                    background: "var(--bg-alt)", color: "var(--text-muted)",
+                    fontSize: 12, fontWeight: 600, marginBottom: 10,
+                  }}>
+                    {translateCategory(item.category)}
+                  </span>
+                  <h2 style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 30, fontWeight: 700, color: "var(--text)", margin: "0 0 8px", lineHeight: 1.2,
+                  }}>
+                    {item.name}
+                  </h2>
+
+                  {/* Rating summary */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                    <div style={{ display: "flex", gap: 2 }}>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={15} fill={i < Math.round(Number(avgRating)) ? "#F59E0B" : "transparent"} color={i < Math.round(Number(avgRating)) ? "#F59E0B" : "var(--text-light)"} />
+                      ))}
+>>>>>>> origin/main
                     </div>
                   )}
                 </div>

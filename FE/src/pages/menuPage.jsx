@@ -8,18 +8,18 @@ import QuickViewModal from "../components/menu/QuickViewModal.jsx";
 
 const CATEGORIES = [
   { key: "all",        label: "Tất cả",      },
-  { key: "Traditional",label: "Traditional",  },
+  { key: "Traditional",label: "Truyền thống",  },
   { key: "Latte",      label: "Latte",        },
   { key: "Hojicha",    label: "Hojicha",     },
-  { key: "Desserts",   label: "Desserts",     },
-  { key: "Food",       label: "Food",       },
+  { key: "Desserts",   label: "Tráng miệng",     },
+  { key: "Food",       label: "Món ăn",       },
 ];
 
 const TAGS = [
   { key: "all",        label: "Tất cả" },
-  { key: "best_seller",label: "Best Seller" },
-  { key: "signature",  label: "Signature" },
-  { key: "trending",   label: "Trending" },
+  { key: "best_seller",label: "Bán chạy nhất" },
+  { key: "signature",  label: "Đặc trưng" },
+  { key: "trending",   label: "Xu hướng" },
 ];
 
 // ── Skeleton grid ────────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ export default function MenuPage() {
               fontSize: "clamp(48px, 7vw, 80px)", fontWeight: 700,
               color: "#fff", margin: "10px 0 16px", lineHeight: 1.0,
             }}>
-              Our Menu
+              Thực Đơn
             </h1>
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, maxWidth: 540, lineHeight: 1.7 }}>
               Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết,<br />hương vị tinh tế theo triết lý Zen.

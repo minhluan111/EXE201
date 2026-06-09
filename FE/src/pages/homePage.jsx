@@ -39,10 +39,10 @@ function SkeletonCard() {
 function FeaturedCard({ item, onClick }) {
   const [hovered, setHovered] = useState(false);
   const badgeMap = {
-    best_seller: { label: "⭐ Best Seller", cls: "badge-seller" },
-    signature:   { label: "✦ Signature",   cls: "badge-signature" },
-    trending:    { label: "🔥 Trending",    cls: "badge-seller" },
-    new:         { label: "✨ New",         cls: "badge-new" },
+    best_seller: { label: "⭐ Bán chạy nhất", cls: "badge-seller" },
+    signature:   { label: "✦ Đặc trưng",   cls: "badge-signature" },
+    trending:    { label: "🔥 Xu hướng",    cls: "badge-seller" },
+    new:         { label: "✨ Mới",         cls: "badge-new" },
   };
   const badge = badgeMap[item.tag];
 
@@ -128,25 +128,25 @@ const PHILOSOPHIES = [
   {
     kanji: "和",
     romaji: "WA",
-    title: "Harmony – Hài Hòa",
+    title: "Hài Hòa",
     desc: "Cân bằng âm dương giữa con người và thiên nhiên. Trà ngon chắt lọc tinh hoa cỏ cây, hòa quyện tâm hồn thanh tịnh."
   },
   {
     kanji: "敬",
     romaji: "KEI",
-    title: "Respect – Tôn Kính",
+    title: "Tôn Kính",
     desc: "Trân trọng từng tri kỷ ghé thăm. Nghi thức pha chế tỉ mỉ thể hiện lòng hiếu khách chân thành và sự tôn kính sâu sắc."
   },
   {
     kanji: "清",
     romaji: "SEI",
-    title: "Purity – Thanh Khiết",
+    title: "Thanh Khiết",
     desc: "Tinh sạch trong tâm hồn và nguyên liệu. Lá trà organic tinh tuyển từ Uji hòa cùng dòng nước suối ngọt lành thanh mát."
   },
   {
     kanji: "寂",
     romaji: "JAKU",
-    title: "Tranquility – Tĩnh Lặng",
+    title: "Tĩnh Lặng",
     desc: "Sự an nhiên tự tại đạt được sau khi tĩnh tâm. Đắm mình vào tĩnh lặng thanh nhã để tìm lại bản ngã bình yên."
   }
 ];
@@ -180,15 +180,26 @@ export default function HomePage() {
 
   useEffect(() => {
     let active = true;
-    (async () => {
+    let retryCount = 0;
+    const maxRetries = 6;
+    const retryDelay = 2000;
+
+    const loadData = async () => {
       try {
-        // Fetch both products and testimonials in parallel to eliminate sequential request waterfall
+        setLoading(true);
         const [res, testRes] = await Promise.all([
           menuList(),
           getTestimonials()
         ]);
 
         if (!active) return;
+
+        // If fetch fails but we haven't reached max retries, retry in a bit
+        if ((!res.ok || !testRes.ok) && retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(loadData, retryDelay);
+          return;
+        }
 
         const loadedProducts = res.ok ? res.data : [];
         setProducts(loadedProducts);
@@ -247,12 +258,19 @@ export default function HomePage() {
         } else {
           enrichFallback();
         }
+        setLoading(false);
       } catch (err) {
         console.error("Failed to load homepage data:", err);
-      } finally {
-        if (active) setLoading(false);
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(loadData, retryDelay);
+        } else {
+          setLoading(false);
+        }
       }
-    })();
+    };
+
+    loadData();
     return () => { active = false; };
   }, []);
 
@@ -366,7 +384,7 @@ export default function HomePage() {
                 background: "rgba(141,175,90,0.12)",
                 color: "rgba(200,230,160,0.9)", fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
               }}>
-                <Leaf size={13} /> Matcha · Zen · Premium
+                <Leaf size={13} /> Matcha · Zen · Cao cấp
               </span>
             </motion.div>
 
@@ -380,8 +398,8 @@ export default function HomePage() {
               color: "#fff", margin: "0 0 16px",
               lineHeight: 1.0, letterSpacing: "-0.03em",
             }}>
-              Where Every Sip<br />
-              <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>Tells a Story</span>
+              Mỗi Ngụm Trà<br />
+              <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>Một Câu Chuyện</span>
             </motion.h1>
 
             {/* Sub */}
@@ -408,7 +426,7 @@ export default function HomePage() {
                   display: "flex", alignItems: "center", gap: 8,
                 }}
               >
-                Khám phá Menu <ArrowRight size={18} />
+                Khám phá Thực đơn <ArrowRight size={18} />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.04, y: -2 }}
@@ -577,7 +595,7 @@ export default function HomePage() {
                   Được yêu thích nhất
                 </span>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-                  Signature Drinks
+                  Món Nước Đặc Trưng
                 </h2>
               </div>
               <motion.button
@@ -593,17 +611,32 @@ export default function HomePage() {
               </motion.button>
             </motion.div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+            <motion.div
+              key={loading ? "loading" : "loaded"}
+              variants={stagger}
+              initial="hidden"
+              animate={loading ? "hidden" : "show"}
+              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}
+            >
               {loading
                 ? [1, 2, 3].map((k) => <SkeletonCard key={k} />)
-                : bestSellers.map((item) => (
+                : bestSellers.length > 0
+                ? bestSellers.map((item) => (
                     <FeaturedCard
                       key={item.id}
                       item={item}
                       onClick={() => navigate(`/menu/${item.id}`)}
                     />
-                  ))}
-            </div>
+                  ))
+                : (
+                  <div style={{ gridColumn: "1 / -1", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 24, padding: "48px 24px" }}>
+                    <p style={{ fontSize: 44, margin: "0 0 12px" }}>🍵</p>
+                    <p style={{ fontSize: 16, fontWeight: 700, color: "var(--text)", margin: "0 0 6px" }}>Không thể tải danh sách món ăn</p>
+                    <p style={{ fontSize: 13, color: "var(--text-muted)", margin: "0 0 20px" }}>Kết nối tới máy chủ bị gián đoạn. Vui lòng kiểm tra lại.</p>
+                    <button onClick={() => window.location.reload()} style={{ padding: "10px 24px", borderRadius: 50, background: "var(--matcha)", color: "#fff", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 13, boxShadow: "0 4px 12px rgba(107,143,62,0.2)" }}>Tải lại trang</button>
+                  </div>
+                )}
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -683,7 +716,7 @@ export default function HomePage() {
                   gap: 4
                 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.05em" }}>{g.label}</span>
-                  <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>Yakishime Space</span>
+                  <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>Không gian Yakishime</span>
                 </div>
               </motion.div>
             ))}
