@@ -13,16 +13,6 @@ import { bookingCheckStatus, tablesList } from "../services/apiClient.js";
 import { useBookingContext } from "../context/useBookingContext.js";
 import TableMap from "../components/booking/TableMap.jsx";
 
-function translateArea(area) {
-  const map = {
-    Window: "Cửa sổ",
-    Corner: "Góc",
-    Indoor: "Trong nhà",
-    Outdoor: "Ngoài trời"
-  };
-  return map[area] || area;
-}
-
 const TIME_SLOTS = [
   "08:00",
   "09:00",
@@ -169,19 +159,20 @@ export default function BookingPage() {
           return;
         }
 
+        const requiredCapacity = numPeople <= 2 ? 2 : 4;
         const suitableTables = res.data.filter(
-          (table) =>
-            table.status === "available" && table.max_seats >= numPeople,
+          (table) => table.max_seats === requiredCapacity,
         );
 
         setFloorTables(suitableTables);
       })
       .finally(() => setLoading(false));
   }, [step, bookingDate, bookingTime, numPeople]);
+
   const canSelect = (table) => {
     if (!table) return false;
-
-    return table.status === "available" && table.max_seats >= numPeople;
+    const requiredCapacity = numPeople <= 2 ? 2 : 4;
+    return table.status === "available" && table.max_seats === requiredCapacity;
   };
 
   const handleNextStep = () => {
@@ -280,7 +271,6 @@ export default function BookingPage() {
             >
               Đặt chỗ
             </span>
-<<<<<<< HEAD
             <h1
               style={{
                 fontFamily: "'Cormorant Garamond', serif",
@@ -292,10 +282,6 @@ export default function BookingPage() {
               }}
             >
               Reserve Your Table
-=======
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 6vw, 64px)", fontWeight: 700, color: "#fff", margin: "8px 0 8px", lineHeight: 1 }}>
-              Đặt Bàn Trà
->>>>>>> origin/main
             </h1>
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 16 }}>
               Chọn ngày, khung giờ và bàn yêu thích trên sơ đồ tương tác.
@@ -718,7 +704,6 @@ export default function BookingPage() {
                               >
                                 {selected.name}
                               </div>
-<<<<<<< HEAD
                               <div
                                 style={{
                                   fontSize: 12,
@@ -726,10 +711,6 @@ export default function BookingPage() {
                                 }}
                               >
                                 {selected.max_seats} ghế
-=======
-                              <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                                {selected.max_seats} ghế · {translateArea(selected.area)}
->>>>>>> origin/main
                               </div>
                             </div>
                           </div>

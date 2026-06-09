@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuthContext.js";
 import { motion } from "framer-motion";
 import {
@@ -9,6 +9,7 @@ import {
   UtensilsCrossed,
   Layers,
   Star,
+  LogOut,
 } from "lucide-react";
 
 const COLORS = {
@@ -17,8 +18,14 @@ const COLORS = {
 };
 
 export default function AdminHeader({ title, subtitle }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   if (!user) return null;
 
@@ -81,34 +88,61 @@ export default function AdminHeader({ title, subtitle }) {
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-        {/* Title */}
-        <div style={{ marginBottom: 24 }}>
-          <h1
-            className="sumie-fade"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(24px, 4vw, 36px)",
-              fontWeight: 700,
-              color: "var(--matcha)",
-              margin: 0,
-              textTransform: "capitalize",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {title}
-          </h1>
-          {subtitle && (
-            <p
+        {/* Title & Logout */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+          <div>
+            <h1
+              className="sumie-fade"
               style={{
-                fontSize: 14,
-                color: "var(--text-muted)",
-                margin: "4px 0 0",
-                fontWeight: 500,
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "clamp(24px, 4vw, 36px)",
+                fontWeight: 700,
+                color: "var(--matcha)",
+                margin: 0,
+                textTransform: "capitalize",
+                letterSpacing: "-0.01em",
               }}
             >
-              {subtitle}
-            </p>
-          )}
+              {title}
+            </h1>
+            {subtitle && (
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "var(--text-muted)",
+                  margin: "4px 0 0",
+                  fontWeight: 500,
+                }}
+              >
+                {subtitle}
+              </p>
+            )}
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleLogout}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 20px",
+              borderRadius: 50,
+              border: "1px solid var(--border)",
+              background: "var(--bg-card)",
+              color: "#EF4444",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.05)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--bg-card)"; }}
+          >
+            <LogOut size={14} /> Đăng xuất
+          </motion.button>
         </div>
 
         {/* Navigation Tabs */}

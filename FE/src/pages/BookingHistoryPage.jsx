@@ -19,16 +19,6 @@ import {
 import { bookingCancel, bookingMe } from "../services/mockApi.js";
 import { useAuth } from "../context/useAuthContext.js";
 
-function translateArea(area) {
-  const map = {
-    Window: "Cửa sổ",
-    Corner: "Góc",
-    Indoor: "Trong nhà",
-    Outdoor: "Ngoài trời"
-  };
-  return map[area] || area;
-}
-
 export default function BookingHistoryPage() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -455,7 +445,6 @@ export default function BookingHistoryPage() {
                     <div>
                       <span className="info-label">Không gian & Bàn</span>
                       <span className="info-value">
-<<<<<<< HEAD
                         {b.table?.name || "Bàn trà"}{" "}
                         <span
                           style={{
@@ -466,9 +455,6 @@ export default function BookingHistoryPage() {
                           •
                         </span>{" "}
                         {b.table?.area || "Khu vực"}
-=======
-                        {b.table?.name || "Bàn trà"} <span style={{ color: "var(--text-light)", fontWeight: "normal" }}>•</span> {translateArea(b.table?.area) || "Khu vực"}
->>>>>>> origin/main
                       </span>
                     </div>
                   </div>
@@ -903,7 +889,6 @@ export default function BookingHistoryPage() {
                 className="modal-overlay"
                 onClick={() => setShowCancelModal(null)}
               >
-<<<<<<< HEAD
                 <motion.div
                   initial={{ scale: 0.95, opacity: 0, y: 20 }}
                   animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -915,36 +900,6 @@ export default function BookingHistoryPage() {
                   <div className="modal-header">
                     <div className="modal-warning-icon">
                       <AlertCircle size={28} />
-=======
-                <div className="modal-header">
-                  <div className="modal-warning-icon">
-                    <AlertCircle size={28} />
-                  </div>
-                  <h3 className="modal-title">Xác Nhận Hủy Lịch Đặt</h3>
-                </div>
-
-                <div className="modal-body">
-                  <p className="modal-message">
-                    Quý khách có chắc chắn muốn hủy lịch đặt bàn trà này không? Trải nghiệm trà đạo tinh tế đang chờ đón quý khách.
-                  </p>
-
-                  <div className="modal-booking-summary">
-                    <div className="summary-row">
-                      <span className="summary-label">Mã Đặt Bàn:</span>
-                      <span className="summary-value highlight">#{b.reservation_code || b.id}</span>
-                    </div>
-                    <div className="summary-row">
-                      <span className="summary-label">Không Gian:</span>
-                      <span className="summary-value">{b.table?.name || "Bàn trà"} ({translateArea(b.table?.area) || "Khu vực"})</span>
-                    </div>
-                    <div className="summary-row">
-                      <span className="summary-label">Thời Gian:</span>
-                      <span className="summary-value">{b.booking_date} lúc {b.booking_time}</span>
-                    </div>
-                    <div className="summary-row">
-                      <span className="summary-label">Số Khách:</span>
-                      <span className="summary-value">{b.num_of_people} Người</span>
->>>>>>> origin/main
                     </div>
                     <h3 className="modal-title">Xác Nhận Hủy Lịch Đặt</h3>
                   </div>

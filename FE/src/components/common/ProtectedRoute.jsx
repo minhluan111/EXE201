@@ -6,6 +6,20 @@ export default function ProtectedRoute({ children, roleRequired }) {
   if (loading) return <div style={{ padding: 20 }}>Đang tải...</div>;
   if (!user) return <Navigate to="/login" replace />;
   
+  // If this is a client-only authenticated route (roleRequired is not specified),
+  // redirect staff, manager, and admin roles to their dashboards.
+  if (!roleRequired) {
+    if (user.role === "manager") {
+      return <Navigate to="/admin" replace />;
+    }
+    if (user.role === "staff") {
+      return <Navigate to="/admin/bookings" replace />;
+    }
+    if (user.role === "admin") {
+      return <Navigate to="/admin/accounts" replace />;
+    }
+  }
+  
   if (roleRequired === "admin" && user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
@@ -20,3 +34,4 @@ export default function ProtectedRoute({ children, roleRequired }) {
   
   return children;
 }
+

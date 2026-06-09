@@ -68,7 +68,7 @@ public class ReservationRepository : IReservationRepository
     }
 
     /// <summary>
-    /// Count overlapping CONFIRMED reservations using: newStart &lt; existingEnd AND newEnd &gt; existingStart
+    /// Count overlapping CONFIRMED or SEATED reservations using: newStart &lt; existingEnd AND newEnd &gt; existingStart
     /// </summary>
     public async Task<int> CountOverlappingAsync(
         Guid seatingAreaId,
@@ -82,7 +82,7 @@ public class ReservationRepository : IReservationRepository
             .Where(r =>
                 r.SeatingAreaId == seatingAreaId &&
                 r.ReservationDate == date &&
-                r.Status == ReservationStatus.Confirmed &&
+                (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Seated) &&
                 start < r.EndTime &&
                 end > r.StartTime);
 
@@ -101,7 +101,7 @@ public class ReservationRepository : IReservationRepository
         return await _db.Reservations
             .Where(r =>
                 r.ReservationDate == date &&
-                r.Status == ReservationStatus.Confirmed &&
+                (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Seated) &&
                 start < r.EndTime &&
                 end > r.StartTime)
             .ToListAsync(ct);

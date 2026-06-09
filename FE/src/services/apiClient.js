@@ -2,18 +2,18 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:528
 const SESSION_KEY = "vizza.session";
 
 const TABLE_LAYOUT = [
-  { id: 1, name: "Bàn A1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 10, shape: "pair" },
-  { id: 2, name: "Bàn A2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 10, shape: "pair" },
-  { id: 3, name: "Bàn A3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 10, shape: "quad" },
-  { id: 4, name: "Bàn A4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 10, shape: "quad" },
-  { id: 5, name: "Bàn B1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 40, shape: "pair" },
-  { id: 6, name: "Bàn B2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 40, shape: "pair" },
-  { id: 7, name: "Bàn B3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 40, shape: "quad" },
-  { id: 8, name: "Bàn B4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 40, shape: "quad" },
-  { id: 9, name: "Bàn C1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 68, shape: "pair" },
-  { id: 10, name: "Bàn C2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 68, shape: "pair" },
-  { id: 11, name: "Bàn C3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 68, shape: "quad" },
-  { id: 12, name: "Bàn C4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 68, shape: "quad" },
+  { id: 1, name: "Bàn A1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 10, shape: "pair", imageType: "2-Seat Window" },
+  { id: 2, name: "Bàn A2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 10, shape: "pair", imageType: "2-Seat Corner" },
+  { id: 3, name: "Bàn A3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 10, shape: "quad", imageType: "4-Seat Indoor" },
+  { id: 4, name: "Bàn A4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 10, shape: "quad", imageType: "4-Seat Outdoor" },
+  { id: 5, name: "Bàn B1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 40, shape: "pair", imageType: "2-Seat Window" },
+  { id: 6, name: "Bàn B2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 40, shape: "pair", imageType: "2-Seat Bar" },
+  { id: 7, name: "Bàn B3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 40, shape: "quad", imageType: "4-Seat Tatami" },
+  { id: 8, name: "Bàn B4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 40, shape: "quad", imageType: "4-Seat Outdoor" },
+  { id: 9, name: "Bàn C1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 68, shape: "pair", imageType: "2-Seat Window" },
+  { id: 10, name: "Bàn C2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 68, shape: "pair", imageType: "2-Seat Corner" },
+  { id: 11, name: "Bàn C3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 68, shape: "quad", imageType: "4-Seat Indoor" },
+  { id: 12, name: "Bàn C4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 68, shape: "quad", imageType: "4-Seat Outdoor" },
 ];
 
 const FALLBACK_MENU_IMAGES = {
@@ -438,19 +438,23 @@ export async function tablesList() {
 export async function bookingCheckStatus({ booking_date, booking_time, guestCount }) {
   const tables = await getTablesWithAreas();
   
-  // 1. Fetch available areas
-  const availResult = await requestJson("/api/public/availability", {
-    query: { date: booking_date, guestCount: guestCount ?? 2 },
-  });
-  if (!availResult.ok) return availResult;
+  // 1. Fetch available areas for both 2-seat and 4-seat areas concurrently
+  const [avail2Result, avail4Result, occupiedResult] = await Promise.all([
+    requestJson("/api/public/availability", { query: { date: booking_date, guestCount: 2 } }),
+    requestJson("/api/public/availability", { query: { date: booking_date, guestCount: 4 } }),
+    requestJson("/api/public/occupied-tables", { query: { date: booking_date, time: normalizeTime(booking_time) } }),
+  ]);
 
-  // 2. Fetch explicitly occupied table names
-  const occupiedResult = await requestJson("/api/public/occupied-tables", {
-    query: { date: booking_date, time: normalizeTime(booking_time) },
-  });
+  if (!avail2Result.ok) return avail2Result;
+  if (!avail4Result.ok) return avail4Result;
+
   const occupiedTables = occupiedResult.ok && Array.isArray(occupiedResult.data) ? occupiedResult.data : [];
 
-  const availability = Array.isArray(availResult.data) ? availResult.data : [];
+  const availability = [
+    ...(Array.isArray(avail2Result.data) ? avail2Result.data : []),
+    ...(Array.isArray(avail4Result.data) ? avail4Result.data : []),
+  ];
+
   const targetTime = normalizeTime(booking_time);
   const allowedAreaIds = new Set(
     availability

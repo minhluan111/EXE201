@@ -1,6 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Leaf, MapPin, Clock, Phone, Mail, Heart, Share2, MessageCircle, ArrowRight } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const LINKS = {
   "Khám phá": [
@@ -24,6 +25,8 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const { user } = useAuth();
+
   return (
     <footer style={{
       background: "linear-gradient(to bottom, #0F1F12, #0A140C)",

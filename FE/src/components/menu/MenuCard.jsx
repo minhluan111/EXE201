@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Star, Eye } from "lucide-react";
 
 const BADGE_MAP = {
-<<<<<<< HEAD
   best_seller: {
     label: "⭐ Best Seller",
     style: {
@@ -26,28 +25,7 @@ const BADGE_MAP = {
     },
   },
   new: { label: "New", style: { background: "#3B82F6", color: "#fff" } },
-=======
-  best_seller: { label: "⭐ Bán chạy nhất", style: { background: "linear-gradient(135deg,#F59E0B,#EF4444)", color: "#fff" } },
-  signature:   { label: "✦ Đặc trưng",   style: { background: "linear-gradient(135deg,#6B8F3E,#2F5B3E)", color: "#fff" } },
-  trending:    { label: "🔥 Xu hướng",    style: { background: "linear-gradient(135deg,#EF4444,#EC4899)", color: "#fff" } },
-  new:         { label: "✨ Mới",         style: { background: "#3B82F6", color: "#fff" } },
->>>>>>> origin/main
 };
-
-function translateCategory(cat) {
-  const map = {
-    Drink: "Trà đạo / Đồ uống",
-    MainCourse: "Món chính",
-    Dessert: "Tráng miệng / Wagashi",
-    Snack: "Ăn nhẹ",
-    Traditional: "Truyền thống",
-    Latte: "Latte",
-    Hojicha: "Hojicha",
-    Desserts: "Tráng miệng",
-    Food: "Món ăn"
-  };
-  return map[cat] || cat;
-}
 
 export default function MenuCard({ item, onQuickView, onClick }) {
   const [hovered, setHovered] = useState(false);
@@ -199,7 +177,6 @@ export default function MenuCard({ item, onQuickView, onClick }) {
         </div>
 
         {/* Category */}
-<<<<<<< HEAD
         <span
           style={{
             display: "inline-block",
@@ -213,14 +190,6 @@ export default function MenuCard({ item, onQuickView, onClick }) {
           }}
         >
           {item.category}
-=======
-        <span style={{
-          display: "inline-block", padding: "2px 10px", borderRadius: 50,
-          background: "var(--bg-alt)", color: "var(--text-muted)",
-          fontSize: 11, fontWeight: 600, marginBottom: 10,
-        }}>
-          {translateCategory(item.category)}
->>>>>>> origin/main
         </span>
 
         {/* Description */}

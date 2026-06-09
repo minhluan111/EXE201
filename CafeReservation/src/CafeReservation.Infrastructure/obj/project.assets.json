@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net8.0": {
       "BCrypt.Net-Next/4.0.3": {
@@ -3055,32 +3055,40 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DELL\\.nuget\\packages\\": {}
+    "C:\\Users\\luanq\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Ky8\\EXE201\\PD\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
+      "projectUniqueName": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
       "projectName": "CafeReservation.Infrastructure",
-      "projectPath": "D:\\Ky8\\EXE201\\PD\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\Ky8\\EXE201\\PD\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\obj\\",
+      "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\luanq\\.nuget\\packages\\",
+      "outputPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\luanq\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Ky8\\EXE201\\PD\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
-              "projectPath": "D:\\Ky8\\EXE201\\PD\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj"
+            "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
+              "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj"
             }
           }
         }
@@ -3095,10 +3103,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "BCrypt.Net-Next": {
@@ -3151,12 +3160,26 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.314/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
