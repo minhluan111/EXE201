@@ -180,15 +180,26 @@ export default function HomePage() {
 
   useEffect(() => {
     let active = true;
-    (async () => {
+    let retryCount = 0;
+    const maxRetries = 6;
+    const retryDelay = 2000;
+
+    const loadData = async () => {
       try {
-        // Fetch both products and testimonials in parallel to eliminate sequential request waterfall
+        setLoading(true);
         const [res, testRes] = await Promise.all([
           menuList(),
           getTestimonials()
         ]);
 
         if (!active) return;
+
+        // If fetch fails but we haven't reached max retries, retry in a bit
+        if ((!res.ok || !testRes.ok) && retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(loadData, retryDelay);
+          return;
+        }
 
         const loadedProducts = res.ok ? res.data : [];
         setProducts(loadedProducts);
@@ -247,12 +258,19 @@ export default function HomePage() {
         } else {
           enrichFallback();
         }
+        setLoading(false);
       } catch (err) {
         console.error("Failed to load homepage data:", err);
-      } finally {
-        if (active) setLoading(false);
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(loadData, retryDelay);
+        } else {
+          setLoading(false);
+        }
       }
-    })();
+    };
+
+    loadData();
     return () => { active = false; };
   }, []);
 
@@ -593,17 +611,32 @@ export default function HomePage() {
               </motion.button>
             </motion.div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+            <motion.div
+              key={loading ? "loading" : "loaded"}
+              variants={stagger}
+              initial="hidden"
+              animate={loading ? "hidden" : "show"}
+              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}
+            >
               {loading
                 ? [1, 2, 3].map((k) => <SkeletonCard key={k} />)
-                : bestSellers.map((item) => (
+                : bestSellers.length > 0
+                ? bestSellers.map((item) => (
                     <FeaturedCard
                       key={item.id}
                       item={item}
                       onClick={() => navigate(`/menu/${item.id}`)}
                     />
-                  ))}
-            </div>
+                  ))
+                : (
+                  <div style={{ gridColumn: "1 / -1", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 24, padding: "48px 24px" }}>
+                    <p style={{ fontSize: 44, margin: "0 0 12px" }}>🍵</p>
+                    <p style={{ fontSize: 16, fontWeight: 700, color: "var(--text)", margin: "0 0 6px" }}>Không thể tải danh sách món ăn</p>
+                    <p style={{ fontSize: 13, color: "var(--text-muted)", margin: "0 0 20px" }}>Kết nối tới máy chủ bị gián đoạn. Vui lòng kiểm tra lại.</p>
+                    <button onClick={() => window.location.reload()} style={{ padding: "10px 24px", borderRadius: 50, background: "var(--matcha)", color: "#fff", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 13, boxShadow: "0 4px 12px rgba(107,143,62,0.2)" }}>Tải lại trang</button>
+                  </div>
+                )}
+            </motion.div>
           </motion.div>
         </div>
       </section>
