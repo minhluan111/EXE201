@@ -159,19 +159,20 @@ export default function BookingPage() {
           return;
         }
 
+        const requiredCapacity = numPeople <= 2 ? 2 : 4;
         const suitableTables = res.data.filter(
-          (table) =>
-            table.status === "available" && table.max_seats >= numPeople,
+          (table) => table.max_seats === requiredCapacity,
         );
 
         setFloorTables(suitableTables);
       })
       .finally(() => setLoading(false));
   }, [step, bookingDate, bookingTime, numPeople]);
+
   const canSelect = (table) => {
     if (!table) return false;
-
-    return table.status === "available" && table.max_seats >= numPeople;
+    const requiredCapacity = numPeople <= 2 ? 2 : 4;
+    return table.status === "available" && table.max_seats === requiredCapacity;
   };
 
   const handleNextStep = () => {

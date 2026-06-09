@@ -115,12 +115,12 @@ const TESTIMONIALS = [
 
 // ── Gallery images ───────────────────────────────────────────────────────────
 const GALLERY = [
-  { url: "https://imgs.search.brave.com/nTZibCbHKyQSraEMU2MAzAEziZ-y9K35CDdVCpxGs-I/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly92aWV0/bmFtYXJjaC5jb20u/dm4vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMTAva2hvbmct/Z2lhbi10aGllbi10/cmEtZGVwLmpwZw", h: 280, label: "Không gian thiền" },
-  { url: "https://imgs.search.brave.com/Y-9f4uxZZqgy5YIHHx6LKLjvunXzfBKrFkeaUK68zV0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/dGl0YS5hcnQvd3At/Y29udGVudC91cGxv/YWRzLzIwMjMvMDgv/Mi5qcGc", h: 220, label: "Trà đạo" },
-  { url: "https://imgs.search.brave.com/SVBz95D_b-DyW6HRqkjrLgEtzeZCXe6_07ZsumAMBMU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc3F1YXJlc3Bh/Y2UtY2RuLmNvbS9j/b250ZW50L3YxLzY0/NDAzZTkzZDY0MGU0/MjkxMjE3MzBjYy8x/NzA2NTY2MDk5MDU0/LURZR0c5QVE0TVNT/QkNNVUo0OURZL3Ro/ZStiZXN0K2FsbW9u/ZCttaWxrK21hdGNo/YStsYXR0ZQ", h: 260, label: "Matcha Latte" },
-  { url: "https://imgs.search.brave.com/CaTKE1--sKezfaX7eVSH-_a718ySle-BQBONIi0chkY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9oaXBz/LmhlYXJzdGFwcHMu/Y29tL2RlbC5oLWNk/bi5jby9hc3NldHMv/Y20vMTUvMTEvNTRm/ZGVmMDlkNzhhNS1j/b3R0YWdlLWNoZWVz/ZS1wYXJmYWl0LXJl/Y2lwZS1tc2xvMDcx/MC14bC4_Y3JvcD0x/eHc6MS4weGg7Y2Vu/dGVyLHRvcA", h: 220, label: "Parfait" },
-  { url: "https://imgs.search.brave.com/MLQ2UAivL-a-0soRhznEMUGW22KRJfSMkLeSAoQFrxQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdWRh/Y2hpcmVjaXBlcy5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMDgvd2FyYWJp/LW1vY2hpLTkuanBn", h: 280, label: "Warabi Mochi" },
-  { url: "https://imgs.search.brave.com/uR59C0bPwmr-cYAgrm4P9w__zNE55WtXbgXHB44K1kg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9kYXZp/ZHN0ZWEuY29tL2Nk/bi9zaG9wL2ZpbGVz/L3N0ZXBfNC1Ib3df/dG9fbWFrZV9hbl9p/Y2VkX21hdGNoYV9s/YXR0ZS5naWY_dj0x/NzI2ODYxMDMzJndp/ZHRoPTM4NDA.jpeg", h: 240, label: "Iced Matcha" },
+  { url: "/assets/images/space_decor1.png", h: 280, label: "Góc phòng trà" },
+  { url: "/assets/images/space_decor2.png", h: 220, label: "Bình hoa nghệ thuật" },
+  { url: "/assets/images/space_decor3.png", h: 260, label: "Tĩnh lặng thiền đạo" },
+  { url: "/assets/images/space_decor4.png", h: 220, label: "Bình sen thiền định" },
+  { url: "/assets/images/space_decor5.jpg", h: 280, label: "Mặt tiền Yaki Café" },
+  { url: "/assets/images/space_window.jpg", h: 240, label: "Cửa sổ trúc xanh" },
 ];
 
 // ── Philosophy Watermarks & Pillars ───────────────────────────────────────────
@@ -162,13 +162,7 @@ export default function HomePage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
 
-  // Shoji door state
-  const [shojiOpen, setShojiOpen] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShojiOpen(true), 600);
-    return () => clearTimeout(t);
-  }, []);
+  // No Shoji door curtain animation
 
   // States for Quick Booking Form
   const [quickGuests, setQuickGuests] = useState(2);
@@ -296,27 +290,6 @@ export default function HomePage() {
 
   return (
     <div style={{ background: "var(--bg)", overflowX: "hidden" }}>
-      {/* Shoji screen door entrance reveal */}
-      <AnimatePresence>
-        {!shojiOpen && (
-          <div style={{ position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none", display: "flex" }}>
-            <motion.div
-              initial={{ x: 0 }}
-              animate={{ x: "-100%" }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 1.4, ease: [0.645, 0.045, 0.355, 1] }}
-              className="shoji-door shoji-door-left"
-            />
-            <motion.div
-              initial={{ x: 0 }}
-              animate={{ x: "100%" }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 1.4, ease: [0.645, 0.045, 0.355, 1] }}
-              className="shoji-door shoji-door-right"
-            />
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════
           HERO SECTION
@@ -411,38 +384,7 @@ export default function HomePage() {
               Không gian thiền định tại Cần Thơ
             </motion.p>
 
-            {/* CTAs */}
-            <motion.div variants={fadeUp} style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-              <motion.button
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate("/menu")}
-                className="pulse-glow"
-                style={{
-                  padding: "16px 36px", borderRadius: 50,
-                  background: "linear-gradient(135deg, var(--matcha), var(--forest))",
-                  color: "#fff", border: "none", cursor: "pointer",
-                  fontSize: 16, fontWeight: 700, letterSpacing: "0.01em",
-                  display: "flex", alignItems: "center", gap: 8,
-                }}
-              >
-                Khám phá Thực đơn <ArrowRight size={18} />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate("/booking")}
-                style={{
-                  padding: "15px 36px", borderRadius: 50,
-                  background: "rgba(255,255,255,0.1)",
-                  backdropFilter: "blur(10px)",
-                  color: "#fff", border: "1.5px solid rgba(255,255,255,0.45)",
-                  cursor: "pointer", fontSize: 16, fontWeight: 700,
-                }}
-              >
-                Đặt bàn ngay
-              </motion.button>
-            </motion.div>
+            {/* CTAs removed since they exist in the navbar */}
 
             {/* Info pills */}
             <motion.div variants={fadeUp} style={{

@@ -16,12 +16,12 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar() {
+  const { user, logout } = useAuth();
   const [scrolled, setScrolled]       = useState(false);
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location  = useLocation();
   const navigate  = useNavigate();
-  const { user, logout } = useAuth();
   const { isDark, toggle } = useThemeMode();
 
   // Detect scroll for background opacity

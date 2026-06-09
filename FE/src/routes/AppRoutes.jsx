@@ -18,15 +18,16 @@ import AdminManageReviewsPage from "../pages/admin/ManageReviewsPage.jsx";
 import AdminManageFeedbacksPage from "../pages/admin/ManageFeedbacksPage.jsx";
 import AdminManageAccountsPage from "../pages/admin/ManageAccountsPage.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute.jsx";
+import PublicRoute from "../components/common/PublicRoute.jsx";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/menu" element={<MenuPage />} />
-      <Route path="/menu/:id" element={<MenuDetailPage />} />
+      <Route path="/" element={<PublicRoute><HomePage /></PublicRoute>} />
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+      <Route path="/menu" element={<PublicRoute><MenuPage /></PublicRoute>} />
+      <Route path="/menu/:id" element={<PublicRoute><MenuDetailPage /></PublicRoute>} />
       
       {/* Standard Authenticated User Routes */}
       <Route
@@ -53,7 +54,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/contact" element={<PublicRoute><ContactPage /></PublicRoute>} />
       <Route
         path="/profile"
         element={
