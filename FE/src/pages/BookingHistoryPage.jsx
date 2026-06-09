@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  MapPin, 
-  AlertCircle, 
-  CheckCircle, 
-  XCircle, 
-  RotateCcw,
+
+import {
+  Calendar,
+  Clock,
+  Users,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
   Sparkles,
   MessageSquare,
   ChevronRight,
   Loader2,
   Trash2,
-  Coffee
+  Coffee,
 } from "lucide-react";
 import { bookingCancel, bookingMe } from "../services/mockApi.js";
 import { useAuth } from "../context/useAuthContext.js";
@@ -38,6 +37,11 @@ export default function BookingHistoryPage() {
   const [tab, setTab] = useState("upcoming");
   const [cancelling, setCancelling] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(null);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -75,7 +79,10 @@ export default function BookingHistoryPage() {
     const res = await bookingCancel({ token, id });
     setCancelling(null);
 
-    if (!res.ok) return setError(res.message || "Hủy lịch đặt thất bại. Vui lòng thử lại.");
+    if (!res.ok)
+      return setError(
+        res.message || "Hủy lịch đặt thất bại. Vui lòng thử lại.",
+      );
     const refresh = await bookingMe({ token });
     setList(refresh.ok ? refresh.data : []);
   };
@@ -111,11 +118,7 @@ export default function BookingHistoryPage() {
           </span>
         );
       default:
-        return (
-          <span className="status-badge status-default">
-            {status}
-          </span>
-        );
+        return <span className="status-badge status-default">{status}</span>;
     }
   };
 
@@ -140,40 +143,76 @@ export default function BookingHistoryPage() {
   ];
 
   return (
-    <div style={{ background: "var(--bg)", minHeight: "100vh", paddingBottom: 96, color: "var(--text)" }}>
+    <div
+      style={{
+        background: "var(--bg)",
+        minHeight: "100vh",
+        paddingBottom: 96,
+        color: "var(--text)",
+      }}
+    >
       {/* Header section with organic Zen gradients */}
-      <div style={{ 
-        padding: "60px 0",
-        background: "linear-gradient(135deg, rgba(47, 91, 62, 0.08) 0%, rgba(107, 143, 62, 0.04) 100%)",
-        borderBottom: "1px solid var(--border)",
-        textAlign: "center"
-      }}>
+      <div
+        style={{
+          padding: "60px 0",
+          background:
+            "linear-gradient(135deg, rgba(47, 91, 62, 0.08) 0%, rgba(107, 143, 62, 0.04) 100%)",
+          borderBottom: "1px solid var(--border)",
+          textAlign: "center",
+        }}
+      >
         <div className="container-xl" style={{ padding: "0 24px" }}>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span style={{ 
-              color: "var(--matcha)", uppercase: "true", letterSpacing: "0.2em", 
-              fontWeight: 600, fontSize: 13, display: "block", marginBottom: 8 
-            }}>
+            <span
+              style={{
+                color: "var(--matcha)",
+                uppercase: "true",
+                letterSpacing: "0.2em",
+                fontWeight: 600,
+                fontSize: 13,
+                display: "block",
+                marginBottom: 8,
+              }}
+            >
               Lịch Sử Đặt Bàn / 予約履歴
             </span>
-            <h1 style={{ 
-              fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 5vw, 56px)", 
-              fontWeight: 700, color: "var(--forest)", textTransform: "uppercase", margin: 0 
-            }}>
+            <h1
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "clamp(36px, 5vw, 56px)",
+                fontWeight: 700,
+                color: "var(--forest)",
+                textTransform: "uppercase",
+                margin: 0,
+              }}
+            >
               Lịch Sử Đặt Bàn
             </h1>
-            <p style={{ color: "var(--text-muted)", marginTop: 12, maxWidth: 640, margin: "12px auto 0", fontSize: 15, lineHeight: 1.6 }}>
-              Theo dõi trạng thái các cuộc hẹn trà đạo và lịch sử trải nghiệm của quý khách tại Yakishime Matcha.
+            <p
+              style={{
+                color: "var(--text-muted)",
+                marginTop: 12,
+                maxWidth: 640,
+                margin: "12px auto 0",
+                fontSize: 15,
+                lineHeight: 1.6,
+              }}
+            >
+              Theo dõi trạng thái các cuộc hẹn trà đạo và lịch sử trải nghiệm
+              của quý khách tại Yakishime Matcha.
             </p>
           </motion.div>
         </div>
       </div>
 
-      <div className="container-xl" style={{ padding: "0 24px", marginTop: 40 }}>
+      <div
+        className="container-xl"
+        style={{ padding: "0 24px", marginTop: 40 }}
+      >
         {/* Navigation Tabs bar */}
         <div className="tabs-container">
           {tabs.map((t) => {
@@ -202,11 +241,20 @@ export default function BookingHistoryPage() {
               exit={{ opacity: 0, y: -10 }}
               style={{ maxWidth: 720, margin: "0 auto 24px" }}
             >
-              <div style={{
-                padding: "14px 18px", borderRadius: 16, background: "rgba(239,68,68,0.06)",
-                border: "1.5px solid rgba(239,68,68,0.15)", color: "#EF4444", fontSize: 13,
-                display: "flex", gap: 10, alignItems: "center", fontWeight: 500
-              }}>
+              <div
+                style={{
+                  padding: "14px 18px",
+                  borderRadius: 16,
+                  background: "rgba(239,68,68,0.06)",
+                  border: "1.5px solid rgba(239,68,68,0.15)",
+                  color: "#EF4444",
+                  fontSize: 13,
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                  fontWeight: 500,
+                }}
+              >
                 <AlertCircle size={18} style={{ flexShrink: 0 }} />
                 <span>{error}</span>
               </div>
@@ -217,8 +265,23 @@ export default function BookingHistoryPage() {
         {/* Loading Spinner */}
         {loading && (
           <div style={{ textAlign: "center", padding: "80px 0" }}>
-            <Loader2 className="animate-spin" style={{ width: 42, height: 42, color: "var(--matcha)", marginBottom: 16 }} />
-            <p style={{ color: "var(--text-muted)", fontSize: 14, margin: 0, tracking: "0.05em" }}>
+            <Loader2
+              className="animate-spin"
+              style={{
+                width: 42,
+                height: 42,
+                color: "var(--matcha)",
+                marginBottom: 16,
+              }}
+            />
+            <p
+              style={{
+                color: "var(--text-muted)",
+                fontSize: 14,
+                margin: 0,
+                tracking: "0.05em",
+              }}
+            >
               Đang tải dữ liệu từ hệ thống...
             </p>
           </div>
@@ -226,37 +289,77 @@ export default function BookingHistoryPage() {
 
         {/* Empty State */}
         {!loading && view.length === 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             style={{
-              maxWidth: 440, margin: "0 auto", textAlign: "center", padding: "48px 32px",
-              background: "var(--bg-card)", border: "1.5px solid var(--border)", borderRadius: 32,
-              boxShadow: "var(--shadow-md)"
+              maxWidth: 440,
+              margin: "0 auto",
+              textAlign: "center",
+              padding: "48px 32px",
+              background: "var(--bg-card)",
+              border: "1.5px solid var(--border)",
+              borderRadius: 32,
+              boxShadow: "var(--shadow-md)",
             }}
           >
-            <div style={{
-              width: 56, height: 56, margin: "0 auto 20px", display: "flex", alignItems: "center", justifyContent: "center",
-              borderRadius: "50%", background: "rgba(107, 143, 62, 0.1)", color: "var(--matcha)"
-            }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                margin: "0 auto 20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "50%",
+                background: "rgba(107, 143, 62, 0.1)",
+                color: "var(--matcha)",
+              }}
+            >
               <Sparkles size={24} />
             </div>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "var(--forest)", marginBottom: 8, marginTop: 0 }}>
+            <h3
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: 24,
+                fontWeight: 700,
+                color: "var(--forest)",
+                marginBottom: 8,
+                marginTop: 0,
+              }}
+            >
               Chưa Có Lịch Đặt Bàn
             </h3>
-            <p style={{ color: "var(--text-muted)", fontSize: 14, lineHeight: 1.6, marginBottom: 28, marginTop: 0 }}>
-              {tab === "upcoming" && "Quý khách chưa có lịch hẹn đặt bàn trà nào sắp tới. Hãy chọn không gian phòng trà lý tưởng cho mình nhé."}
+            <p
+              style={{
+                color: "var(--text-muted)",
+                fontSize: 14,
+                lineHeight: 1.6,
+                marginBottom: 28,
+                marginTop: 0,
+              }}
+            >
+              {tab === "upcoming" &&
+                "Quý khách chưa có lịch hẹn đặt bàn trà nào sắp tới. Hãy chọn không gian phòng trà lý tưởng cho mình nhé."}
               {tab === "complete" && "Lịch sử đặt bàn hoàn thành trống."}
               {tab === "cancelled" && "Lịch sử đặt bàn đã hủy trống."}
             </p>
             {tab === "upcoming" && (
               <Link
                 to="/booking"
-                style={{ 
-                  display: "inline-flex", alignItems: "center", gap: 6, padding: "12px 24px", borderRadius: 50,
-                  fontWeight: 700, fontSize: 14, textDecoration: "none", color: "#ffffff",
-                  background: "linear-gradient(135deg, var(--matcha), var(--forest))",
-                  boxShadow: "0 4px 15px rgba(107, 143, 62, 0.2)"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "12px 24px",
+                  borderRadius: 50,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  color: "#ffffff",
+                  background:
+                    "linear-gradient(135deg, var(--matcha), var(--forest))",
+                  boxShadow: "0 4px 15px rgba(107, 143, 62, 0.2)",
                 }}
               >
                 <span>Đặt Bàn Ngay</span>
@@ -278,7 +381,13 @@ export default function BookingHistoryPage() {
             }}
             initial="hidden"
             animate="show"
-            style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 24 }}
+            style={{
+              maxWidth: 720,
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: 24,
+            }}
           >
             {view.map((b) => (
               <motion.div
@@ -290,43 +399,85 @@ export default function BookingHistoryPage() {
                 whileHover={{ y: -3, boxShadow: "var(--shadow-lg)" }}
                 transition={{ duration: 0.3 }}
                 style={{
-                  background: "var(--bg-card)", border: "1.5px solid var(--border)",
-                  borderRadius: 24, padding: "28px 24px", boxShadow: "var(--shadow-sm)",
-                  transition: "box-shadow 0.3s, transform 0.3s"
+                  background: "var(--bg-card)",
+                  border: "1.5px solid var(--border)",
+                  borderRadius: 24,
+                  padding: "28px 24px",
+                  boxShadow: "var(--shadow-sm)",
+                  transition: "box-shadow 0.3s, transform 0.3s",
                 }}
               >
-                <div style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  paddingBottom: 16, borderBottom: "1.5px solid var(--border)", marginBottom: 20
-                }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingBottom: 16,
+                    borderBottom: "1.5px solid var(--border)",
+                    marginBottom: 20,
+                  }}
+                >
                   <div>
-                    <span style={{ display: "block", fontSize: 9, color: "var(--text-light)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: 9,
+                        color: "var(--text-light)",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        marginBottom: 2,
+                      }}
+                    >
                       MÃ ĐẶT BÀN
                     </span>
-                    <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 700, color: "var(--forest)", margin: 0 }}>
+                    <h3
+                      style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: "var(--forest)",
+                        margin: 0,
+                      }}
+                    >
                       #{b.reservation_code || b.id}
                     </h3>
                   </div>
-                  <div>
-                    {getStatusBadge(b.status)}
-                  </div>
+                  <div>{getStatusBadge(b.status)}</div>
                 </div>
 
                 <div className="card-info-grid">
                   {/* Table details */}
                   <div className="info-item">
-                    <div className="info-icon"><Coffee size={15} /></div>
+                    <div className="info-icon">
+                      <Coffee size={15} />
+                    </div>
                     <div>
                       <span className="info-label">Không gian & Bàn</span>
                       <span className="info-value">
+<<<<<<< HEAD
+                        {b.table?.name || "Bàn trà"}{" "}
+                        <span
+                          style={{
+                            color: "var(--text-light)",
+                            fontWeight: "normal",
+                          }}
+                        >
+                          •
+                        </span>{" "}
+                        {b.table?.area || "Khu vực"}
+=======
                         {b.table?.name || "Bàn trà"} <span style={{ color: "var(--text-light)", fontWeight: "normal" }}>•</span> {translateArea(b.table?.area) || "Khu vực"}
+>>>>>>> origin/main
                       </span>
                     </div>
                   </div>
 
                   {/* Guests */}
                   <div className="info-item">
-                    <div className="info-icon"><Users size={15} /></div>
+                    <div className="info-icon">
+                      <Users size={15} />
+                    </div>
                     <div>
                       <span className="info-label">Số khách</span>
                       <span className="info-value">
@@ -337,13 +488,37 @@ export default function BookingHistoryPage() {
 
                   {/* Date and Time details */}
                   <div className="info-item full-width">
-                    <div className="info-icon"><Calendar size={15} /></div>
+                    <div className="info-icon">
+                      <Calendar size={15} />
+                    </div>
                     <div>
                       <span className="info-label">Thời gian hẹn</span>
-                      <div className="info-value" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                      <div
+                        className="info-value"
+                        style={{
+                          display: "flex",
+                          gap: 10,
+                          alignItems: "center",
+                          flexWrap: "wrap",
+                        }}
+                      >
                         <span>{b.booking_date}</span>
-                        <span style={{ color: "var(--text-light)", fontWeight: "normal" }}>|</span>
-                        <span style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--matcha)" }}>
+                        <span
+                          style={{
+                            color: "var(--text-light)",
+                            fontWeight: "normal",
+                          }}
+                        >
+                          |
+                        </span>
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            color: "var(--matcha)",
+                          }}
+                        >
                           <Clock size={13} />
                           {b.booking_time}
                         </span>
@@ -353,13 +528,33 @@ export default function BookingHistoryPage() {
 
                   {/* Special Note */}
                   {b.note && (
-                    <div className="info-item full-width" style={{
-                      paddingTop: 16, borderTop: "1px dashed var(--border)", marginTop: 4
-                    }}>
-                      <div className="info-icon" style={{ background: "rgba(107, 143, 62, 0.05)" }}><MessageSquare size={14} /></div>
+                    <div
+                      className="info-item full-width"
+                      style={{
+                        paddingTop: 16,
+                        borderTop: "1px dashed var(--border)",
+                        marginTop: 4,
+                      }}
+                    >
+                      <div
+                        className="info-icon"
+                        style={{ background: "rgba(107, 143, 62, 0.05)" }}
+                      >
+                        <MessageSquare size={14} />
+                      </div>
                       <div style={{ flex: 1 }}>
-                        <span className="info-label">Ghi chú của quý khách</span>
-                        <p style={{ fontSize: 13, color: "var(--text-muted)", margin: "4px 0 0", fontStyle: "italic", lineHeight: 1.5 }}>
+                        <span className="info-label">
+                          Ghi chú của quý khách
+                        </span>
+                        <p
+                          style={{
+                            fontSize: 13,
+                            color: "var(--text-muted)",
+                            margin: "4px 0 0",
+                            fontStyle: "italic",
+                            lineHeight: 1.5,
+                          }}
+                        >
                           "{b.note}"
                         </p>
                       </div>
@@ -369,7 +564,15 @@ export default function BookingHistoryPage() {
 
                 {/* Card CTA Actions */}
                 {tab === "upcoming" && (
-                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 20, paddingTop: 16, borderTop: "1.5px solid var(--border)" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: 20,
+                      paddingTop: 16,
+                      borderTop: "1.5px solid var(--border)",
+                    }}
+                  >
                     <motion.button
                       disabled={cancelling === b.id}
                       whileHover={{ scale: 1.02 }}
@@ -688,25 +891,31 @@ export default function BookingHistoryPage() {
       `}</style>
 
       <AnimatePresence>
-        {showCancelModal && (() => {
-          const b = list.find((item) => item.id === showCancelModal);
-          if (!b) return null;
-          return (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="modal-overlay"
-              onClick={() => setShowCancelModal(null)}
-            >
+        {showCancelModal &&
+          (() => {
+            const b = list.find((item) => item.id === showCancelModal);
+            if (!b) return null;
+            return (
               <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                transition={{ type: "spring", duration: 0.5 }}
-                className="modal-card"
-                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="modal-overlay"
+                onClick={() => setShowCancelModal(null)}
               >
+<<<<<<< HEAD
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                  transition={{ type: "spring", duration: 0.5 }}
+                  className="modal-card"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="modal-header">
+                    <div className="modal-warning-icon">
+                      <AlertCircle size={28} />
+=======
                 <div className="modal-header">
                   <div className="modal-warning-icon">
                     <AlertCircle size={28} />
@@ -735,34 +944,71 @@ export default function BookingHistoryPage() {
                     <div className="summary-row">
                       <span className="summary-label">Số Khách:</span>
                       <span className="summary-value">{b.num_of_people} Người</span>
+>>>>>>> origin/main
                     </div>
+                    <h3 className="modal-title">Xác Nhận Hủy Lịch Đặt</h3>
                   </div>
 
-                  <p className="modal-note">
-                    * Lưu ý: Lịch đặt sau khi hủy sẽ không thể khôi phục. Quý khách sẽ phải thực hiện đặt lại lịch mới.
-                  </p>
-                </div>
+                  <div className="modal-body">
+                    <p className="modal-message">
+                      Quý khách có chắc chắn muốn hủy lịch đặt bàn trà này
+                      không? Trải nghiệm trà đạo tinh tế đang chờ đón quý khách.
+                    </p>
 
-                <div className="modal-actions">
-                  <button
-                    onClick={() => setShowCancelModal(null)}
-                    className="modal-btn-back"
-                    disabled={cancelling === b.id}
-                  >
-                    Quay Lại
-                  </button>
-                  <button
-                    onClick={handleConfirmCancel}
-                    className="modal-btn-confirm"
-                    disabled={cancelling === b.id}
-                  >
-                    Xác Nhận Hủy
-                  </button>
-                </div>
+                    <div className="modal-booking-summary">
+                      <div className="summary-row">
+                        <span className="summary-label">Mã Đặt Bàn:</span>
+                        <span className="summary-value highlight">
+                          #{b.reservation_code || b.id}
+                        </span>
+                      </div>
+                      <div className="summary-row">
+                        <span className="summary-label">Không Gian:</span>
+                        <span className="summary-value">
+                          {b.table?.name || "Bàn trà"} (
+                          {b.table?.area || "Khu vực"})
+                        </span>
+                      </div>
+                      <div className="summary-row">
+                        <span className="summary-label">Thời Gian:</span>
+                        <span className="summary-value">
+                          {b.booking_date} lúc {b.booking_time}
+                        </span>
+                      </div>
+                      <div className="summary-row">
+                        <span className="summary-label">Số Khách:</span>
+                        <span className="summary-value">
+                          {b.num_of_people} Người
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="modal-note">
+                      * Lưu ý: Lịch đặt sau khi hủy sẽ không thể khôi phục. Quý
+                      khách sẽ phải thực hiện đặt lại lịch mới.
+                    </p>
+                  </div>
+
+                  <div className="modal-actions">
+                    <button
+                      onClick={() => setShowCancelModal(null)}
+                      className="modal-btn-back"
+                      disabled={cancelling === b.id}
+                    >
+                      Quay Lại
+                    </button>
+                    <button
+                      onClick={handleConfirmCancel}
+                      className="modal-btn-confirm"
+                      disabled={cancelling === b.id}
+                    >
+                      Xác Nhận Hủy
+                    </button>
+                  </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          );
-        })()}
+            );
+          })()}
       </AnimatePresence>
     </div>
   );
