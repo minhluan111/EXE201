@@ -105,6 +105,7 @@ public class EmailService : IEmailService
             message.Body = new TextPart("html") { Text = htmlBody };
 
             using var client = new SmtpClient();
+            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
             _logger.LogInformation(
                 "SMTP => Host={Host}, Port={Port}, User={User}",
                 host,
