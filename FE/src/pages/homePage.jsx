@@ -695,7 +695,7 @@ export default function HomePage() {
               fontWeight: 700, color: "#fff", margin: "12px 0 0",
               lineHeight: 1.15
             }}>
-              Đánh giá từ những người thân
+              Đánh giá từ những khách hàng thân thiết
             </h2>
             <div style={{ width: 60, height: 2, background: "var(--matcha-light)", margin: "20px auto 0" }} />
           </motion.div>
