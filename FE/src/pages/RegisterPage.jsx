@@ -82,8 +82,12 @@ export default function RegisterPage() {
       e.password = "Mật khẩu phải chứa ít nhất 8 ký tự.";
     } else if (!/[A-Z]/.test(form.password)) {
       e.password = "Mật khẩu phải chứa ít nhất một chữ cái viết hoa (A-Z).";
+    } else if (!/[a-z]/.test(form.password)) {
+      e.password = "Mật khẩu phải chứa ít nhất một chữ cái viết thường (a-z).";
     } else if (!/[0-9]/.test(form.password)) {
       e.password = "Mật khẩu phải chứa ít nhất một chữ số (0-9).";
+    } else if (!/[^A-Za-z0-9]/.test(form.password)) {
+      e.password = "Mật khẩu phải chứa ít nhất một ký tự đặc biệt (VD: @, #, $,...).";
     }
     if (form.password !== form.confirm) e.confirm = "Mật khẩu không khớp.";
     return e;
@@ -161,7 +165,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: 14 }}>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 6 }}>Mật khẩu</label>
               <InputField
-                icon={Lock} type={showPw ? "text" : "password"} placeholder="Tối thiểu 6 ký tự"
+                icon={Lock} type={showPw ? "text" : "password"} placeholder="Tối thiểu 8 ký tự (có chữ hoa, thường, số, ký tự đặc biệt)"
                 value={form.password} onChange={set("password")} error={errors.password}
                 rightAction={
                   <button type="button" onClick={() => setShowPw((v) => !v)}

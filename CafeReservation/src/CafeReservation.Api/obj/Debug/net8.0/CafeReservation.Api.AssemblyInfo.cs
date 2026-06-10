@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CafeReservation.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d905fb46ef055420903d367d6751c563ebb1399")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b3eb38caa087b0a001a02f274b8b3304b66451f")]
 [assembly: System.Reflection.AssemblyProductAttribute("CafeReservation.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CafeReservation.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
