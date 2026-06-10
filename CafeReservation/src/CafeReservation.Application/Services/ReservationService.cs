@@ -6,11 +6,14 @@ using CafeReservation.Domain.Enums;
 using CafeReservation.Domain.Exceptions;
 using Mapster;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace CafeReservation.Application.Services;
 
 public class ReservationService : IReservationService
 {
+    private static readonly SemaphoreSlim _reservationLock = new(1, 1);
+
     private readonly IReservationRepository _reservationRepository;
     private readonly ISeatingAreaRepository _seatingAreaRepository;
     private readonly IEmailService _emailService;
@@ -69,48 +72,65 @@ public class ReservationService : IReservationService
         var startTime = request.StartTime;
         var endTime = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
 
-        // Overbooking prevention via overlap check
-        var overlapping = await _reservationRepository.CountOverlappingAsync(
-            area.Id, request.ReservationDate, startTime, endTime, null, ct);
-
-        if (overlapping >= area.ReservableTables)
-            throw new ConflictException("No tables are available for the selected time slot.");
-
-        var reservation = new Reservation
+        await _reservationLock.WaitAsync(ct);
+        try
         {
-            Id = Guid.NewGuid(),
-            ReservationCode = GenerateCode(),
-            GuestName = request.GuestName,
-            GuestEmail = request.GuestEmail,
-            GuestPhone = request.GuestPhone,
-            SeatingAreaId = area.Id,
-            ReservationDate = request.ReservationDate,
-            StartTime = startTime,
-            EndTime = endTime,
-            GuestCount = request.GuestCount,
-            Status = ReservationStatus.Confirmed,
-            TableName = request.TableName,
-            SpecialNote = request.SpecialNote,
-            CreatedAt = DateTime.UtcNow
-        };
+            // Overbooking prevention via overlap check
+            var overlapping = await _reservationRepository.CountOverlappingAsync(
+                area.Id, request.ReservationDate, startTime, endTime, null, ct);
 
-        await _reservationRepository.AddAsync(reservation, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+            if (overlapping >= area.ReservableTables)
+                throw new ConflictException("No tables are available for the selected time slot.");
 
-        _logger.LogInformation("Reservation {Code} created for guest {GuestName}", reservation.ReservationCode, request.GuestName);
+            if (!string.IsNullOrEmpty(request.TableName))
+            {
+                var occupied = await GetOccupiedTablesAsync(request.ReservationDate, startTime, ct);
+                if (occupied.Contains(request.TableName))
+                {
+                    throw new ConflictException($"Bàn '{request.TableName}' đã được đặt bởi người khác trong khung giờ này. Vui lòng chọn bàn khác.");
+                }
+            }
 
-        // Notify clients about availability change
-        _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+            var reservation = new Reservation
+            {
+                Id = Guid.NewGuid(),
+                ReservationCode = GenerateCode(),
+                GuestName = request.GuestName,
+                GuestEmail = request.GuestEmail,
+                GuestPhone = request.GuestPhone,
+                SeatingAreaId = area.Id,
+                ReservationDate = request.ReservationDate,
+                StartTime = startTime,
+                EndTime = endTime,
+                GuestCount = request.GuestCount,
+                Status = ReservationStatus.Confirmed,
+                TableName = request.TableName,
+                SpecialNote = request.SpecialNote,
+                CreatedAt = DateTime.UtcNow
+            };
 
-        // Fire-and-forget email notification
-        _ = _emailService.SendReservationConfirmationAsync(
-            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
-            reservation.ReservationDate.ToDateTime(reservation.StartTime),
-            $"{area.TableType} - {area.Area}");
+            await _reservationRepository.AddAsync(reservation, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
 
-        reservation.SeatingArea = area;
+            _logger.LogInformation("Reservation {Code} created for guest {GuestName}", reservation.ReservationCode, request.GuestName);
 
-        return MapToResponse(reservation);
+            // Notify clients about availability change
+            _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+
+            // Fire-and-forget email notification
+            _ = _emailService.SendReservationConfirmationAsync(
+                reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
+                reservation.ReservationDate.ToDateTime(reservation.StartTime),
+                $"{area.TableType} - {area.Area}");
+
+            reservation.SeatingArea = area;
+
+            return MapToResponse(reservation);
+        }
+        finally
+        {
+            _reservationLock.Release();
+        }
     }
 
     public async Task<ReservationResponse> GetByIdAsync(Guid reservationId, CancellationToken ct = default)
@@ -173,28 +193,46 @@ public class ReservationService : IReservationService
 
         var newEnd = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
 
-        var overlapping = await _reservationRepository.CountOverlappingAsync(
-            reservation.SeatingAreaId, request.ReservationDate, request.StartTime, newEnd, reservationId, ct);
+        await _reservationLock.WaitAsync(ct);
+        try
+        {
+            var overlapping = await _reservationRepository.CountOverlappingAsync(
+                reservation.SeatingAreaId, request.ReservationDate, request.StartTime, newEnd, reservationId, ct);
 
-        if (overlapping >= reservation.SeatingArea.ReservableTables)
-            throw new ConflictException("No tables are available for the selected time slot.");
+            if (overlapping >= reservation.SeatingArea.ReservableTables)
+                throw new ConflictException("No tables are available for the selected time slot.");
 
-        reservation.ReservationDate = request.ReservationDate;
-        reservation.StartTime = request.StartTime;
-        reservation.EndTime = newEnd;
+            if (!string.IsNullOrEmpty(reservation.TableName))
+            {
+                var overlappingReservations = await _reservationRepository.GetOverlappingReservationsAsync(request.ReservationDate, request.StartTime, newEnd, ct);
+                var isOccupiedByOther = overlappingReservations.Any(r => r.Id != reservationId && r.TableName == reservation.TableName);
+                if (isOccupiedByOther)
+                {
+                    throw new ConflictException($"Bàn '{reservation.TableName}' đã được đặt bởi người khác trong khung giờ này. Vui lòng chọn bàn khác.");
+                }
+            }
 
-        await _reservationRepository.UpdateAsync(reservation, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+            reservation.ReservationDate = request.ReservationDate;
+            reservation.StartTime = request.StartTime;
+            reservation.EndTime = newEnd;
 
-        _logger.LogInformation("Reservation {Code} rescheduled", reservation.ReservationCode);
+            await _reservationRepository.UpdateAsync(reservation, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
 
-        _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+            _logger.LogInformation("Reservation {Code} rescheduled", reservation.ReservationCode);
 
-        _ = _emailService.SendRescheduleConfirmationAsync(
-            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
-            request.ReservationDate.ToDateTime(request.StartTime));
+            _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
-        return MapToResponse(reservation);
+            _ = _emailService.SendRescheduleConfirmationAsync(
+                reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
+                request.ReservationDate.ToDateTime(request.StartTime));
+
+            return MapToResponse(reservation);
+        }
+        finally
+        {
+            _reservationLock.Release();
+        }
     }
 
     public async Task<PagedResult<ReservationResponse>> GetAllAsync(ReservationFilterRequest filter, CancellationToken ct = default)
