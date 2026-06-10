@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -17,7 +18,8 @@ import {
   AlertCircle,
   Coffee,
 } from "lucide-react";
-import { bookingCreate } from "../services/mockApi.js";
+import { bookingCreate } from "../services/apiClient.js";
+
 import { useAuth } from "../context/useAuthContext.js";
 import { useBookingContext } from "../context/useBookingContext.js";
 
@@ -44,7 +46,10 @@ export default function BookingConfirmPage() {
   const [receiverPhone, setReceiverPhone] = useState(user?.phone || "");
   const [receiverEmail, setReceiverEmail] = useState(user?.email || "");
 
+  const attemptKeyRef = useRef(null);
+
   const [loading, setLoading] = useState(false);
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -142,6 +147,10 @@ export default function BookingConfirmPage() {
   }
 
   const confirm = async () => {
+    const attemptKey = `${booking_date}__${booking_time}__${tableId}__${num_of_people}`;
+    if (attemptKeyRef.current === attemptKey) return;
+    attemptKeyRef.current = attemptKey;
+
     setLoading(true);
     setError("");
     setMessage("");

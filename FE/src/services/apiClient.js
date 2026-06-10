@@ -1,26 +1,139 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:52818").replace(/\/$/, "");
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:52818"
+).replace(/\/$/, "");
 const SESSION_KEY = "vizza.session";
 
 const TABLE_LAYOUT = [
-  { id: 1, name: "Bàn A1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 10, shape: "pair", imageType: "2-Seat Window" },
-  { id: 2, name: "Bàn A2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 10, shape: "pair", imageType: "2-Seat Corner" },
-  { id: 3, name: "Bàn A3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 10, shape: "quad", imageType: "4-Seat Indoor" },
-  { id: 4, name: "Bàn A4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 10, shape: "quad", imageType: "4-Seat Outdoor" },
-  { id: 5, name: "Bàn B1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 40, shape: "pair", imageType: "2-Seat Window" },
-  { id: 6, name: "Bàn B2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 40, shape: "pair", imageType: "2-Seat Bar" },
-  { id: 7, name: "Bàn B3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 40, shape: "quad", imageType: "4-Seat Tatami" },
-  { id: 8, name: "Bàn B4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 40, shape: "quad", imageType: "4-Seat Outdoor" },
-  { id: 9, name: "Bàn C1", area: "Window", max_seats: 2, coordinate_x: 10, coordinate_y: 68, shape: "pair", imageType: "2-Seat Window" },
-  { id: 10, name: "Bàn C2", area: "Corner", max_seats: 2, coordinate_x: 30, coordinate_y: 68, shape: "pair", imageType: "2-Seat Corner" },
-  { id: 11, name: "Bàn C3", area: "Indoor", max_seats: 4, coordinate_x: 55, coordinate_y: 68, shape: "quad", imageType: "4-Seat Indoor" },
-  { id: 12, name: "Bàn C4", area: "Outdoor", max_seats: 4, coordinate_x: 75, coordinate_y: 68, shape: "quad", imageType: "4-Seat Outdoor" },
+  {
+    id: 1,
+    name: "Bàn A1",
+    area: "Window",
+    max_seats: 2,
+    coordinate_x: 10,
+    coordinate_y: 10,
+    shape: "pair",
+    imageType: "2-Seat Window",
+  },
+  {
+    id: 2,
+    name: "Bàn A2",
+    area: "Corner",
+    max_seats: 2,
+    coordinate_x: 30,
+    coordinate_y: 10,
+    shape: "pair",
+    imageType: "2-Seat Corner",
+  },
+  {
+    id: 3,
+    name: "Bàn A3",
+    area: "Indoor",
+    max_seats: 4,
+    coordinate_x: 55,
+    coordinate_y: 10,
+    shape: "quad",
+    imageType: "4-Seat Indoor",
+  },
+  {
+    id: 4,
+    name: "Bàn A4",
+    area: "Outdoor",
+    max_seats: 4,
+    coordinate_x: 75,
+    coordinate_y: 10,
+    shape: "quad",
+    imageType: "4-Seat Outdoor",
+  },
+  {
+    id: 5,
+    name: "Bàn B1",
+    area: "Window",
+    max_seats: 2,
+    coordinate_x: 10,
+    coordinate_y: 40,
+    shape: "pair",
+    imageType: "2-Seat Window",
+  },
+  {
+    id: 6,
+    name: "Bàn B2",
+    area: "Corner",
+    max_seats: 2,
+    coordinate_x: 30,
+    coordinate_y: 40,
+    shape: "pair",
+    imageType: "2-Seat Bar",
+  },
+  {
+    id: 7,
+    name: "Bàn B3",
+    area: "Indoor",
+    max_seats: 4,
+    coordinate_x: 55,
+    coordinate_y: 40,
+    shape: "quad",
+    imageType: "4-Seat Tatami",
+  },
+  {
+    id: 8,
+    name: "Bàn B4",
+    area: "Outdoor",
+    max_seats: 4,
+    coordinate_x: 75,
+    coordinate_y: 40,
+    shape: "quad",
+    imageType: "4-Seat Outdoor",
+  },
+  {
+    id: 9,
+    name: "Bàn C1",
+    area: "Window",
+    max_seats: 2,
+    coordinate_x: 10,
+    coordinate_y: 68,
+    shape: "pair",
+    imageType: "2-Seat Window",
+  },
+  {
+    id: 10,
+    name: "Bàn C2",
+    area: "Corner",
+    max_seats: 2,
+    coordinate_x: 30,
+    coordinate_y: 68,
+    shape: "pair",
+    imageType: "2-Seat Corner",
+  },
+  {
+    id: 11,
+    name: "Bàn C3",
+    area: "Indoor",
+    max_seats: 4,
+    coordinate_x: 55,
+    coordinate_y: 68,
+    shape: "quad",
+    imageType: "4-Seat Indoor",
+  },
+  {
+    id: 12,
+    name: "Bàn C4",
+    area: "Outdoor",
+    max_seats: 4,
+    coordinate_x: 75,
+    coordinate_y: 68,
+    shape: "quad",
+    imageType: "4-Seat Outdoor",
+  },
 ];
 
 const FALLBACK_MENU_IMAGES = {
-  Traditional: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80",
-  Latte: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80",
+  Traditional:
+    "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80",
+  Latte:
+    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80",
   Food: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80",
-  Desserts: "https://images.unsplash.com/photo-1519869325930-281384150729?w=800&q=80",
+  Desserts:
+    "https://images.unsplash.com/photo-1519869325930-281384150729?w=800&q=80",
 };
 
 function readSession() {
@@ -48,7 +161,14 @@ function mapUser(user) {
     fullName: user.fullName ?? user.full_name ?? "",
     email: user.email ?? "",
     phone: user.phone ?? "",
-    role: role === "staff" ? "staff" : role === "admin" ? "admin" : role === "manager" ? "manager" : "user",
+    role:
+      role === "staff"
+        ? "staff"
+        : role === "admin"
+          ? "admin"
+          : role === "manager"
+            ? "manager"
+            : "user",
   };
 }
 
@@ -69,15 +189,29 @@ function mapMenuCategory(category, name = "") {
     return "Hojicha";
   }
 
-  if (lowerName.includes("tiramisu") || lowerName.includes("parfait") || lowerName.includes("cake") || lowerName.includes("dessert")) {
+  if (
+    lowerName.includes("tiramisu") ||
+    lowerName.includes("parfait") ||
+    lowerName.includes("cake") ||
+    lowerName.includes("dessert")
+  ) {
     return "Desserts";
   }
 
-  if (value.includes("snack") || lowerName.includes("croissant") || lowerName.includes("mochi")) {
+  if (
+    value.includes("snack") ||
+    lowerName.includes("croissant") ||
+    lowerName.includes("mochi")
+  ) {
     return "Food";
   }
 
-  if (value.includes("drink") || value.includes("coffee") || lowerName.includes("cà phê") || lowerName.includes("bạc xỉu")) {
+  if (
+    value.includes("drink") ||
+    value.includes("coffee") ||
+    lowerName.includes("cà phê") ||
+    lowerName.includes("bạc xỉu")
+  ) {
     return "Traditional";
   }
 
@@ -95,7 +229,11 @@ function mapMenuTag(tag) {
 
 function mapMenuItem(item, avgRating = 0) {
   const category = mapMenuCategory(item.category, item.name);
-  const imageUrl = item.imageUrl || item.image_url || FALLBACK_MENU_IMAGES[category] || FALLBACK_MENU_IMAGES.Latte;
+  const imageUrl =
+    item.imageUrl ||
+    item.image_url ||
+    FALLBACK_MENU_IMAGES[category] ||
+    FALLBACK_MENU_IMAGES.Latte;
 
   return {
     id: item.id,
@@ -114,10 +252,16 @@ function mapMenuItem(item, avgRating = 0) {
 
 function mapReview(review) {
   if (!review) return null;
-  const guestName = review.guestName ?? review.guest_name ?? review.GuestName ?? "";
+  const guestName =
+    review.guestName ?? review.guest_name ?? review.GuestName ?? "";
   const commentText = review.comment ?? review.Comment ?? "";
   const ratingValue = review.rating ?? review.Rating ?? 5;
-  const menuItemId = review.menuItemId ?? review.menuItem_id ?? review.menu_id ?? review.MenuItemId ?? null;
+  const menuItemId =
+    review.menuItemId ??
+    review.menuItem_id ??
+    review.menu_id ??
+    review.MenuItemId ??
+    null;
   const createdAt = review.createdAt ?? review.created_at ?? review.CreatedAt;
 
   return {
@@ -132,7 +276,14 @@ function mapReview(review) {
     user: guestName
       ? { id: null, full_name: guestName }
       : review.user
-        ? { id: review.user.id ?? null, full_name: review.user.full_name ?? review.user.fullName ?? review.user.FullName ?? "" }
+        ? {
+            id: review.user.id ?? null,
+            full_name:
+              review.user.full_name ??
+              review.user.fullName ??
+              review.user.FullName ??
+              "",
+          }
         : { id: null, full_name: "Khách hàng" },
   };
 }
@@ -165,14 +316,40 @@ function statusFromReservation(status) {
 
 function pickAreaMap(seatingAreas) {
   const areas = Array.isArray(seatingAreas) ? seatingAreas : [];
-  const twoSeat = areas.filter((area) => /2-?seat/i.test(String(area.tableType || "")));
-  const fourSeat = areas.filter((area) => /4-?seat/i.test(String(area.tableType || "")));
+  const twoSeat = areas.filter((area) =>
+    /2-?seat/i.test(String(area.tableType || "")),
+  );
+  const fourSeat = areas.filter((area) =>
+    /4-?seat/i.test(String(area.tableType || "")),
+  );
 
   return {
-    Window: twoSeat.find((area) => String(area.area || "").toLowerCase() === "window") || twoSeat[0] || null,
-    Corner: twoSeat.find((area) => String(area.area || "").toLowerCase() === "corner") || twoSeat[1] || twoSeat[0] || null,
-    Indoor: fourSeat.find((area) => String(area.area || "").toLowerCase() === "indoor") || fourSeat[0] || null,
-    Outdoor: fourSeat.find((area) => String(area.area || "").toLowerCase() === "outdoor") || fourSeat[1] || fourSeat[0] || null,
+    Window:
+      twoSeat.find(
+        (area) => String(area.area || "").toLowerCase() === "window",
+      ) ||
+      twoSeat[0] ||
+      null,
+    Corner:
+      twoSeat.find(
+        (area) => String(area.area || "").toLowerCase() === "corner",
+      ) ||
+      twoSeat[1] ||
+      twoSeat[0] ||
+      null,
+    Indoor:
+      fourSeat.find(
+        (area) => String(area.area || "").toLowerCase() === "indoor",
+      ) ||
+      fourSeat[0] ||
+      null,
+    Outdoor:
+      fourSeat.find(
+        (area) => String(area.area || "").toLowerCase() === "outdoor",
+      ) ||
+      fourSeat[1] ||
+      fourSeat[0] ||
+      null,
   };
 }
 
@@ -202,7 +379,11 @@ async function requestJson(path, options = {}) {
     });
   } catch (err) {
     console.error("Network error fetching API:", err);
-    return { ok: false, message: "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng." };
+    return {
+      ok: false,
+      message:
+        "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng.",
+    };
   }
 
   const text = await response.text();
@@ -216,7 +397,10 @@ async function requestJson(path, options = {}) {
         .join(" ");
     }
     if (!message) {
-      message = data?.title || data?.detail || (typeof data === "string" ? data : "Request failed");
+      message =
+        data?.title ||
+        data?.detail ||
+        (typeof data === "string" ? data : "Request failed");
     }
     return { ok: false, message };
   }
@@ -251,10 +435,11 @@ function buildReservationTable(reservation, tables = TABLE_LAYOUT) {
     const match = tables.find((table) => table.name === tName);
     if (match) return { ...match };
   }
-  const match = tables.find((table) => table.seatingAreaId === reservation.seatingAreaId)
-    || tables.find((table) => table.area === reservation.seatingAreaArea)
-    || tables[0]
-    || null;
+  const match =
+    tables.find((table) => table.seatingAreaId === reservation.seatingAreaId) ||
+    tables.find((table) => table.area === reservation.seatingAreaArea) ||
+    tables[0] ||
+    null;
 
   return match ? { ...match } : null;
 }
@@ -305,7 +490,13 @@ function currentToken() {
 export async function authRegister({ full_name, email, phone, password }) {
   const result = await requestJson("/api/auth/register", {
     method: "POST",
-    body: { fullName: full_name, email, phone, password, confirmPassword: password },
+    body: {
+      fullName: full_name,
+      email,
+      phone,
+      password,
+      confirmPassword: password,
+    },
   });
 
   if (!result.ok) return result;
@@ -339,7 +530,9 @@ export async function authLogout() {
 }
 
 export async function authMe(token) {
-  const result = await requestJson("/api/auth/me", { token: token || currentToken() });
+  const result = await requestJson("/api/auth/me", {
+    token: token || currentToken(),
+  });
   if (!result.ok) return result;
   return { ok: true, user: mapUser(result.data) };
 }
@@ -347,17 +540,24 @@ export async function authMe(token) {
 export async function menuList({ q = "", category = "all", tag = "all" } = {}) {
   const [menuResult, reviewsResult] = await Promise.all([
     requestJson("/api/public/menu"),
-    requestJson("/api/public/reviews")
+    requestJson("/api/public/reviews"),
   ]);
 
   if (!menuResult.ok) return menuResult;
 
-  const reviewsList = reviewsResult.ok && Array.isArray(reviewsResult.data) ? reviewsResult.data : [];
-  
+  const reviewsList =
+    reviewsResult.ok && Array.isArray(reviewsResult.data)
+      ? reviewsResult.data
+      : [];
+
   // Group reviews by menuItemId
   const ratingsByMenuId = {};
-  reviewsList.forEach(review => {
-    const mId = review.menuItemId || review.menuItem_id || review.menu_id || review.MenuItemId;
+  reviewsList.forEach((review) => {
+    const mId =
+      review.menuItemId ||
+      review.menuItem_id ||
+      review.menu_id ||
+      review.MenuItemId;
     if (!mId) return;
     const rating = Number(review.rating || review.Rating || 0);
     if (!ratingsByMenuId[mId]) {
@@ -370,9 +570,10 @@ export async function menuList({ q = "", category = "all", tag = "all" } = {}) {
   const rawItems = Array.isArray(menuResult.data) ? menuResult.data : [];
   const items = rawItems.map((item) => {
     const stats = ratingsByMenuId[item.id];
-    const avgRating = stats && stats.count > 0
-      ? Math.round((stats.sum / stats.count) * 10) / 10
-      : 0;
+    const avgRating =
+      stats && stats.count > 0
+        ? Math.round((stats.sum / stats.count) * 10) / 10
+        : 0;
     return mapMenuItem(item, avgRating);
   });
 
@@ -382,7 +583,11 @@ export async function menuList({ q = "", category = "all", tag = "all" } = {}) {
     data: items
       .filter((item) => category === "all" || item.category === category)
       .filter((item) => tag === "all" || item.tag === tag)
-      .filter((item) => !query || `${item.name} ${item.description}`.toLowerCase().includes(query)),
+      .filter(
+        (item) =>
+          !query ||
+          `${item.name} ${item.description}`.toLowerCase().includes(query),
+      ),
   };
 }
 
@@ -391,15 +596,25 @@ export async function menuDetail({ id }) {
   if (!result.ok) return result;
 
   const reviews = await menuReviews({ id });
-  const avgRating = reviews.ok && reviews.data.length
-    ? Math.round((reviews.data.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.data.length) * 10) / 10
-    : 0;
+  const avgRating =
+    reviews.ok && reviews.data.length
+      ? Math.round(
+          (reviews.data.reduce(
+            (sum, review) => sum + Number(review.rating || 0),
+            0,
+          ) /
+            reviews.data.length) *
+            10,
+        ) / 10
+      : 0;
 
   return { ok: true, data: mapMenuItem(result.data, avgRating) };
 }
 
 export async function menuReviews({ id }) {
-  const result = await requestJson("/api/public/reviews", { query: { menuItemId: id } });
+  const result = await requestJson("/api/public/reviews", {
+    query: { menuItemId: id },
+  });
   if (!result.ok) return result;
 
   const data = Array.isArray(result.data) ? result.data.map(mapReview) : [];
@@ -435,20 +650,33 @@ export async function tablesList() {
   return { ok: true, data: await getTablesWithAreas() };
 }
 
-export async function bookingCheckStatus({ booking_date, booking_time, guestCount }) {
+export async function bookingCheckStatus({
+  booking_date,
+  booking_time,
+  guestCount,
+}) {
   const tables = await getTablesWithAreas();
-  
+
   // 1. Fetch available areas for both 2-seat and 4-seat areas concurrently
   const [avail2Result, avail4Result, occupiedResult] = await Promise.all([
-    requestJson("/api/public/availability", { query: { date: booking_date, guestCount: 2 } }),
-    requestJson("/api/public/availability", { query: { date: booking_date, guestCount: 4 } }),
-    requestJson("/api/public/occupied-tables", { query: { date: booking_date, time: normalizeTime(booking_time) } }),
+    requestJson("/api/public/availability", {
+      query: { date: booking_date, guestCount: 2 },
+    }),
+    requestJson("/api/public/availability", {
+      query: { date: booking_date, guestCount: 4 },
+    }),
+    requestJson("/api/public/occupied-tables", {
+      query: { date: booking_date, time: normalizeTime(booking_time) },
+    }),
   ]);
 
   if (!avail2Result.ok) return avail2Result;
   if (!avail4Result.ok) return avail4Result;
 
-  const occupiedTables = occupiedResult.ok && Array.isArray(occupiedResult.data) ? occupiedResult.data : [];
+  const occupiedTables =
+    occupiedResult.ok && Array.isArray(occupiedResult.data)
+      ? occupiedResult.data
+      : [];
 
   const availability = [
     ...(Array.isArray(avail2Result.data) ? avail2Result.data : []),
@@ -458,7 +686,13 @@ export async function bookingCheckStatus({ booking_date, booking_time, guestCoun
   const targetTime = normalizeTime(booking_time);
   const allowedAreaIds = new Set(
     availability
-      .filter((area) => Array.isArray(area.availableSlots) && area.availableSlots.some((slot) => normalizeTime(slot.startTime) === targetTime))
+      .filter(
+        (area) =>
+          Array.isArray(area.availableSlots) &&
+          area.availableSlots.some(
+            (slot) => normalizeTime(slot.startTime) === targetTime,
+          ),
+      )
       .map((area) => area.seatingAreaId),
   );
 
@@ -477,14 +711,23 @@ export async function bookingCheckStatus({ booking_date, booking_time, guestCoun
   };
 }
 
-export async function bookingCreate({ token, table_id, booking_date, booking_time, num_of_people, note }) {
+export async function bookingCreate({
+  token,
+  table_id,
+  booking_date,
+  booking_time,
+  num_of_people,
+  note,
+}) {
   const bearer = token || currentToken();
   const user = sessionUser();
-  if (!bearer || !user) return { ok: false, message: "Vui lòng đăng nhập để đặt bàn." };
+  if (!bearer || !user)
+    return { ok: false, message: "Vui lòng đăng nhập để đặt bàn." };
 
   const tables = await getTablesWithAreas();
   const table = tables.find((item) => String(item.id) === String(table_id));
-  if (!table?.seatingAreaId) return { ok: false, message: "Không tìm thấy khu vực bàn phù hợp." };
+  if (!table?.seatingAreaId)
+    return { ok: false, message: "Không tìm thấy khu vực bàn phù hợp." };
 
   const result = await requestJson("/api/reservations", {
     method: "POST",
@@ -513,7 +756,11 @@ export async function bookingMe({ token }) {
   const result = await requestJson("/api/reservations/me", { token: bearer });
   if (!result.ok) return result;
 
-  const data = Array.isArray(result.data) ? result.data.map((reservation) => normalizeReservation(reservation, tables)) : [];
+  const data = Array.isArray(result.data)
+    ? result.data.map((reservation) =>
+        normalizeReservation(reservation, tables),
+      )
+    : [];
   return { ok: true, data };
 }
 
@@ -528,7 +775,9 @@ export async function bookingCancel({ token, id }) {
 
   if (!result.ok) return result;
 
-  const refreshed = await requestJson(`/api/reservations/${id}`, { token: bearer });
+  const refreshed = await requestJson(`/api/reservations/${id}`, {
+    token: bearer,
+  });
   if (refreshed.ok) {
     const tables = await getTablesWithAreas();
     return { ok: true, data: normalizeReservation(refreshed.data, tables) };
@@ -542,9 +791,10 @@ export async function restaurantInfoGet() {
   const result = await requestJson("/api/public/restaurant-info");
   if (!result.ok) return result;
 
-  const mapEmbedUrl = result.data.mapUrl && result.data.mapUrl.includes("embed")
-    ? result.data.mapUrl
-    : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed";
+  const mapEmbedUrl =
+    result.data.mapUrl && result.data.mapUrl.includes("embed")
+      ? result.data.mapUrl
+      : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed";
 
   return {
     ok: true,
@@ -562,7 +812,8 @@ export async function restaurantInfoGet() {
 export async function feedbackCreate({ token, title, content }) {
   const bearer = token || currentToken();
   const user = sessionUser();
-  if (!bearer || !user) return { ok: false, message: "Vui lòng đăng nhập để gửi phản hồi." };
+  if (!bearer || !user)
+    return { ok: false, message: "Vui lòng đăng nhập để gửi phản hồi." };
 
   const result = await requestJson("/api/public/feedbacks", {
     method: "POST",
@@ -608,7 +859,9 @@ export async function feedbackGetMy({ token }) {
   const bearer = token || currentToken();
   if (!bearer) return { ok: false, message: "Unauthorized" };
 
-  const result = await requestJson("/api/public/feedbacks/my", { token: bearer });
+  const result = await requestJson("/api/public/feedbacks/my", {
+    token: bearer,
+  });
   if (!result.ok) return result;
 
   const data = Array.isArray(result.data) ? result.data.map(mapFeedback) : [];
@@ -622,7 +875,14 @@ export async function adminGetStats({ token }) {
   return await requestJson("/api/admin/stats", { token: bearer });
 }
 
-export async function adminGetBookings({ token, date, status, search, page, pageSize }) {
+export async function adminGetBookings({
+  token,
+  date,
+  status,
+  search,
+  page,
+  pageSize,
+}) {
   const bearer = token || currentToken();
   if (!bearer) return { ok: false, message: "Unauthorized" };
 

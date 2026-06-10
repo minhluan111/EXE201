@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -125,11 +125,16 @@ export default function BookingPage() {
   const location = useLocation();
   const { selected, setSelected } = useBookingContext();
 
+  const selectedRef = useRef(selected);
+  useEffect(() => {
+    selectedRef.current = selected;
+  }, [selected]);
+
   const todayStr = useMemo(() => {
     const d = new Date();
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }, []);
 
@@ -146,8 +151,8 @@ export default function BookingPage() {
   const filteredTimeSlots = useMemo(() => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     const todayStrLocal = `${year}-${month}-${day}`;
 
     const isToday = bookingDate === todayStrLocal;
@@ -179,28 +184,62 @@ export default function BookingPage() {
   useEffect(() => {
     if (step !== 1 || !bookingDate || !bookingTime) return;
 
+    let isMounted = true;
+
     setLoading(true);
     setSelected(null);
 
-    bookingCheckStatus({
-      booking_date: bookingDate,
-      booking_time: bookingTime,
-      guestCount: numPeople,
-    })
-      .then((res) => {
-        if (!res.ok) {
-          setFloorTables([]);
-          return;
-        }
-
-        const requiredCapacity = numPeople <= 2 ? 2 : 4;
-        const suitableTables = res.data.filter(
-          (table) => table.max_seats === requiredCapacity,
-        );
-
-        setFloorTables(suitableTables);
+    const fetchStatus = () => {
+      bookingCheckStatus({
+        booking_date: bookingDate,
+        booking_time: bookingTime,
+        guestCount: numPeople,
       })
-      .finally(() => setLoading(false));
+        .then((res) => {
+          if (!isMounted) return;
+          if (!res.ok) {
+            setFloorTables([]);
+            return;
+          }
+
+          const requiredCapacity = numPeople <= 2 ? 2 : 4;
+          const suitableTables = res.data.filter(
+            (table) => table.max_seats === requiredCapacity,
+          );
+
+          setFloorTables(suitableTables);
+
+          // If the user has a selected table, check if it's still available in the new list
+          const currentSelected = selectedRef.current;
+          if (currentSelected) {
+            const currentTableInNewList = suitableTables.find(
+              (t) => t.name === currentSelected.name,
+            );
+            if (
+              currentTableInNewList &&
+              currentTableInNewList.status === "occupied"
+            ) {
+              setSelected(null);
+              setError(
+                `Bàn ${currentSelected.name} vừa mới được đặt bởi người khác. Vui lòng chọn bàn khác.`,
+              );
+            }
+          }
+        })
+        .finally(() => {
+          if (isMounted) setLoading(false);
+        });
+    };
+
+    fetchStatus();
+
+    // Poll every 3 seconds for fast status updates
+    const interval = setInterval(fetchStatus, 3000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [step, bookingDate, bookingTime, numPeople]);
 
   const canSelect = (table) => {
@@ -222,8 +261,8 @@ export default function BookingPage() {
     // Verify 30-minute buffer for same-day booking
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
     const todayStrLocal = `${year}-${month}-${day}`;
 
     if (bookingDate === todayStrLocal) {
@@ -349,6 +388,33 @@ export default function BookingPage() {
         style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px 80px" }}
       >
         <StepBar step={step} />
+
+        {step === 1 && (
+          <div
+            style={{
+              marginBottom: 24,
+            }}
+          >
+            <button
+              onClick={() => {
+                setStep(0);
+                setError("");
+              }}
+              style={{
+                padding: "12px 28px",
+                borderRadius: 50,
+                border: "1px solid var(--border)",
+                background: "transparent",
+                color: "var(--text-muted)",
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              ← Quay lại
+            </button>
+          </div>
+        )}
 
         <AnimatePresence mode="wait">
           {step === 0 ? (
@@ -906,26 +972,6 @@ export default function BookingPage() {
             gap: 12,
           }}
         >
-          {step === 1 && (
-            <button
-              onClick={() => {
-                setStep(0);
-                setError("");
-              }}
-              style={{
-                padding: "12px 28px",
-                borderRadius: 50,
-                border: "1px solid var(--border)",
-                background: "transparent",
-                color: "var(--text-muted)",
-                fontSize: 15,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              ← Quay lại
-            </button>
-          )}
           {step === 0 && (
             <div>
               {error && (
