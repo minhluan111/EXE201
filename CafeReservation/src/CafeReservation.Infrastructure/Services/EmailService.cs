@@ -1,9 +1,8 @@
+using System.Text;
+using System.Text.Json;
 using CafeReservation.Application.Interfaces;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MimeKit;
 
 namespace CafeReservation.Infrastructure.Services;
 
@@ -11,11 +10,14 @@ public class EmailService : IEmailService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<EmailService> _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
+    // Thay đổi Constructor để nhận thêm IHttpClientFactory
+    public EmailService(IConfiguration configuration, ILogger<EmailService> logger, IHttpClientFactory httpClientFactory)
     {
         _configuration = configuration;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
     public async Task SendReservationConfirmationAsync(
@@ -85,41 +87,54 @@ public class EmailService : IEmailService
 
         await SendAsync(toEmail, userName, subject, body, ct);
     }
-
+    
     private async Task SendAsync(string toEmail, string toName, string subject, string htmlBody, CancellationToken ct)
     {
         try
         {
-            var smtp = _configuration.GetSection("Email");
-            var host = smtp["Host"] ?? "smtp.gmail.com";
-            var port = int.Parse(smtp["Port"] ?? "587");
-            var username = smtp["Username"] ?? string.Empty;
-            var password = smtp["Password"] ?? string.Empty;
-            var from = smtp["From"] ?? username;
-            var fromName = smtp["FromName"] ?? "Yaki Café";
+            var emailConfig = _configuration.GetSection("Email");
+            var apiKey = emailConfig["ApiKey"] ?? string.Empty;
+            var fromEmail = emailConfig["From"] ?? string.Empty;
+            var fromName = emailConfig["FromName"] ?? "Yaki Café";
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(fromName, from));
-            message.To.Add(new MailboxAddress(toName, toEmail));
-            message.Subject = subject;
-            message.Body = new TextPart("html") { Text = htmlBody };
+            // Tạo Payload JSON theo đúng đặc tả API của Brevo
+            var payload = new
+            {
+                sender = new { name = fromName, email = fromEmail },
+                to = new[] { new { email = toEmail, name = toName } },
+                subject = subject,
+                htmlContent = htmlBody
+            };
 
-            using var client = new SmtpClient();
-            _logger.LogInformation(
-                "SMTP => Host={Host}, Port={Port}, User={User}",
-                host,
-                port,
-                username
-            );            
-            await client.ConnectAsync(host, port, SecureSocketOptions.SslOnConnect, ct);
-            await client.AuthenticateAsync(username, password, ct);
-            await client.SendAsync(message, ct);
-            await client.DisconnectAsync(true, ct);
+            var jsonString = JsonSerializer.Serialize(payload);
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+            // Khởi tạo client thông qua factory
+            using var client = _httpClientFactory.CreateClient();
+            
+            // Đính kèm API Key vào Header theo chuẩn của Brevo
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("api-key", apiKey);
+
+            _logger.LogInformation("Sending email via Brevo API to {Email} with Subject: {Subject}", toEmail, subject);
+
+            // Gửi qua HTTPS
+            var response = await client.PostAsync("https://api.brevo.com/v3/smtp/email", httpContent, ct);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorResponse = await response.Content.ReadAsStringAsync(ct);
+                _logger.LogError("Brevo API returned error: {StatusCode} - {Error}", response.StatusCode, errorResponse);
+            }
+            else
+            {
+                _logger.LogInformation("Email sent successfully via Brevo API to {Email}", toEmail);
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send email to {Email}", toEmail);
-            // Non-critical: do not rethrow — email failure must not break the main flow
+            _logger.LogError(ex, "Failed to send email via Brevo API to {Email}", toEmail);
+            // Giữ nguyên logic cũ: Không rethrow ngoại lệ để tránh crash luồng chính
         }
     }
 }
