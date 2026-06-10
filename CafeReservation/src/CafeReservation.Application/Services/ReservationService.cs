@@ -48,6 +48,13 @@ public class ReservationService : IReservationService
             throw new DomainException($"Reservations are only available between {AppConstants.OpeningHour:HH:mm} and {AppConstants.ClosingHour:HH:mm}.");
         }
 
+        var nowVietnam = DateTime.UtcNow.AddHours(7);
+        var reservationDateTime = request.ReservationDate.ToDateTime(request.StartTime);
+        if (reservationDateTime < nowVietnam.AddMinutes(30))
+        {
+            throw new DomainException("Thời gian đặt bàn phải trước khi đến quán ít nhất 30 phút.");
+        }
+
         var area = await _seatingAreaRepository.GetByIdAsync(request.SeatingAreaId, ct)
             ?? throw new NotFoundException(nameof(SeatingArea), request.SeatingAreaId);
 
@@ -155,6 +162,13 @@ public class ReservationService : IReservationService
         if (request.StartTime < AppConstants.OpeningHour || request.StartTime > AppConstants.ClosingHour)
         {
             throw new DomainException($"Reservations are only available between {AppConstants.OpeningHour:HH:mm} and {AppConstants.ClosingHour:HH:mm}.");
+        }
+
+        var nowVietnam = DateTime.UtcNow.AddHours(7);
+        var reservationDateTime = request.ReservationDate.ToDateTime(request.StartTime);
+        if (reservationDateTime < nowVietnam.AddMinutes(30))
+        {
+            throw new DomainException("Thời gian đặt bàn phải trước khi đến quán ít nhất 30 phút.");
         }
 
         var newEnd = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);

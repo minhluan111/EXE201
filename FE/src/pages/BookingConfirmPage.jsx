@@ -428,7 +428,7 @@ export default function BookingConfirmPage() {
                 rows={4}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Ví dụ: Cần không gian yên tĩnh, bàn gần cửa sổ, chuẩn bị sẵn bánh ngọt Mochi..."
+                placeholder="Ví dụ: Tổ chức sinh nhật, liên hoan công ty, hoa tươi, bánh kem..."
                 className="confirm-textarea"
               />
             </div>

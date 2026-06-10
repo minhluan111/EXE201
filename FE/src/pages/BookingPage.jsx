@@ -127,8 +127,10 @@ export default function BookingPage() {
 
   const todayStr = useMemo(() => {
     const d = new Date();
-    d.setDate(d.getDate() + 1);
-    return d.toISOString().slice(0, 10);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }, []);
 
   const [step, setStep] = useState(0); // 0 = date/time, 1 = seat
@@ -140,6 +142,38 @@ export default function BookingPage() {
   const [floorTables, setFloorTables] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const filteredTimeSlots = useMemo(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStrLocal = `${year}-${month}-${day}`;
+
+    const isToday = bookingDate === todayStrLocal;
+
+    if (!isToday) {
+      return TIME_SLOTS;
+    }
+
+    return TIME_SLOTS.filter((slot) => {
+      const [hours, minutes] = slot.split(":").map(Number);
+      const slotDate = new Date(today);
+      slotDate.setHours(hours, minutes, 0, 0);
+
+      const timeDiffMs = slotDate.getTime() - today.getTime();
+      const timeDiffMinutes = timeDiffMs / (1000 * 60);
+
+      return timeDiffMinutes >= 30; // Must be at least 30 minutes in the future
+    });
+  }, [bookingDate]);
+
+  // Reset bookingTime if it is no longer valid for the selected date
+  useEffect(() => {
+    if (bookingTime && !filteredTimeSlots.includes(bookingTime)) {
+      setBookingTime("");
+    }
+  }, [bookingDate, filteredTimeSlots, bookingTime]);
 
   // Fetch table status when date/time changes and step is 1
   useEffect(() => {
@@ -184,6 +218,26 @@ export default function BookingPage() {
       setError("Vui lòng chọn khung giờ.");
       return;
     }
+
+    // Verify 30-minute buffer for same-day booking
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const todayStrLocal = `${year}-${month}-${day}`;
+
+    if (bookingDate === todayStrLocal) {
+      const [hours, minutes] = bookingTime.split(":").map(Number);
+      const slotDate = new Date(now);
+      slotDate.setHours(hours, minutes, 0, 0);
+
+      const diffMinutes = (slotDate.getTime() - now.getTime()) / (1000 * 60);
+      if (diffMinutes < 30) {
+        setError("Thời gian đặt bàn phải trước khi đến quán ít nhất 30 phút.");
+        return;
+      }
+    }
+
     setError("");
     setStep(1);
   };
@@ -432,7 +486,7 @@ export default function BookingPage() {
                     gap: 10,
                   }}
                 >
-                  {TIME_SLOTS.map((t) => (
+                  {filteredTimeSlots.map((t) => (
                     <motion.button
                       key={t}
                       whileHover={{ scale: 1.05 }}
