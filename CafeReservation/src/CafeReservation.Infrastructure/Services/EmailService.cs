@@ -105,6 +105,12 @@ public class EmailService : IEmailService
             message.Body = new TextPart("html") { Text = htmlBody };
 
             using var client = new SmtpClient();
+            _logger.LogInformation(
+                "SMTP => Host={Host}, Port={Port}, User={User}",
+                host,
+                port,
+                username
+            );            
             await client.ConnectAsync(host, port, SecureSocketOptions.StartTls, ct);
             await client.AuthenticateAsync(username, password, ct);
             await client.SendAsync(message, ct);
