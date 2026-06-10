@@ -111,7 +111,7 @@ public class EmailService : IEmailService
                 port,
                 username
             );            
-            await client.ConnectAsync(host, port, SecureSocketOptions.Auto, ct);
+            await client.ConnectAsync(host, port, SecureSocketOptions.SslOnConnect, ct);
             await client.AuthenticateAsync(username, password, ct);
             await client.SendAsync(message, ct);
             await client.DisconnectAsync(true, ct);
