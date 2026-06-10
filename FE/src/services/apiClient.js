@@ -544,12 +544,12 @@ export async function restaurantInfoGet() {
 
   const mapEmbedUrl = result.data.mapUrl && result.data.mapUrl.includes("embed")
     ? result.data.mapUrl
-    : "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0976527581177!2d105.85012547596531!3d21.02877968778001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab953357c995%3A0x862b2fb23497d397!2zSG_DoG4gS2nhur9tLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1717056000000!5m2!1svi!2s";
+    : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed";
 
   return {
     ok: true,
     data: {
-      name: "Yaki Café",
+      name: "Yakishime",
       address: result.data.address,
       hotline: result.data.phone,
       email: "hello@yakicafe.local",

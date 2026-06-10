@@ -161,20 +161,29 @@ public class DataSeeder
     // Restaurant Info
     private async Task SeedRestaurantInfoAsync(CancellationToken ct)
     {
-        if (await _db.RestaurantInfo.AnyAsync(ct))
-            return;
-
-        var info = new RestaurantInfo
+        var info = await _db.RestaurantInfo.FirstOrDefaultAsync(ct);
+        if (info != null)
         {
-            Id = Guid.NewGuid(),
-            Address = "123 Yaki Street, Coffee District, City",
-            Phone = "0900000000",
-            OpeningHours = "08:00 - 22:00",
-            MapUrl = "https://maps.google.com"
-        };
-
-        await _db.RestaurantInfo.AddAsync(info, ct);
-        _logger.LogInformation("Seeded restaurant info");
+            info.Address = "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ";
+            info.Phone = "0945781173";
+            info.OpeningHours = "08:00 - 22:00";
+            info.MapUrl = "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed";
+            _db.RestaurantInfo.Update(info);
+            _logger.LogInformation("Updated restaurant info for Yakishime Cần Thơ");
+        }
+        else
+        {
+            info = new RestaurantInfo
+            {
+                Id = Guid.NewGuid(),
+                Address = "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ",
+                Phone = "0945781173",
+                OpeningHours = "08:00 - 22:00",
+                MapUrl = "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"
+            };
+            await _db.RestaurantInfo.AddAsync(info, ct);
+            _logger.LogInformation("Seeded restaurant info for Yakishime Cần Thơ");
+        }
     }
 
     // Menu Items
