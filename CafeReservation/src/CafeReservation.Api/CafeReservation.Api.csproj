@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>CafeReservation.Api</RootNamespace>
+    <UserSecretsId>48147cb3-2bc0-424c-9ba4-6698421e7686</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
