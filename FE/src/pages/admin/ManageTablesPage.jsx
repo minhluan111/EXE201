@@ -57,6 +57,7 @@ export default function ManageTablesPage() {
 
   // Compute filtered and sorted list in memory
   const filteredAndSortedList = [...list]
+    .filter((item) => item.isActive || item.is_active)
     .filter((item) => {
       const matchSearch =
         !search.trim() ||
@@ -86,17 +87,16 @@ export default function ManageTablesPage() {
         return b.reservableTables - a.reservableTables;
       }
       return 0;
-    });
-
-  // Dialog Form states
+    });  // Dialog Form states
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     tableType: "",
     area: "Window",
-    totalTables: "",
-    reservableTables: "",
+    maxSeats: "2",
+    quantity: "1",
     description: "",
+    previewImage: "",
   });
   const [formErrors, setFormErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -119,9 +119,10 @@ export default function ManageTablesPage() {
     setFormData({
       tableType: "",
       area: "Window",
-      totalTables: "",
-      reservableTables: "",
+      maxSeats: "2",
+      quantity: "1",
       description: "",
+      previewImage: "",
     });
     setFormErrors({});
     setOpen(true);
@@ -129,12 +130,16 @@ export default function ManageTablesPage() {
 
   const handleOpenEdit = (item) => {
     setEditingId(item.id);
+    const matchSeats = String(item.tableType || "").match(/^(\d+)-Seat\s+(.*)$/);
+    const maxSeats = matchSeats ? matchSeats[1] : "2";
+    const displayTableType = matchSeats ? matchSeats[2] : item.tableType;
     setFormData({
-      tableType: item.tableType,
+      tableType: displayTableType,
       area: item.area,
-      totalTables: item.totalTables,
-      reservableTables: item.reservableTables,
+      maxSeats: maxSeats,
+      quantity: String(item.reservableTables || item.totalTables || 1),
       description: item.description || "",
+      previewImage: item.previewImage || "",
     });
     setFormErrors({});
     setOpen(true);
@@ -142,14 +147,9 @@ export default function ManageTablesPage() {
 
   const validate = () => {
     const errs = {};
-    if (!formData.tableType.trim()) errs.tableType = "Vui lòng nhập loại bàn (ví dụ: Cửa sổ 2 chỗ).";
-    if (!formData.totalTables || Number(formData.totalTables) <= 0) {
-      errs.totalTables = "Tổng số bàn phải lớn hơn 0.";
-    }
-    if (!formData.reservableTables || Number(formData.reservableTables) < 0) {
-      errs.reservableTables = "Số bàn cho phép đặt không được âm.";
-    } else if (Number(formData.reservableTables) > Number(formData.totalTables)) {
-      errs.reservableTables = "Số bàn cho phép đặt không vượt quá tổng số bàn.";
+    if (!formData.tableType.trim()) errs.tableType = "Vui lòng nhập loại bàn.";
+    if (!formData.quantity || Number(formData.quantity) <= 0) {
+      errs.quantity = "Số lượng bàn phải lớn hơn 0.";
     }
     return errs;
   };
@@ -162,12 +162,18 @@ export default function ManageTablesPage() {
     }
 
     setSaving(true);
+    const maxSeats = Number(formData.maxSeats);
+    const formattedTableType = `${maxSeats}-Seat ${formData.tableType.trim()}`;
+    const qty = Number(formData.quantity);
+
     const payload = {
-      tableType: formData.tableType.trim(),
+      tableType: formattedTableType,
       area: formData.area,
-      totalTables: Number(formData.totalTables),
-      reservableTables: Number(formData.reservableTables),
+      totalTables: qty,
+      reservableTables: qty,
       description: formData.description.trim() || null,
+      previewImage: formData.previewImage.trim() || null,
+      isActive: true,
     };
 
     let res;
@@ -185,7 +191,6 @@ export default function ManageTablesPage() {
       alert(res.message || "Lưu thất bại.");
     }
   };
-
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa khu vực bàn này?")) return;
 
@@ -396,89 +401,117 @@ export default function ManageTablesPage() {
                 gap: 3,
               }}
             >
-              {filteredAndSortedList.map((item) => (
-                <Card
-                  key={item.id}
-                  sx={{
-                    borderRadius: 4,
-                    border: "1px solid var(--border)",
-                    background: "var(--bg-card)",
-                    display: "flex",
-                    flexDirection: "column",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 12px 30px rgba(107, 143, 62, 0.05)",
-                    },
-                  }}
-                >
-                  <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "start", mb: 2 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                        <Box
-                          sx={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: "10px",
-                            bgcolor: "rgba(107, 143, 62, 0.08)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "var(--matcha)",
-                          }}
-                        >
-                          <Layers size={20} />
-                        </Box>
-                        <Box>
-                          <Typography variant="h6" sx={{ fontWeight: 700, color: "var(--text)", fontSize: "17px" }}>
-                            {item.tableType}
-                          </Typography>
-                          <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                            Khu vực: {AREAS.find((a) => a.value === item.area)?.label || item.area}
-                          </Typography>
-                        </Box>
-                      </Box>
-                      
-                      <Box sx={{ display: "flex", gap: 0.5 }}>
-                        <Tooltip title="Chỉnh sửa">
-                          <IconButton size="small" onClick={() => handleOpenEdit(item)} sx={{ color: "var(--matcha)" }}>
-                            <Edit2 size={16} />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Xóa khu vực">
-                          <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: "#EF4444" }}>
-                            <Trash2 size={16} />
-                          </IconButton>
-                        </Tooltip>
+              {filteredAndSortedList.map((item) => {
+                const matchSeats = String(item.tableType || "").match(/^(\d+)-Seat\s+(.*)$/);
+                const maxSeats = matchSeats ? matchSeats[1] : (String(item.tableType || "").match(/^(\d+)/) ? String(item.tableType || "").match(/^(\d+)/)[1] : "2");
+                const displayTableType = matchSeats ? matchSeats[2] : item.tableType;
+                const cardImage = item.previewImage || (maxSeats === "4" ? "/assets/images/space_indoor.png" : "/assets/images/space_corner.png");
+
+                return (
+                  <Card
+                    key={item.id}
+                    sx={{
+                      borderRadius: 4,
+                      overflow: "hidden",
+                      border: "1px solid var(--border)",
+                      background: "var(--bg-card)",
+                      display: "flex",
+                      flexDirection: "column",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
+                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                      "&:hover": {
+                        transform: "translateY(-4px)",
+                        boxShadow: "0 12px 30px rgba(107, 143, 62, 0.05)",
+                      },
+                    }}
+                  >
+                    <Box sx={{ height: 160, position: "relative", overflow: "hidden" }}>
+                      <img
+                        src={cardImage}
+                        alt={displayTableType}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        onError={(e) => {
+                          e.target.src = "/assets/images/4-Seat Indoor.jpg";
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          bgcolor: "rgba(255, 255, 255, 0.9)",
+                          backdropFilter: "blur(4px)",
+                          color: "var(--matcha)",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: 2,
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        {maxSeats} Ghế
                       </Box>
                     </Box>
-
-                    <Typography sx={{ color: "var(--text-muted)", fontSize: "14px", mb: 3, flex: 1 }}>
-                      {item.description || "Không có mô tả chi tiết."}
-                    </Typography>
-
-                    <Grid container spacing={2} sx={{ pt: 2, borderTop: "1px solid var(--border)" }}>
-                      <Grid item xs={6}>
-                        <Box sx={{ textAlign: "center", p: 1.5, borderRadius: 3, bgcolor: "var(--bg-alt)" }}>
-                          <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>Tổng số bàn</Typography>
-                          <Typography sx={{ fontSize: "20px", fontWeight: 700, color: "var(--text)" }}>
-                            {item.totalTables}
-                          </Typography>
+                    <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
+                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "start", mb: 2 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                          <Box
+                            sx={{
+                              width: 44,
+                              height: 44,
+                              borderRadius: "10px",
+                              bgcolor: "rgba(107, 143, 62, 0.08)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: "var(--matcha)",
+                            }}
+                          >
+                            <Layers size={20} />
+                          </Box>
+                          <Box>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: "var(--text)", fontSize: "17px" }}>
+                              {displayTableType}
+                            </Typography>
+                            <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                              Khu vực: {AREAS.find((a) => a.value === item.area)?.label || item.area}
+                            </Typography>
+                          </Box>
                         </Box>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Box sx={{ textAlign: "center", p: 1.5, borderRadius: 3, bgcolor: "var(--bg-alt)" }}>
-                          <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>Cho phép đặt bàn</Typography>
-                          <Typography sx={{ fontSize: "20px", fontWeight: 700, color: "var(--matcha)" }}>
-                            {item.reservableTables}
-                          </Typography>
+                        
+                        <Box sx={{ display: "flex", gap: 0.5 }}>
+                          <Tooltip title="Chỉnh sửa">
+                            <IconButton size="small" onClick={() => handleOpenEdit(item)} sx={{ color: "var(--matcha)" }}>
+                              <Edit2 size={16} />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Xóa khu vực">
+                            <IconButton size="small" onClick={() => handleDelete(item.id)} sx={{ color: "#EF4444" }}>
+                              <Trash2 size={16} />
+                            </IconButton>
+                          </Tooltip>
                         </Box>
+                      </Box>
+
+                      <Typography sx={{ color: "var(--text-muted)", fontSize: "14px", mb: 3, flex: 1 }}>
+                        {item.description || "Không có mô tả chi tiết."}
+                      </Typography>
+
+                      <Grid container spacing={2} sx={{ pt: 2, borderTop: "1px solid var(--border)" }}>
+                        <Grid item xs={12}>
+                          <Box sx={{ textAlign: "center", p: 1.5, borderRadius: 3, bgcolor: "var(--bg-alt)" }}>
+                            <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>Số lượng bàn</Typography>
+                            <Typography sx={{ fontSize: "20px", fontWeight: 700, color: "var(--matcha)" }}>
+                              {item.reservableTables} bàn
+                            </Typography>
+                          </Box>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </Box>
           )}
         </Container>
@@ -515,30 +548,6 @@ export default function ManageTablesPage() {
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 2.5, mt: 1 }}>
             <Box>
               <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
-                🪑 Tên loại bàn (ví dụ: Window 2-seat)
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="Nhập loại bàn..."
-                value={formData.tableType}
-                onChange={(e) => setFormData({ ...formData, tableType: e.target.value })}
-                error={!!formErrors.tableType}
-                helperText={formErrors.tableType}
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px",
-                    background: "var(--bg-alt)",
-                    border: formErrors.tableType ? "1px solid #EF4444" : "1px solid transparent",
-                    transition: "border-color 0.2s",
-                    "& fieldset": { border: "none" },
-                  },
-                }}
-              />
-            </Box>
-
-            <Box>
-              <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
                 📍 Khu vực
               </Typography>
               <FormControl fullWidth size="small">
@@ -560,47 +569,67 @@ export default function ManageTablesPage() {
               </FormControl>
             </Box>
 
+            <Box>
+              <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
+                🪑 Loại bàn (ví dụ: Bàn VIP, Bàn Standard...)
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Nhập loại bàn..."
+                value={formData.tableType}
+                onChange={(e) => setFormData({ ...formData, tableType: e.target.value })}
+                error={!!formErrors.tableType}
+                helperText={formErrors.tableType}
+                size="small"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    background: "var(--bg-alt)",
+                    border: formErrors.tableType ? "1px solid #EF4444" : "1px solid transparent",
+                    transition: "border-color 0.2s",
+                    "& fieldset": { border: "none" },
+                  },
+                }}
+              />
+            </Box>
+
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
-                  📊 Tổng số bàn
+                  👥 Số lượng người cho phép
                 </Typography>
-                <TextField
-                  fullWidth
-                  type="number"
-                  value={formData.totalTables}
-                  onChange={(e) => setFormData({ ...formData, totalTables: e.target.value })}
-                  error={!!formErrors.totalTables}
-                  helperText={formErrors.totalTables}
-                  size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
+                <FormControl fullWidth size="small">
+                  <Select
+                    value={formData.maxSeats}
+                    onChange={(e) => setFormData({ ...formData, maxSeats: e.target.value })}
+                    sx={{
                       borderRadius: "12px",
                       background: "var(--bg-alt)",
-                      border: formErrors.totalTables ? "1px solid #EF4444" : "1px solid transparent",
-                      transition: "border-color 0.2s",
                       "& fieldset": { border: "none" },
-                    },
-                  }}
-                />
+                    }}
+                  >
+                    <MenuItem value="2">2 người (Bàn đôi)</MenuItem>
+                    <MenuItem value="4">4 người (Bàn nhóm)</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
-                  🛡️ Cho đặt trực tuyến
+                  📊 Số lượng bàn
                 </Typography>
                 <TextField
                   fullWidth
                   type="number"
-                  value={formData.reservableTables}
-                  onChange={(e) => setFormData({ ...formData, reservableTables: e.target.value })}
-                  error={!!formErrors.reservableTables}
-                  helperText={formErrors.reservableTables}
+                  value={formData.quantity}
+                  onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                  error={!!formErrors.quantity}
+                  helperText={formErrors.quantity}
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "12px",
                       background: "var(--bg-alt)",
-                      border: formErrors.reservableTables ? "1px solid #EF4444" : "1px solid transparent",
+                      border: formErrors.quantity ? "1px solid #EF4444" : "1px solid transparent",
                       transition: "border-color 0.2s",
                       "& fieldset": { border: "none" },
                     },
@@ -608,6 +637,26 @@ export default function ManageTablesPage() {
                 />
               </Grid>
             </Grid>
+
+            <Box>
+              <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
+                🖼️ Đường dẫn hình ảnh (URL)
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Nhập link ảnh (ví dụ: https://example.com/image.jpg)..."
+                value={formData.previewImage}
+                onChange={(e) => setFormData({ ...formData, previewImage: e.target.value })}
+                size="small"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    background: "var(--bg-alt)",
+                    "& fieldset": { border: "none" },
+                  },
+                }}
+              />
+            </Box>
 
             <Box>
               <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>

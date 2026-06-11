@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj": {}
+    "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj": {}
   },
   "projects": {
-    "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj": {
+    "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj",
+        "projectUniqueName": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj",
         "projectName": "CafeReservation.Api",
-        "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj",
+        "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\CafeReservation.Api.csproj",
         "packagesPath": "C:\\Users\\luanq\\.nuget\\packages\\",
-        "outputPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\obj\\",
+        "outputPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,11 +33,11 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
-                "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj"
+              "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
+                "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj"
               },
-              "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj": {
-                "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj"
+              "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj": {
+                "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj"
               }
             }
           }
@@ -139,14 +139,14 @@
         }
       }
     },
-    "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
+    "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
+        "projectUniqueName": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
         "projectName": "CafeReservation.Application",
-        "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
+        "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
         "packagesPath": "C:\\Users\\luanq\\.nuget\\packages\\",
-        "outputPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\obj\\",
+        "outputPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -168,8 +168,8 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj": {
-                "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj"
+              "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj": {
+                "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj"
               }
             }
           }
@@ -250,14 +250,14 @@
         }
       }
     },
-    "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj": {
+    "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj",
+        "projectUniqueName": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj",
         "projectName": "CafeReservation.Domain",
-        "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj",
+        "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\CafeReservation.Domain.csproj",
         "packagesPath": "C:\\Users\\luanq\\.nuget\\packages\\",
-        "outputPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\obj\\",
+        "outputPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -331,14 +331,14 @@
         }
       }
     },
-    "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj": {
+    "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
+        "projectUniqueName": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
         "projectName": "CafeReservation.Infrastructure",
-        "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
+        "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\luanq\\.nuget\\packages\\",
-        "outputPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\obj\\",
+        "outputPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -360,8 +360,8 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
-                "projectPath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj"
+              "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj": {
+                "projectPath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj"
               }
             }
           }

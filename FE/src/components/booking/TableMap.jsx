@@ -34,6 +34,9 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
           const selectable = canSelect(table);
 
           const image =
+            table.previewImage ||
+            table.seatingArea?.previewImage ||
+            table.seatingArea?.preview_image ||
             tableImages[table.imageType] ||
             tableImages[table.name] ||
             "/assets/images/4-Seat Indoor.jpg";
@@ -132,11 +135,14 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
 
                 <div style={{ display: "flex", gap: "8px", margin: "10px 0", flexWrap: "wrap" }}>
                   <span style={{ fontSize: "12px", background: "var(--bg-alt)", padding: "4px 8px", borderRadius: "6px", color: "var(--text-muted)" }}>
-                    {table.max_seats} ghế
+                    Loại: {table.tableType || "Tiêu chuẩn"}
+                  </span>
+                  <span style={{ fontSize: "12px", background: "var(--bg-alt)", padding: "4px 8px", borderRadius: "6px", color: "var(--text-muted)" }}>
+                    Sức chứa: {table.max_seats} ghế
                   </span>
                   {table.area && (
                     <span style={{ fontSize: "12px", background: "var(--bg-alt)", padding: "4px 8px", borderRadius: "6px", color: "var(--text-muted)" }}>
-                      Khu vực: {table.area}
+                      Khu vực: {table.area === "Window" ? "Cửa sổ" : table.area === "Corner" ? "Góc" : table.area === "Indoor" ? "Trong nhà" : table.area === "Outdoor" ? "Ngoài trời" : table.area}
                     </span>
                   )}
                 </div>

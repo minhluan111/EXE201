@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "W69S1IXUO/0=",
+  "dgSpecHash": "u0dgkKZJJDI=",
   "success": true,
-  "projectFilePath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
+  "projectFilePath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Infrastructure\\CafeReservation.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luanq\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\luanq\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",

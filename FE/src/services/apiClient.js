@@ -415,25 +415,58 @@ async function getSeatingAreas() {
 
 async function getTablesWithAreas() {
   const seatingAreas = await getSeatingAreas();
-  const areaMap = pickAreaMap(seatingAreas);
+  const activeAreas = seatingAreas.filter((area) => area.isActive || area.is_active);
 
-  return TABLE_LAYOUT.map((table) => {
-    const area = areaMap[table.area] || null;
-    return {
-      ...table,
-      seatingAreaId: area?.id || null,
-      seating_area_id: area?.id || null,
-      seatingArea: area,
-      status: "available",
-    };
+  const tables = [];
+  activeAreas.forEach((area) => {
+    const match = String(area.tableType || "").match(/^(\d+)-Seat\s+(.*)$/);
+    const max_seats = match ? parseInt(match[1]) : (String(area.tableType || "").match(/^(\d+)/) ? parseInt(String(area.tableType || "").match(/^(\d+)/)[1]) : 2);
+    const pureTableType = match ? match[2] : area.tableType;
+
+    // Generate 'reservableTables' tables for this area
+    const count = area.reservableTables ?? area.reservable_tables ?? 0;
+    for (let i = 1; i <= count; i++) {
+      const row = Math.floor((i - 1) / 3);
+      const col = (i - 1) % 3;
+      tables.push({
+        id: `${area.id}_table_${i}`,
+        name: `Bàn ${area.area} ${i}`,
+        area: area.area,
+        max_seats: max_seats,
+        tableType: pureTableType,
+        table_type: pureTableType,
+        coordinate_x: 10 + col * 25,
+        coordinate_y: 10 + row * 25,
+        shape: max_seats === 4 ? "quad" : "pair",
+        imageType: area.tableType,
+        previewImage: area.previewImage ?? area.preview_image,
+        seatingAreaId: area.id,
+        seating_area_id: area.id,
+        seatingArea: area,
+        status: "available",
+      });
+    }
   });
+
+  return tables;
 }
 
-function buildReservationTable(reservation, tables = TABLE_LAYOUT) {
+function buildReservationTable(reservation, tables = []) {
   const tName = reservation.tableName || reservation.table_name;
   if (tName) {
     const match = tables.find((table) => table.name === tName);
     if (match) return { ...match };
+
+    // Fallback if the seating area is deleted or the table name isn't found in current active list
+    const matchCap = reservation.guestCount || 2;
+    return {
+      id: reservation.seatingAreaId || "unknown",
+      name: tName,
+      area: reservation.seatingAreaArea || "Khu vực",
+      max_seats: matchCap,
+      shape: matchCap > 2 ? "quad" : "pair",
+      imageType: reservation.seatingAreaTableType || "",
+    };
   }
   const match =
     tables.find((table) => table.seatingAreaId === reservation.seatingAreaId) ||
@@ -444,7 +477,7 @@ function buildReservationTable(reservation, tables = TABLE_LAYOUT) {
   return match ? { ...match } : null;
 }
 
-function normalizeReservation(reservation, tables = TABLE_LAYOUT) {
+function normalizeReservation(reservation, tables = []) {
   const table = buildReservationTable(reservation, tables);
   return {
     id: reservation.id,

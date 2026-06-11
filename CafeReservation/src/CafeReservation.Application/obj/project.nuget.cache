@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cXalYb2cEVg=",
+  "dgSpecHash": "UaNeOGqkkkU=",
   "success": true,
-  "projectFilePath": "E:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
+  "projectFilePath": "e:\\IELTS\\EXE201\\CafeReservation\\src\\CafeReservation.Application\\CafeReservation.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luanq\\.nuget\\packages\\fluentvalidation\\11.9.2\\fluentvalidation.11.9.2.nupkg.sha512",
     "C:\\Users\\luanq\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.9.2\\fluentvalidation.dependencyinjectionextensions.11.9.2.nupkg.sha512",
