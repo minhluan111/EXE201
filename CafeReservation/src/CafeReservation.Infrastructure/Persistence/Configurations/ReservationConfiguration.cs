@@ -71,5 +71,11 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         // Composite index for availability queries
         builder.HasIndex(r => new { r.SeatingAreaId, r.ReservationDate, r.Status })
             .HasDatabaseName("ix_reservations_area_date_status");
+
+        // Prevent double-booking: unique constraint per table + date + time slot for active reservations
+        builder.HasIndex(r => new { r.TableName, r.ReservationDate, r.StartTime })
+            .HasDatabaseName("ix_reservations_unique_table_slot")
+            .IsUnique()
+            .HasFilter("status IN (0, 4) AND table_name IS NOT NULL");
     }
 }
