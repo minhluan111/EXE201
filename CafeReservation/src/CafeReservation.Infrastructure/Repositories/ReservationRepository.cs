@@ -92,6 +92,28 @@ public class ReservationRepository : IReservationRepository
         return await query.CountAsync(ct);
     }
 
+    public async Task<bool> AnyOverlappingTableAsync(
+        string tableName,
+        DateOnly date,
+        TimeOnly start,
+        TimeOnly end,
+        Guid? excludeId = null,
+        CancellationToken ct = default)
+    {
+        var query = _db.Reservations
+            .Where(r =>
+                r.TableName == tableName &&
+                r.ReservationDate == date &&
+                (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Seated) &&
+                start < r.EndTime &&
+                end > r.StartTime);
+
+        if (excludeId.HasValue)
+            query = query.Where(r => r.Id != excludeId.Value);
+
+        return await query.AnyAsync(ct);
+    }
+
     public async Task<IReadOnlyList<Reservation>> GetOverlappingReservationsAsync(
         DateOnly date,
         TimeOnly start,

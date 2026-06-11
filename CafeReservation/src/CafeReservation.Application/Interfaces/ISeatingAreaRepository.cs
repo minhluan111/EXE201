@@ -5,6 +5,7 @@ namespace CafeReservation.Application.Interfaces;
 public interface ISeatingAreaRepository
 {
     Task<SeatingArea?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    Task<SeatingArea?> GetByIdForUpdateAsync(Guid id, CancellationToken ct = default);
     Task<IReadOnlyList<SeatingArea>> GetAllAsync(CancellationToken ct = default);
     Task<IReadOnlyList<SeatingArea>> GetActiveAsync(CancellationToken ct = default);
     Task<IReadOnlyList<SeatingArea>> GetByTableCapacityAsync(int requiredCapacity, CancellationToken ct = default);

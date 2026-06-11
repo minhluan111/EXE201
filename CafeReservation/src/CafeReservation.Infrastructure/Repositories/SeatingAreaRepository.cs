@@ -14,6 +14,11 @@ public class SeatingAreaRepository : ISeatingAreaRepository
     public async Task<SeatingArea?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
         await _db.SeatingAreas.FirstOrDefaultAsync(s => s.Id == id, ct);
 
+    public async Task<SeatingArea?> GetByIdForUpdateAsync(Guid id, CancellationToken ct = default) =>
+        await _db.SeatingAreas
+            .FromSqlRaw("SELECT * FROM seating_areas WHERE id = {0} FOR UPDATE", id)
+            .SingleOrDefaultAsync(ct);
+
     public async Task<IReadOnlyList<SeatingArea>> GetAllAsync(CancellationToken ct = default) =>
         await _db.SeatingAreas
             .OrderBy(s => s.Area)
