@@ -285,7 +285,8 @@ export default function ManageBookingsPage() {
                         <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Mã Đặt Bàn</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Khách Hàng</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Thông Tin Liên Hệ</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Thời Gian</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Ngày giờ tạo</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Ngày giờ đặt</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Số Khách / Bàn</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Trạng Thái</TableCell>
                         <TableCell sx={{ fontWeight: 700, color: COLORS.forest, width: 200 }}>Cập Nhật Trạng Thái</TableCell>
@@ -303,6 +304,21 @@ export default function ManageBookingsPage() {
                           <TableCell>
                             <Typography sx={{ fontSize: "13px" }}>{booking.guest_phone}</Typography>
                             <Typography sx={{ fontSize: "12px", color: "#666" }}>{booking.guest_email}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontWeight: 500, fontSize: "14px" }}>
+                              {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("vi-VN", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                              }) : "—"}
+                            </Typography>
+                            <Typography sx={{ fontSize: "12px", color: COLORS.moss, fontWeight: 500 }}>
+                              {booking.createdAt ? new Date(booking.createdAt).toLocaleTimeString("vi-VN", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }) : ""}
+                            </Typography>
                           </TableCell>
                           <TableCell>
                             <Typography sx={{ fontWeight: 500, fontSize: "14px" }}>
