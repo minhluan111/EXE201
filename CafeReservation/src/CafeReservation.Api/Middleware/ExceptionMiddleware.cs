@@ -1,4 +1,6 @@
 using CafeReservation.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Net;
 using System.Text.Json;
 
@@ -45,6 +47,12 @@ public class ExceptionMiddleware
 
             DomainException de =>
                 (HttpStatusCode.BadRequest, de.Message, (object?)null),
+
+            // Catch unique constraint violation from PostgreSQL (double-booking prevention)
+            DbUpdateException { InnerException: PostgresException { SqlState: "23505" } } =>
+                (HttpStatusCode.Conflict,
+                 "Bàn này đã được đặt bởi người khác. Vui lòng chọn bàn hoặc thời gian khác.",
+                 (object?)null),
 
             _ =>
                 (HttpStatusCode.InternalServerError, "An unexpected error occurred.", (object?)null)
