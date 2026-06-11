@@ -374,7 +374,7 @@ export default function BookingPage() {
                 lineHeight: 1,
               }}
             >
-              Chọn bàn của bạn..
+              Chọn bàn của bạn
             </h1>
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 16 }}>
               Chọn ngày, khung giờ và bàn yêu thích trên sơ đồ tương tác.
