@@ -1,9 +1,9 @@
 using CafeReservation.Application.Interfaces;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MimeKit;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 
 namespace CafeReservation.Infrastructure.Services;
 
@@ -11,11 +11,13 @@ public class EmailService : IEmailService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<EmailService> _logger;
+    private readonly HttpClient _httpClient;
 
-    public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
+    public EmailService(IConfiguration configuration, ILogger<EmailService> logger, HttpClient httpClient)
     {
         _configuration = configuration;
         _logger = logger;
+        _httpClient = httpClient;
     }
 
     public async Task SendReservationConfirmationAsync(
@@ -90,37 +92,51 @@ public class EmailService : IEmailService
     {
         try
         {
-            var smtp = _configuration.GetSection("Email");
-            var host = smtp["Host"] ?? "smtp.gmail.com";
-            var port = int.Parse(smtp["Port"] ?? "587");
-            var username = smtp["Username"] ?? string.Empty;
-            var password = smtp["Password"] ?? string.Empty;
-            var from = smtp["From"] ?? username;
-            var fromName = smtp["FromName"] ?? "Yaki Café";
+            var emailConfig = _configuration.GetSection("Email");
+            var apiKey = emailConfig["ApiKey"];
+            var fromEmail = emailConfig["From"] ?? "yakicafe.dev@gmail.com";
+            var fromName = emailConfig["FromName"] ?? "Yaki Café";
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(fromName, from));
-            message.To.Add(new MailboxAddress(toName, toEmail));
-            message.Subject = subject;
-            message.Body = new TextPart("html") { Text = htmlBody };
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                _logger.LogWarning("Email sending bypassed. ApiKey is missing in Email configuration.");
+                return;
+            }
 
-            using var client = new SmtpClient();
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-            _logger.LogInformation(
-                "SMTP => Host={Host}, Port={Port}, User={User}",
-                host,
-                port,
-                username
-            );            
-            await client.ConnectAsync(host, port, SecureSocketOptions.SslOnConnect, ct);
-            await client.AuthenticateAsync(username, password, ct);
-            await client.SendAsync(message, ct);
-            await client.DisconnectAsync(true, ct);
+            var payload = new
+            {
+                sender = new { name = fromName, email = fromEmail },
+                to = new[] { new { email = toEmail, name = toName } },
+                subject = subject,
+                htmlContent = htmlBody
+            };
+
+            var jsonPayload = JsonSerializer.Serialize(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email")
+            {
+                Content = content
+            };
+            request.Headers.Add("api-key", apiKey);
+            request.Headers.Add("accept", "application/json");
+
+            var response = await _httpClient.SendAsync(request, ct);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully sent email via Brevo HTTP API to {Email}", toEmail);
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync(ct);
+                _logger.LogError("Failed to send email to {Email}. Status: {Status}, Response: {Response}", 
+                    toEmail, response.StatusCode, responseContent);
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send email to {Email}", toEmail);
-            // Non-critical: do not rethrow — email failure must not break the main flow
         }
     }
 }
