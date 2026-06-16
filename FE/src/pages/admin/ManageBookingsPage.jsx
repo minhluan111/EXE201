@@ -106,8 +106,8 @@ export default function ManageBookingsPage() {
     return <Chip label="Đã xác nhận" color="success" size="small" sx={{ fontWeight: 600 }} />;
   };
 
-  const handleAction = async (actionFn, id, ...args) => {
-    const res = await actionFn({ token, id, ...args });
+  const handleAction = async (actionFn, id, options = {}) => {
+    const res = await actionFn({ token, id, ...options });
     if (res.ok) {
       fetchBookings();
     } else {

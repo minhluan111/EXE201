@@ -114,7 +114,11 @@ builder.Services.AddSwaggerGen(c =>
 // CORS 
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+        policy
+            .SetIsOriginAllowed(_ => true)   // Allows all origins but still compatible with SignalR
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()));            // Required for SignalR WebSocket negotiation
 
 var app = builder.Build();
 
