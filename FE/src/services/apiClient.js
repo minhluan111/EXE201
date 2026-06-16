@@ -821,6 +821,25 @@ export async function bookingCancel({ token, id }) {
   return { ok: true, data: { id, status: "cancelled" } };
 }
 
+export async function bookingReschedule({ token, id, booking_date, booking_time }) {
+  const bearer = token || currentToken();
+  if (!bearer) return { ok: false, message: "Unauthorized" };
+
+  const result = await requestJson(`/api/reservations/${id}/reschedule`, {
+    method: "POST",
+    token: bearer,
+    body: {
+      reservationDate: booking_date,
+      startTime: normalizeTime(booking_time),
+    },
+  });
+
+  if (!result.ok) return result;
+
+  const tables = await getTablesWithAreas();
+  return { ok: true, data: normalizeReservation(result.data, tables) };
+}
+
 // STAFF ACTIONS (Staff role only)
 export async function adminConfirmBooking({ token, id }) {
   const bearer = token || currentToken();

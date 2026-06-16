@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import {
   Calendar,
@@ -16,17 +16,75 @@ import {
   Trash2,
   Coffee,
 } from "lucide-react";
-import { bookingCancel, bookingMe } from "../services/apiClient.js";
+import { bookingCancel, bookingMe, bookingReschedule } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 
 export default function BookingHistoryPage() {
   const { token } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
   const [error, setError] = useState("");
   const [tab, setTab] = useState("upcoming");
   const [cancelling, setCancelling] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(null);
+
+  const [rescheduling, setRescheduling] = useState(null);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(null);
+  const [rescheduleDate, setRescheduleDate] = useState("");
+  const [rescheduleTime, setRescheduleTime] = useState("");
+
+  const todayStr = useMemo(() => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }, []);
+
+  const filteredRescheduleTimeSlots = useMemo(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const todayStrLocal = `${year}-${month}-${day}`;
+    const isToday = rescheduleDate === todayStrLocal;
+    const TIME_SLOTS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
+
+    if (!isToday) return TIME_SLOTS;
+
+    return TIME_SLOTS.filter((slot) => {
+      const [hours, minutes] = slot.split(":").map(Number);
+      const slotDate = new Date(today);
+      slotDate.setHours(hours, minutes, 0, 0);
+      const timeDiffMinutes = (slotDate.getTime() - today.getTime()) / (1000 * 60);
+      return timeDiffMinutes >= 30;
+    });
+  }, [rescheduleDate]);
+
+  useEffect(() => {
+    if (rescheduleTime && !filteredRescheduleTimeSlots.includes(rescheduleTime)) {
+      setRescheduleTime("");
+    }
+  }, [rescheduleDate, filteredRescheduleTimeSlots, rescheduleTime]);
+
+  const handleConfirmReschedule = async () => {
+    if (!showRescheduleModal) return;
+    if (!rescheduleDate || !rescheduleTime) {
+      setError("Vui lòng chọn ngày và giờ mới để đổi lịch.");
+      return;
+    }
+    const id = showRescheduleModal;
+    setShowRescheduleModal(null);
+    setRescheduling(id);
+    setError("");
+    const res = await bookingReschedule({ token, id, booking_date: rescheduleDate, booking_time: rescheduleTime });
+    setRescheduling(null);
+    if (!res.ok) return setError(res.message || "Đổi lịch thất bại. Vui lòng thử lại.");
+    const refresh = await bookingMe({ token });
+    setList(refresh.ok ? refresh.data : []);
+  };
+
 
   // Scroll to top on mount
   useEffect(() => {
@@ -48,6 +106,22 @@ export default function BookingHistoryPage() {
       mounted = false;
     };
   }, [token]);
+
+  useEffect(() => {
+    if (!loading && list.length > 0) {
+      const rescheduleId = searchParams.get("reschedule");
+      if (rescheduleId) {
+        const target = list.find(item => item.id === rescheduleId);
+        if (target && target.status !== "cancelled" && target.status !== "completed") {
+          setTab("upcoming");
+          setShowRescheduleModal(target.id);
+          setRescheduleDate(target.booking_date || todayStr);
+          setRescheduleTime(target.booking_time);
+          setSearchParams({});
+        }
+      }
+    }
+  }, [loading, list, searchParams, setSearchParams, todayStr]);
 
   const view = list.filter((b) => {
     if (tab === "cancelled") return b.status === "cancelled" || b.status === "noshow";
@@ -237,6 +311,95 @@ export default function BookingHistoryPage() {
         </div>
 
         {/* Global Error Banner */}
+        <AnimatePresence>
+          {showRescheduleModal &&
+            (() => {
+              const b = list.find((item) => item.id === showRescheduleModal);
+              if (!b) return null;
+              return (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="modal-overlay"
+                  onClick={() => setShowRescheduleModal(null)}
+                >
+                  <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    transition={{ type: "spring", duration: 0.5 }}
+                    className="modal-card"
+                    style={{ maxWidth: 540 }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="modal-header" style={{ marginBottom: 12 }}>
+                      <h3 className="modal-title">Đổi Lịch Đặt Bàn</h3>
+                    </div>
+
+                    <div className="modal-body">
+                      <p className="modal-message" style={{ marginBottom: 20 }}>
+                        Vui lòng chọn ngày và khung giờ mới cho đơn đặt bàn #{b.reservation_code || b.id}
+                      </p>
+
+                      <div style={{ background: "var(--bg-card)", borderRadius: 20, border: "1px solid var(--border)", padding: "24px", marginBottom: 20 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,rgba(107,143,62,0.15),rgba(47,91,62,0.08))", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--matcha)" }}>
+                            <Calendar size={18} strokeWidth={1.5} />
+                          </div>
+                          <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 700, color: "var(--text)", margin: 0 }}>Chọn ngày</h4>
+                        </div>
+                        <input
+                          type="date"
+                          value={rescheduleDate}
+                          min={todayStr}
+                          onChange={(e) => setRescheduleDate(e.target.value)}
+                          style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: "1.5px solid var(--border)", background: "var(--bg-alt)", color: "var(--text)", fontSize: 15, outline: "none", boxSizing: "border-box", fontFamily: "Inter, sans-serif" }}
+                          onFocus={(e) => e.target.style.borderColor = "var(--matcha)"}
+                          onBlur={(e) => e.target.style.borderColor = "var(--border)"}
+                        />
+                      </div>
+
+                      <div style={{ background: "var(--bg-card)", borderRadius: 20, border: "1px solid var(--border)", padding: "24px", marginBottom: 24 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,rgba(107,143,62,0.15),rgba(47,91,62,0.08))", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--matcha)" }}>
+                            <Clock size={18} strokeWidth={1.5} />
+                          </div>
+                          <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 700, color: "var(--text)", margin: 0 }}>Chọn giờ</h4>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                          {filteredRescheduleTimeSlots.map((t) => (
+                            <motion.button
+                              key={t}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => setRescheduleTime(t)}
+                              style={{
+                                padding: "8px 0", borderRadius: 10, fontSize: 12, fontWeight: 700, border: "1.5px solid",
+                                borderColor: rescheduleTime === t ? "var(--matcha)" : "var(--border)",
+                                background: rescheduleTime === t ? "linear-gradient(135deg,var(--matcha),var(--forest))" : "var(--bg-alt)",
+                                color: rescheduleTime === t ? "#fff" : "var(--text-muted)",
+                                cursor: "pointer", transition: "all 0.2s",
+                                boxShadow: rescheduleTime === t ? "0 4px 12px rgba(107,143,62,0.2)" : "none"
+                              }}
+                            >
+                              {t}
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="modal-actions">
+                      <button onClick={() => setShowRescheduleModal(null)} className="modal-btn-back" disabled={rescheduling === b.id}>Hủy</button>
+                      <button onClick={handleConfirmReschedule} style={{ flex: 1, padding: "12px 24px", borderRadius: 50, border: "none", background: "linear-gradient(135deg, var(--matcha), var(--forest))", color: "white", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(107,143,62,0.2)" }} disabled={rescheduling === b.id || !rescheduleDate || !rescheduleTime}>Xác Nhận Đổi Lịch</button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              );
+            })()}
+        </AnimatePresence>
+
         <AnimatePresence>
           {error && (
             <motion.div
@@ -568,16 +731,41 @@ export default function BookingHistoryPage() {
                     style={{
                       display: "flex",
                       justifyContent: "flex-end",
+                      gap: 12,
                       marginTop: 20,
                       paddingTop: 16,
                       borderTop: "1.5px solid var(--border)",
                     }}
                   >
                     <motion.button
+                      disabled={rescheduling === b.id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setShowRescheduleModal(b.id);
+                        setRescheduleDate(b.booking_date || todayStr);
+                        setRescheduleTime(b.booking_time);
+                      }}
+                      className="reschedule-appointment-btn"
+                    >
+                      {rescheduling === b.id ? (
+                        <>
+                          <Loader2 size={13} className="animate-spin" />
+                          <span>Đang Đổi...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Calendar size={13} />
+                          <span>Đổi Lịch Đặt Bàn</span>
+                        </>
+                      )}
+                    </motion.button>
+
+                    <motion.button
                       disabled={cancelling === b.id}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => cancel(b.id)}
+                      onClick={() => setShowCancelModal(b.id)}
                       className="cancel-appointment-btn"
                     >
                       {cancelling === b.id ? (
@@ -594,6 +782,7 @@ export default function BookingHistoryPage() {
                     </motion.button>
                   </div>
                 )}
+
               </motion.div>
             ))}
           </motion.div>
@@ -728,6 +917,24 @@ export default function BookingHistoryPage() {
           font-size: 13px;
           color: var(--text);
           font-weight: 600;
+        }
+        .reschedule-appointment-btn {
+          padding: 8px 18px;
+          border-radius: 50px;
+          border: 1.5px solid rgba(107, 143, 62, 0.4);
+          background: transparent;
+          color: var(--matcha);
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.2s;
+        }
+        .reschedule-appointment-btn:hover {
+          background: rgba(107, 143, 62, 0.08);
+          border-color: var(--matcha);
         }
         .cancel-appointment-btn {
           padding: 8px 18px;
