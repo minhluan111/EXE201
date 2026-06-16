@@ -64,13 +64,11 @@ function StepBar({ step }) {
             >
               <motion.div
                 animate={{
-                  background: complete
-                    ? "linear-gradient(135deg,#6B8F3E,#2F5B3E)"
+                  borderColor: complete
+                    ? "#6B8F3E"
                     : active
-                      ? "linear-gradient(135deg,#8DAF5A,#6B8F3E)"
-                      : "var(--bg-alt)",
-                  borderColor:
-                    complete || active ? "transparent" : "var(--border)",
+                      ? "#8DAF5A"
+                      : "rgba(255, 255, 255, 0.1)",
                 }}
                 style={{
                   width: 36,
@@ -83,6 +81,12 @@ function StepBar({ step }) {
                   color: complete || active ? "#fff" : "var(--text-muted)",
                   fontSize: 14,
                   fontWeight: 700,
+                  background: complete
+                    ? "linear-gradient(135deg,#6B8F3E,#2F5B3E)"
+                    : active
+                      ? "linear-gradient(135deg,#8DAF5A,#6B8F3E)"
+                      : "var(--bg-alt)",
+                  transition: "background 0.3s ease, border-color 0.3s ease",
                 }}
               >
                 {complete ? <CheckCircle size={18} /> : i + 1}

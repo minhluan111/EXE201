@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { bookingCancel, bookingMe, bookingReschedule } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
+import { useAvailabilityHub } from "../hooks/useAvailabilityHub.js";
 
 export default function BookingHistoryPage() {
   const { token } = useAuth();
@@ -106,6 +107,13 @@ export default function BookingHistoryPage() {
       mounted = false;
     };
   }, [token]);
+
+  // Real-time refresh via SignalR: when staff confirms/updates, this fires
+  useAvailabilityHub(() => {
+    bookingMe({ token }).then((res) => {
+      if (res.ok) setList(res.data);
+    });
+  }, !!token);
 
   useEffect(() => {
     if (!loading && list.length > 0) {

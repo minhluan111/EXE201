@@ -393,6 +393,7 @@ public class ReservationService : IReservationService
         reservation.CheckedInAt     = DateTime.UtcNow;
         reservation.CheckedInBy     = staffEmail;
         reservation.CheckInImageUrl = request.CheckInImageUrl;
+        reservation.CheckInNote     = request.CheckInNote;
 
         await _reservationRepository.UpdateAsync(reservation, ct);
         await _unitOfWork.SaveChangesAsync(ct);
@@ -448,6 +449,7 @@ public class ReservationService : IReservationService
         CheckedInAt          = r.CheckedInAt,
         CheckedInBy          = r.CheckedInBy,
         CheckInImageUrl      = r.CheckInImageUrl,
+        CheckInNote          = r.CheckInNote,
     };
 
     public async Task<IReadOnlyList<string>> GetOccupiedTablesAsync(DateOnly date, TimeOnly time, CancellationToken ct = default)
