@@ -27,6 +27,7 @@ public class UserRepository : IUserRepository
     public async Task AddAsync(User user, CancellationToken ct = default) =>
         await _db.Users.AddAsync(user, ct);
 
+
     public Task UpdateAsync(User user, CancellationToken ct = default)
     {
         _db.Users.Update(user);

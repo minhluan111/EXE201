@@ -28,7 +28,8 @@ public class EmailService : IEmailService
         string toEmail, string userName, string reservationCode, Guid reservationId,
         DateTime reservationDateTime, string seatingArea, CancellationToken ct = default)
     {
-        var manageLink = $"{FrontendUrl}/booking/{reservationId}";
+        var manageLink = $"{FrontendUrl}/booking/history";
+        var rescheduleLink = $"{FrontendUrl}/booking/history?reschedule={reservationId}";
 
         var payload = new
         {
@@ -47,8 +48,11 @@ public class EmailService : IEmailService
                     <li><strong>Thời lượng:</strong> 60 phút</li>
                   </ul>
                   <p style="text-align:center;margin:24px 0">
-                    <a href="{manageLink}" style="background:#b45309;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none">
+                    <a href="{manageLink}" style="background:#b45309;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;margin:4px">
                       Xem chi tiết đặt bàn
+                    </a>
+                    <a href="{rescheduleLink}" style="background:transparent;color:#b45309;border:1px solid #b45309;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;margin:4px">
+                      Đổi lịch
                     </a>
                   </p>
                   <p>Chúng tôi rất mong được phục vụ bạn!</p>
@@ -88,7 +92,7 @@ public class EmailService : IEmailService
         string toEmail, string userName, string reservationCode, Guid reservationId,
         DateTime newDateTime, CancellationToken ct = default)
     {
-        var manageLink = $"{FrontendUrl}/booking/{reservationId}";
+        var manageLink = $"{FrontendUrl}/booking/history";
 
         var payload = new
         {
