@@ -143,6 +143,9 @@ export default function LoginPage() {
             <div style={{ marginBottom: 28 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>Mật khẩu</label>
+                <RouterLink to="/forgot-password" style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+                  Quên mật khẩu?
+                </RouterLink>
               </div>
               <InputField
                 icon={Lock}

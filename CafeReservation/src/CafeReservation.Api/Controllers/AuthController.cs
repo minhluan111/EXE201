@@ -26,6 +26,26 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
+    {
+        await _authService.ForgotPasswordAsync(request, ct);
+        // Always return 200 to prevent email enumeration
+        return Ok(new { message = "Nếu email tồn tại trong hệ thống, chúng tôi đã gửi link đặt lại mật khẩu." });
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
+    {
+        await _authService.ResetPasswordAsync(request, ct);
+        return Ok(new { message = "Mật khẩu đã được đặt lại thành công." });
+    }
+
     //Register a new user account
     [HttpPost("register")]
     [AllowAnonymous]

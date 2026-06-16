@@ -64,7 +64,6 @@ public class ReservationService : IReservationService
             if (!area.IsActive)
                 throw new DomainException("The selected seating area is not available.");
 
-            // Validate guest count matches area capacity
             var requiredCapacity = request.GuestCount <= AppConstants.GuestCountRules.SmallGroupMax ? 2 : 4;
             if (!area.TableType.StartsWith(requiredCapacity.ToString()))
                 throw new DomainException($"This seating area does not support {request.GuestCount} guest(s). Please select an appropriate area.");
@@ -72,22 +71,18 @@ public class ReservationService : IReservationService
             var startTime = request.StartTime;
             var endTime = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
 
-            // Overbooking prevention via overlap check
             var overlapping = await _reservationRepository.CountOverlappingAsync(
                 area.Id, request.ReservationDate, startTime, endTime, null, ct);
 
             if (overlapping >= area.ReservableTables)
                 throw new ConflictException("No tables are available for the selected time slot.");
 
-            // Specific table booking validation
             if (!string.IsNullOrEmpty(request.TableName))
             {
                 var isTableOccupied = await _reservationRepository.AnyOverlappingTableAsync(
                     request.TableName, request.ReservationDate, startTime, endTime, null, ct);
                 if (isTableOccupied)
-                {
                     throw new ConflictException($"Bàn {request.TableName} đã được đặt trong khoảng thời gian này.");
-                }
             }
 
             var reservation = new Reservation
@@ -102,7 +97,7 @@ public class ReservationService : IReservationService
                 StartTime = startTime,
                 EndTime = endTime,
                 GuestCount = request.GuestCount,
-                Status = ReservationStatus.Confirmed,
+                Status = ReservationStatus.Reserved,   // always starts as Reserved
                 TableName = request.TableName,
                 SpecialNote = request.SpecialNote,
                 CreatedAt = DateTime.UtcNow
@@ -112,19 +107,13 @@ public class ReservationService : IReservationService
             await _unitOfWork.SaveChangesAsync(ct);
             await _unitOfWork.CommitAsync(ct);
 
-            _logger.LogInformation("Reservation {Code} created for guest {GuestName}", reservation.ReservationCode, request.GuestName);
+            _logger.LogInformation("Reservation {Code} created (Reserved) for guest {GuestName}",
+                reservation.ReservationCode, request.GuestName);
 
-            // Notify clients about availability change
+            // Notify availability change – no email until Staff confirms
             _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
-            // Fire-and-forget email notification
-            _ = _emailService.SendReservationConfirmationAsync(
-                reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
-                reservation.ReservationDate.ToDateTime(reservation.StartTime),
-                $"{area.TableType} - {area.Area}");
-
             reservation.SeatingArea = area;
-
             return MapToResponse(reservation);
         }
         catch
@@ -159,6 +148,9 @@ public class ReservationService : IReservationService
         if (reservation.Status == ReservationStatus.Completed)
             throw new DomainException("Completed reservations cannot be cancelled.");
 
+        if (reservation.Status == ReservationStatus.CheckedIn)
+            throw new DomainException("Checked-in reservations cannot be cancelled.");
+
         reservation.Status = ReservationStatus.Cancelled;
 
         await _reservationRepository.UpdateAsync(reservation, ct);
@@ -168,6 +160,7 @@ public class ReservationService : IReservationService
 
         _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
+        // Send cancellation email (regardless of who cancelled)
         _ = _emailService.SendCancellationNotificationAsync(
             reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id);
     }
@@ -177,8 +170,9 @@ public class ReservationService : IReservationService
         var reservation = await _reservationRepository.GetByIdAsync(reservationId, ct)
             ?? throw new NotFoundException(nameof(Reservation), reservationId);
 
-        if (reservation.Status != ReservationStatus.Confirmed)
-            throw new DomainException("Only confirmed reservations can be rescheduled.");
+        // Allow reschedule from either Reserved or Confirmed
+        if (reservation.Status != ReservationStatus.Reserved && reservation.Status != ReservationStatus.Confirmed)
+            throw new DomainException("Only Reserved or Confirmed reservations can be rescheduled.");
 
         if (request.StartTime < AppConstants.OpeningHour || request.StartTime > AppConstants.ClosingHour)
         {
@@ -206,35 +200,33 @@ public class ReservationService : IReservationService
             if (overlapping >= area.ReservableTables)
                 throw new ConflictException("No tables are available for the selected time slot.");
 
-            // Specific table booking validation
             if (!string.IsNullOrEmpty(reservation.TableName))
             {
                 var isTableOccupied = await _reservationRepository.AnyOverlappingTableAsync(
                     reservation.TableName, request.ReservationDate, request.StartTime, newEnd, reservationId, ct);
                 if (isTableOccupied)
-                {
                     throw new ConflictException($"Bàn {reservation.TableName} đã được đặt trong khoảng thời gian này.");
-                }
             }
 
             reservation.ReservationDate = request.ReservationDate;
             reservation.StartTime = request.StartTime;
             reservation.EndTime = newEnd;
 
+            // After reschedule, always go back to Reserved – Staff must re-confirm
+            reservation.Status = ReservationStatus.Reserved;
+            reservation.ConfirmedAt = null;
+            reservation.ConfirmedBy = null;
+
             await _reservationRepository.UpdateAsync(reservation, ct);
             await _unitOfWork.SaveChangesAsync(ct);
             await _unitOfWork.CommitAsync(ct);
 
-            _logger.LogInformation("Reservation {Code} rescheduled", reservation.ReservationCode);
+            _logger.LogInformation("Reservation {Code} rescheduled → back to Reserved", reservation.ReservationCode);
 
             _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
-
-            _ = _emailService.SendRescheduleConfirmationAsync(
-                reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
-                request.ReservationDate.ToDateTime(request.StartTime));
+            // No email sent on reschedule – wait for Staff to confirm again
 
             reservation.SeatingArea = area;
-
             return MapToResponse(reservation);
         }
         catch
@@ -264,7 +256,7 @@ public class ReservationService : IReservationService
             ?? throw new NotFoundException(nameof(Reservation), reservationId);
 
         if (!Enum.TryParse<ReservationStatus>(request.Status, ignoreCase: true, out var newStatus))
-            throw new DomainException($"Invalid status '{request.Status}'. Valid values: Confirmed, Cancelled, Completed, NoShow, Seated.");
+            throw new DomainException($"Invalid status '{request.Status}'. Valid values: Confirmed, Cancelled, Completed, NoShow, Reserved, CheckedIn.");
 
         reservation.Status = newStatus;
         await _reservationRepository.UpdateAsync(reservation, ct);
@@ -278,22 +270,25 @@ public class ReservationService : IReservationService
 
     public async Task<DashboardStatsResponse> GetDashboardStatsAsync(CancellationToken ct = default)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var total = await _reservationRepository.CountTotalAsync(ct);
+        var total      = await _reservationRepository.CountTotalAsync(ct);
         var todayCount = await _reservationRepository.CountTodayAsync(ct);
-        var confirmed = await _reservationRepository.CountByStatusAsync(ReservationStatus.Confirmed, ct);
-        var cancelled = await _reservationRepository.CountByStatusAsync(ReservationStatus.Cancelled, ct);
-        var completed = await _reservationRepository.CountByStatusAsync(ReservationStatus.Completed, ct);
-        var noShow = await _reservationRepository.CountByStatusAsync(ReservationStatus.NoShow, ct);
+        var reserved   = await _reservationRepository.CountByStatusAsync(ReservationStatus.Reserved, ct);
+        var confirmed  = await _reservationRepository.CountByStatusAsync(ReservationStatus.Confirmed, ct);
+        var cancelled  = await _reservationRepository.CountByStatusAsync(ReservationStatus.Cancelled, ct);
+        var completed  = await _reservationRepository.CountByStatusAsync(ReservationStatus.Completed, ct);
+        var checkedIn  = await _reservationRepository.CountByStatusAsync(ReservationStatus.CheckedIn, ct);
+        var noShow     = await _reservationRepository.CountByStatusAsync(ReservationStatus.NoShow, ct);
 
         return new DashboardStatsResponse
         {
-            TotalReservations = total,
-            TodayReservations = todayCount,
+            TotalReservations    = total,
+            TodayReservations    = todayCount,
+            ReservedReservations = reserved,
             ConfirmedReservations = confirmed,
             CancelledReservations = cancelled,
             CompletedReservations = completed,
-            NoShowReservations = noShow
+            CheckedInReservations = checkedIn,
+            NoShowReservations   = noShow
         };
     }
 
@@ -303,8 +298,6 @@ public class ReservationService : IReservationService
         var areas = await _seatingAreaRepository.GetByTableCapacityAsync(requiredCapacity, ct);
 
         var result = new List<AvailabilityResponse>();
-
-        // Generate slots from 08:00 to 20:00 at 60-minute intervals
         var slots = GenerateTimeSlots();
 
         foreach (var area in areas)
@@ -334,7 +327,84 @@ public class ReservationService : IReservationService
         return result;
     }
 
-    // --- helpers ---
+    // ── Staff actions ─────────────────────────────────────────────────────────
+
+    public async Task<ReservationResponse> ConfirmAsync(Guid reservationId, string staffEmail, CancellationToken ct = default)
+    {
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId, ct)
+            ?? throw new NotFoundException(nameof(Reservation), reservationId);
+
+        if (reservation.Status != ReservationStatus.Reserved)
+            throw new DomainException("Only Reserved reservations can be confirmed.");
+
+        reservation.Status      = ReservationStatus.Confirmed;
+        reservation.ConfirmedAt = DateTime.UtcNow;
+        reservation.ConfirmedBy = staffEmail;
+
+        await _reservationRepository.UpdateAsync(reservation, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        _logger.LogInformation("Reservation {Code} confirmed by {Staff}", reservation.ReservationCode, staffEmail);
+
+        _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+
+        // Send confirmation email to guest
+        _ = _emailService.SendReservationConfirmationAsync(
+            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
+            reservation.ReservationDate.ToDateTime(reservation.StartTime),
+            $"{reservation.SeatingArea?.TableType} - {reservation.SeatingArea?.Area}");
+
+        return MapToResponse(reservation);
+    }
+
+    public async Task<ReservationResponse> RejectAsync(Guid reservationId, string staffEmail, CancellationToken ct = default)
+    {
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId, ct)
+            ?? throw new NotFoundException(nameof(Reservation), reservationId);
+
+        if (reservation.Status != ReservationStatus.Reserved)
+            throw new DomainException("Only Reserved reservations can be rejected.");
+
+        reservation.Status = ReservationStatus.Cancelled;
+
+        await _reservationRepository.UpdateAsync(reservation, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        _logger.LogInformation("Reservation {Code} rejected by {Staff}", reservation.ReservationCode, staffEmail);
+
+        _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+
+        // Send cancellation email to guest
+        _ = _emailService.SendCancellationNotificationAsync(
+            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id);
+
+        return MapToResponse(reservation);
+    }
+
+    public async Task<ReservationResponse> CheckInAsync(Guid reservationId, CheckInRequest request, string staffEmail, CancellationToken ct = default)
+    {
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId, ct)
+            ?? throw new NotFoundException(nameof(Reservation), reservationId);
+
+        if (reservation.Status != ReservationStatus.Confirmed)
+            throw new DomainException("Only Confirmed reservations can be checked in.");
+
+        reservation.Status          = ReservationStatus.CheckedIn;
+        reservation.CheckedInAt     = DateTime.UtcNow;
+        reservation.CheckedInBy     = staffEmail;
+        reservation.CheckInImageUrl = request.CheckInImageUrl;
+
+        await _reservationRepository.UpdateAsync(reservation, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        _logger.LogInformation("Reservation {Code} checked in by {Staff}", reservation.ReservationCode, staffEmail);
+
+        _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+
+        return MapToResponse(reservation);
+    }
+
+    // ── helpers ───────────────────────────────────────────────────────────────
 
     private static string GenerateCode()
     {
@@ -345,7 +415,7 @@ public class ReservationService : IReservationService
     private static IEnumerable<(TimeOnly Start, TimeOnly End)> GenerateTimeSlots()
     {
         var current = new TimeOnly(8, 0);
-        var limit = new TimeOnly(20, 0);
+        var limit   = new TimeOnly(20, 0);
 
         while (current <= limit)
         {
@@ -357,22 +427,27 @@ public class ReservationService : IReservationService
 
     private static ReservationResponse MapToResponse(Reservation r) => new()
     {
-        Id = r.Id,
-        ReservationCode = r.ReservationCode,
-        GuestName = r.GuestName,
-        GuestEmail = r.GuestEmail,
-        GuestPhone = r.GuestPhone,
-        SeatingAreaId = r.SeatingAreaId,
+        Id                   = r.Id,
+        ReservationCode      = r.ReservationCode,
+        GuestName            = r.GuestName,
+        GuestEmail           = r.GuestEmail,
+        GuestPhone           = r.GuestPhone,
+        SeatingAreaId        = r.SeatingAreaId,
         SeatingAreaTableType = r.SeatingArea?.TableType ?? string.Empty,
-        SeatingAreaArea = r.SeatingArea?.Area ?? string.Empty,
-        ReservationDate = r.ReservationDate,
-        StartTime = r.StartTime,
-        EndTime = r.EndTime,
-        GuestCount = r.GuestCount,
-        Status = r.Status.ToString(),
-        TableName = r.TableName,
-        SpecialNote = r.SpecialNote,
-        CreatedAt = r.CreatedAt
+        SeatingAreaArea      = r.SeatingArea?.Area ?? string.Empty,
+        ReservationDate      = r.ReservationDate,
+        StartTime            = r.StartTime,
+        EndTime              = r.EndTime,
+        GuestCount           = r.GuestCount,
+        Status               = r.Status.ToString(),
+        TableName            = r.TableName,
+        SpecialNote          = r.SpecialNote,
+        CreatedAt            = r.CreatedAt,
+        ConfirmedAt          = r.ConfirmedAt,
+        ConfirmedBy          = r.ConfirmedBy,
+        CheckedInAt          = r.CheckedInAt,
+        CheckedInBy          = r.CheckedInBy,
+        CheckInImageUrl      = r.CheckInImageUrl,
     };
 
     public async Task<IReadOnlyList<string>> GetOccupiedTablesAsync(DateOnly date, TimeOnly time, CancellationToken ct = default)

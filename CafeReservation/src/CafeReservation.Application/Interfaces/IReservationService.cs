@@ -14,4 +14,9 @@ public interface IReservationService
     Task<IReadOnlyList<string>> GetOccupiedTablesAsync(DateOnly date, TimeOnly time, CancellationToken ct = default);
     Task<ReservationResponse> UpdateStatusAsync(Guid reservationId, UpdateReservationStatusRequest request, CancellationToken ct = default);
     Task<DashboardStatsResponse> GetDashboardStatsAsync(CancellationToken ct = default);
+
+    // Staff actions
+    Task<ReservationResponse> ConfirmAsync(Guid reservationId, string staffEmail, CancellationToken ct = default);
+    Task<ReservationResponse> RejectAsync(Guid reservationId, string staffEmail, CancellationToken ct = default);
+    Task<ReservationResponse> CheckInAsync(Guid reservationId, CheckInRequest request, string staffEmail, CancellationToken ct = default);
 }

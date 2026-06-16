@@ -309,8 +309,10 @@ function statusFromReservation(status) {
   const value = String(status || "").toLowerCase();
   if (value === "cancelled") return "cancelled";
   if (value === "completed") return "completed";
-  if (value === "seated") return "completed";
+  if (value === "checkedin") return "checkedin";
+  if (value === "seated") return "checkedin";    // legacy mapping
   if (value === "noshow") return "noshow";
+  if (value === "reserved") return "reserved";
   return "confirmed";
 }
 
@@ -817,6 +819,65 @@ export async function bookingCancel({ token, id }) {
   }
 
   return { ok: true, data: { id, status: "cancelled" } };
+}
+
+// STAFF ACTIONS (Staff role only)
+export async function adminConfirmBooking({ token, id }) {
+  const bearer = token || currentToken();
+  if (!bearer) return { ok: false, message: "Unauthorized" };
+
+  const result = await requestJson(`/api/admin/reservations/${id}/confirm`, {
+    method: "PUT",
+    token: bearer,
+  });
+  if (!result.ok) return result;
+
+  const tables = await getTablesWithAreas();
+  return { ok: true, data: normalizeReservation(result.data, tables) };
+}
+
+export async function adminRejectBooking({ token, id }) {
+  const bearer = token || currentToken();
+  if (!bearer) return { ok: false, message: "Unauthorized" };
+
+  const result = await requestJson(`/api/admin/reservations/${id}/reject`, {
+    method: "PUT",
+    token: bearer,
+  });
+  if (!result.ok) return result;
+
+  const tables = await getTablesWithAreas();
+  return { ok: true, data: normalizeReservation(result.data, tables) };
+}
+
+export async function adminCheckInBooking({ token, id, checkInImageUrl }) {
+  const bearer = token || currentToken();
+  if (!bearer) return { ok: false, message: "Unauthorized" };
+
+  const result = await requestJson(`/api/admin/reservations/${id}/checkin`, {
+    method: "PUT",
+    token: bearer,
+    body: { checkInImageUrl: checkInImageUrl || null },
+  });
+  if (!result.ok) return result;
+
+  const tables = await getTablesWithAreas();
+  return { ok: true, data: normalizeReservation(result.data, tables) };
+}
+
+// AUTH – Forgot / Reset Password
+export async function authForgotPassword({ email }) {
+  return await requestJson("/api/auth/forgot-password", {
+    method: "POST",
+    body: { email },
+  });
+}
+
+export async function authResetPassword({ token, newPassword, confirmPassword }) {
+  return await requestJson("/api/auth/reset-password", {
+    method: "POST",
+    body: { token, newPassword, confirmPassword },
+  });
 }
 
 // RESTAURANT INFO & FEEDBACK

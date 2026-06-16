@@ -60,9 +60,27 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .HasColumnName("created_at")
             .IsRequired();
 
+        // Staff confirmation audit fields
+        builder.Property(r => r.ConfirmedAt)
+            .HasColumnName("confirmed_at");
+
+        builder.Property(r => r.ConfirmedBy)
+            .HasColumnName("confirmed_by")
+            .HasMaxLength(200);
+
+        // Check-in audit fields
+        builder.Property(r => r.CheckedInAt)
+            .HasColumnName("checked_in_at");
+
+        builder.Property(r => r.CheckedInBy)
+            .HasColumnName("checked_in_by")
+            .HasMaxLength(200);
+
+        builder.Property(r => r.CheckInImageUrl)
+            .HasColumnName("check_in_image_url")
+            .HasMaxLength(1000);
+
         // Relationships
-
-
         builder.HasOne(r => r.SeatingArea)
             .WithMany(s => s.Reservations)
             .HasForeignKey(r => r.SeatingAreaId)
@@ -72,10 +90,11 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         builder.HasIndex(r => new { r.SeatingAreaId, r.ReservationDate, r.Status })
             .HasDatabaseName("ix_reservations_area_date_status");
 
-        // Prevent double-booking: unique constraint per table + date + time slot for active reservations
+        // Prevent double-booking: unique constraint per table + date + time slot
+        // Applies to: Confirmed(0), CheckedIn(4), Reserved(5)
         builder.HasIndex(r => new { r.TableName, r.ReservationDate, r.StartTime })
             .HasDatabaseName("ix_reservations_unique_table_slot")
             .IsUnique()
-            .HasFilter("status IN (0, 4) AND table_name IS NOT NULL");
+            .HasFilter("status IN (0, 4, 5) AND table_name IS NOT NULL");
     }
 }

@@ -26,7 +26,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useAuth } from "../../context/useAuthContext.js";
-import { adminGetBookings, adminUpdateBookingStatus } from "../../services/apiClient.js";
+import { adminGetBookings, adminUpdateBookingStatus, adminConfirmBooking, adminRejectBooking, adminCheckInBooking } from "../../services/apiClient.js";
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
 
 const COLORS = {
@@ -97,7 +97,22 @@ export default function ManageBookingsPage() {
     if (s === "noshow") {
       return <Chip label="Vắng mặt" color="warning" size="small" sx={{ fontWeight: 600 }} />;
     }
+    if (s === "checkedin") {
+      return <Chip label="Đã Check-in" color="secondary" size="small" sx={{ fontWeight: 600 }} />;
+    }
+    if (s === "reserved") {
+      return <Chip label="Đã đặt (chờ XN)" color="default" size="small" sx={{ fontWeight: 600 }} />;
+    }
     return <Chip label="Đã xác nhận" color="success" size="small" sx={{ fontWeight: 600 }} />;
+  };
+
+  const handleAction = async (actionFn, id, ...args) => {
+    const res = await actionFn({ token, id, ...args });
+    if (res.ok) {
+      fetchBookings();
+    } else {
+      alert("Thao tác thất bại: " + (res.message || "Lỗi hệ thống"));
+    }
   };
 
   return (
@@ -206,7 +221,9 @@ export default function ManageBookingsPage() {
                       }}
                     >
                       <MenuItem value="">Tất cả trạng thái</MenuItem>
+                      <MenuItem value="Reserved">Đã đặt (chờ XN)</MenuItem>
                       <MenuItem value="Confirmed">Đã xác nhận</MenuItem>
+                      <MenuItem value="CheckedIn">Đã Check-in</MenuItem>
                       <MenuItem value="Completed">Đã hoàn thành</MenuItem>
                       <MenuItem value="Cancelled">Đã hủy lịch</MenuItem>
                       <MenuItem value="NoShow">Vắng mặt</MenuItem>
@@ -338,30 +355,38 @@ export default function ManageBookingsPage() {
                           </TableCell>
                           <TableCell>{getStatusBadge(booking.status)}</TableCell>
                           <TableCell>
-                            <FormControl fullWidth size="small">
-                              <Select
-                                value={
-                                  String(booking.status || "").toLowerCase() === "completed"
-                                    ? "Completed"
-                                    : String(booking.status || "").toLowerCase() === "cancelled"
-                                    ? "Cancelled"
-                                    : String(booking.status || "").toLowerCase() === "noshow"
-                                    ? "NoShow"
-                                    : "Confirmed"
-                                }
-                                onChange={(e) => handleStatusChange(booking.id, e.target.value)}
-                                sx={{
-                                  fontSize: "13px",
-                                  fontWeight: 500,
-                                  height: "32px",
-                                }}
-                              >
-                                <MenuItem value="Confirmed">Đã xác nhận</MenuItem>
-                                <MenuItem value="Completed">Đã hoàn thành</MenuItem>
-                                <MenuItem value="Cancelled">Đã hủy lịch</MenuItem>
-                                <MenuItem value="NoShow">Vắng mặt</MenuItem>
-                              </Select>
-                            </FormControl>
+                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                              {String(booking.status || "").toLowerCase() === "reserved" && (
+                                <>
+                                  <Button size="small" variant="contained" color="success" onClick={() => handleAction(adminConfirmBooking, booking.id)}>
+                                    Xác nhận
+                                  </Button>
+                                  <Button size="small" variant="outlined" color="error" onClick={() => handleAction(adminRejectBooking, booking.id)}>
+                                    Từ chối
+                                  </Button>
+                                </>
+                              )}
+                              {String(booking.status || "").toLowerCase() === "confirmed" && (
+                                <>
+                                  <Button size="small" variant="contained" color="secondary" onClick={() => handleAction(adminCheckInBooking, booking.id)}>
+                                    Check In
+                                  </Button>
+                                  <Button size="small" variant="outlined" color="error" onClick={() => handleAction(adminUpdateBookingStatus, booking.id, { status: "Cancelled" })}>
+                                    Hủy
+                                  </Button>
+                                </>
+                              )}
+                              {String(booking.status || "").toLowerCase() === "checkedin" && (
+                                <Button size="small" variant="contained" color="info" onClick={() => handleAction(adminUpdateBookingStatus, booking.id, { status: "Completed" })}>
+                                  Hoàn thành
+                                </Button>
+                              )}
+                              {["completed", "cancelled", "noshow"].includes(String(booking.status || "").toLowerCase()) && (
+                                <Typography variant="caption" color="text.secondary">
+                                  Không có hành động
+                                </Typography>
+                              )}
+                            </Box>
                           </TableCell>
                         </TableRow>
                       ))}

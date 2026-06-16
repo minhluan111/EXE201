@@ -12,6 +12,10 @@ public class AutoCancelReservationWorker : BackgroundService
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<AutoCancelReservationWorker> _logger;
 
+    // UTC+7 Vietnam timezone
+    private static readonly TimeZoneInfo VietnamTz =
+        TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
     public AutoCancelReservationWorker(IServiceProvider serviceProvider, ILogger<AutoCancelReservationWorker> logger)
     {
         _serviceProvider = serviceProvider;
@@ -20,36 +24,38 @@ public class AutoCancelReservationWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("AutoCancelReservationWorker is starting.");
+        _logger.LogInformation("AutoCancelReservationWorker started. Checks every 1 minute for NoShow reservations.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await ProcessCancellationsAsync(stoppingToken);
+                await ProcessNoShowAsync(stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while processing auto-cancellations.");
+                _logger.LogError(ex, "Error occurred while processing NoShow reservations.");
             }
 
-            // Run every 1 minute
             await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
 
-    private async Task ProcessCancellationsAsync(CancellationToken stoppingToken)
+    private async Task ProcessNoShowAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
         var reservationRepo = scope.ServiceProvider.GetRequiredService<IReservationRepository>();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var notifier = scope.ServiceProvider.GetRequiredService<IAvailabilityNotifier>();
-        var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
-        
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var nowTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+        var unitOfWork      = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var notifier        = scope.ServiceProvider.GetRequiredService<IAvailabilityNotifier>();
+        var emailService    = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-        // GetFilteredAsync to get today's confirmed.
+        // Use Vietnam local time (UTC+7) – the restaurant operates in VN
+        var nowVietnam = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, VietnamTz);
+        var today      = DateOnly.FromDateTime(nowVietnam);
+        var nowTime    = TimeOnly.FromDateTime(nowVietnam);
+
+        // Only Confirmed reservations can become NoShow.
+        // Reserved reservations are intentionally excluded – they haven't been confirmed yet.
         var (items, _) = await reservationRepo.GetFilteredAsync(
             date: today,
             status: ReservationStatus.Confirmed.ToString(),
@@ -62,20 +68,19 @@ public class AutoCancelReservationWorker : BackgroundService
 
         foreach (var reservation in items)
         {
-            // Calculate expiration time (StartTime + 45 mins)
+            // Mark NoShow if guest didn't arrive within the holding window
             var expirationTime = reservation.StartTime.AddMinutes(AppConstants.HoldingTimeMinutes);
 
-            // If it's past the expiration time, auto-cancel
             if (nowTime > expirationTime)
             {
-                _logger.LogInformation("Auto-cancelling reservation {Code} (Guest didn't arrive after {Holding} mins)", 
-                    reservation.ReservationCode, AppConstants.HoldingTimeMinutes);
+                _logger.LogInformation(
+                    "Marking reservation {Code} as NoShow – guest didn't arrive within {Holding} mins of {Start} (VN time)",
+                    reservation.ReservationCode, AppConstants.HoldingTimeMinutes, reservation.StartTime);
 
                 reservation.Status = ReservationStatus.NoShow;
                 await reservationRepo.UpdateAsync(reservation, stoppingToken);
                 changed = true;
 
-                // Send email notification about cancellation
                 _ = emailService.SendCancellationNotificationAsync(
                     reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id);
             }
