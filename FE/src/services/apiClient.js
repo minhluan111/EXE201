@@ -509,6 +509,8 @@ function normalizeReservation(reservation, tables = []) {
     note: reservation.specialNote || "",
     created_at: reservation.createdAt,
     createdAt: reservation.createdAt,
+    checkInImageUrl: reservation.checkInImageUrl,
+    checkInNote: reservation.checkInNote,
     table,
   };
 }
@@ -869,14 +871,17 @@ export async function adminRejectBooking({ token, id }) {
   return { ok: true, data: normalizeReservation(result.data, tables) };
 }
 
-export async function adminCheckInBooking({ token, id, checkInImageUrl }) {
+export async function adminCheckInBooking({ token, id, checkInImageUrl, checkInNote }) {
   const bearer = token || currentToken();
   if (!bearer) return { ok: false, message: "Unauthorized" };
 
   const result = await requestJson(`/api/admin/reservations/${id}/checkin`, {
     method: "PUT",
     token: bearer,
-    body: { checkInImageUrl: checkInImageUrl || null },
+    body: { 
+      checkInImageUrl: checkInImageUrl || null,
+      checkInNote: checkInNote || null
+    },
   });
   if (!result.ok) return result;
 

@@ -24,33 +24,45 @@ export function useAvailabilityHub(onChanged, enabled = true) {
   useEffect(() => {
     if (!enabled) return;
 
-    const connection = new HubConnectionBuilder()
-      .withUrl(`${API_BASE_URL}/hub/availability`)
-      .withAutomaticReconnect()
-      .configureLogging(LogLevel.Warning)
-      .build();
+    let isMounted = true;
+    let connection = null;
 
-    connection.on("AvailabilityChanged", () => {
-      onChangedRef.current?.();
-    });
+    const timer = setTimeout(async () => {
+      if (!isMounted) return;
 
-    const startConnection = async () => {
+      connection = new HubConnectionBuilder()
+        .withUrl(`${API_BASE_URL}/hub/availability`)
+        .withAutomaticReconnect()
+        .configureLogging(LogLevel.Warning)
+        .build();
+
+      connection.on("AvailabilityChanged", () => {
+        if (isMounted) {
+          onChangedRef.current?.();
+        }
+      });
+
       try {
         await connection.start();
+        connectionRef.current = connection;
       } catch (err) {
-        console.warn("[SignalR] Could not connect to AvailabilityHub:", err);
+        if (isMounted) {
+          console.warn("[SignalR] Could not connect to AvailabilityHub:", err);
+        }
       }
-    };
-
-    startConnection();
-    connectionRef.current = connection;
+    }, 100);
 
     return () => {
-      if (
-        connection.state === HubConnectionState.Connected ||
-        connection.state === HubConnectionState.Connecting
-      ) {
-        connection.stop();
+      isMounted = false;
+      clearTimeout(timer);
+      if (connection) {
+        if (
+          connection.state === HubConnectionState.Connected ||
+          connection.state === HubConnectionState.Connecting ||
+          connection.state === HubConnectionState.Reconnecting
+        ) {
+          connection.stop().catch(() => {});
+        }
       }
     };
   }, [enabled]);

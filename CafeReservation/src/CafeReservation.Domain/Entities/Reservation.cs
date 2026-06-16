@@ -32,4 +32,5 @@ public class Reservation
     public DateTime? CheckedInAt { get; set; }
     public string? CheckedInBy { get; set; }   // Staff email who checked in
     public string? CheckInImageUrl { get; set; }
+    public string? CheckInNote { get; set; }
 }

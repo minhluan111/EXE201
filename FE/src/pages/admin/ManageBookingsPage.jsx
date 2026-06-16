@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
   Container,
@@ -24,10 +24,12 @@ import {
   Pagination,
   Grid,
   Divider,
+  Skeleton,
 } from "@mui/material";
 import { useAuth } from "../../context/useAuthContext.js";
 import { adminGetBookings, adminUpdateBookingStatus, adminConfirmBooking, adminRejectBooking, adminCheckInBooking } from "../../services/apiClient.js";
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
+import { useAvailabilityHub } from "../../hooks/useAvailabilityHub.js";
 
 const COLORS = {
   moss: "#788B45",
@@ -49,6 +51,22 @@ export default function ManageBookingsPage() {
   const [status, setStatus] = useState(""); // "" means All
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  // Check-in modal state
+  const [checkInModal, setCheckInModal] = useState(null); // booking object
+  const [checkInImage, setCheckInImage] = useState(null); // File object
+  const [checkInImagePreview, setCheckInImagePreview] = useState("");
+  const [checkInNote, setCheckInNote] = useState("");
+  const [checkInLoading, setCheckInLoading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Details modal state
+  const [detailsModal, setdetailsModal] = useState(null); // booking object
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    setImgLoaded(false);
+  }, [detailsModal?.checkInImageUrl]);
 
   const fetchBookings = async () => {
     setLoading(true);
@@ -72,19 +90,142 @@ export default function ManageBookingsPage() {
     fetchBookings();
   }, [token, date, status, page, pageSize]);
 
+  // SignalR: auto-refresh when other admin/staff makes changes
+  useAvailabilityHub(() => {
+    fetchBookings();
+  }, !!token);
+
   const handleSearchClear = () => {
     setSearch("");
     setPage(1);
   };
 
-  const handleStatusChange = async (id, newStatus) => {
-    const res = await adminUpdateBookingStatus({ token, id, status: newStatus });
+  // Update local list instead of full refresh
+  const handleAction = async (actionFn, id, options = {}) => {
+    const res = await actionFn({ token, id, ...options });
     if (res.ok) {
-      fetchBookings();
+      // Optimistically update local list so no full reload needed
+      setList((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, ...res.data } : b))
+      );
     } else {
-      alert("Cập nhật trạng thái thất bại: " + (res.message || "Lỗi hệ thống"));
+      alert("Thao tác thất bại: " + (res.message || "Lỗi hệ thống"));
     }
   };
+
+  // Handle file pick
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCheckInImage(file);
+    setCheckInImagePreview(URL.createObjectURL(file));
+  };
+
+  // Upload image to a free hosting then do check-in
+  const handleConfirmCheckIn = async () => {
+    if (!checkInModal) return;
+    setCheckInLoading(true);
+    let imageUrl = null;
+
+    if (checkInImage) {
+      // Upload to imgbb (free image hosting) using binary file
+      try {
+        const formData = new FormData();
+        formData.append("image", checkInImage);
+        const uploadRes = await fetch(
+          "https://api.imgbb.com/1/upload?key=0407d749b1703d2a6b06b9d2988625e3",
+          { method: "POST", body: formData }
+        );
+        const uploadJson = await uploadRes.json();
+        if (uploadJson.success) {
+          imageUrl = uploadJson.data.url;
+        } else {
+          console.error("ImgBB upload error response:", uploadJson);
+          alert(`Không thể tải ảnh lên: ${uploadJson.error?.message || "Lỗi không xác định từ ImgBB"}`);
+        }
+      } catch (err) {
+        console.warn("Image upload failed, continuing without image", err);
+        alert(`Lỗi kết nối khi tải ảnh lên: ${err.message || err}`);
+      }
+    }
+
+    const res = await adminCheckInBooking({
+      token,
+      id: checkInModal.id,
+      checkInImageUrl: imageUrl,
+      checkInNote: checkInNote || undefined,
+    });
+
+    setCheckInLoading(false);
+    if (res.ok) {
+      setList((prev) =>
+        prev.map((b) => (b.id === checkInModal.id ? { ...b, ...res.data } : b))
+      );
+      closeCheckInModal();
+    } else {
+      alert("Check-in thất bại: " + (res.message || "Lỗi hệ thống"));
+    }
+  };
+
+  const closeCheckInModal = () => {
+    setCheckInModal(null);
+    setCheckInImage(null);
+    setCheckInImagePreview("");
+    setCheckInNote("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const compressImage = (file, maxWidth = 1024, maxHeight = 1024, quality = 0.75) =>
+    new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              const compressedFile = new File([blob], file.name.replace(/\.\w+$/, ".jpg"), {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+      };
+    });
+
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
 
   const getStatusBadge = (statusStr) => {
     const s = String(statusStr || "").toLowerCase();
@@ -104,15 +245,6 @@ export default function ManageBookingsPage() {
       return <Chip label="Đã đặt (chờ XN)" color="default" size="small" sx={{ fontWeight: 600 }} />;
     }
     return <Chip label="Đã xác nhận" color="success" size="small" sx={{ fontWeight: 600 }} />;
-  };
-
-  const handleAction = async (actionFn, id, options = {}) => {
-    const res = await actionFn({ token, id, ...options });
-    if (res.ok) {
-      fetchBookings();
-    } else {
-      alert("Thao tác thất bại: " + (res.message || "Lỗi hệ thống"));
-    }
   };
 
   return (
@@ -136,8 +268,8 @@ export default function ManageBookingsPage() {
             }}
           >
             <CardContent sx={{ p: 3 }}>
-              <Grid container spacing={3} alignItems="flex-end">
-                <Grid item xs={12} sm={6} md={3.5}>
+              <Grid container spacing={3} sx={{ alignItems: "flex-end" }}>
+                <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Tìm kiếm khách hàng
                   </Typography>
@@ -166,7 +298,7 @@ export default function ManageBookingsPage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={2.5}>
+                <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Lọc theo ngày
                   </Typography>
@@ -195,7 +327,7 @@ export default function ManageBookingsPage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3.5}>
+                <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Trạng thái đặt bàn
                   </Typography>
@@ -230,7 +362,7 @@ export default function ManageBookingsPage() {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6} md={2.5}>
+                <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
                   <Typography
                     sx={{
                       fontSize: "13px",
@@ -368,7 +500,12 @@ export default function ManageBookingsPage() {
                               )}
                               {String(booking.status || "").toLowerCase() === "confirmed" && (
                                 <>
-                                  <Button size="small" variant="contained" color="secondary" onClick={() => handleAction(adminCheckInBooking, booking.id)}>
+                                  <Button
+                                    size="small"
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => setCheckInModal(booking)}
+                                  >
                                     Check In
                                   </Button>
                                   <Button size="small" variant="outlined" color="error" onClick={() => handleAction(adminUpdateBookingStatus, booking.id, { status: "Cancelled" })}>
@@ -381,7 +518,12 @@ export default function ManageBookingsPage() {
                                   Hoàn thành
                                 </Button>
                               )}
-                              {["completed", "cancelled", "noshow"].includes(String(booking.status || "").toLowerCase()) && (
+                              {String(booking.status || "").toLowerCase() === "completed" && (
+                                <Button size="small" variant="outlined" color="primary" onClick={() => setdetailsModal(booking)}>
+                                  Chi tiết
+                                </Button>
+                              )}
+                              {["cancelled", "noshow"].includes(String(booking.status || "").toLowerCase()) && (
                                 <Typography variant="caption" color="text.secondary">
                                   Không có hành động
                                 </Typography>
@@ -422,6 +564,294 @@ export default function ManageBookingsPage() {
           </Card>
         </Container>
       </Box>
+
+      {/* ── Check-in Modal ───────────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {checkInModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.55)",
+              backdropFilter: "blur(4px)",
+              zIndex: 1300,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "16px",
+            }}
+            onClick={(e) => e.target === e.currentTarget && closeCheckInModal()}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              style={{
+                background: "var(--bg-card, #fff)",
+                borderRadius: "20px",
+                padding: "32px",
+                width: "100%",
+                maxWidth: "480px",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+              }}
+            >
+              {/* Header */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: COLORS.forest, mb: 0.5 }}>
+                  📷 Xác nhận Check-in
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#666" }}>
+                  Đơn <strong>{checkInModal.reservation_code}</strong> — Khách: <strong>{checkInModal.guest_name}</strong>
+                </Typography>
+              </Box>
+
+              {/* Image Upload */}
+              <Box
+                onClick={() => fileInputRef.current?.click()}
+                sx={{
+                  border: `2px dashed ${checkInImagePreview ? COLORS.moss : COLORS.border}`,
+                  borderRadius: "12px",
+                  p: 2,
+                  mb: 2,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  background: checkInImagePreview ? "rgba(120,139,69,0.04)" : "rgba(0,0,0,0.02)",
+                  transition: "all 0.2s",
+                  "&:hover": { borderColor: COLORS.moss, background: "rgba(120,139,69,0.06)" },
+                  minHeight: 120,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: 1,
+                  overflow: "hidden",
+                }}
+              >
+                {checkInImagePreview ? (
+                  <img
+                    src={checkInImagePreview}
+                    alt="Check-in preview"
+                    style={{ maxWidth: "100%", maxHeight: 220, borderRadius: 8, objectFit: "contain" }}
+                  />
+                ) : (
+                  <>
+                    <Typography sx={{ fontSize: "32px", lineHeight: 1 }}>🖼️</Typography>
+                    <Typography sx={{ fontSize: "13px", color: "#888", fontWeight: 500 }}>
+                      Nhấn để tải ảnh Check-in lên
+                    </Typography>
+                    <Typography sx={{ fontSize: "11px", color: "#aaa" }}>
+                      JPG, PNG, WEBP — tối đa 5MB
+                    </Typography>
+                  </>
+                )}
+              </Box>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+
+              {checkInImagePreview && (
+                <Button
+                  size="small"
+                  variant="text"
+                  color="error"
+                  sx={{ mb: 2, fontSize: "12px" }}
+                  onClick={() => {
+                    setCheckInImage(null);
+                    setCheckInImagePreview("");
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                >
+                  Xóa ảnh
+                </Button>
+              )}
+
+              {/* Note */}
+              <TextField
+                fullWidth
+                multiline
+                minRows={2}
+                maxRows={4}
+                label="Ghi chú / Chú thích (tuỳ chọn)"
+                value={checkInNote}
+                onChange={(e) => setCheckInNote(e.target.value)}
+                placeholder="VD: Khách đã vào, bàn 2 góc window..."
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": { borderRadius: "12px", fontSize: "14px" },
+                }}
+              />
+
+              {/* Actions */}
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="inherit"
+                  onClick={closeCheckInModal}
+                  disabled={checkInLoading}
+                  sx={{ borderRadius: "12px", textTransform: "none", fontWeight: 600 }}
+                >
+                  Hủy bỏ
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={handleConfirmCheckIn}
+                  disabled={checkInLoading}
+                  sx={{
+                    borderRadius: "12px",
+                    textTransform: "none",
+                    fontWeight: 700,
+                    background: `linear-gradient(135deg, ${COLORS.moss}, ${COLORS.forest})`,
+                    "&:hover": { background: COLORS.forest },
+                  }}
+                >
+                  {checkInLoading ? <CircularProgress size={18} sx={{ color: "#fff" }} /> : "Xác nhận Check-in"}
+                </Button>
+              </Box>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Details Modal ──────────────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {detailsModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.55)",
+              backdropFilter: "blur(4px)",
+              zIndex: 1300,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "16px",
+            }}
+            onClick={(e) => e.target === e.currentTarget && setdetailsModal(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              style={{
+                background: "var(--bg-card, #fff)",
+                borderRadius: "20px",
+                padding: "32px",
+                width: "100%",
+                maxWidth: "480px",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+              }}
+            >
+              {/* Header */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: COLORS.forest, mb: 0.5 }}>
+                  Chi tiết Check-in
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#666" }}>
+                  Đơn <strong>{detailsModal.reservation_code}</strong> — Khách: <strong>{detailsModal.guest_name}</strong>
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  border: `1px solid ${COLORS.border}`,
+                  borderRadius: "12px",
+                  p: 1,
+                  mb: detailsModal.checkInImageUrl ? 1 : 3,
+                  textAlign: "center",
+                  background: "rgba(0,0,0,0.02)",
+                  minHeight: 120,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
+                {detailsModal.checkInImageUrl ? (
+                  <Box sx={{ position: "relative", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    {!imgLoaded && (
+                      <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height={200}
+                        sx={{ borderRadius: "8px" }}
+                        animation="wave"
+                      />
+                    )}
+                    <img
+                      src={detailsModal.checkInImageUrl}
+                      alt="Check-in preview"
+                      onLoad={() => setImgLoaded(true)}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: 300,
+                        borderRadius: 8,
+                        objectFit: "contain",
+                        display: imgLoaded ? "block" : "none",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => window.open(detailsModal.checkInImageUrl, "_blank")}
+                      title="Bấm để xem ảnh gốc sắc nét"
+                    />
+                  </Box>
+                ) : (
+                  <Typography sx={{ fontSize: "14px", color: "#888" }}>
+                    Không có hình ảnh đính kèm.
+                  </Typography>
+                )}
+              </Box>
+
+              {detailsModal.checkInImageUrl && (
+                <Typography variant="caption" sx={{ display: "block", textAlign: "center", color: "#888", mb: 3 }}>
+                  Bấm vào ảnh để xem ảnh gốc chất lượng cao
+                </Typography>
+              )}
+
+              {/* Note Display */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, color: COLORS.forest, mb: 1 }}>
+                  Ghi chú:
+                </Typography>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: "12px", background: "var(--bg-alt)", minHeight: "60px" }}>
+                  <Typography variant="body2" sx={{ color: "var(--text)" }}>
+                    {detailsModal.checkInNote || "Không có ghi chú."}
+                  </Typography>
+                </Paper>
+              </Box>
+
+              {/* Actions */}
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => setdetailsModal(null)}
+                sx={{
+                  borderRadius: "12px",
+                  textTransform: "none",
+                  fontWeight: 700,
+                  background: `linear-gradient(135deg, ${COLORS.moss}, ${COLORS.forest})`,
+                  "&:hover": { background: COLORS.forest },
+                }}
+              >
+                Đóng
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Box>
   );
 }

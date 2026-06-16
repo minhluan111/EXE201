@@ -25,6 +25,7 @@ public class RescheduleReservationRequest
 public class CheckInRequest
 {
     public string? CheckInImageUrl { get; set; }
+    public string? CheckInNote { get; set; }
 }
 
 public class ReservationResponse
@@ -52,6 +53,7 @@ public class ReservationResponse
     public DateTime? CheckedInAt { get; set; }
     public string? CheckedInBy { get; set; }
     public string? CheckInImageUrl { get; set; }
+    public string? CheckInNote { get; set; }
 }
 
 public class AvailabilityRequest

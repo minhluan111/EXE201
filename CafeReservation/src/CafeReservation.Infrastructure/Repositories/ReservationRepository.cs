@@ -58,8 +58,10 @@ public class ReservationRepository : IReservationRepository
         var total = await query.CountAsync(ct);
 
         var items = await query
-            .OrderByDescending(r => r.ReservationDate)
-            .ThenByDescending(r => r.StartTime)
+            .OrderBy(r => r.Status == ReservationStatus.Reserved ? 1 :
+                          (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.CheckedIn) ? 2 : 3)
+            .ThenBy(r => r.ReservationDate)
+            .ThenBy(r => r.StartTime)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(ct);
