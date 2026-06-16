@@ -22,6 +22,11 @@ public class RescheduleReservationRequest
     public TimeOnly StartTime { get; set; }
 }
 
+public class CheckInRequest
+{
+    public string? CheckInImageUrl { get; set; }
+}
+
 public class ReservationResponse
 {
     public Guid Id { get; set; }
@@ -40,6 +45,13 @@ public class ReservationResponse
     public string? TableName { get; set; }
     public string? SpecialNote { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    // Audit fields
+    public DateTime? ConfirmedAt { get; set; }
+    public string? ConfirmedBy { get; set; }
+    public DateTime? CheckedInAt { get; set; }
+    public string? CheckedInBy { get; set; }
+    public string? CheckInImageUrl { get; set; }
 }
 
 public class AvailabilityRequest
@@ -88,7 +100,7 @@ public class PagedResult<T>
 
 public class UpdateReservationStatusRequest
 {
-    public string Status { get; set; } = string.Empty;  // Completed | NoShow | Confirmed | Cancelled
+    public string Status { get; set; } = string.Empty;  // Completed | NoShow | Confirmed | Cancelled | Reserved | CheckedIn
 }
 
 // Dashboard Stats
@@ -97,9 +109,11 @@ public class DashboardStatsResponse
 {
     public int TotalReservations { get; set; }
     public int TodayReservations { get; set; }
+    public int ReservedReservations { get; set; }
     public int ConfirmedReservations { get; set; }
     public int CancelledReservations { get; set; }
     public int CompletedReservations { get; set; }
+    public int CheckedInReservations { get; set; }
     public int NoShowReservations { get; set; }
     public int TotalUsers { get; set; }
 }

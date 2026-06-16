@@ -82,7 +82,9 @@ public class ReservationRepository : IReservationRepository
             .Where(r =>
                 r.SeatingAreaId == seatingAreaId &&
                 r.ReservationDate == date &&
-                (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Seated) &&
+                (r.Status == ReservationStatus.Confirmed ||
+                 r.Status == ReservationStatus.CheckedIn ||
+                 r.Status == ReservationStatus.Reserved) &&
                 start < r.EndTime &&
                 end > r.StartTime);
 
@@ -104,7 +106,9 @@ public class ReservationRepository : IReservationRepository
             .Where(r =>
                 r.TableName == tableName &&
                 r.ReservationDate == date &&
-                (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Seated) &&
+                (r.Status == ReservationStatus.Confirmed ||
+                 r.Status == ReservationStatus.CheckedIn ||
+                 r.Status == ReservationStatus.Reserved) &&
                 start < r.EndTime &&
                 end > r.StartTime);
 
@@ -123,7 +127,9 @@ public class ReservationRepository : IReservationRepository
         return await _db.Reservations
             .Where(r =>
                 r.ReservationDate == date &&
-                (r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Seated) &&
+                (r.Status == ReservationStatus.Confirmed ||
+                 r.Status == ReservationStatus.CheckedIn ||
+                 r.Status == ReservationStatus.Reserved) &&
                 start < r.EndTime &&
                 end > r.StartTime)
             .ToListAsync(ct);

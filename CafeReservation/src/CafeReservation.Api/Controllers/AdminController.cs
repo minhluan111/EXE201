@@ -82,6 +82,50 @@ public class AdminController : ControllerBase
         return Ok(result);
     }
 
+    // Confirm a Reserved booking → Confirmed (Staff only)
+    [HttpPut("reservations/{id:guid}/confirm")]
+    [Authorize(Roles = "Staff")]
+    [ProducesResponseType(typeof(ReservationResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> ConfirmReservation(Guid id, CancellationToken ct)
+    {
+        var staffEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                      ?? User.FindFirst("email")?.Value
+                      ?? "staff";
+        var result = await _reservationService.ConfirmAsync(id, staffEmail, ct);
+        return Ok(result);
+    }
+
+    // Reject a Reserved booking → Cancelled (Staff only)
+    [HttpPut("reservations/{id:guid}/reject")]
+    [Authorize(Roles = "Staff")]
+    [ProducesResponseType(typeof(ReservationResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RejectReservation(Guid id, CancellationToken ct)
+    {
+        var staffEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                      ?? User.FindFirst("email")?.Value
+                      ?? "staff";
+        var result = await _reservationService.RejectAsync(id, staffEmail, ct);
+        return Ok(result);
+    }
+
+    // Check-in a Confirmed booking → CheckedIn (Staff only)
+    [HttpPut("reservations/{id:guid}/checkin")]
+    [Authorize(Roles = "Staff")]
+    [ProducesResponseType(typeof(ReservationResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> CheckIn(Guid id, [FromBody] CheckInRequest request, CancellationToken ct)
+    {
+        var staffEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                      ?? User.FindFirst("email")?.Value
+                      ?? "staff";
+        var result = await _reservationService.CheckInAsync(id, request, staffEmail, ct);
+        return Ok(result);
+    }
+
     // Seating Areas
 
     // Get all seating areas including inactive ones (Manager only)

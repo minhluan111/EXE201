@@ -30,6 +30,7 @@ public static class DependencyInjection
         // Infrastructure services
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+        services.AddSingleton<IAppSettings, AppSettings>();
         services.AddHttpClient<IEmailService, EmailService>();
 
         // Application services

@@ -3,6 +3,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/homePage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
 import MenuPage from "../pages/menuPage.jsx";
 import MenuDetailPage from "../pages/MenuDetailPage.jsx";
 import BookingPage from "../pages/BookingPage.jsx";
@@ -26,6 +28,8 @@ export default function AppRoutes() {
       <Route path="/" element={<PublicRoute><HomePage /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+      <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+      <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
       <Route path="/menu" element={<PublicRoute><MenuPage /></PublicRoute>} />
       <Route path="/menu/:id" element={<PublicRoute><MenuDetailPage /></PublicRoute>} />
       

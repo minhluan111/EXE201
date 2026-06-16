@@ -12,4 +12,7 @@ public class User
     public UserRole Role { get; set; } = UserRole.User;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Forgot password
+    public string? PasswordResetToken { get; set; }
+    public DateTime? PasswordResetTokenExpiry { get; set; }
 }

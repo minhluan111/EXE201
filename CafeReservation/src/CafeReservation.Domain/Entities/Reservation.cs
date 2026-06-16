@@ -19,8 +19,17 @@ public class Reservation
     public TimeOnly EndTime { get; set; }
 
     public int GuestCount { get; set; }
-    public ReservationStatus Status { get; set; } = ReservationStatus.Confirmed;
+    public ReservationStatus Status { get; set; } = ReservationStatus.Reserved;
     public string? TableName { get; set; }
     public string? SpecialNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Staff confirmation audit
+    public DateTime? ConfirmedAt { get; set; }
+    public string? ConfirmedBy { get; set; }   // Staff email who confirmed
+
+    // Check-in audit
+    public DateTime? CheckedInAt { get; set; }
+    public string? CheckedInBy { get; set; }   // Staff email who checked in
+    public string? CheckInImageUrl { get; set; }
 }

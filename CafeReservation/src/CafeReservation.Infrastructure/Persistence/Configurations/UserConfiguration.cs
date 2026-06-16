@@ -46,5 +46,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();
+
+        builder.Property(u => u.PasswordResetToken)
+            .HasColumnName("password_reset_token")
+            .HasMaxLength(512);
+
+        builder.Property(u => u.PasswordResetTokenExpiry)
+            .HasColumnName("password_reset_token_expiry");
     }
 }

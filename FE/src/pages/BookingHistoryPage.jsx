@@ -16,7 +16,7 @@ import {
   Trash2,
   Coffee,
 } from "lucide-react";
-import { bookingCancel, bookingMe } from "../services/mockApi.js";
+import { bookingCancel, bookingMe } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 
 export default function BookingHistoryPage() {
@@ -50,9 +50,9 @@ export default function BookingHistoryPage() {
   }, [token]);
 
   const view = list.filter((b) => {
-    if (tab === "cancelled") return b.status === "cancelled";
+    if (tab === "cancelled") return b.status === "cancelled" || b.status === "noshow";
     if (tab === "complete") return b.status === "completed";
-    return b.status === "pending" || b.status === "confirmed";
+    return b.status === "reserved" || b.status === "confirmed" || b.status === "checkedin";
   });
 
   const cancel = (id) => {
@@ -79,7 +79,7 @@ export default function BookingHistoryPage() {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case "pending":
+      case "reserved":
         return (
           <span className="status-badge status-pending">
             <span className="pulse-dot"></span>
@@ -91,6 +91,13 @@ export default function BookingHistoryPage() {
           <span className="status-badge status-confirmed">
             <CheckCircle size={12} style={{ marginRight: 4 }} />
             Đã xác nhận
+          </span>
+        );
+      case "checkedin":
+        return (
+          <span className="status-badge status-checkedin">
+            <CheckCircle size={12} style={{ marginRight: 4 }} />
+            Đã check-in
           </span>
         );
       case "completed":
@@ -107,6 +114,13 @@ export default function BookingHistoryPage() {
             Đã hủy
           </span>
         );
+      case "noshow":
+        return (
+          <span className="status-badge status-noshow">
+            <AlertCircle size={12} style={{ marginRight: 4 }} />
+            Vắng mặt
+          </span>
+        );
       default:
         return <span className="status-badge status-default">{status}</span>;
     }
@@ -117,7 +131,7 @@ export default function BookingHistoryPage() {
       key: "upcoming",
       label: "Sắp Diễn Ra",
       count: list.filter(
-        (b) => b.status === "pending" || b.status === "confirmed",
+        (b) => b.status === "reserved" || b.status === "confirmed" || b.status === "checkedin",
       ).length,
     },
     {
@@ -127,8 +141,8 @@ export default function BookingHistoryPage() {
     },
     {
       key: "cancelled",
-      label: "Đã Hủy Lịch",
-      count: list.filter((b) => b.status === "cancelled").length,
+      label: "Đã Hủy / Vắng Mặt",
+      count: list.filter((b) => b.status === "cancelled" || b.status === "noshow").length,
     },
   ];
 
@@ -652,6 +666,16 @@ export default function BookingHistoryPage() {
           background: rgba(239, 68, 68, 0.08);
           border: 1px solid rgba(239, 68, 68, 0.18);
           color: #DC2626;
+        }
+        .status-noshow {
+          background: rgba(245, 158, 11, 0.08);
+          border: 1px solid rgba(245, 158, 11, 0.18);
+          color: #D97706;
+        }
+        .status-checkedin {
+          background: rgba(139, 92, 246, 0.08);
+          border: 1px solid rgba(139, 92, 246, 0.18);
+          color: #7C3AED;
         }
         .pulse-dot {
           width: 6px;
