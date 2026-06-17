@@ -82,9 +82,9 @@ public class AdminController : ControllerBase
         return Ok(result);
     }
 
-    // Confirm a Reserved booking → Confirmed (Staff only)
+    // Confirm a Reserved booking → Confirmed (Staff & Manager only)
     [HttpPut("reservations/{id:guid}/confirm")]
-    [Authorize(Roles = "Staff")]
+    [Authorize(Roles = "Staff,Manager")]
     [ProducesResponseType(typeof(ReservationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -97,9 +97,9 @@ public class AdminController : ControllerBase
         return Ok(result);
     }
 
-    // Reject a Reserved booking → Cancelled (Staff only)
+    // Reject a Reserved booking → Cancelled (Staff & Manager only)
     [HttpPut("reservations/{id:guid}/reject")]
-    [Authorize(Roles = "Staff")]
+    [Authorize(Roles = "Staff,Manager")]
     [ProducesResponseType(typeof(ReservationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RejectReservation(Guid id, CancellationToken ct)
@@ -111,9 +111,9 @@ public class AdminController : ControllerBase
         return Ok(result);
     }
 
-    // Check-in a Confirmed booking → CheckedIn (Staff only)
+    // Check-in a Confirmed booking → CheckedIn (Staff & Manager only)
     [HttpPut("reservations/{id:guid}/checkin")]
-    [Authorize(Roles = "Staff")]
+    [Authorize(Roles = "Staff,Manager")]
     [ProducesResponseType(typeof(ReservationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
