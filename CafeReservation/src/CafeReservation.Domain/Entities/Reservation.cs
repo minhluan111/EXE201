@@ -7,6 +7,10 @@ public class Reservation
     public Guid Id { get; set; } = Guid.NewGuid();
     public string ReservationCode { get; set; } = string.Empty;
 
+    // Multi-tenant
+    public Guid TenantId { get; set; }
+    public Tenant Tenant { get; set; } = null!;
+
     public string GuestName { get; set; } = string.Empty;
     public string GuestEmail { get; set; } = string.Empty;
     public string GuestPhone { get; set; } = string.Empty;

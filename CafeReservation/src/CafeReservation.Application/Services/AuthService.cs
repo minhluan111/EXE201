@@ -1,5 +1,6 @@
 using CafeReservation.Application.DTOs;
 using CafeReservation.Application.Interfaces;
+using Microsoft.Extensions.Logging;
 using CafeReservation.Domain.Entities;
 using CafeReservation.Domain.Enums;
 using CafeReservation.Domain.Exceptions;
@@ -15,6 +16,8 @@ public class AuthService : IAuthService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailService _emailService;
     private readonly IAppSettings _appSettings;
+    private readonly ICurrentTenantService _tenantService;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(
         IUserRepository userRepository,
@@ -22,7 +25,9 @@ public class AuthService : IAuthService
         IPasswordHasher passwordHasher,
         IUnitOfWork unitOfWork,
         IEmailService emailService,
-        IAppSettings appSettings)
+        IAppSettings appSettings,
+        ICurrentTenantService tenantService,
+        ILogger<AuthService> logger)
     {
         _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
@@ -30,6 +35,8 @@ public class AuthService : IAuthService
         _unitOfWork = unitOfWork;
         _emailService = emailService;
         _appSettings = appSettings;
+        _tenantService = tenantService;
+        _logger = logger;
     }
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
@@ -45,7 +52,8 @@ public class AuthService : IAuthService
             Phone = request.Phone.Trim(),
             PasswordHash = _passwordHasher.Hash(request.Password),
             Role = UserRole.User,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            TenantId = _tenantService.TenantId
         };
 
         await _userRepository.AddAsync(user, ct);
@@ -58,6 +66,17 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.GetByEmailAsync(request.Email.Trim().ToLowerInvariant(), ct)
             ?? throw new UnauthorizedException("Invalid email or password.");
+
+        // Kiểm tra xem User này có thuộc về Tenant đang login hay không
+        // Ngoại lệ: SuperAdmin (Role = 4) có TenantId = null thì được quyền login mọi nơi
+        if (user.Role != UserRole.SuperAdmin && user.TenantId != _tenantService.TenantId)
+        {
+            _logger.LogWarning("Cross-tenant login attempt detected. Email: {Email}, Expected Tenant: {Expected}, Actual Tenant: {Actual}", 
+                request.Email, _tenantService.TenantId, user.TenantId);
+            
+            // Trả về lỗi chung chung để chống enumeration (không lộ việc email có tồn tại ở nhà hàng khác)
+            throw new UnauthorizedException("Invalid email or password.");
+        }
 
         if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedException("Invalid email or password.");

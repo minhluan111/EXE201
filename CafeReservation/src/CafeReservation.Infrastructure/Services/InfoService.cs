@@ -17,12 +17,14 @@ public class InfoService : IInfoService
     public async Task<RestaurantInfoDto?> GetRestaurantInfoAsync(CancellationToken ct = default)
     {
         var info = await _db.RestaurantInfo.AsNoTracking().FirstOrDefaultAsync(ct);
+        var tenant = await _db.Tenants.AsNoTracking().FirstOrDefaultAsync(ct);
         
         if (info == null) return null;
 
         return new RestaurantInfoDto
         {
             Id = info.Id,
+            TenantName = tenant?.Name ?? string.Empty,
             Address = info.Address,
             Phone = info.Phone,
             OpeningHours = info.OpeningHours,

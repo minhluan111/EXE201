@@ -4,7 +4,6 @@ public static class AppConstants
 {
     public const int ReservationDurationMinutes = 60;
     public const int HoldingTimeMinutes = 45;
-    public const string ReservationCodePrefix = "YAKI";
 
     public static readonly TimeOnly OpeningHour = new(8, 0);
     public static readonly TimeOnly ClosingHour = new(20, 0);

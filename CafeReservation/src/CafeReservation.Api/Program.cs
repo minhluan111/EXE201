@@ -109,6 +109,25 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    // Thêm X-Tenant header vào tất cả endpoints trong Swagger UI
+    c.AddSecurityDefinition("X-Tenant", new OpenApiSecurityScheme
+    {
+        Name        = "X-Tenant",
+        Type        = SecuritySchemeType.ApiKey,
+        In          = ParameterLocation.Header,
+        Description = "Domain của nhà hàng. VD: yakicafe.localhost | comtamno.localhost | monquanchat.localhost"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "X-Tenant" }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 
 // CORS 
@@ -122,19 +141,17 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Auto-migrate + seed on startup
+// Auto-migrate on startup (chạy ở mọi môi trường)
 using (var scope = app.Services.CreateScope())
 {
     var db  = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var log = scope.ServiceProvider.GetRequiredService<ILogger<AppDbContext>>();
     try
     {
+        await db.Database.ExecuteSqlRawAsync("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS logo character varying(500) NULL;");
+        await db.Database.ExecuteSqlRawAsync("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS theme_color character varying(20) NULL;");
         await db.Database.MigrateAsync();
         log.LogInformation("Database migration completed successfully.");
-
-        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-        await seeder.SeedAsync();
-        log.LogInformation("Data seeding completed.");
     }
     catch (Exception ex)
     {
@@ -142,9 +159,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
 // Middleware pipeline
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<CafeReservation.Api.Middleware.TenantResolverMiddleware>();   // ← Multi-tenant: phải trước Auth
 
 app.UseSwagger();
 app.UseSwaggerUI();
