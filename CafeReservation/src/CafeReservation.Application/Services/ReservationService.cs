@@ -17,6 +17,7 @@ public class ReservationService : IReservationService
     private readonly IAvailabilityNotifier _availabilityNotifier;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ReservationService> _logger;
+    private readonly IInfoService _infoService;
 
     public ReservationService(
         IReservationRepository reservationRepository,
@@ -24,7 +25,8 @@ public class ReservationService : IReservationService
         IEmailService emailService,
         IAvailabilityNotifier availabilityNotifier,
         IUnitOfWork unitOfWork,
-        ILogger<ReservationService> logger)
+        ILogger<ReservationService> logger,
+        IInfoService infoService)
     {
         _reservationRepository = reservationRepository;
         _seatingAreaRepository = seatingAreaRepository;
@@ -32,6 +34,7 @@ public class ReservationService : IReservationService
         _availabilityNotifier = availabilityNotifier;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _infoService = infoService;
     }
 
     public async Task<ReservationResponse> CreateAsync(CreateReservationRequest request, CancellationToken ct = default)
@@ -43,16 +46,21 @@ public class ReservationService : IReservationService
             throw new DomainException("Guest name, email, and phone are required.");
         }
 
-        if (request.StartTime < AppConstants.OpeningHour || request.StartTime > AppConstants.ClosingHour)
+        var endTime = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
+        var info = await _infoService.GetRestaurantInfoAsync(ct);
+        var openingHours = info?.OpeningHours ?? string.Empty;
+        var intervals = CafeReservation.Application.Helpers.OpeningHoursParser.Parse(openingHours);
+
+        if (!CafeReservation.Application.Helpers.OpeningHoursParser.IsWithinOpeningHours(request.StartTime, endTime, intervals))
         {
-            throw new DomainException($"Reservations are only available between {AppConstants.OpeningHour:HH:mm} and {AppConstants.ClosingHour:HH:mm}.");
+            throw new DomainException($"Reservations are only available between: {openingHours}");
         }
 
         var nowVietnam = DateTime.UtcNow.AddHours(7);
         var reservationDateTime = request.ReservationDate.ToDateTime(request.StartTime);
         if (reservationDateTime < nowVietnam.AddMinutes(30))
         {
-            throw new DomainException("Thời gian đặt bàn phải trước khi đến quán ít nhất 30 phút.");
+            throw new DomainException("Reservations must be made at least 30 minutes before arrival at the restaurant.");
         }
 
         await _unitOfWork.BeginTransactionAsync(ct);
@@ -69,7 +77,6 @@ public class ReservationService : IReservationService
                 throw new DomainException($"This seating area does not support {request.GuestCount} guest(s). Please select an appropriate area.");
 
             var startTime = request.StartTime;
-            var endTime = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
 
             var overlapping = await _reservationRepository.CountOverlappingAsync(
                 area.Id, request.ReservationDate, startTime, endTime, null, ct);
@@ -88,7 +95,7 @@ public class ReservationService : IReservationService
             var reservation = new Reservation
             {
                 Id = Guid.NewGuid(),
-                ReservationCode = GenerateCode(),
+                ReservationCode = GenerateCode(info?.TenantName),
                 GuestName = request.GuestName,
                 GuestEmail = request.GuestEmail,
                 GuestPhone = request.GuestPhone,
@@ -174,19 +181,24 @@ public class ReservationService : IReservationService
         if (reservation.Status != ReservationStatus.Reserved && reservation.Status != ReservationStatus.Confirmed)
             throw new DomainException("Only Reserved or Confirmed reservations can be rescheduled.");
 
-        if (request.StartTime < AppConstants.OpeningHour || request.StartTime > AppConstants.ClosingHour)
+        var newEnd = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
+        var info = await _infoService.GetRestaurantInfoAsync(ct);
+        var openingHours = info?.OpeningHours ?? string.Empty;
+        var intervals = CafeReservation.Application.Helpers.OpeningHoursParser.Parse(openingHours);
+
+        if (!CafeReservation.Application.Helpers.OpeningHoursParser.IsWithinOpeningHours(request.StartTime, newEnd, intervals))
         {
-            throw new DomainException($"Reservations are only available between {AppConstants.OpeningHour:HH:mm} and {AppConstants.ClosingHour:HH:mm}.");
+            throw new DomainException($"Reservations are only available between: {openingHours}");
         }
 
         var nowVietnam = DateTime.UtcNow.AddHours(7);
         var reservationDateTime = request.ReservationDate.ToDateTime(request.StartTime);
         if (reservationDateTime < nowVietnam.AddMinutes(30))
         {
-            throw new DomainException("Thời gian đặt bàn phải trước khi đến quán ít nhất 30 phút.");
+            throw new DomainException("Reservations must be made at least 30 minutes before arrival at the restaurant.");
         }
 
-        var newEnd = request.StartTime.AddMinutes(AppConstants.ReservationDurationMinutes);
+
 
         await _unitOfWork.BeginTransactionAsync(ct);
         try
@@ -298,7 +310,11 @@ public class ReservationService : IReservationService
         var areas = await _seatingAreaRepository.GetByTableCapacityAsync(requiredCapacity, ct);
 
         var result = new List<AvailabilityResponse>();
-        var slots = GenerateTimeSlots();
+        var info = await _infoService.GetRestaurantInfoAsync(ct);
+        var openingHours = info?.OpeningHours ?? string.Empty;
+        var intervals = CafeReservation.Application.Helpers.OpeningHoursParser.Parse(openingHours);
+        
+        var slots = GenerateTimeSlots(intervals);
 
         foreach (var area in areas)
         {
@@ -407,22 +423,53 @@ public class ReservationService : IReservationService
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
-    private static string GenerateCode()
+    private static string GenerateCode(string? tenantName)
     {
-        var number = Random.Shared.Next(1000, 9999);
-        return $"{AppConstants.ReservationCodePrefix}-{number}";
+        var prefix = "RES"; // Mặc định nếu không có tên
+        if (!string.IsNullOrWhiteSpace(tenantName))
+        {
+            // Cố gắng tách theo từ
+            var words = tenantName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length >= 3)
+            {
+                // Lấy 3 chữ cái đầu của 3 từ đầu tiên (VD: Cafe Sam House -> CSH)
+                prefix = $"{words[0][0]}{words[1][0]}{words[2][0]}".ToUpper();
+            }
+            else
+            {
+                // Lấy 3 chữ cái/số đầu tiên của tên quán (VD: Yaki Cafe -> YAK)
+                var clean = new string(tenantName.Where(char.IsLetterOrDigit).ToArray()).ToUpper();
+                prefix = clean.Length >= 3 ? clean.Substring(0, 3) : clean.PadRight(3, 'X');
+            }
+        }
+
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var randomSuffix = new string(Enumerable.Repeat(chars, 4)
+            .Select(s => s[Random.Shared.Next(s.Length)]).ToArray());
+
+        return $"{prefix}-{randomSuffix}";
     }
 
-    private static IEnumerable<(TimeOnly Start, TimeOnly End)> GenerateTimeSlots()
+    private static IEnumerable<(TimeOnly Start, TimeOnly End)> GenerateTimeSlots(IReadOnlyList<(TimeOnly Start, TimeOnly End)> intervals)
     {
-        var current = new TimeOnly(8, 0);
-        var limit   = new TimeOnly(20, 0);
-
-        while (current <= limit)
+        if (intervals == null || intervals.Count == 0)
         {
-            var end = current.AddMinutes(AppConstants.ReservationDurationMinutes);
-            yield return (current, end);
-            current = current.AddMinutes(60);
+            // Default fallback if no hours configured
+            intervals = new List<(TimeOnly, TimeOnly)> { (AppConstants.OpeningHour, AppConstants.ClosingHour) };
+        }
+
+        foreach (var interval in intervals)
+        {
+            var current = interval.Start;
+            // Generate slots as long as the entire duration fits within the closing time
+            while (current.AddMinutes(AppConstants.ReservationDurationMinutes) <= interval.End)
+            {
+                var end = current.AddMinutes(AppConstants.ReservationDurationMinutes);
+                yield return (current, end);
+                
+                // Step every 30 minutes for more flexible booking options
+                current = current.AddMinutes(30);
+            }
         }
     }
 

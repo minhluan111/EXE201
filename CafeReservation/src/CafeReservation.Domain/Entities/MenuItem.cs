@@ -5,6 +5,11 @@ namespace CafeReservation.Domain.Entities;
 public class MenuItem
 {
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    // Multi-tenant
+    public Guid TenantId { get; set; }
+    public Tenant Tenant { get; set; } = null!;
+
     public string Name { get; set; } = string.Empty;
     public MenuCategory Category { get; set; }
     public string? ImageUrl { get; set; }
