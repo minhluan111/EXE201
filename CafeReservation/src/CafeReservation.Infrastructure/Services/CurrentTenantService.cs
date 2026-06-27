@@ -40,4 +40,19 @@ public class CurrentTenantService : ICurrentTenantService
             return context?.Items.ContainsKey("TenantId") == true;
         }
     }
+
+    public string TenantDomain
+    {
+        get
+        {
+            var context = _httpContextAccessor.HttpContext;
+            if (context?.Items.TryGetValue("TenantDomain", out var value) == true
+                && value is string domain)
+            {
+                return domain;
+            }
+
+            return string.Empty;
+        }
+    }
 }

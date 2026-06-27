@@ -1,6 +1,7 @@
 const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "http://localhost:52818"
 ).replace(/\/$/, "");
+const TENANT_DOMAIN = import.meta.env.VITE_TENANT_DOMAIN || window.location.hostname;
 const SESSION_KEY = "vizza.session";
 
 const TABLE_LAYOUT = [
@@ -367,6 +368,7 @@ async function requestJson(path, options = {}) {
 
   const headers = {
     Accept: "application/json",
+    "X-Tenant": TENANT_DOMAIN,
     ...(options.body ? { "Content-Type": "application/json" } : {}),
     ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
     ...(options.headers || {}),

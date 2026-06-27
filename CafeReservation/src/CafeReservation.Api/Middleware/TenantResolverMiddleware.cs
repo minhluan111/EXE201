@@ -72,8 +72,9 @@ public class TenantResolverMiddleware
             return;
         }
 
-        // Lưu TenantId vào HttpContext để ICurrentTenantService đọc
+        // Lưu TenantId và TenantDomain vào HttpContext để ICurrentTenantService đọc
         context.Items["TenantId"] = tenant.Id;
+        context.Items["TenantDomain"] = tenant.Domain;
         _logger.LogDebug("Tenant resolved: {Name} ({Id}) cho request {Path}", tenant.Name, tenant.Id, path);
 
         await _next(context);

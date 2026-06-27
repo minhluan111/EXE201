@@ -11,4 +11,7 @@ public interface ICurrentTenantService
 
     /// <summary>true nếu middleware đã tìm thấy và set TenantId thành công.</summary>
     bool IsResolved { get; }
+
+    /// <summary>Domain của tenant hiện tại (dùng để tạo link URL động).</summary>
+    string TenantDomain { get; }
 }
