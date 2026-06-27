@@ -309,21 +309,32 @@ public class ReservationService : IReservationService
         var requiredCapacity = request.GuestCount <= AppConstants.GuestCountRules.SmallGroupMax ? 2 : 4;
         var areas = await _seatingAreaRepository.GetByTableCapacityAsync(requiredCapacity, ct);
 
-        var result = new List<AvailabilityResponse>();
         var info = await _infoService.GetRestaurantInfoAsync(ct);
         var openingHours = info?.OpeningHours ?? string.Empty;
         var intervals = CafeReservation.Application.Helpers.OpeningHoursParser.Parse(openingHours);
-        
-        var slots = GenerateTimeSlots(intervals);
+        var slots = GenerateTimeSlots(intervals).ToList();
+
+        // ── Load TẤT CẢ reservations active của ngày này bằng 1 DB query ─────────
+        // Trước đây: N areas × M timeslots = N×M DB queries riêng lẻ (có thể lên đến 56 queries).
+        // Bây giờ: 1 query duy nhất, tính overlap trong bộ nhớ.
+        var activeReservations = await _reservationRepository.GetActiveReservationsForDateAsync(request.Date, ct);
+
+        // Group theo seating area để tra cứu nhanh
+        var reservationsByArea = activeReservations
+            .GroupBy(r => r.SeatingAreaId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var result = new List<AvailabilityResponse>();
 
         foreach (var area in areas)
         {
+            var areaReservations = reservationsByArea.GetValueOrDefault(area.Id) ?? [];
             var available = new List<TimeSlot>();
 
             foreach (var (start, end) in slots)
             {
-                var count = await _reservationRepository.CountOverlappingAsync(
-                    area.Id, request.Date, start, end, null, ct);
+                // Đếm overlap trong memory — không cần thêm DB query
+                var count = areaReservations.Count(r => start < r.EndTime && end > r.StartTime);
 
                 if (count < area.ReservableTables)
                     available.Add(new TimeSlot { StartTime = start, EndTime = end });
@@ -331,11 +342,11 @@ public class ReservationService : IReservationService
 
             result.Add(new AvailabilityResponse
             {
-                SeatingAreaId = area.Id,
-                TableType = area.TableType,
-                Area = area.Area,
-                PreviewImage = area.PreviewImage,
-                Description = area.Description,
+                SeatingAreaId  = area.Id,
+                TableType      = area.TableType,
+                Area           = area.Area,
+                PreviewImage   = area.PreviewImage,
+                Description    = area.Description,
                 AvailableSlots = available
             });
         }

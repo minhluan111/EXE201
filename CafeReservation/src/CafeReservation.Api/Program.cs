@@ -31,6 +31,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Application & Infrastructure layers  
+builder.Services.AddMemoryCache();         // ← dùng bởi TenantResolverMiddleware (cache tenant lookup)
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 

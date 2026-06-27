@@ -367,20 +367,29 @@ public class AdminController : ControllerBase
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult> GetAdminReviews(CancellationToken ct)
     {
+        // Dùng LEFT JOIN thay vì subquery lồng nhau trong projection — tránh N+1 query
         var reviews = await _db.Reviews
             .AsNoTracking()
             .OrderByDescending(r => r.CreatedAt)
-            .Select(r => new {
-                r.Id,
-                r.GuestName,
-                r.Rating,
-                r.Comment,
-                r.Reply,
-                r.ReplyAt,
-                r.CreatedAt,
-                MenuItemId = r.MenuItemId,
-                MenuItemName = r.MenuItemId != null ? _db.MenuItems.Where(m => m.Id == r.MenuItemId).Select(m => m.Name).FirstOrDefault() : null
-            })
+            .GroupJoin(
+                _db.MenuItems,
+                r => r.MenuItemId,
+                m => (Guid?)m.Id,
+                (r, items) => new { Review = r, Items = items })
+            .SelectMany(
+                x => x.Items.DefaultIfEmpty(),
+                (x, m) => new
+                {
+                    x.Review.Id,
+                    x.Review.GuestName,
+                    x.Review.Rating,
+                    x.Review.Comment,
+                    x.Review.Reply,
+                    x.Review.ReplyAt,
+                    x.Review.CreatedAt,
+                    MenuItemId   = x.Review.MenuItemId,
+                    MenuItemName = m != null ? m.Name : null
+                })
             .ToListAsync(ct);
         return Ok(reviews);
     }

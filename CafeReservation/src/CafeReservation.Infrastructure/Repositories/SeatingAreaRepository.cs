@@ -12,7 +12,9 @@ public class SeatingAreaRepository : ISeatingAreaRepository
     public SeatingAreaRepository(AppDbContext db) => _db = db;
 
     public async Task<SeatingArea?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
-        await _db.SeatingAreas.FirstOrDefaultAsync(s => s.Id == id, ct);
+        await _db.SeatingAreas
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id, ct);
 
     public async Task<SeatingArea?> GetByIdForUpdateAsync(Guid id, CancellationToken ct = default) =>
         await _db.SeatingAreas
@@ -21,12 +23,14 @@ public class SeatingAreaRepository : ISeatingAreaRepository
 
     public async Task<IReadOnlyList<SeatingArea>> GetAllAsync(CancellationToken ct = default) =>
         await _db.SeatingAreas
+            .AsNoTracking()
             .OrderBy(s => s.Area)
             .ThenBy(s => s.TableType)
             .ToListAsync(ct);
 
     public async Task<IReadOnlyList<SeatingArea>> GetActiveAsync(CancellationToken ct = default) =>
         await _db.SeatingAreas
+            .AsNoTracking()
             .Where(s => s.IsActive)
             .OrderBy(s => s.Area)
             .ThenBy(s => s.TableType)
@@ -34,6 +38,7 @@ public class SeatingAreaRepository : ISeatingAreaRepository
 
     public async Task<IReadOnlyList<SeatingArea>> GetByTableCapacityAsync(int requiredCapacity, CancellationToken ct = default) =>
         await _db.SeatingAreas
+            .AsNoTracking()
             .Where(s => s.IsActive && s.TableType.StartsWith(requiredCapacity.ToString()))
             .ToListAsync(ct);
 
