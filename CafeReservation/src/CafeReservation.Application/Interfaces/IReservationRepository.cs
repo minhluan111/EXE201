@@ -13,6 +13,11 @@ public interface IReservationRepository
     Task<int> CountOverlappingAsync(Guid seatingAreaId, DateOnly date, TimeOnly start, TimeOnly end, Guid? excludeId = null, CancellationToken ct = default);
     Task<bool> AnyOverlappingTableAsync(string tableName, DateOnly date, TimeOnly start, TimeOnly end, Guid? excludeId = null, CancellationToken ct = default);
     Task<IReadOnlyList<Reservation>> GetOverlappingReservationsAsync(DateOnly date, TimeOnly start, TimeOnly end, CancellationToken ct = default);
+    /// <summary>
+    /// Load tất cả reservations đang active (Reserved/Confirmed/CheckedIn) cho một ngày,
+    /// để service layer tự tính overlap trong memory — tránh N×M DB queries.
+    /// </summary>
+    Task<IReadOnlyList<Reservation>> GetActiveReservationsForDateAsync(DateOnly date, CancellationToken ct = default);
     Task<int> CountByStatusAsync(ReservationStatus status, CancellationToken ct = default);
     Task<int> CountTodayAsync(CancellationToken ct = default);
     Task<int> CountTotalAsync(CancellationToken ct = default);

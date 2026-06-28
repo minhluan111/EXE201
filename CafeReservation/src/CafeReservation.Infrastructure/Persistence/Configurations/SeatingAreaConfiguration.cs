@@ -44,5 +44,20 @@ public class SeatingAreaConfiguration : IEntityTypeConfiguration<SeatingArea>
             .HasColumnName("is_active")
             .IsRequired()
             .HasDefaultValue(true);
+
+        // ── Indexes ──────────────────────────────────────────────────────────
+        // Tất cả query đều filter theo tenant_id (global query filter).
+        // Index đơn trên tenant_id phục vụ GetAllAsync.
+        builder.HasIndex(s => s.TenantId)
+            .HasDatabaseName("ix_seating_areas_tenant_id");
+
+        // Index tổng hợp (tenant_id, is_active) phục vụ GetActiveAsync —
+        // query phổ biến nhất từ public endpoint /api/public/seating-areas.
+        builder.HasIndex(s => new { s.TenantId, s.IsActive })
+            .HasDatabaseName("ix_seating_areas_tenant_active");
+
+        // Index tổng hợp cho trường hợp tìm kiếm chi tiết theo (tenant_id, area, table_type)
+        builder.HasIndex(s => new { s.TenantId, s.Area, s.TableType })
+            .HasDatabaseName("ix_seating_areas_tenant_area_type");
     }
 }

@@ -1,10 +1,11 @@
 using CafeReservation.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CafeReservation.Api.Middleware;
 
 /// <summary>
-/// Middleware đọc header X-Tenant, tra cứu tenant trong DB,
+/// Middleware đọc header X-Tenant, tra cứu tenant trong DB (có cache),
 /// rồi lưu TenantId vào HttpContext.Items["TenantId"].
 ///
 /// Pipeline order: TenantResolver → Auth → Controller
@@ -13,6 +14,10 @@ public class TenantResolverMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<TenantResolverMiddleware> _logger;
+    private readonly IMemoryCache _cache;
+
+    // Thời gian cache tenant lookup — giảm DB hit cho mỗi request
+    private static readonly TimeSpan TenantCacheDuration = TimeSpan.FromMinutes(5);
 
     // Các path không yêu cầu X-Tenant header (health check, swagger, debug)
     private static readonly HashSet<string> _excludedPrefixes = new(StringComparer.OrdinalIgnoreCase)
@@ -25,10 +30,12 @@ public class TenantResolverMiddleware
 
     public TenantResolverMiddleware(
         RequestDelegate next,
-        ILogger<TenantResolverMiddleware> logger)
+        ILogger<TenantResolverMiddleware> logger,
+        IMemoryCache cache)
     {
         _next = next;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task InvokeAsync(HttpContext context, AppDbContext db)
@@ -56,25 +63,41 @@ public class TenantResolverMiddleware
 
         var domain = domainValues.First()!.Trim().ToLowerInvariant();
 
-        // Tra cứu tenant — bypass query filter vì chưa có TenantId context
-        var tenant = await db.Tenants
-            .IgnoreQueryFilters()
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Domain == domain && t.Active);
-
-        if (tenant is null)
+        // Thử lấy từ cache trước — tránh DB round-trip cho mỗi request
+        var cacheKey = $"tenant:{domain}";
+        if (!_cache.TryGetValue(cacheKey, out (Guid Id, string Domain) cached))
         {
-            _logger.LogWarning("Tenant không tồn tại hoặc đã bị vô hiệu hóa: {Domain}", domain);
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(
-                $$$"""{"error":"Tenant '{{{domain}}}' không tồn tại hoặc đã bị vô hiệu hóa."}""");
-            return;
+            // Tra cứu tenant — bypass query filter vì chưa có TenantId context
+            // Dùng projection (.Select) để chỉ lấy các field cần thiết thay vì toàn bộ Tenant entity
+            var tenant = await db.Tenants
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Where(t => t.Domain == domain && t.Active)
+                .Select(t => new { t.Id, t.Domain, t.Name })
+                .FirstOrDefaultAsync();
+
+            if (tenant is null)
+            {
+                _logger.LogWarning("Tenant không tồn tại hoặc đã bị vô hiệu hóa: {Domain}", domain);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(
+                    $"{{\"error\":\"Tenant '{domain}' không tồn tại hoặc đã bị vô hiệu hóa.\"}}");
+                return;
+            }
+
+            cached = (tenant.Id, tenant.Domain);
+            _cache.Set(cacheKey, cached, TenantCacheDuration);
+            _logger.LogDebug("Tenant resolved from DB: {Name} ({Id}) cho request {Path}", tenant.Name, cached.Id, path);
+        }
+        else
+        {
+            _logger.LogDebug("Tenant resolved from cache: {Domain} ({Id}) cho request {Path}", cached.Domain, cached.Id, path);
         }
 
-        // Lưu TenantId vào HttpContext để ICurrentTenantService đọc
-        context.Items["TenantId"] = tenant.Id;
-        _logger.LogDebug("Tenant resolved: {Name} ({Id}) cho request {Path}", tenant.Name, tenant.Id, path);
+        // Lưu TenantId và TenantDomain vào HttpContext để ICurrentTenantService đọc
+        context.Items["TenantId"] = cached.Id;
+        context.Items["TenantDomain"] = cached.Domain;
 
         await _next(context);
     }

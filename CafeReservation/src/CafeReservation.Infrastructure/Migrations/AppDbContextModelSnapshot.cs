@@ -378,7 +378,14 @@ namespace CafeReservation.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId")
+                        .HasDatabaseName("ix_seating_areas_tenant_id");
+
+                    b.HasIndex("TenantId", "IsActive")
+                        .HasDatabaseName("ix_seating_areas_tenant_active");
+
+                    b.HasIndex("TenantId", "Area", "TableType")
+                        .HasDatabaseName("ix_seating_areas_tenant_area_type");
 
                     b.ToTable("seating_areas", (string)null);
                 });

@@ -31,6 +31,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Application & Infrastructure layers  
+builder.Services.AddMemoryCache();         // ← dùng bởi TenantResolverMiddleware (cache tenant lookup)
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -163,13 +164,14 @@ using (var scope = app.Services.CreateScope())
 // Middleware pipeline
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseCors(); // <-- CHUYỂN LÊN ĐÂY ĐỂ TRÁNH LỖI PREFLIGHT OPTIONS
 app.UseMiddleware<CafeReservation.Api.Middleware.TenantResolverMiddleware>();   // ← Multi-tenant: phải trước Auth
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseSerilogRequestLogging();
-app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

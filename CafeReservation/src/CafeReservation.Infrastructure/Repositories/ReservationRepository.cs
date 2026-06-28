@@ -127,6 +127,7 @@ public class ReservationRepository : IReservationRepository
         CancellationToken ct = default)
     {
         return await _db.Reservations
+            .AsNoTracking()
             .Where(r =>
                 r.ReservationDate == date &&
                 (r.Status == ReservationStatus.Confirmed ||
@@ -134,6 +135,30 @@ public class ReservationRepository : IReservationRepository
                  r.Status == ReservationStatus.Reserved) &&
                 start < r.EndTime &&
                 end > r.StartTime)
+            .ToListAsync(ct);
+    }
+
+    /// <summary>
+    /// Load tất cả reservations active trong ngày chỉ bằng 1 DB query.
+    /// Giúp GetAvailabilityAsync tránh N×M CountOverlapping queries riêng lế.
+    /// </summary>
+    public async Task<IReadOnlyList<Reservation>> GetActiveReservationsForDateAsync(
+        DateOnly date, CancellationToken ct = default)
+    {
+        return await _db.Reservations
+            .AsNoTracking()
+            .Where(r =>
+                r.ReservationDate == date &&
+                (r.Status == ReservationStatus.Confirmed ||
+                 r.Status == ReservationStatus.CheckedIn ||
+                 r.Status == ReservationStatus.Reserved))
+            .Select(r => new Reservation
+            {
+                Id            = r.Id,
+                SeatingAreaId = r.SeatingAreaId,
+                StartTime     = r.StartTime,
+                EndTime       = r.EndTime,
+            })
             .ToListAsync(ct);
     }
 

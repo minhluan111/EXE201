@@ -117,8 +117,10 @@ public class AuthService : IAuthService
         await _userRepository.UpdateAsync(user, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        var frontendUrl = _appSettings.FrontendUrl;
-        var resetLink = $"{frontendUrl}/reset-password?token={token}";
+        var tenantDomain = _tenantService.TenantDomain;
+        // Nếu là localhost thì dùng http, nếu là domain thật thì dùng https
+        var scheme = tenantDomain.Contains("localhost") ? "http://" : "https://";
+        var resetLink = $"{scheme}{tenantDomain}/reset-password?token={token}";
 
         _ = _emailService.SendPasswordResetAsync(user.Email, user.FullName, resetLink, ct);
     }
