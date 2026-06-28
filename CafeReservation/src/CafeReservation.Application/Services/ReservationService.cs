@@ -371,6 +371,8 @@ public class ReservationService : IReservationService
         reservation.ConfirmedAt = DateTime.UtcNow;
         reservation.ConfirmedBy = staffEmail;
 
+        // Tự động kéo dài thời gian giữ bàn lên 120 phú
+        reservation.EndTime = reservation.StartTime.AddMinutes(120);
         await _reservationRepository.UpdateAsync(reservation, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
