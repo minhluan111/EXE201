@@ -334,7 +334,10 @@ public class ReservationService : IReservationService
             foreach (var (start, end) in slots)
             {
                 // Đếm overlap trong memory — không cần thêm DB query
-                var count = areaReservations.Count(r => start < r.EndTime && end > r.StartTime);
+                var count = areaReservations.Count(r =>
+                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
+                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
+                );
 
                 if (count < area.ReservableTables)
                     available.Add(new TimeSlot { StartTime = start, EndTime = end });

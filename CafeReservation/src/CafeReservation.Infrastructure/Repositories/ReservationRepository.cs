@@ -84,11 +84,10 @@ public class ReservationRepository : IReservationRepository
             .Where(r =>
                 r.SeatingAreaId == seatingAreaId &&
                 r.ReservationDate == date &&
-                (r.Status == ReservationStatus.Confirmed ||
-                 r.Status == ReservationStatus.CheckedIn ||
-                 r.Status == ReservationStatus.Reserved) &&
-                start < r.EndTime &&
-                end > r.StartTime);
+                (
+                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
+                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
+                ));
 
         if (excludeId.HasValue)
             query = query.Where(r => r.Id != excludeId.Value);
@@ -108,11 +107,10 @@ public class ReservationRepository : IReservationRepository
             .Where(r =>
                 r.TableName == tableName &&
                 r.ReservationDate == date &&
-                (r.Status == ReservationStatus.Confirmed ||
-                 r.Status == ReservationStatus.CheckedIn ||
-                 r.Status == ReservationStatus.Reserved) &&
-                start < r.EndTime &&
-                end > r.StartTime);
+                (
+                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
+                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
+                ));
 
         if (excludeId.HasValue)
             query = query.Where(r => r.Id != excludeId.Value);
@@ -130,11 +128,11 @@ public class ReservationRepository : IReservationRepository
             .AsNoTracking()
             .Where(r =>
                 r.ReservationDate == date &&
-                (r.Status == ReservationStatus.Confirmed ||
-                 r.Status == ReservationStatus.CheckedIn ||
-                 r.Status == ReservationStatus.Reserved) &&
-                start < r.EndTime &&
-                end > r.StartTime)
+                (
+                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
+                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
+                )
+            )
             .ToListAsync(ct);
     }
 
@@ -158,6 +156,7 @@ public class ReservationRepository : IReservationRepository
                 SeatingAreaId = r.SeatingAreaId,
                 StartTime     = r.StartTime,
                 EndTime       = r.EndTime,
+                Status        = r.Status,
             })
             .ToListAsync(ct);
     }
