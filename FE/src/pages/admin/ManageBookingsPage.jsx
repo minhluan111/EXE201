@@ -602,7 +602,7 @@ export default function ManageBookingsPage() {
               {/* Header */}
               <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 700, color: COLORS.forest, mb: 0.5 }}>
-                  📷 Xác nhận Check-in
+                  Xác nhận Check-in
                 </Typography>
                 <Typography variant="body2" sx={{ color: "#666" }}>
                   Đơn <strong>{checkInModal.reservation_code}</strong> — Khách: <strong>{checkInModal.guest_name}</strong>
@@ -639,7 +639,7 @@ export default function ManageBookingsPage() {
                   />
                 ) : (
                   <>
-                    <Typography sx={{ fontSize: "32px", lineHeight: 1 }}>🖼️</Typography>
+                    
                     <Typography sx={{ fontSize: "13px", color: "#888", fontWeight: 500 }}>
                       Nhấn để tải ảnh Check-in lên
                     </Typography>
