@@ -65,17 +65,23 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetByEmailAsync(request.Email.Trim().ToLowerInvariant(), ct)
-            ?? throw new UnauthorizedException("Email hoặc mật khẩu không chính xác.");
+        var email = request.Email.Trim().ToLowerInvariant();
+        var users = await _userRepository.GetListByEmailAsync(email, ct);
+        
+        if (!users.Any())
+            throw new UnauthorizedException("Email hoặc mật khẩu không chính xác.");
 
-        // Kiểm tra xem User này có thuộc về Tenant đang login hay không
-        // Ngoại lệ: SuperAdmin (Role = 4) có TenantId = null thì được quyền login mọi nơi
-        if (user.Role != UserRole.SuperAdmin && user.TenantId != _tenantService.TenantId)
+        var currentTenantId = _tenantService.TenantId;
+
+        // Ưu tiên tìm user thuộc tenant hiện tại, nếu không có thì tìm SuperAdmin
+        var user = users.FirstOrDefault(u => u.TenantId == currentTenantId) 
+                ?? users.FirstOrDefault(u => u.Role == UserRole.SuperAdmin);
+
+        if (user == null)
         {
-            _logger.LogWarning("Cross-tenant login attempt detected. Email: {Email}, Expected Tenant: {Expected}, Actual Tenant: {Actual}", 
-                request.Email, _tenantService.TenantId, user.TenantId);
+            _logger.LogWarning("Cross-tenant login attempt detected. Email: {Email}, Expected Tenant: {Expected}", 
+                request.Email, currentTenantId);
             
-            // Trả về lỗi chung chung để chống enumeration (không lộ việc email có tồn tại ở nhà hàng khác)
             throw new UnauthorizedException("Email hoặc mật khẩu không chính xác.");
         }
 
@@ -107,7 +113,13 @@ public class AuthService : IAuthService
     public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct = default)
     {
         // Always return success to prevent email enumeration attack
-        var user = await _userRepository.GetByEmailAsync(request.Email.Trim().ToLowerInvariant(), ct);
+        var email = request.Email.Trim().ToLowerInvariant();
+        var users = await _userRepository.GetListByEmailAsync(email, ct);
+        
+        var currentTenantId = _tenantService.TenantId;
+        var user = users.FirstOrDefault(u => u.TenantId == currentTenantId) 
+                ?? users.FirstOrDefault(u => u.Role == UserRole.SuperAdmin);
+
         if (user is null) return;
 
         // Generate a secure one-time token, expires in 10 minutes

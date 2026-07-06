@@ -29,6 +29,12 @@ public class UserRepository : IUserRepository
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(u => u.Email == email, ct);
 
+    public Task<List<User>> GetListByEmailAsync(string email, CancellationToken ct = default) =>
+        _db.Users
+            .IgnoreQueryFilters()
+            .Where(u => u.Email == email)
+            .ToListAsync(ct);
+
     /// <summary>
     /// Tìm user theo reset token — cũng cần IgnoreQueryFilters() vì lúc reset
     /// password không có X-Tenant context bắt buộc.
