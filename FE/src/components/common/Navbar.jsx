@@ -3,7 +3,7 @@ import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu as MenuIcon, X, LogOut, User, LayoutDashboard,
-  Sun, Moon, ChevronDown, Leaf,
+  Sun, Moon, ChevronDown, Leaf, Calendar,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useThemeMode } from "@/context/ThemeContext";
@@ -19,6 +19,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const [scrolled, setScrolled]       = useState(false);
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -218,7 +219,7 @@ export default function Navbar() {
                     >
                       {[
                         { icon: User, label: "Hồ sơ", path: "/profile" },
-                        { icon: Leaf, label: "Lịch sử đặt bàn", path: "/booking/history" },
+                        { icon: isComTam ? Calendar : Leaf, label: "Lịch sử đặt bàn", path: "/booking/history" },
                         ...(user.role === "admin" ? [{ icon: LayoutDashboard, label: "Quản trị", path: "/admin/accounts" }] : []),
                         ...(user.role === "manager" ? [{ icon: LayoutDashboard, label: "Quản lý", path: "/admin" }] : []),
                         ...(user.role === "staff" ? [{ icon: LayoutDashboard, label: "Nhân viên", path: "/admin/bookings" }] : []),
@@ -368,7 +369,7 @@ export default function Navbar() {
                       <User size={16} style={{ color: "var(--matcha)" }} /> Hồ sơ
                     </RouterLink>
                     <RouterLink to="/booking/history" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>
-                      <Leaf size={16} style={{ color: "var(--matcha)" }} /> Lịch sử đặt bàn
+                      {isComTam ? <Calendar size={16} style={{ color: "var(--matcha)" }} /> : <Leaf size={16} style={{ color: "var(--matcha)" }} />} Lịch sử đặt bàn
                     </RouterLink>
                     {user.role === "admin" && (
                       <RouterLink to="/admin/accounts" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", textDecoration: "none", color: "var(--text)", fontSize: 14 }}>

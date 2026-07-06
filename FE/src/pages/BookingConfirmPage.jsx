@@ -29,6 +29,7 @@ export default function BookingConfirmPage() {
   const location = useLocation();
   const { user, token } = useAuth();
   const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const { selected: contextSelected, clear } = useBookingContext();
 
   // Scroll to top on mount
@@ -241,7 +242,7 @@ export default function BookingConfirmPage() {
                 lineHeight: 1.6,
               }}
             >
-              Vui lòng xem lại thông tin chi tiết phòng trà và điền các ghi chú
+              {isComTam ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : "Vui lòng xem lại thông tin chi tiết phòng trà và điền các ghi chú"}
               đặc biệt để chúng tôi chuẩn bị đón tiếp quý khách một cách hoàn
               hảo nhất.
             </p>
@@ -304,7 +305,7 @@ export default function BookingConfirmPage() {
                     margin: 0,
                   }}
                 >
-                  Thông Tin Phòng Trà
+                  {isComTam ? "Thông Tin Đặt Bàn" : "Thông Tin Phòng Trà"}
                 </h2>
                 <p
                   style={{
@@ -433,7 +434,7 @@ export default function BookingConfirmPage() {
                 }}
               >
                 <MessageSquare size={16} style={{ color: "var(--matcha)" }} />
-                Ghi chú đặc biệt cho Phòng Trà
+                {isComTam ? "Ghi chú đặc biệt cho Nhà Hàng" : "Ghi chú đặc biệt cho Phòng Trà"}
               </label>
               <textarea
                 rows={4}

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { bookingCheckStatus, tablesList } from "../services/apiClient.js";
 import { useBookingContext } from "../context/useBookingContext.js";
+import { useTenant } from "@/context/TenantContext";
 import TableMap from "../components/booking/TableMap.jsx";
 
 const TIME_SLOTS = [
@@ -127,6 +128,8 @@ function StepBar({ step }) {
 export default function BookingPage() {
   const nav = useNavigate();
   const location = useLocation();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const { selected, setSelected } = useBookingContext();
 
   const selectedRef = useRef(selected);
@@ -327,7 +330,7 @@ export default function BookingPage() {
             width: 320,
             height: 320,
             borderRadius: "50%",
-            background: "rgba(141,175,90,0.12)",
+            background: isComTam ? "rgba(224,123,57,0.12)" : "rgba(141,175,90,0.12)",
             filter: "blur(70px)",
           }}
         />
@@ -359,7 +362,7 @@ export default function BookingPage() {
           >
             <span
               style={{
-                color: "rgba(175,215,120,0.8)",
+                color: isComTam ? "rgba(244,164,96,0.8)" : "rgba(175,215,120,0.8)",
                 fontSize: 13,
                 fontWeight: 700,
                 letterSpacing: "0.15em",
@@ -457,8 +460,9 @@ export default function BookingPage() {
                       width: 44,
                       height: 44,
                       borderRadius: 14,
-                      background:
-                        "linear-gradient(135deg,rgba(107,143,62,0.15),rgba(47,91,62,0.08))",
+                      background: isComTam
+                        ? "linear-gradient(135deg,rgba(224,123,57,0.15),rgba(100,45,10,0.08))"
+                        : "linear-gradient(135deg,rgba(107,143,62,0.15),rgba(47,91,62,0.08))",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

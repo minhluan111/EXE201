@@ -361,8 +361,18 @@ export default function HomePage() {
         />
 
         {/* Overlays */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)" }} />
+        <div style={{
+          position: "absolute", inset: 0,
+          background: isComTam
+            ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(100,45,10,0.75) 50%, rgba(30,15,5,0.8) 100%)"
+            : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)"
+        }} />
+        <div style={{
+          position: "absolute", inset: 0,
+          background: isComTam
+            ? "radial-gradient(ellipse at center bottom, rgba(224,123,57,0.15) 0%, transparent 70%)"
+            : "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)"
+        }} />
 
         {/* Falling Leaves Background Layer */}
         {!isComTam && (
@@ -787,7 +797,7 @@ export default function HomePage() {
                   position: "absolute", top: 12, right: 36,
                   fontSize: 140, fontWeight: 900,
                   fontFamily: "'Cormorant Garamond', serif",
-                  color: "rgba(141, 175, 90, 0.06)",
+                  color: isComTam ? "rgba(224, 123, 57, 0.06)" : "rgba(141, 175, 90, 0.06)",
                   lineHeight: 1, pointerEvents: "none", userSelect: "none"
                 }}>
                   “
@@ -807,11 +817,11 @@ export default function HomePage() {
                       alignItems: "center",
                       gap: 14,
                       marginBottom: 26,
-                      background: "rgba(107, 143, 62, 0.12)",
+                      background: isComTam ? "rgba(224, 123, 57, 0.12)" : "rgba(107, 143, 62, 0.12)",
                       backdropFilter: "blur(12px)",
                       padding: "8px 18px 8px 10px",
                       borderRadius: "20px",
-                      border: "1px solid rgba(141, 175, 90, 0.3)",
+                      border: isComTam ? "1px solid rgba(224, 123, 57, 0.3)" : "1px solid rgba(141, 175, 90, 0.3)",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
                       boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",

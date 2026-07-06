@@ -35,7 +35,9 @@ export function TenantProvider({ children }) {
         const res = await restaurantInfoGet();
         if (res.ok) {
           const rawData = res.data;
-          const isMatcha = rawData.name?.toLowerCase().includes("yaki") || rawData.name?.toLowerCase().includes("matcha");
+          const rawName = rawData.name || rawData.TenantName || "";
+          const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha");
+          const isComTam = rawName.toLowerCase().includes("cơm tấm");
           
           const normalizedData = { ...rawData };
           if (isMatcha) {
@@ -48,14 +50,15 @@ export function TenantProvider({ children }) {
           // Set dynamic title and favicon
           const name = isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime");
           document.title = name;
-          const logo = normalizedData.logo || "/assets/images/logo.jpg";
+          const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : "/assets/images/logo.jpg");
+          normalizedData.logo = logo;
           const favicon = document.querySelector("link[rel*='icon']");
           if (favicon) {
             favicon.href = logo;
           }
 
           // Apply dynamic theme color if available (only for non-Matcha tenants to preserve original css tokens)
-          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor;
+          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor || (isComTam ? "#E07B39" : null);
           if (themeColor && !isMatcha) {
             const root = document.documentElement;
             const hsl = hexToHsl(themeColor);
