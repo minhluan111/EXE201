@@ -22,11 +22,13 @@ import { bookingCreate } from "../services/apiClient.js";
 
 import { useAuth } from "../context/useAuthContext.js";
 import { useBookingContext } from "../context/useBookingContext.js";
+import { useTenant } from "@/context/TenantContext";
 
 export default function BookingConfirmPage() {
   const nav = useNavigate();
   const location = useLocation();
   const { user, token } = useAuth();
+  const { tenant } = useTenant();
   const { selected: contextSelected, clear } = useBookingContext();
 
   // Scroll to top on mount
@@ -324,7 +326,7 @@ export default function BookingConfirmPage() {
                 </div>
                 <div>
                   <span className="detail-label">CỬA HÀNG</span>
-                  <span className="detail-value">Yakishime Matcha</span>
+                  <span className="detail-value">{tenant?.name || "Yakishime Matcha"}</span>
                 </div>
               </div>
 

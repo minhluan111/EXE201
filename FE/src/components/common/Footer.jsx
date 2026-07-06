@@ -2,6 +2,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Leaf, MapPin, Clock, Phone, Mail, Heart, Share2, MessageCircle, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useTenant } from "@/context/TenantContext";
 
 const LINKS = {
   "Khám phá": [
@@ -26,6 +27,20 @@ const SOCIALS = [
 
 export default function Footer() {
   const { user } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+
+  const brandName = tenant?.name || "Yakishime";
+  const brandDesc = isComTam
+    ? "Quán cơm tấm gia truyền với hương vị đậm đà, sườn nướng mật ong béo ngậy và các món bún thịt nướng truyền thống ngon miệng."
+    : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định.";
+
+  const infoItems = [
+    { icon: MapPin, text: tenant?.address || "57 Nguyễn Cư Trinh,\nNinh Kiều, Cần Thơ" },
+    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || "08:00 – 22:00"}\nMỗi ngày trong tuần` },
+    { icon: Phone,  text: tenant?.hotline || "0909 123 456" },
+    { icon: Mail,   text: tenant?.email || "hello@yakishime.vn" },
+  ];
 
   return (
     <footer style={{
@@ -39,7 +54,7 @@ export default function Footer() {
       <div style={{ position: "absolute", top: -100, right: -100, width: 350, height: 350, borderRadius: "50%", background: "rgba(141,175,90,0.06)", filter: "blur(80px)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: -80, left: -80, width: 300, height: 300, borderRadius: "50%", background: "rgba(107,143,62,0.04)", filter: "blur(70px)", pointerEvents: "none" }} />
 
-      {/* Ultra-Faint Japanese Calligraphy Watermark 'Cha' (Trà) */}
+      {/* Ultra-Faint Japanese Calligraphy Watermark 'Cha' (Trà) or 'Com' (Cơm) */}
       <span style={{
         position: "absolute", bottom: -30, right: 30,
         fontFamily: "'Cormorant Garamond', serif",
@@ -47,7 +62,7 @@ export default function Footer() {
         color: "rgba(141, 175, 90, 0.022)",
         lineHeight: 1, pointerEvents: "none", userSelect: "none"
       }}>
-        茶
+        {isComTam ? "飯" : "茶"}
       </span>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 24px 40px", position: "relative", zIndex: 1 }}>
@@ -62,13 +77,12 @@ export default function Footer() {
                 fontSize: 30, fontWeight: 700, color: "#fff",
                 letterSpacing: "0.02em", textTransform: "capitalize"
               }}>
-                Yakishime
+                {brandName}
               </span>
             </div>
             
             <p style={{ fontSize: 14.5, lineHeight: 1.8, maxWidth: 280, color: "rgba(240, 237, 228, 0.65)", marginBottom: 28 }}>
-              Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ.
-              Từng tách trà là một hành trình tĩnh tại và thiền định.
+              {brandDesc}
             </p>
             
             {/* Social Icons */}
@@ -156,12 +170,7 @@ export default function Footer() {
             }}>
               Thông Tin Liên Hệ
             </h4>
-            {[
-              { icon: MapPin, text: "57 Nguyễn Cư Trinh,\nNinh Kiều, Cần Thơ" },
-              { icon: Clock,  text: "Mở cửa: 08:00 – 22:00\nMỗi ngày trong tuần" },
-              { icon: Phone,  text: "0909 123 456" },
-              { icon: Mail,   text: "hello@yakishime.vn" },
-            ].map(({ icon: Icon, text }, idx) => (
+            {infoItems.map(({ icon: Icon, text }, idx) => (
               <div key={idx} style={{ display: "flex", gap: 12, marginBottom: 18, alignItems: "flex-start" }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: 8,
@@ -188,12 +197,12 @@ export default function Footer() {
           flexWrap: "wrap", gap: 16,
         }}>
           <span style={{ fontSize: 13, color: "rgba(240, 237, 228, 0.4)" }}>
-            © 2026 Yakishime Matcha. Mọi quyền được bảo lưu.
+            © 2026 {brandName}. Mọi quyền được bảo lưu.
           </span>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <Leaf size={14} style={{ color: "rgba(175,215,120,0.5)" }} />
             <span style={{ fontSize: 12, color: "rgba(240, 237, 228, 0.4)", fontFamily: "Inter, sans-serif" }}>
-              Crafted with Zen & Love in Cần Thơ 🍵
+              {isComTam ? "Hương vị đậm đà chuẩn cơm mẹ nấu 🌾" : "Crafted with Zen & Love in Cần Thơ 🍵"}
             </span>
           </div>
         </div>

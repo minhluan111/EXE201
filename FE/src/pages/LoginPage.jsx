@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Leaf } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useTenant } from "@/context/TenantContext";
 
 function InputField({ icon: Icon, type, placeholder, value, onChange, error, rightAction }) {
   return (
@@ -48,6 +49,8 @@ function InputField({ icon: Icon, type, placeholder, value, onChange, error, rig
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
 
   const [login_val, setLoginVal] = useState("");
   const [password, setPassword]  = useState("");
@@ -85,19 +88,32 @@ export default function LoginPage() {
       {/* Left image panel */}
       <div style={{
         position: "relative", overflow: "hidden",
-        backgroundImage: "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')",
+        backgroundImage: isComTam 
+          ? "url('/assets/comtamno/hero.jpg')" 
+          : "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')",
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)" }} />
+        <div style={{ 
+          position: "absolute", 
+          inset: 0, 
+          background: isComTam 
+            ? "linear-gradient(135deg, rgba(30,15,5,0.8) 0%, rgba(224,123,57,0.7) 100%)" 
+            : "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)" 
+        }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
-            <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff" }}>
-              yakishime
+            {isComTam 
+              ? <span style={{ fontSize: 24 }}>🌾</span> 
+              : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
+            }
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: "capitalize" }}>
+              {tenant?.name || "yakishime"}
             </span>
           </RouterLink>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#fff", margin: "0 0 14px", lineHeight: 1.15 }}>
-            Trà đạo chính thống<br />từ Uji, Kyoto
+            {isComTam 
+              ? "Cơm Tấm Ngọ - Đậm đà chuẩn vị quê nhà" 
+              : "Trà đạo chính thống từ Uji, Kyoto"}
           </h2>
           <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.7 }}>
             Đăng nhập để đặt bàn, theo dõi lịch sử và viết đánh giá.

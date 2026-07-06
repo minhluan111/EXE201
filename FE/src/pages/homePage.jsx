@@ -6,6 +6,7 @@ import {
   ChevronLeft, ChevronRight, Quote, MessageSquare, Sparkles, Users, Flame, Calendar
 } from "lucide-react";
 import { menuList, getTestimonials } from "../services/apiClient";
+import { useTenant } from "@/context/TenantContext";
 
 // ── Stagger variants ────────────────────────────────────────────────────────
 const fadeUp = {
@@ -113,7 +114,13 @@ const TESTIMONIALS = [
   { name: "Phạm Quốc Toàn", role: "Lập trình viên", rating: 5, text: "Iced Matcha Latte hoàn hảo để làm việc. Vừa uống vừa code cả buổi sáng mà không cần caffeine quá đà. Quán wifi tốt, ghế thoải mái." },
 ];
 
-// ── Gallery images ───────────────────────────────────────────────────────────
+const COM_TAM_TESTIMONIALS = [
+  { name: "Nguyễn Minh Anh", role: "Foodie & Blogger", rating: 5, text: "Cơm tấm ở đây ngon xuất sắc, sườn nướng mật ong vừa mềm vừa đậm đà, nước mắm kẹo chua ngọt chuẩn vị Sài Gòn luôn!" },
+  { name: "Trần Hữu Đức", role: "Nhiếp ảnh gia", rating: 5, text: "Không gian quán sạch sẽ, thoáng mát. Bún thịt nướng đầy đặn, thịt thơm nức mũi, chả giò giòn rụm ăn rất đã." },
+  { name: "Lê Thị Thu Hà", role: "Kiến trúc sư", rating: 5, text: "Cơm tấm Long Xuyên hạt nhuyễn ăn kèm bì, trứng kho rất ngon. Quán phục vụ nhanh nhẹn dù lúc nào cũng đông khách." },
+  { name: "Phạm Quốc Toàn", role: "Lập trình viên", rating: 5, text: "Bữa trưa lý tưởng của tôi. Đùi gà nướng mật ong siêu to khổng lồ, da giòn thịt ngọt béo. Giá cả rất phải chăng." },
+];
+
 const GALLERY = [
   { url: "/assets/images/space_decor1.png", h: 280, label: "Góc phòng trà" },
   { url: "/assets/images/space_decor2.png", h: 220, label: "Bình hoa nghệ thuật" },
@@ -121,6 +128,15 @@ const GALLERY = [
   { url: "/assets/images/space_decor4.png", h: 220, label: "Bình sen thiền định" },
   { url: "/assets/images/space_decor5.jpg", h: 280, label: "Mặt tiền Yaki Café" },
   { url: "/assets/images/space_window.jpg", h: 240, label: "Cửa sổ trúc xanh" },
+];
+
+const COM_TAM_GALLERY = [
+  { url: "/assets/comtamno/n2_1.jpg", h: 280, label: "Bàn ngoài trời thoáng mát" },
+  { url: "/assets/comtamno/n2_2.jpg", h: 220, label: "Bàn đôi trong nhà" },
+  { url: "/assets/comtamno/n6_3.jpg", h: 260, label: "Bàn lớn cho gia đình" },
+  { url: "/assets/comtamno/n4_1.jpg", h: 220, label: "Bàn 4 người ngoài sân" },
+  { url: "/assets/comtamno/n4_2.jpg", h: 280, label: "Bàn ăn ấm cúng" },
+  { url: "/assets/comtamno/n6_1.jpg", h: 240, label: "Bàn tiệc ngoài trời" },
 ];
 
 // ── Philosophy Watermarks & Pillars ───────────────────────────────────────────
@@ -154,11 +170,41 @@ const PHILOSOPHIES = [
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
+const COM_TAM_PHILOSOPHIES = [
+  {
+    kanji: "選",
+    romaji: "SEN",
+    title: "Tuyển Chọn",
+    desc: "Nguyên liệu tươi ngon tinh tuyển mỗi ngày. Gạo tấm thơm dẻo cùng sườn heo tẩm ướp mật ong gia truyền đặc sắc."
+  },
+  {
+    kanji: "火",
+    romaji: "KA",
+    title: "Lửa Hồng",
+    desc: "Sườn được nướng trực tiếp trên bếp than hồng đỏ rực, giữ trọn vị ngọt tự nhiên, thơm nức mũi khi chín tới."
+  },
+  {
+    kanji: "味",
+    romaji: "MI",
+    title: "Đậm Đà",
+    desc: "Nước mắm kẹo chua ngọt gia truyền sánh mịn đậm vị, linh hồn của đĩa cơm tấm chuẩn vị miền Nam."
+  },
+  {
+    kanji: "誠",
+    romaji: "SEI",
+    title: "Chân Thành",
+    desc: "Phục vụ thực khách bằng cả tấm lòng. Mang đến bữa ăn ngon miệng, ấm cúng và đầy ắp hương vị gia đình."
+  }
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const currentPhilosophies = isComTam ? COM_TAM_PHILOSOPHIES : PHILOSOPHIES;
   const [products,  setProducts]  = useState([]);
   const [loading,   setLoading]   = useState(true);
-  const [reviewsList, setReviewsList] = useState(TESTIMONIALS);
+  const [reviewsList, setReviewsList] = useState(isComTam ? COM_TAM_TESTIMONIALS : TESTIMONIALS);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
 
@@ -200,7 +246,7 @@ export default function HomePage() {
         
         const enrichFallback = () => {
           if (loadedProducts.length > 0) {
-            const enriched = TESTIMONIALS.map(t => {
+            const enriched = (isComTam ? COM_TAM_TESTIMONIALS : TESTIMONIALS).map(t => {
               const product = loadedProducts.find(p => 
                 t.text.toLowerCase().includes(p.name.toLowerCase())
               ) || loadedProducts[0];
@@ -286,7 +332,8 @@ export default function HomePage() {
     navigate("/booking", { state: { guests: quickGuests, date: targetDate } });
   };
 
-  const duplicatedGallery = [...GALLERY, ...GALLERY];
+  const currentGallery = isComTam ? COM_TAM_GALLERY : GALLERY;
+  const duplicatedGallery = [...currentGallery, ...currentGallery];
 
   return (
     <div style={{ background: "var(--bg)", overflowX: "hidden" }}>
@@ -303,11 +350,12 @@ export default function HomePage() {
         }}
       >
         {/* Parallax BG */}
+        {/* Parallax BG */}
         <motion.div
           style={{
             position: "absolute", inset: "-20%",
             y: heroY,
-            backgroundImage: "url('/assets/images/hero_img.jpg')",
+            backgroundImage: isComTam ? "url('/assets/comtamno/hero.jpg')" : "url('/assets/images/hero_img.jpg')",
             backgroundSize: "cover", backgroundPosition: "center",
           }}
         />
@@ -317,25 +365,27 @@ export default function HomePage() {
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)" }} />
 
         {/* Falling Leaves Background Layer */}
-        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 1 }}>
-          {[...Array(8)].map((_, i) => {
-            const delay = i * 2.8;
-            const left = 5 + (i * 12);
-            const scale = 0.5 + (i % 3) * 0.25;
-            return (
-              <div
-                key={i}
-                className="falling-leaf"
-                style={{
-                  left: `${left}%`,
-                  animationDelay: `${delay}s`,
-                  transform: `scale(${scale})`,
-                  animationDuration: `${14 + (i % 4) * 4}s`
-                }}
-              />
-            );
-          })}
-        </div>
+        {!isComTam && (
+          <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 1 }}>
+            {[...Array(8)].map((_, i) => {
+              const delay = i * 2.8;
+              const left = 5 + (i * 12);
+              const scale = 0.5 + (i % 3) * 0.25;
+              return (
+                <div
+                  key={i}
+                  className="falling-leaf"
+                  style={{
+                    left: `${left}%`,
+                    animationDelay: `${delay}s`,
+                    transform: `scale(${scale})`,
+                    animationDuration: `${14 + (i % 4) * 4}s`
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
 
         {/* Content */}
         <div
@@ -357,7 +407,7 @@ export default function HomePage() {
                 background: "rgba(141,175,90,0.12)",
                 color: "rgba(200,230,160,0.9)", fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
               }}>
-                <Leaf size={13} /> Matcha · Zen · Cao cấp
+                <Leaf size={13} /> {isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : "Matcha · Zen · Cao cấp"}
               </span>
             </motion.div>
 
@@ -371,8 +421,17 @@ export default function HomePage() {
               color: "#fff", margin: "0 0 16px",
               lineHeight: 1.0, letterSpacing: "-0.03em",
             }}>
-              Mỗi Ngụm Trà<br />
-              <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>Một Câu Chuyện</span>
+              {isComTam ? (
+                <>
+                  Cơm Tấm Ngọ<br />
+                  <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>Đậm Đà Vị Quê Hương</span>
+                </>
+              ) : (
+                <>
+                  Mỗi Ngụm Trà<br />
+                  <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>Một Câu Chuyện</span>
+                </>
+              )}
             </motion.h1>
 
             {/* Sub */}
@@ -380,8 +439,9 @@ export default function HomePage() {
               fontSize: "clamp(16px, 2.5vw, 20px)", color: "rgba(255,255,255,0.75)",
               maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7,
             }}>
-              Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống ·
-              Không gian thiền định tại Cần Thơ
+              {isComTam 
+                ? "Cơm sườn bì chả gia truyền · Sườn nướng mật ong than hồng thơm ngọt · Canh rong biển thanh mát tại Cần Thơ"
+                : "Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống · Không gian thiền định tại Cần Thơ"}
             </motion.p>
 
             {/* CTAs removed since they exist in the navbar */}
@@ -392,8 +452,8 @@ export default function HomePage() {
               flexWrap: "wrap",
             }}>
               {[
-                { icon: MapPin, text: "57 Nguyễn Cư Trinh, Cần Thơ" },
-                { icon: Clock, text: "08:00 – 22:00 mỗi ngày" },
+                { icon: MapPin, text: tenant?.address || "57 Nguyễn Cư Trinh, Cần Thơ" },
+                { icon: Clock, text: `${tenant?.openHours || tenant?.openingHours || "08:00 – 22:00"} mỗi ngày` },
                 { icon: Star,  text: "4.9 ⭐ (200+ đánh giá)" },
               ].map((p, i) => (
                 <div key={i} style={{
@@ -436,7 +496,7 @@ export default function HomePage() {
           >
             <motion.div variants={fadeUp} style={{ textAlign: "center", marginBottom: 64 }}>
               <span style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                Triết lý Trà đạo Chado
+                {isComTam ? "Triết lý ẩm thực" : "Triết lý Trà đạo Chado"}
               </span>
               <h2 style={{
                 fontFamily: "'Cormorant Garamond', serif",
@@ -444,13 +504,13 @@ export default function HomePage() {
                 fontWeight: 700, color: "var(--text)", margin: "12px 0 0",
                 lineHeight: 1.1
               }}>
-                Nghệ thuật trong từng tách trà
+                {isComTam ? "Tinh hoa trong từng đĩa cơm" : "Nghệ thuật trong từng tách trà"}
               </h2>
               <div style={{ width: 60, height: 2, background: "var(--matcha)", margin: "20px auto 0" }} />
             </motion.div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 28 }}>
-              {PHILOSOPHIES.map((p, i) => (
+              {currentPhilosophies.map((p, i) => (
                 <motion.div
                   key={i} variants={fadeUp}
                   whileHover={{ y: -10, scale: 1.02 }}
@@ -513,7 +573,7 @@ export default function HomePage() {
                     display: "flex", alignItems: "center", gap: 6,
                     fontSize: 13, fontWeight: 700, color: "var(--matcha)"
                   }}>
-                    Tinh thần Zen-Matcha
+                    {isComTam ? "Hương vị Cơm Tấm Ngọ" : "Tinh thần Zen-Matcha"}
                   </div>
                 </motion.div>
               ))}
@@ -537,7 +597,7 @@ export default function HomePage() {
                   Được yêu thích nhất
                 </span>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-                  Món Nước Đặc Trưng
+                  {isComTam ? "Món Ăn Đặc Trưng" : "Món Nước Đặc Trưng"}
                 </h2>
               </div>
               <motion.button
@@ -593,7 +653,7 @@ export default function HomePage() {
               Không gian quán
             </span>
             <h2 className="sumie-fade" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-              Zen trong từng góc nhỏ
+              {isComTam ? "Không gian ẩm cúng" : "Zen trong từng góc nhỏ"}
             </h2>
           </motion.div>
         </div>
@@ -658,7 +718,9 @@ export default function HomePage() {
                   gap: 4
                 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.05em" }}>{g.label}</span>
-                  <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>Không gian Yakishime</span>
+                  <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>
+                    {isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : "Không gian Yakishime"}
+                  </span>
                 </div>
               </motion.div>
             ))}

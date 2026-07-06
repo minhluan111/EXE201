@@ -5,6 +5,7 @@ import {
   MessageCircle, X, Send, ChevronLeft, User, MessageSquare, Bell, Clock
 } from "lucide-react";
 import { useAuth } from "../../context/useAuthContext.js";
+import { useTenant } from "../../context/TenantContext.jsx";
 import {
   feedbackGetMy,
   feedbackCreate,
@@ -14,6 +15,8 @@ import {
 
 export default function FloatingChatBubble() {
   const { token, user } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -332,7 +335,7 @@ export default function FloatingChatBubble() {
                     <MessageSquare size={16} />
                     {isManager 
                       ? (activeFeedbackId ? "Trả lời: " + activeFeedback?.user?.full_name : "Quản lý Hội Thoại") 
-                      : "Yakishime Support 🍵"}
+                      : `${tenant?.name || "Yakishime"} Support ${isComTam ? "🌾" : "🍵"}`}
                   </h3>
                   <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#10B981" }} />
@@ -572,7 +575,7 @@ export default function FloatingChatBubble() {
                             return (
                               <div key={idx} style={{ alignSelf: "flex-start", maxWidth: "85%", display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: 4 }}>
                                 <span style={{ fontSize: 10, color: "var(--matcha)", fontWeight: 700, marginBottom: 2 }}>
-                                  🍵 Yakishime Manager
+                                  {isComTam ? "🌾" : "🍵"} {tenant?.name || "Yakishime"} Manager
                                 </span>
                                 <div style={{
                                   background: "rgba(255, 255, 255, 0.04)",

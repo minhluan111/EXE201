@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useThemeMode } from "@/context/ThemeContext";
+import { useTenant } from "@/context/TenantContext";
 
 const NAV_ITEMS = [
   { name: "Trang chủ", path: "/" },
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { tenant } = useTenant();
   const [scrolled, setScrolled]       = useState(false);
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -82,12 +84,12 @@ export default function Navbar() {
             }}
           >
             <img
-              src="/assets/images/logo.jpg"
-              alt="Yakishime"
+              src={tenant?.logo || "/assets/images/logo.jpg"}
+              alt={tenant?.name || "Logo"}
               style={{
                 width: 40, height: 40, borderRadius: 10,
                 objectFit: "cover",
-                boxShadow: "0 2px 12px rgba(107,143,62,0.25)",
+                boxShadow: "0 2px 12px var(--border)",
               }}
               onError={(e) => { e.target.style.display = "none"; }}
             />
@@ -96,9 +98,10 @@ export default function Navbar() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                 color: "var(--matcha)",
+                textTransform: "lowercase",
               }}
             >
-              yakishime
+              {tenant?.name || "yakishime"}
             </span>
           </RouterLink>
 

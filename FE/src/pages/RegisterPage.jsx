@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle, Leaf, CheckCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useTenant } from "@/context/TenantContext";
 
 function InputField({ icon: Icon, type, placeholder, value, onChange, error, rightAction }) {
   return (
@@ -63,6 +64,8 @@ function PasswordStrength({ password }) {
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
 
   const [form, setForm] = useState({ full_name: "", email: "", phone: "", password: "", confirm: "" });
   const [showPw, setShowPw]   = useState(false);
@@ -110,14 +113,27 @@ export default function RegisterPage() {
       {/* Left image */}
       <div style={{
         position: "relative", overflow: "hidden",
-        backgroundImage: "url('https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=900&q=85')",
+        backgroundImage: isComTam 
+          ? "url('/assets/comtamno/hero.jpg')" 
+          : "url('https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=900&q=85')",
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(15,31,18,0.85),rgba(47,91,62,0.75))" }} />
+        <div style={{ 
+          position: "absolute", 
+          inset: 0, 
+          background: isComTam 
+            ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(224,123,57,0.75) 100%)" 
+            : "linear-gradient(135deg,rgba(15,31,18,0.85),rgba(47,91,62,0.75))" 
+        }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
-            <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff" }}>yakishime</span>
+            {isComTam 
+              ? <span style={{ fontSize: 24 }}>🌾</span> 
+              : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
+            }
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: "capitalize" }}>
+              {tenant?.name || "yakishime"}
+            </span>
           </RouterLink>
           <div>
             {["Đặt bàn theo sơ đồ tương tác", "Xem lịch sử & hủy dễ dàng", "Viết đánh giá món ăn"].map((b) => (
@@ -128,7 +144,7 @@ export default function RegisterPage() {
             ))}
           </div>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4vw, 48px)", fontWeight: 700, color: "#fff", margin: "28px 0 14px", lineHeight: 1.15 }}>
-            Tham gia cộng đồng<br />Yakishime hôm nay
+            Tham gia cộng đồng<br />{tenant?.name || "Yakishime"} hôm nay
           </h2>
         </div>
       </div>

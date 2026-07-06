@@ -5,6 +5,7 @@ import { ChevronLeft, Star, Send, Sparkles } from "lucide-react";
 import { menuDetail, menuReviews, reviewCreate } from "../services/apiClient.js";
 import Loading from "../components/common/Loading.jsx";
 import { useAuth } from "../context/useAuthContext.js";
+import { useTenant } from "@/context/TenantContext";
 
 function translateCategory(cat) {
   const map = {
@@ -50,6 +51,8 @@ function InteractiveRating({ value, onChange }) {
 
 // ── Review Item component ──────────────────────────────────────────────────
 function ReviewItem({ review }) {
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const initials = review.user?.full_name?.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() ?? "?";
   const date = new Date(review.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -97,7 +100,7 @@ function ReviewItem({ review }) {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: "var(--matcha)", textTransform: "uppercase", letterSpacing: "0.02em" }}>
-                🍵 Phản hồi từ Yakishime Manager
+                {isComTam ? "🌾" : "🍵"} Phản hồi từ {tenant?.name || "Yakishime"} Manager
               </span>
             </div>
             <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0, lineHeight: 1.5 }}>

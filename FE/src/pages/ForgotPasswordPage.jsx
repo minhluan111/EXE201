@@ -3,6 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, AlertCircle, Leaf, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { authForgotPassword } from "@/services/apiClient";
+import { useTenant } from "@/context/TenantContext";
 
 function InputField({ icon: Icon, type, placeholder, value, onChange, error }) {
   return (
@@ -45,6 +46,8 @@ function InputField({ icon: Icon, type, placeholder, value, onChange, error }) {
 }
 
 export default function ForgotPasswordPage() {
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [globalErr, setGlobalErr] = useState("");
@@ -78,15 +81,26 @@ export default function ForgotPasswordPage() {
       {/* Left image panel */}
       <div style={{
         position: "relative", overflow: "hidden",
-        backgroundImage: "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')",
+        backgroundImage: isComTam 
+          ? "url('/assets/comtamno/hero.jpg')" 
+          : "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')",
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)" }} />
+        <div style={{ 
+          position: "absolute", 
+          inset: 0, 
+          background: isComTam 
+            ? "linear-gradient(135deg, rgba(30,15,5,0.8) 0%, rgba(224,123,57,0.7) 100%)" 
+            : "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)" 
+        }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
-            <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff" }}>
-              yakishime
+            {isComTam 
+              ? <span style={{ fontSize: 24 }}>🌾</span> 
+              : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />
+            }
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: "capitalize" }}>
+              {tenant?.name || "yakishime"}
             </span>
           </RouterLink>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#fff", margin: "0 0 14px", lineHeight: 1.15 }}>

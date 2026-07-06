@@ -30,7 +30,9 @@ public class InfoService : IInfoService
             Address = info.Address,
             Phone = info.Phone,
             OpeningHours = info.OpeningHours,
-            MapUrl = info.MapUrl
+            MapUrl = info.MapUrl,
+            ThemeColor = tenant?.ThemeColor,
+            Logo = tenant?.Logo
         };
     }
 }

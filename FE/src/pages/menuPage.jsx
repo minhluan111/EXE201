@@ -5,14 +5,23 @@ import { Search, X } from "lucide-react";
 import { menuList } from "../services/mockApi.js";
 import MenuCard from "../components/menu/MenuCard.jsx";
 import QuickViewModal from "../components/menu/QuickViewModal.jsx";
+import { useTenant } from "@/context/TenantContext";
 
-const CATEGORIES = [
+const MATCHA_CATEGORIES = [
   { key: "all",        label: "Tất cả",      },
   { key: "Traditional",label: "Truyền thống",  },
   { key: "Latte",      label: "Latte",        },
   { key: "Hojicha",    label: "Hojicha",     },
   { key: "Desserts",   label: "Tráng miệng",     },
   { key: "Food",       label: "Món ăn",       },
+];
+
+const COM_TAM_CATEGORIES = [
+  { key: "all",        label: "Tất cả",      },
+  { key: "MainCourse", label: "Món chính",    },
+  { key: "Drink",      label: "Đồ uống",      },
+  { key: "Snack",      label: "Ăn kèm",       },
+  { key: "Desserts",   label: "Tráng miệng",   },
 ];
 
 const TAGS = [
@@ -47,6 +56,9 @@ function SkeletonGrid() {
 export default function MenuPage() {
   const navigate = useNavigate();
   const tabBarRef = useRef(null);
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const CATEGORIES = isComTam ? COM_TAM_CATEGORIES : MATCHA_CATEGORIES;
 
   const [q, setQ]               = useState("");
   const [category, setCategory] = useState("all");
@@ -91,7 +103,9 @@ export default function MenuPage() {
       <section style={{ position: "relative", overflow: "hidden" }}>
         <div style={{
           position: "absolute", inset: 0,
-          backgroundImage: "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')",
+          backgroundImage: isComTam 
+            ? "url('/assets/comtamno/hero.jpg')" 
+            : "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')",
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "brightness(0.35)",
         }} />
@@ -110,7 +124,9 @@ export default function MenuPage() {
               Thực Đơn
             </h1>
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, maxWidth: 540, lineHeight: 1.7 }}>
-              Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết,<br />hương vị tinh tế theo triết lý Zen.
+              {isComTam 
+                ? "Từng đĩa cơm sườn, bát bún thịt nướng được tẩm ướp đậm đà — sườn nướng than hồng mật ong thơm ngon trọn vị."
+                : "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết, hương vị tinh tế theo triết lý Zen."}
             </p>
           </motion.div>
         </div>

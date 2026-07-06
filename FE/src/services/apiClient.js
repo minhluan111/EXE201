@@ -1,7 +1,14 @@
 const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "http://localhost:52818"
 ).replace(/\/$/, "");
-const TENANT_DOMAIN = import.meta.env.VITE_TENANT_DOMAIN || window.location.hostname;
+const getTenantDomain = () => {
+  const host = window.location.hostname;
+  if (host && host !== 'localhost' && host !== '127.0.0.1') {
+    return host;
+  }
+  return import.meta.env.VITE_TENANT_DOMAIN || "exe-201-flax.vercel.app";
+};
+const TENANT_DOMAIN = getTenantDomain();
 const SESSION_KEY = "vizza.session";
 
 const TABLE_LAYOUT = [
@@ -183,6 +190,17 @@ function mapAuthResponse(data) {
 }
 
 function mapMenuCategory(category, name = "") {
+  const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno");
+  
+  if (isComTam) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal === "1" || catVal.includes("drink")) return "Drink";
+    if (catVal === "2" || catVal.includes("maincourse") || catVal.includes("course")) return "MainCourse";
+    if (catVal === "3" || catVal.includes("dessert")) return "Desserts";
+    if (catVal === "4" || catVal.includes("snack")) return "Snack";
+    return "MainCourse";
+  }
+
   const value = String(category || "").toLowerCase();
   const lowerName = String(name || "").toLowerCase();
 
@@ -919,12 +937,14 @@ export async function restaurantInfoGet() {
   return {
     ok: true,
     data: {
-      name: "Yakishime",
+      name: result.data.tenantName || result.data.TenantName || "Yakishime",
       address: result.data.address,
       hotline: result.data.phone,
-      email: "hello@yakicafe.local",
+      email: result.data.tenantName ? `${result.data.tenantName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/\s+/g, "")}@gmail.com` : "hello@yakicafe.local",
       openHours: result.data.openingHours,
       mapEmbedUrl,
+      themeColor: result.data.themeColor || result.data.ThemeColor || null,
+      logo: result.data.logo || result.data.Logo || null
     },
   };
 }

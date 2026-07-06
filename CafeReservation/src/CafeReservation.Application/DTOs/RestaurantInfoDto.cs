@@ -8,4 +8,6 @@ public class RestaurantInfoDto
     public string Phone { get; set; } = string.Empty;
     public string OpeningHours { get; set; } = string.Empty;
     public string? MapUrl { get; set; }
+    public string? ThemeColor { get; set; }
+    public string? Logo { get; set; }
 }

@@ -65,9 +65,9 @@ function StepBar({ step }) {
               <motion.div
                 animate={{
                   borderColor: complete
-                    ? "#6B8F3E"
+                    ? "var(--matcha)"
                     : active
-                      ? "#8DAF5A"
+                      ? "var(--matcha-light)"
                       : "rgba(255, 255, 255, 0.1)",
                 }}
                 style={{
@@ -82,9 +82,9 @@ function StepBar({ step }) {
                   fontSize: 14,
                   fontWeight: 700,
                   background: complete
-                    ? "linear-gradient(135deg,#6B8F3E,#2F5B3E)"
+                    ? "linear-gradient(135deg, var(--matcha), var(--forest))"
                     : active
-                      ? "linear-gradient(135deg,#8DAF5A,#6B8F3E)"
+                      ? "linear-gradient(135deg, var(--matcha-light), var(--matcha))"
                       : "var(--bg-alt)",
                   transition: "background 0.3s ease, border-color 0.3s ease",
                 }}
