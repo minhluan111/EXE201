@@ -25,10 +25,52 @@ function ScrollToTop() {
   return null;
 }
 
+import { useTenant } from "./context/TenantContext.jsx";
+
 function Layout() {
   const { user } = useAuth();
+  const { loading } = useTenant();
   const isRestricted = user && ["manager", "staff", "admin"].includes(user.role);
   const showChatBubble = !isRestricted || (user && user.role === "manager");
+
+  if (loading) {
+    return (
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        background: "#0A0A0A",
+        color: "#ffffff",
+      }}>
+        {/* Sleek, premium looking spinner */}
+        <div style={{
+          width: 48,
+          height: 48,
+          borderRadius: "50%",
+          border: "3px solid rgba(255,255,255,0.06)",
+          borderTopColor: "rgba(255,255,255,0.85)",
+          animation: "spin 1s linear infinite"
+        }} />
+        <span style={{
+          marginTop: 18,
+          fontSize: 12,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          opacity: 0.5,
+          fontFamily: "Inter, sans-serif"
+        }}>
+          Đang tải dữ liệu...
+        </span>
+        <style>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <>
