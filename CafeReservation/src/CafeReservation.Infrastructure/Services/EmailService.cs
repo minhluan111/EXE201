@@ -11,36 +11,47 @@ public class EmailService : IEmailService
     private readonly IConfiguration _configuration;
     private readonly ILogger<EmailService> _logger;
     private readonly HttpClient _httpClient;
+    private readonly IInfoService _infoService;
 
     private string SenderEmail => _configuration["Email:From"] ?? "yakicafe.dev@gmail.com";
-    private string SenderName  => _configuration["Email:FromName"] ?? "Yakishime Café";
+    private string DefaultSenderName => _configuration["Email:FromName"] ?? "Yakishime Café";
     private string ApiKey      => _configuration["Email:ApiKey"] ?? string.Empty;
     private string FrontendUrl => _configuration["FrontendUrl"] ?? "http://localhost:5173";
 
-    public EmailService(IConfiguration configuration, ILogger<EmailService> logger, HttpClient httpClient)
+    public EmailService(IConfiguration configuration, ILogger<EmailService> logger, HttpClient httpClient, IInfoService infoService)
     {
         _configuration = configuration;
         _logger = logger;
         _httpClient = httpClient;
+        _infoService = infoService;
+    }
+
+    private async Task<(string Name, string Address)> GetRestaurantInfoAsync(CancellationToken ct)
+    {
+        var info = await _infoService.GetRestaurantInfoAsync(ct);
+        var name = info?.TenantName ?? DefaultSenderName;
+        var address = info?.Address ?? "Việt Nam";
+        return (name, address);
     }
 
     public async Task SendReservationConfirmationAsync(
         string toEmail, string userName, string reservationCode, Guid reservationId,
         DateTime reservationDateTime, string seatingArea, CancellationToken ct = default)
     {
+        var (rName, rAddress) = await GetRestaurantInfoAsync(ct);
         var manageLink = $"{FrontendUrl}/booking/history";
         var rescheduleLink = $"{FrontendUrl}/booking/history?reschedule={reservationId}";
 
         var payload = new
         {
-            sender = new { name = SenderName, email = SenderEmail },
+            sender = new { name = rName, email = SenderEmail },
             to = new[] { new { email = toEmail, name = userName } },
-            subject = $"[Yakishime] Đặt bàn đã được xác nhận – {reservationCode}",
+            subject = $"Đặt bàn đã được xác nhận – {reservationCode}",
             htmlContent = $"""
                 <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px">
                   <h2 style="color:#b45309">Đặt bàn đã xác nhận 🎉</h2>
                   <p>Xin chào <strong>{userName}</strong>,</p>
-                  <p>Đặt bàn của bạn tại <strong>Yakishime Café</strong> đã được xác nhận bởi nhân viên.</p>
+                  <p>Đặt bàn của bạn tại <strong>{rName}</strong> đã được xác nhận bởi nhân viên.</p>
                   <ul>
                     <li><strong>Mã đặt bàn:</strong> {reservationCode}</li>
                     <li><strong>Thời gian:</strong> {reservationDateTime:dd/MM/yyyy HH:mm}</li>
@@ -57,7 +68,7 @@ public class EmailService : IEmailService
                   </p>
                   <p>Chúng tôi rất mong được phục vụ bạn!</p>
                   <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
-                  <p style="color:#999;font-size:12px">Yakishime Café &bull; Cần Thơ, Việt Nam</p>
+                  <p style="color:#999;font-size:12px">{rName} &bull; {rAddress}</p>
                 </div>
             """
         };
@@ -68,11 +79,12 @@ public class EmailService : IEmailService
     public async Task SendCancellationNotificationAsync(
         string toEmail, string userName, string reservationCode, Guid reservationId, CancellationToken ct = default)
     {
+        var (rName, rAddress) = await GetRestaurantInfoAsync(ct);
         var payload = new
         {
-            sender = new { name = SenderName, email = SenderEmail },
+            sender = new { name = rName, email = SenderEmail },
             to = new[] { new { email = toEmail, name = userName } },
-            subject = $"[Yakishime] Đặt bàn đã bị huỷ – {reservationCode}",
+            subject = $"Đặt bàn đã bị huỷ – {reservationCode}",
             htmlContent = $"""
                 <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px">
                   <h2 style="color:#dc2626">Đặt bàn đã bị huỷ</h2>
@@ -80,7 +92,7 @@ public class EmailService : IEmailService
                   <p>Đặt bàn <strong>{reservationCode}</strong> của bạn đã bị huỷ.</p>
                   <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>
                   <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
-                  <p style="color:#999;font-size:12px">Yakishime Café &bull; Cần Thơ, Việt Nam</p>
+                  <p style="color:#999;font-size:12px">{rName} &bull; {rAddress}</p>
                 </div>
             """
         };
@@ -92,13 +104,14 @@ public class EmailService : IEmailService
         string toEmail, string userName, string reservationCode, Guid reservationId,
         DateTime newDateTime, CancellationToken ct = default)
     {
+        var (rName, rAddress) = await GetRestaurantInfoAsync(ct);
         var manageLink = $"{FrontendUrl}/booking/history";
 
         var payload = new
         {
-            sender = new { name = SenderName, email = SenderEmail },
+            sender = new { name = rName, email = SenderEmail },
             to = new[] { new { email = toEmail, name = userName } },
-            subject = $"[Yakishime] Đặt bàn đã được đổi lịch – {reservationCode}",
+            subject = $"Đặt bàn đã được đổi lịch – {reservationCode}",
             htmlContent = $"""
                 <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px">
                   <h2 style="color:#b45309">Đổi lịch đặt bàn</h2>
@@ -113,7 +126,7 @@ public class EmailService : IEmailService
                     </a>
                   </p>
                   <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
-                  <p style="color:#999;font-size:12px">Yakishime Café &bull; Cần Thơ, Việt Nam</p>
+                  <p style="color:#999;font-size:12px">{rName} &bull; {rAddress}</p>
                 </div>
             """
         };
@@ -123,14 +136,15 @@ public class EmailService : IEmailService
 
     public async Task SendPasswordResetAsync(string toEmail, string userName, string resetLink, CancellationToken ct = default)
     {
+        var (rName, rAddress) = await GetRestaurantInfoAsync(ct);
         var payload = new
         {
-            sender = new { name = SenderName, email = SenderEmail },
+            sender = new { name = rName, email = SenderEmail },
             to = new[] { new { email = toEmail, name = userName } },
-            subject = "[Yakishime] Đặt lại mật khẩu của bạn",
+            subject = "Đặt lại mật khẩu của bạn",
             htmlContent = $"""
                 <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px">
-                  <h2 style="color:#b45309">Đặt lại mật khẩu – Yakishime Café</h2>
+                  <h2 style="color:#b45309">Đặt lại mật khẩu – {rName}</h2>
                   <p>Xin chào <strong>{userName}</strong>,</p>
                   <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
                   <p>Nhấn vào nút bên dưới để đặt lại mật khẩu. Link này có hiệu lực trong <strong>10 phút</strong>.</p>
@@ -141,7 +155,7 @@ public class EmailService : IEmailService
                   </p>
                   <p style="color:#666;font-size:13px">Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Tài khoản của bạn vẫn an toàn.</p>
                   <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
-                  <p style="color:#999;font-size:12px">Yakishime Café &bull; Cần Thơ, Việt Nam</p>
+                  <p style="color:#999;font-size:12px">{rName} &bull; {rAddress}</p>
                 </div>
             """
         };

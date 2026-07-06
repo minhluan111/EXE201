@@ -168,8 +168,8 @@ public class ReservationService : IReservationService
         _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
         // Send cancellation email (regardless of who cancelled)
-        _ = _emailService.SendCancellationNotificationAsync(
-            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id);
+        await _emailService.SendCancellationNotificationAsync(
+            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id, ct);
     }
 
     public async Task<ReservationResponse> RescheduleAsync(Guid reservationId, RescheduleReservationRequest request, CancellationToken ct = default)
@@ -381,10 +381,10 @@ public class ReservationService : IReservationService
         _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
         // Send confirmation email to guest
-        _ = _emailService.SendReservationConfirmationAsync(
+        await _emailService.SendReservationConfirmationAsync(
             reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
             reservation.ReservationDate.ToDateTime(reservation.StartTime),
-            $"{reservation.SeatingArea?.TableType} - {reservation.SeatingArea?.Area}");
+            $"{reservation.SeatingArea?.TableType} - {reservation.SeatingArea?.Area}", ct);
 
         return MapToResponse(reservation);
     }
@@ -407,8 +407,8 @@ public class ReservationService : IReservationService
         _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
         // Send cancellation email to guest
-        _ = _emailService.SendCancellationNotificationAsync(
-            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id);
+        await _emailService.SendCancellationNotificationAsync(
+            reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id, ct);
 
         return MapToResponse(reservation);
     }

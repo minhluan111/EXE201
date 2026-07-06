@@ -25,9 +25,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.HasIndex(u => u.Email)
+        builder.HasIndex(u => new { u.Email, u.TenantId })
             .IsUnique()
-            .HasDatabaseName("ix_users_email");
+            .HasDatabaseName("ix_users_email_tenant");
 
         builder.Property(u => u.Phone)
             .HasColumnName("phone")

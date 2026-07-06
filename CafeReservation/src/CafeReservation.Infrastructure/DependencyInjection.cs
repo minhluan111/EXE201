@@ -24,7 +24,14 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
-                npgsql => npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+                npgsql => 
+                {
+                    npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
+                    npgsql.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorCodesToAdd: null);
+                }));
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

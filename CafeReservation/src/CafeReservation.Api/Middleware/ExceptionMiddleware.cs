@@ -48,11 +48,11 @@ public class ExceptionMiddleware
             DomainException de =>
                 (HttpStatusCode.BadRequest, de.Message, (object?)null),
 
-            // Catch unique constraint violation from PostgreSQL (double-booking prevention)
-            DbUpdateException { InnerException: PostgresException { SqlState: "23505" } } =>
-                (HttpStatusCode.Conflict,
-                 "Bàn này đã được đặt bởi người khác. Vui lòng chọn bàn hoặc thời gian khác.",
-                 (object?)null),
+            // Catch unique constraint violation from PostgreSQL
+            DbUpdateException { InnerException: PostgresException pgEx } when pgEx.SqlState == "23505" =>
+                pgEx.ConstraintName?.Contains("users_email") == true
+                    ? (HttpStatusCode.Conflict, "Email này đã được sử dụng.", (object?)null)
+                    : (HttpStatusCode.Conflict, "Bàn này đã được đặt hoặc dữ liệu bị trùng lặp.", (object?)null),
 
             _ =>
                 (HttpStatusCode.InternalServerError, "An unexpected error occurred.", (object?)null)

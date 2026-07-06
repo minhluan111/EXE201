@@ -41,8 +41,9 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
-        if (await _userRepository.ExistsByEmailAsync(request.Email, ct))
-            throw new ConflictException($"Email '{request.Email}' is already registered.");
+        var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+        if (await _userRepository.ExistsByEmailAsync(normalizedEmail, ct))
+            throw new ConflictException($"Email '{request.Email}' đã được đăng ký. Vui lòng sử dụng email khác.");
 
         var user = new User
         {
@@ -65,7 +66,7 @@ public class AuthService : IAuthService
     public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
         var user = await _userRepository.GetByEmailAsync(request.Email.Trim().ToLowerInvariant(), ct)
-            ?? throw new UnauthorizedException("Invalid email or password.");
+            ?? throw new UnauthorizedException("Email hoặc mật khẩu không chính xác.");
 
         // Kiểm tra xem User này có thuộc về Tenant đang login hay không
         // Ngoại lệ: SuperAdmin (Role = 4) có TenantId = null thì được quyền login mọi nơi
@@ -75,11 +76,11 @@ public class AuthService : IAuthService
                 request.Email, _tenantService.TenantId, user.TenantId);
             
             // Trả về lỗi chung chung để chống enumeration (không lộ việc email có tồn tại ở nhà hàng khác)
-            throw new UnauthorizedException("Invalid email or password.");
+            throw new UnauthorizedException("Email hoặc mật khẩu không chính xác.");
         }
 
         if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
-            throw new UnauthorizedException("Invalid email or password.");
+            throw new UnauthorizedException("Email hoặc mật khẩu không chính xác.");
 
         return BuildAuthResponse(user);
     }
@@ -122,16 +123,16 @@ public class AuthService : IAuthService
         var scheme = tenantDomain.Contains("localhost") ? "http://" : "https://";
         var resetLink = $"{scheme}{tenantDomain}/reset-password?token={token}";
 
-        _ = _emailService.SendPasswordResetAsync(user.Email, user.FullName, resetLink, ct);
+        await _emailService.SendPasswordResetAsync(user.Email, user.FullName, resetLink, ct);
     }
 
     public async Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default)
     {
         if (request.NewPassword != request.ConfirmPassword)
-            throw new DomainException("Passwords do not match.");
+            throw new DomainException("Mật khẩu xác nhận không khớp.");
 
         if (string.IsNullOrWhiteSpace(request.Token))
-            throw new DomainException("Token is required.");
+            throw new DomainException("Token không hợp lệ hoặc đã hết hạn.");
 
         var user = await _userRepository.GetByResetTokenAsync(request.Token.Trim(), ct)
             ?? throw new DomainException("Token không hợp lệ hoặc đã hết hạn.");

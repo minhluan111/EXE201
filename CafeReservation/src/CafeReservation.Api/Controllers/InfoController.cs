@@ -21,4 +21,5 @@ public class InfoController : ControllerBase
         if (info == null) return NotFound();
         return Ok(info);
     }
+
 }

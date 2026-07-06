@@ -926,7 +926,7 @@ export async function authResetPassword({ token, newPassword, confirmPassword })
 
 // RESTAURANT INFO & FEEDBACK
 export async function restaurantInfoGet() {
-  const result = await requestJson("/api/public/restaurant-info");
+  const result = await requestJson(`/api/public/restaurant-info?_t=${Date.now()}`);
   if (!result.ok) return result;
 
   const mapEmbedUrl =

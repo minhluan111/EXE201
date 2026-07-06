@@ -14,7 +14,7 @@ import { useBookingContext } from "../context/useBookingContext.js";
 import { useTenant } from "@/context/TenantContext";
 import TableMap from "../components/booking/TableMap.jsx";
 
-const TIME_SLOTS = [
+const DEFAULT_TIME_SLOTS = [
   "08:00",
   "09:00",
   "10:00",
@@ -30,6 +30,38 @@ const TIME_SLOTS = [
   "20:00",
   "21:00",
 ];
+
+function parseOpeningHours(str) {
+  if (!str) return [];
+  // Support various dash characters: hyphen, en-dash, em-dash, etc.
+  const pattern = /(\d{1,2}:\d{2})\s*[-\u2013\u2014\u2012\u2010]\s*(\d{1,2}:\d{2})/g;
+  const intervals = [];
+  for (const match of str.matchAll(pattern)) {
+    const [sh, sm] = match[1].split(":").map(Number);
+    const [eh, em] = match[2].split(":").map(Number);
+    intervals.push({ start: sh * 60 + sm, end: eh * 60 + em });
+  }
+  console.log("[BookingPage] openHours raw:", JSON.stringify(str), "→ intervals:", intervals);
+  return intervals;
+}
+
+function generateTimeSlots(intervals) {
+  if (intervals.length === 0) return DEFAULT_TIME_SLOTS;
+  const slots = [];
+  for (const { start, end } of intervals) {
+    // Start from the first full hour >= start
+    let t = Math.ceil(start / 60) * 60;
+    if (t < start) t += 60;
+    // Last bookable slot is 1 hour before closing
+    while (t + 60 <= end) {
+      const h = String(Math.floor(t / 60)).padStart(2, "0");
+      const m = String(t % 60).padStart(2, "0");
+      slots.push(`${h}:${m}`);
+      t += 60;
+    }
+  }
+  return slots.length > 0 ? slots : DEFAULT_TIME_SLOTS;
+}
 
 // ── Step indicator ────────────────────────────────────────────────────────────
 function StepBar({ step }) {
@@ -155,6 +187,13 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Build time slots from tenant opening hours
+  const tenantTimeSlots = useMemo(() => {
+    const openHours = tenant?.openHours || tenant?.openingHours;
+    const intervals = parseOpeningHours(openHours);
+    return generateTimeSlots(intervals);
+  }, [tenant]);
+
   const filteredTimeSlots = useMemo(() => {
     const today = new Date();
     const year = today.getFullYear();
@@ -165,10 +204,10 @@ export default function BookingPage() {
     const isToday = bookingDate === todayStrLocal;
 
     if (!isToday) {
-      return TIME_SLOTS;
+      return tenantTimeSlots;
     }
 
-    return TIME_SLOTS.filter((slot) => {
+    return tenantTimeSlots.filter((slot) => {
       const [hours, minutes] = slot.split(":").map(Number);
       const slotDate = new Date(today);
       slotDate.setHours(hours, minutes, 0, 0);
@@ -178,7 +217,7 @@ export default function BookingPage() {
 
       return timeDiffMinutes >= 30; // Must be at least 30 minutes in the future
     });
-  }, [bookingDate]);
+  }, [bookingDate, tenantTimeSlots]);
 
   // Reset bookingTime if it is no longer valid for the selected date
   useEffect(() => {

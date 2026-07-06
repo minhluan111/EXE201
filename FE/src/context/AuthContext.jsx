@@ -51,27 +51,21 @@ export function AuthProvider({ children }) {
       token,
       loading,
       login: async ({ login, password }) => {
-        setLoading(true);
         const res = await authLogin({ login, password });
-        setLoading(false);
         if (!res.ok) return res;
         setToken(res.token);
         setUser(res.user);
         return res;
       },
       register: async ({ full_name, email, phone, password }) => {
-        setLoading(true);
         const res = await authRegister({ full_name, email, phone, password });
-        setLoading(false);
         if (!res.ok) return res;
         setToken(res.token);
         setUser(res.user);
         return res;
       },
       logout: async () => {
-        setLoading(true);
         await authLogout();
-        setLoading(false);
         setToken(null);
         setUser(null);
       },

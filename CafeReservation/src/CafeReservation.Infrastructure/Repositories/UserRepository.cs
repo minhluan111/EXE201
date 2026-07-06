@@ -40,7 +40,6 @@ public class UserRepository : IUserRepository
 
     public Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default) =>
         _db.Users
-            .IgnoreQueryFilters()
             .AnyAsync(u => u.Email == email, ct);
 
     public async Task AddAsync(User user, CancellationToken ct = default) =>
