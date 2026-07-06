@@ -38,6 +38,7 @@ export function TenantProvider({ children }) {
           const rawName = rawData.name || rawData.TenantName || "";
           const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha");
           const isComTam = rawName.toLowerCase().includes("cơm tấm");
+          localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
           
           const normalizedData = { ...rawData };
           if (isMatcha) {

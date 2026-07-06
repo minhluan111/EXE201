@@ -2,9 +2,21 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/jpeg" href="/assets/images/logo.jpg" />
+    <link id="favicon-link" rel="icon" type="image/jpeg" href="/assets/images/logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yakishime</title>
+    <script>
+      (function() {
+        const host = window.location.hostname.toLowerCase();
+        const storedIsComTam = localStorage.getItem("tenant_is_comtam") === "true";
+        const isComTam = host.includes("comtam") || storedIsComTam;
+        if (isComTam) {
+          document.title = "Cơm Tấm Ngọ";
+          const fav = document.getElementById("favicon-link");
+          if (fav) fav.href = "/assets/comtamno/logo.jpg";
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
