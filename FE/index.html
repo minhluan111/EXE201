@@ -12,8 +12,11 @@
         const isComTam = host.includes("comtam") || storedIsComTam;
         if (isComTam) {
           document.title = "Cơm Tấm Ngọ";
+          document.documentElement.setAttribute('data-tenant', 'comtam');
           const fav = document.getElementById("favicon-link");
           if (fav) fav.href = "/assets/comtamno/logo.jpg";
+        } else {
+          document.documentElement.setAttribute('data-tenant', 'matcha');
         }
       })();
     </script>

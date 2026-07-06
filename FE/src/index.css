@@ -62,6 +62,19 @@ html.dark {
   --glass-border: rgba(141, 175, 90, 0.20);
 }
 
+html.dark[data-tenant="comtam"] {
+  --bg:           #140D0A; /* Deep warm black-brown */
+  --bg-card:      #1F1612; /* Rich warm dark brown */
+  --bg-alt:       #281E19; /* Warm dark gray-brown */
+  --cream:        #332720;
+  --text:         #F5EFEA;
+  --text-muted:   #BCADA5;
+  --text-light:   #8C7C75;
+  --border:       rgba(224, 123, 57, 0.15);
+  --glass-bg:     rgba(20, 13, 10, 0.80);
+  --glass-border: rgba(224, 123, 57, 0.20);
+}
+
 /* ─────────────────────────────────────────────
    BASE
 ───────────────────────────────────────────── */

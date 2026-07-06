@@ -40,6 +40,12 @@ export function TenantProvider({ children }) {
           const isComTam = rawName.toLowerCase().includes("cơm tấm");
           localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
           
+          if (isComTam) {
+            document.documentElement.setAttribute('data-tenant', 'comtam');
+          } else {
+            document.documentElement.setAttribute('data-tenant', 'matcha');
+          }
+          
           const normalizedData = { ...rawData };
           if (isMatcha) {
             normalizedData.name = "yakishime";
