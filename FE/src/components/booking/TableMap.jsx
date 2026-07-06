@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ZoomIn, X } from "lucide-react";
+import { useTenant } from "@/context/TenantContext";
 
 const tableImages = {
   "2-Seat Corner": "/assets/images/space_corner.png",
@@ -9,6 +10,15 @@ const tableImages = {
   "4-Seat Indoor": "/assets/images/space_indoor.png",
   "4-Seat Tatami": "/assets/images/space_tatami.png",
   "4-Seat Outdoor": "/assets/images/4-Seat Outdoor.jpg",
+};
+
+const comTamTableImages = {
+  "2-Seat Corner": "/assets/comtamno/n2_2.jpg",
+  "2-Seat Window": "/assets/comtamno/n2_2.jpg",
+  "2-Seat Bar": "/assets/comtamno/n2_2.jpg",
+  "4-Seat Indoor": "/assets/comtamno/n4_2.jpg",
+  "4-Seat Tatami": "/assets/comtamno/n4_2.jpg",
+  "4-Seat Outdoor": "/assets/comtamno/n4_1.jpg",
 };
 
 const areaDescriptions = {
@@ -20,6 +30,8 @@ const areaDescriptions = {
 
 export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const [zoomedImage, setZoomedImage] = useState(null);
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
 
   return (
     <>
@@ -33,13 +45,16 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
+          const imageList = isComTam ? comTamTableImages : tableImages;
+          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : "/assets/images/4-Seat Indoor.jpg";
+
           const image =
             table.previewImage ||
             table.seatingArea?.previewImage ||
             table.seatingArea?.preview_image ||
-            tableImages[table.imageType] ||
-            tableImages[table.name] ||
-            "/assets/images/4-Seat Indoor.jpg";
+            imageList[table.imageType] ||
+            imageList[table.name] ||
+            defaultImage;
 
           const description = table.seatingArea?.description || areaDescriptions[table.area] || "";
 

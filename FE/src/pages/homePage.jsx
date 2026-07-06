@@ -172,26 +172,26 @@ const PHILOSOPHIES = [
 // ═══════════════════════════════════════════════════════════════════════════
 const COM_TAM_PHILOSOPHIES = [
   {
-    kanji: "選",
-    romaji: "SEN",
+    kanji: "Chọn",
+    romaji: "CHỌN",
     title: "Tuyển Chọn",
     desc: "Nguyên liệu tươi ngon tinh tuyển mỗi ngày. Gạo tấm thơm dẻo cùng sườn heo tẩm ướp mật ong gia truyền đặc sắc."
   },
   {
-    kanji: "火",
-    romaji: "KA",
+    kanji: "Lửa",
+    romaji: "LỬA",
     title: "Lửa Hồng",
     desc: "Sườn được nướng trực tiếp trên bếp than hồng đỏ rực, giữ trọn vị ngọt tự nhiên, thơm nức mũi khi chín tới."
   },
   {
-    kanji: "味",
-    romaji: "MI",
+    kanji: "Vị",
+    romaji: "VỊ",
     title: "Đậm Đà",
     desc: "Nước mắm kẹo chua ngọt gia truyền sánh mịn đậm vị, linh hồn của đĩa cơm tấm chuẩn vị miền Nam."
   },
   {
-    kanji: "誠",
-    romaji: "SEI",
+    kanji: "Tâm",
+    romaji: "TÂM",
     title: "Chân Thành",
     desc: "Phục vụ thực khách bằng cả tấm lòng. Mang đến bữa ăn ngon miệng, ấm cúng và đầy ắp hương vị gia đình."
   }
@@ -541,10 +541,13 @@ export default function HomePage() {
                 >
                   {/* Calligraphy Kanji Watermark */}
                   <span style={{
-                    position: "absolute", top: -20, right: -10,
+                    position: "absolute", 
+                    top: isComTam ? 10 : -20, 
+                    right: isComTam ? 10 : -10,
                     fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: 160, fontWeight: 800,
-                    color: "rgba(107, 143, 62, 0.04)",
+                    fontSize: isComTam ? 90 : 160, 
+                    fontWeight: 800,
+                    color: isComTam ? "rgba(224, 123, 57, 0.04)" : "rgba(107, 143, 62, 0.04)",
                     lineHeight: 1, pointerEvents: "none", userSelect: "none"
                   }}>
                     {p.kanji}

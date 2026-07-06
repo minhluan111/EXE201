@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { Plus, Edit2, Trash2, Layers, ShieldCheck } from "lucide-react";
 import { useAuth } from "../../context/useAuthContext.js";
+import { useTenant } from "../../context/TenantContext.jsx";
 import {
   adminGetSeatingAreas,
   adminCreateSeatingArea,
@@ -47,6 +48,8 @@ const AREAS = [
 
 export default function ManageTablesPage() {
   const { token } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -405,7 +408,9 @@ export default function ManageTablesPage() {
                 const matchSeats = String(item.tableType || "").match(/^(\d+)-Seat\s+(.*)$/);
                 const maxSeats = matchSeats ? matchSeats[1] : (String(item.tableType || "").match(/^(\d+)/) ? String(item.tableType || "").match(/^(\d+)/)[1] : "2");
                 const displayTableType = matchSeats ? matchSeats[2] : item.tableType;
-                const cardImage = item.previewImage || (maxSeats === "4" ? "/assets/images/space_indoor.png" : "/assets/images/space_corner.png");
+                const cardImage = item.previewImage || (isComTam 
+                   ? (maxSeats === "4" ? "/assets/comtamno/n4_2.jpg" : "/assets/comtamno/n2_2.jpg")
+                   : (maxSeats === "4" ? "/assets/images/space_indoor.png" : "/assets/images/space_corner.png"));
 
                 return (
                   <Card

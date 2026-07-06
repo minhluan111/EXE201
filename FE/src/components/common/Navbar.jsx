@@ -99,7 +99,7 @@ export default function Navbar() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                 color: "var(--matcha)",
-                textTransform: "lowercase",
+                textTransform: isComTam ? "none" : "lowercase",
               }}
             >
               {tenant?.name || "yakishime"}
