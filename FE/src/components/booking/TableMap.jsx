@@ -44,6 +44,26 @@ const samHouseTableImages = {
   "4-Seat Outdoor": "/assets/samhouse/tables/t3_6.jpg",
 };
 
+const monQuanChatTableImages = {
+  "Bàn 1 - 6 người (Máy lạnh, cạnh cửa sổ)": "/assets/monquanchat/tables/ban_1.jpg",
+  "Bàn 2 - 6 người (Máy lạnh, trong góc)": "/assets/monquanchat/tables/ban_2.jpg",
+  "Bàn 3 - 4 người (Máy lạnh, cạnh cửa sổ)": "/assets/monquanchat/tables/ban_3.jpg",
+  "Bàn 5 - 6 người (Máy lạnh, cạnh cửa sổ)": "/assets/monquanchat/tables/ban_5.jpg",
+  "Bàn 6 - 4 người (Ngoài trời, gần hồ cá)": "/assets/monquanchat/tables/ban_6.jpg",
+  "Bàn 7 - 4 người (Ngoài trời, gần hồ cá)": "/assets/monquanchat/tables/ban_7.jpg",
+  "Bàn 8 - 4 người (Ngoài trời, thoáng mát)": "/assets/monquanchat/tables/ban_8.jpg",
+  "Bàn 9 - 4 người (Ngoài trời, cạnh hồ cá)": "/assets/monquanchat/tables/ban_9.jpg",
+  "Bàn 11 - 4 người (Ngoài trời, cạnh hồ cá)": "/assets/monquanchat/tables/ban_11.jpg",
+  "Bàn 12 - 4 người (Ngoài trời, cạnh hồ cá)": "/assets/monquanchat/tables/ban_12.jpg",
+  "Bàn 13 - 4 người (Ngoài trời, gần bếp)": "/assets/monquanchat/tables/ban_13.jpg",
+  "2-Seat Corner": "/assets/monquanchat/tables/ban_3.jpg",
+  "2-Seat Window": "/assets/monquanchat/tables/ban_3.jpg",
+  "2-Seat Bar": "/assets/monquanchat/tables/ban_3.jpg",
+  "4-Seat Indoor": "/assets/monquanchat/tables/ban_3.jpg",
+  "4-Seat Tatami": "/assets/monquanchat/tables/ban_3.jpg",
+  "4-Seat Outdoor": "/assets/monquanchat/tables/ban_8.jpg",
+};
+
 const areaDescriptions = {
   "Window": "Bàn cạnh cửa sổ view đường phố, lãng mạn và yên tĩnh. Phù hợp cho 1–2 người.",
   "Corner": "Góc khuất riêng tư, ánh sáng ấm cúng. Phù hợp cho các buổi trò chuyện hai người.",
@@ -56,6 +76,7 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
 
   return (
     <>
@@ -69,8 +90,8 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
-          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : tableImages);
-          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : "/assets/images/4-Seat Indoor.jpg");
+          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : tableImages));
+          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : "/assets/images/4-Seat Indoor.jpg"));
 
           const image =
             table.previewImage ||

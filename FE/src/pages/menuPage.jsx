@@ -67,7 +67,8 @@ export default function MenuPage() {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const CATEGORIES = isComTam ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : MATCHA_CATEGORIES);
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const CATEGORIES = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : MATCHA_CATEGORIES);
 
   const [q, setQ]               = useState("");
   const [category, setCategory] = useState("all");
@@ -114,7 +115,7 @@ export default function MenuPage() {
           position: "absolute", inset: 0,
           backgroundImage: isComTam 
             ? "url('/assets/comtamno/hero.jpg')" 
-            : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')"),
+            : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')")),
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "brightness(0.35)",
         }} />
@@ -122,7 +123,7 @@ export default function MenuPage() {
           position: "absolute", inset: 0,
           background: isComTam 
             ? "linear-gradient(to bottom, rgba(40,30,25,0.6), rgba(40,30,25,0.9))" 
-            : (isSamHouse ? "linear-gradient(to bottom, rgba(30,20,15,0.6), rgba(30,20,15,0.9))" : "linear-gradient(to bottom, rgba(15,31,18,0.6), rgba(15,31,18,0.9))")
+            : (isSamHouse ? "linear-gradient(to bottom, rgba(30,20,15,0.6), rgba(30,20,15,0.9))" : (isMonQuanChat ? "linear-gradient(to bottom, rgba(43,10,10,0.6), rgba(43,10,10,0.9))" : "linear-gradient(to bottom, rgba(15,31,18,0.6), rgba(15,31,18,0.9))"))
         }} />
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "100px 24px 80px" }}>
@@ -140,7 +141,7 @@ export default function MenuPage() {
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, maxWidth: 540, lineHeight: 1.7 }}>
               {isComTam 
                 ? "Từng đĩa cơm sườn, bát bún thịt nướng được tẩm ướp đậm đà — sườn nướng than hồng mật ong thơm ngon trọn vị."
-                : (isSamHouse ? "Khám phá hương vị cà phê rang xay nguyên chất đậm vị, cùng các loại trà sữa và trà trái cây thơm mát đặc biệt." : "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết, hương vị tinh tế theo triết lý Zen.")}
+                : (isSamHouse ? "Khám phá hương vị cà phê rang xay nguyên chất đậm vị, cùng các loại trà sữa và trà trái cây thơm mát đặc biệt." : (isMonQuanChat ? "Thưởng thức mỳ Quảng tôm thịt đậm đà, Cao lầu Hội An chuẩn vị và bánh tráng cuốn thịt heo ba chỉ ngọt thơm chuẩn vị xứ Quảng." : "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết, hương vị tinh tế theo triết lý Zen."))}
             </p>
           </motion.div>
         </div>

@@ -162,6 +162,8 @@ export default function BookingPage() {
   const location = useLocation();
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
   const { selected, setSelected } = useBookingContext();
 
   const selectedRef = useRef(selected);
@@ -248,9 +250,8 @@ export default function BookingPage() {
             return;
           }
 
-          const requiredCapacity = numPeople <= 2 ? 2 : 4;
           const suitableTables = res.data.filter(
-            (table) => table.max_seats === requiredCapacity,
+            (table) => table.max_seats >= numPeople,
           );
 
           setFloorTables(suitableTables);
@@ -290,8 +291,7 @@ export default function BookingPage() {
 
   const canSelect = (table) => {
     if (!table) return false;
-    const requiredCapacity = numPeople <= 2 ? 2 : 4;
-    return table.status === "available" && table.max_seats === requiredCapacity;
+    return table.status === "available" && table.max_seats >= numPeople;
   };
 
   const handleNextStep = () => {
@@ -369,7 +369,7 @@ export default function BookingPage() {
             width: 320,
             height: 320,
             borderRadius: "50%",
-            background: isComTam ? "rgba(224,123,57,0.12)" : "rgba(141,175,90,0.12)",
+            background: isComTam ? "rgba(224,123,57,0.12)" : (isSamHouse ? "rgba(139,69,19,0.12)" : (isMonQuanChat ? "rgba(139,26,26,0.12)" : "rgba(141,175,90,0.12)")),
             filter: "blur(70px)",
           }}
         />
@@ -401,7 +401,7 @@ export default function BookingPage() {
           >
             <span
               style={{
-                color: isComTam ? "rgba(244,164,96,0.8)" : "rgba(175,215,120,0.8)",
+                color: "var(--matcha)",
                 fontSize: 13,
                 fontWeight: 700,
                 letterSpacing: "0.15em",
@@ -712,7 +712,7 @@ export default function BookingPage() {
                     marginTop: 14,
                   }}
                 >
-                  {numPeople <= 2 ? "→ Bàn đôi (2 ghế)" : "→ Bàn nhóm (4 ghế)"}
+                  {isMonQuanChat ? "→ Bàn phù hợp cho nhóm từ 4-6 người" : (numPeople <= 2 ? "→ Bàn đôi (2 ghế)" : "→ Bàn nhóm (4-10 ghế)")}
                 </p>
               </div>
             </motion.div>

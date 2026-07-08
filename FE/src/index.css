@@ -88,6 +88,42 @@ html.dark[data-tenant="samhouse"] {
   --glass-border: rgba(139, 69, 19, 0.20);
 }
 
+html[data-tenant="monquanchat"] {
+  --matcha:       #8B1A1A;
+  --matcha-light: #A52A2A;
+  --matcha-dark:  #5C1010;
+  --forest:       #721C1C;
+  --forest-dark:  #4E1010;
+  --bg:           #FFFDF9;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #F7F3E9;
+  --cream:        #EFE9D9;
+  --text:         #231712;
+  --text-muted:   #72625A;
+  --text-light:   #A09088;
+  --border:       rgba(139, 26, 26, 0.18);
+  --glass-bg:     rgba(255, 253, 249, 0.72);
+  --glass-border: rgba(139, 26, 26, 0.20);
+}
+
+html.dark[data-tenant="monquanchat"] {
+  --matcha:       #A52A2A;
+  --matcha-light: #C84545;
+  --matcha-dark:  #8B1A1A;
+  --forest:       #8A2525;
+  --forest-dark:  #5C1010;
+  --bg:           #120807;
+  --bg-card:      #1C0E0D;
+  --bg-alt:       #241513;
+  --cream:        #301C1A;
+  --text:         #F7EDED;
+  --text-muted:   #C2A8A5;
+  --text-light:   #8E7471;
+  --border:       rgba(139, 26, 26, 0.18);
+  --glass-bg:     rgba(18, 8, 7, 0.80);
+  --glass-border: rgba(139, 26, 26, 0.20);
+}
+
 /* ─────────────────────────────────────────────
    BASE
 ───────────────────────────────────────────── */

@@ -39,9 +39,9 @@ const COLORS = {
 };
 
 const CATEGORIES = [
-  { value: "Drink", label: "Đồ uống / Trà đạo" },
+  { value: "Drink", label: "Đồ uống " },
   { value: "MainCourse", label: "Món chính" },
-  { value: "Dessert", label: "Tráng miệng / Wagashi" },
+  { value: "Dessert", label: "Tráng miệng " },
   { value: "Snack", label: "Ăn nhẹ" },
 ];
 

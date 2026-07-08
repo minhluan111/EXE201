@@ -39,14 +39,18 @@ export function TenantProvider({ children }) {
           const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha");
           const isComTam = rawName.toLowerCase().includes("cơm tấm");
           const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse");
+          const isMonQuanChat = rawName.toLowerCase().includes("quảng") || rawName.toLowerCase().includes("monquanchat");
           
           localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
           localStorage.setItem("tenant_is_samhouse", isSamHouse ? "true" : "false");
+          localStorage.setItem("tenant_is_monquanchat", isMonQuanChat ? "true" : "false");
           
           if (isComTam) {
             document.documentElement.setAttribute('data-tenant', 'comtam');
           } else if (isSamHouse) {
             document.documentElement.setAttribute('data-tenant', 'samhouse');
+          } else if (isMonQuanChat) {
+            document.documentElement.setAttribute('data-tenant', 'monquanchat');
           } else {
             document.documentElement.setAttribute('data-tenant', 'matcha');
           }
@@ -55,6 +59,8 @@ export function TenantProvider({ children }) {
           if (isMatcha) {
             normalizedData.name = "yakishime";
             normalizedData.address = "57 Nguyễn Cư Trinh, Cần Thơ";
+          } else if (isMonQuanChat && !normalizedData.address) {
+            normalizedData.address = "201 QL1K, Đông Hòa, Dĩ An, Bình Dương";
           }
           
           setTenant(normalizedData);

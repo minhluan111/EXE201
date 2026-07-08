@@ -62,22 +62,22 @@ public class SeatingAreaRepository : ISeatingAreaRepository
     {
         if (string.IsNullOrWhiteSpace(tableType)) return 2;
         
-        var matchSeat = System.Text.RegularExpressions.Regex.Match(tableType, @"^(\d+)-Seat", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        if (matchSeat.Success)
-        {
-            return int.Parse(matchSeat.Groups[1].Value);
-        }
-        
-        var matchNguoi = System.Text.RegularExpressions.Regex.Match(tableType, @"Bàn\s+(?:lớn\s+)?(\d+)\s+người", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        var matchNguoi = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)\s*người", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         if (matchNguoi.Success)
         {
             return int.Parse(matchNguoi.Groups[1].Value);
         }
         
+        var matchSeat = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)-Seat", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matchSeat.Success)
+        {
+            return int.Parse(matchSeat.Groups[1].Value);
+        }
+        
         var matchDigits = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)");
         if (matchDigits.Success)
         {
-            return int.Parse(matchDigits.Value);
+            return int.Parse(matchDigits.Groups[1].Value);
         }
         
         return 2;

@@ -30,32 +30,35 @@ export default function Footer() {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
 
   const brandName = tenant?.name || "Yakishime";
   const brandDesc = isComTam
     ? "Quán cơm tấm gia truyền với hương vị đậm đà, sườn nướng mật ong béo ngậy và các món bún thịt nướng truyền thống ngon miệng."
     : (isSamHouse 
         ? "Không gian học tập, làm việc yên tĩnh và hiện đại. Thưởng thức hương vị cà phê rang xay nguyên chất đậm đà, trà sữa và trà trái cây ngọt mát."
-        : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định.");
+        : (isMonQuanChat
+            ? "Quán ăn món Quảng gia truyền với hương vị đậm đà, mộc mạc chuẩn vị miền Trung: Mỳ Quảng, Cao lầu, Bánh xèo, Bánh tráng cuốn thịt heo."
+            : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định."));
 
-  const textGreenLight = isComTam ? "rgba(244, 164, 96, 0.9)" : (isSamHouse ? "rgba(186, 175, 168, 0.9)" : "rgba(175, 215, 120, 0.9)");
-  const borderGreen = isComTam ? "rgba(224, 123, 57, 0.12)" : (isSamHouse ? "rgba(139, 69, 19, 0.12)" : "rgba(141, 175, 90, 0.12)");
-  const bgGlow1 = isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : "rgba(141, 175, 90, 0.06)");
-  const bgGlow2 = isComTam ? "rgba(224, 123, 57, 0.04)" : (isSamHouse ? "rgba(139, 69, 19, 0.04)" : "rgba(107, 143, 62, 0.04)");
-  const calligraphyColor = isComTam ? "rgba(224, 123, 57, 0.022)" : (isSamHouse ? "rgba(139, 69, 19, 0.022)" : "rgba(141, 175, 90, 0.022)");
-  const borderSocial = isComTam ? "rgba(224, 123, 57, 0.15)" : (isSamHouse ? "rgba(139, 69, 19, 0.15)" : "rgba(141, 175, 90, 0.15)");
-  const bgSocialHover = isComTam ? "rgba(224, 123, 57, 0.18)" : (isSamHouse ? "rgba(139, 69, 19, 0.18)" : "rgba(141, 175, 90, 0.18)");
-  const textSocialHover = isComTam ? "rgba(244, 164, 96, 0.95)" : (isSamHouse ? "rgba(186, 175, 168, 0.95)" : "rgba(175, 215, 120, 0.95)");
-  const borderSocialHover = isComTam ? "rgba(244, 164, 96, 0.4)" : (isSamHouse ? "rgba(139, 69, 19, 0.4)" : "rgba(175, 215, 120, 0.4)");
-  const textLinkHover = isComTam ? "rgba(244, 164, 96, 0.95)" : (isSamHouse ? "rgba(139, 69, 19, 0.95)" : "rgba(175, 215, 120, 0.95)");
-  const bgIconCircle = isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : "rgba(141, 175, 90, 0.06)");
-  const textIconCircle = isComTam ? "rgba(244, 164, 96, 0.85)" : (isSamHouse ? "rgba(186, 175, 168, 0.85)" : "rgba(175, 215, 120, 0.85)");
+  const textGreenLight = isComTam ? "rgba(244, 164, 96, 0.9)" : (isSamHouse ? "rgba(186, 175, 168, 0.9)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.9)" : "rgba(175, 215, 120, 0.9)"));
+  const borderGreen = isComTam ? "rgba(224, 123, 57, 0.12)" : (isSamHouse ? "rgba(139, 69, 19, 0.12)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.12)" : "rgba(141, 175, 90, 0.12)"));
+  const bgGlow1 = isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.06)" : "rgba(141, 175, 90, 0.06)"));
+  const bgGlow2 = isComTam ? "rgba(224, 123, 57, 0.04)" : (isSamHouse ? "rgba(139, 69, 19, 0.04)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.04)" : "rgba(107, 143, 62, 0.04)"));
+  const calligraphyColor = isComTam ? "rgba(224, 123, 57, 0.022)" : (isSamHouse ? "rgba(139, 69, 19, 0.022)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.022)" : "rgba(141, 175, 90, 0.022)"));
+  const borderSocial = isComTam ? "rgba(224, 123, 57, 0.15)" : (isSamHouse ? "rgba(139, 69, 19, 0.15)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.15)" : "rgba(141, 175, 90, 0.15)"));
+  const bgSocialHover = isComTam ? "rgba(224, 123, 57, 0.18)" : (isSamHouse ? "rgba(139, 69, 19, 0.18)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.18)" : "rgba(141, 175, 90, 0.18)"));
+  const textSocialHover = isComTam ? "rgba(244, 164, 96, 0.95)" : (isSamHouse ? "rgba(186, 175, 168, 0.95)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.95)" : "rgba(175, 215, 120, 0.95)"));
+  const borderSocialHover = isComTam ? "rgba(244, 164, 96, 0.4)" : (isSamHouse ? "rgba(139, 69, 19, 0.4)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.4)" : "rgba(175, 215, 120, 0.4)"));
+  const textLinkHover = isComTam ? "rgba(244, 164, 96, 0.95)" : (isSamHouse ? "rgba(139, 69, 19, 0.95)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.95)" : "rgba(175, 215, 120, 0.95)"));
+  const bgIconCircle = isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.06)" : "rgba(141, 175, 90, 0.06)"));
+  const textIconCircle = isComTam ? "rgba(244, 164, 96, 0.85)" : (isSamHouse ? "rgba(186, 175, 168, 0.85)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.85)" : "rgba(175, 215, 120, 0.85)"));
 
   const infoItems = [
-    { icon: MapPin, text: tenant?.address || "57 Nguyễn Cư Trinh,\nNinh Kiều, Cần Thơ" },
-    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || "08:00 – 22:00"}\nMỗi ngày trong tuần` },
-    { icon: Phone,  text: tenant?.hotline || "0909 123 456" },
-    { icon: Mail,   text: tenant?.email || "hello@yakishime.vn" },
+    { icon: MapPin, text: tenant?.address || (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh,\nNinh Kiều, Cần Thơ")) },
+    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || (isMonQuanChat ? "10:00 – 22:00" : (isSamHouse ? "07:30 – 22:00" : "08:00 – 22:00"))}\nMỗi ngày trong tuần` },
+    { icon: Phone,  text: tenant?.hotline || (isMonQuanChat ? "0907 888 999" : (isSamHouse ? "0762 801 234" : "0945781173")) },
+    { icon: Mail,   text: tenant?.email || (isMonQuanChat ? "monquanchat@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : "hello@yakishime.vn")) },
   ];
 
   return (
@@ -64,7 +67,9 @@ export default function Footer() {
         ? "linear-gradient(to bottom, #1E0F05, #140A03)"
         : (isSamHouse 
             ? "linear-gradient(to bottom, #1C110C, #110B08)" 
-            : "linear-gradient(to bottom, #0F1F12, #0A140C)"),
+            : (isMonQuanChat
+                ? "linear-gradient(to bottom, #2B0A0A, #190505)"
+                : "linear-gradient(to bottom, #0F1F12, #0A140C)")),
       color: "rgba(240, 237, 228, 0.7)",
       position: "relative", 
       overflow: "hidden",
@@ -82,7 +87,7 @@ export default function Footer() {
         color: calligraphyColor,
         lineHeight: 1, pointerEvents: "none", userSelect: "none"
       }}>
-        {isComTam ? "飯" : (isSamHouse ? "☕" : "茶")}
+        {isComTam ? "飯" : (isSamHouse ? "☕" : (isMonQuanChat ? "食" : "茶"))}
       </span>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 24px 40px", position: "relative", zIndex: 1 }}>
@@ -93,7 +98,9 @@ export default function Footer() {
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
               {isComTam 
                 ? <span style={{ fontSize: 24 }}>🌾</span>
-                : <Leaf size={24} style={{ color: textGreenLight, flexShrink: 0 }} />
+                : (isMonQuanChat
+                    ? <span style={{ fontSize: 24 }}>🍲</span>
+                    : <Leaf size={24} style={{ color: textGreenLight, flexShrink: 0 }} />)
               }
               <span style={{ 
                 fontFamily: "'Cormorant Garamond', serif", 
@@ -227,10 +234,12 @@ export default function Footer() {
               ? <span style={{ fontSize: 14 }}>🌾</span>
               : (isSamHouse 
                   ? <Coffee size={14} style={{ color: "rgba(186,175,168,0.5)" }} />
-                  : <Leaf size={14} style={{ color: "rgba(175,215,120,0.5)" }} />)
+                  : (isMonQuanChat
+                      ? <span style={{ fontSize: 14 }}>🍲</span>
+                      : <Leaf size={14} style={{ color: "rgba(175,215,120,0.5)" }} />))
             }
             <span style={{ fontSize: 12, color: "rgba(240, 237, 228, 0.4)", fontFamily: "Inter, sans-serif" }}>
-              {isComTam ? "Hương vị đậm đà chuẩn cơm mẹ nấu 🌾" : (isSamHouse ? "Crafted with Passion & Coffee in Dĩ An ☕" : "Crafted with Zen & Love in Cần Thơ 🍵")}
+              {isComTam ? "Hương vị đậm đà chuẩn cơm mẹ nấu 🌾" : (isSamHouse ? "Crafted with Passion & Coffee in Dĩ An ☕" : (isMonQuanChat ? "Hương vị ẩm thực miền Trung đậm chất 🍲" : "Crafted with Zen & Love in Cần Thơ 🍵"))}
             </span>
           </div>
         </div>

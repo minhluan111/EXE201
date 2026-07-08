@@ -52,6 +52,7 @@ export default function LoginPage() {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
 
   const [login_val, setLoginVal] = useState("");
   const [password, setPassword]  = useState("");
@@ -91,7 +92,7 @@ export default function LoginPage() {
         position: "relative", overflow: "hidden",
         backgroundImage: isComTam 
           ? "url('/assets/comtamno/hero.jpg')" 
-          : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')"),
+          : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')")),
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
         <div style={{ 
@@ -101,7 +102,9 @@ export default function LoginPage() {
             ? "linear-gradient(135deg, rgba(30,15,5,0.8) 0%, rgba(224,123,57,0.7) 100%)" 
             : (isSamHouse 
                 ? "linear-gradient(135deg, rgba(20,10,5,0.8) 0%, rgba(139,69,19,0.7) 100%)" 
-                : "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)")
+                : (isMonQuanChat
+                    ? "linear-gradient(135deg, rgba(30,10,10,0.8) 0%, rgba(139,26,26,0.7) 100%)"
+                    : "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)"))
         }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
@@ -109,7 +112,9 @@ export default function LoginPage() {
               ? <span style={{ fontSize: 24 }}>🌾</span> 
               : (isSamHouse 
                   ? <Coffee size={24} style={{ color: "#BAAFA8" }} />
-                  : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />)
+                  : (isMonQuanChat
+                      ? <span style={{ fontSize: 24 }}>🍲</span>
+                      : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />))
             }
             <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: "capitalize" }}>
               {tenant?.name || "yakishime"}
@@ -118,7 +123,7 @@ export default function LoginPage() {
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#fff", margin: "0 0 14px", lineHeight: 1.15 }}>
             {isComTam 
               ? "Cơm Tấm Ngọ - Đậm đà chuẩn vị quê nhà" 
-              : (isSamHouse ? "Cafe Sam Houses - Hương vị ấm cúng" : "Trà đạo chính thống từ Uji, Kyoto")}
+              : (isSamHouse ? "Cafe Sam Houses - Hương vị ấm cúng" : (isMonQuanChat ? "Món Quảng Chất - Đậm đà vị miền Trung" : "Trà đạo chính thống từ Uji, Kyoto"))}
           </h2>
           <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 16, lineHeight: 1.7 }}>
             Đăng nhập để đặt bàn, theo dõi lịch sử và viết đánh giá.
