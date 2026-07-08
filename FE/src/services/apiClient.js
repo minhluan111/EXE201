@@ -203,11 +203,47 @@ function mapMenuCategory(category, name = "") {
   }
 
   if (isSamHouse) {
+    const lowerName = String(name || "").toLowerCase();
     const catVal = String(category || "").trim().toLowerCase();
-    if (catVal === "1" || catVal.includes("coffee")) return "Coffee";
-    if (catVal === "2" || catVal.includes("milktea")) return "MilkTea";
-    if (catVal === "3" || catVal.includes("fruittea")) return "FruitTea";
-    if (catVal === "4" || catVal.includes("other")) return "Other";
+
+    if (
+      lowerName.includes("cà phê") ||
+      lowerName.includes("cafe") ||
+      lowerName.includes("bạc xỉu") ||
+      lowerName.includes("coffee")
+    ) {
+      return "Coffee";
+    }
+    if (
+      lowerName.includes("trà sữa") ||
+      lowerName.includes("sữa tươi") ||
+      lowerName.includes("lài sữa") ||
+      lowerName.includes("olong sữa")
+    ) {
+      return "MilkTea";
+    }
+    if (
+      lowerName.includes("trà") ||
+      lowerName.includes("tea") ||
+      lowerName.includes("macchiato") ||
+      lowerName.includes("atiso")
+    ) {
+      return "FruitTea";
+    }
+    if (
+      lowerName.includes("cacao") ||
+      lowerName.includes("khác") ||
+      catVal === "4" ||
+      catVal === "other" ||
+      catVal === "snack"
+    ) {
+      return "Other";
+    }
+
+    if (catVal === "1" || catVal.includes("coffee") || catVal.includes("drink")) return "Coffee";
+    if (catVal === "2" || catVal.includes("milktea") || catVal.includes("maincourse")) return "MilkTea";
+    if (catVal === "3" || catVal.includes("fruittea") || catVal.includes("dessert")) return "FruitTea";
+    if (catVal === "4" || catVal.includes("other") || catVal.includes("snack")) return "Other";
     return "Coffee";
   }
 
@@ -271,7 +307,7 @@ function mapMenuItem(item, avgRating = 0) {
       imageUrl.includes("tra_vai_lai") ||
       imageUrl.includes("tra_xoai_macchiato"))
   ) {
-    imageUrl = imageUrl + (imageUrl.includes("?") ? "&" : "?") + "v=2";
+    imageUrl = imageUrl + (imageUrl.includes("?") ? "&" : "?") + "v=3";
   }
 
   return {
