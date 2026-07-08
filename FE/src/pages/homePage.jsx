@@ -467,7 +467,7 @@ export default function HomePage() {
                 color: isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : "rgba(200,230,160,0.9)"), fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
               }}>
                 {isSamHouse ? <Coffee size={13} /> : <Leaf size={13} />}
-                {isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : (isSamHouse ? "Cà Phê · Trà Sữa · Ấm Cúng" : "Matcha · Zen · Cao cấp")}
+                {isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : (isSamHouse ? "Cà Phê · Trà Sữa · Không Gian" : "Matcha · Zen · Cao cấp")}
               </span>
             </motion.div>
 
