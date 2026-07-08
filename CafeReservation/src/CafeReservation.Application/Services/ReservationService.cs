@@ -72,8 +72,8 @@ public class ReservationService : IReservationService
             if (!area.IsActive)
                 throw new DomainException("The selected seating area is not available.");
 
-            var requiredCapacity = request.GuestCount <= AppConstants.GuestCountRules.SmallGroupMax ? 2 : 4;
-            if (!area.TableType.StartsWith(requiredCapacity.ToString()))
+            var areaCapacity = ParseCapacity(area.TableType);
+            if (areaCapacity < request.GuestCount)
                 throw new DomainException($"This seating area does not support {request.GuestCount} guest(s). Please select an appropriate area.");
 
             var startTime = request.StartTime;
@@ -524,5 +524,30 @@ public class ReservationService : IReservationService
             .Where(r => !string.IsNullOrEmpty(r.TableName))
             .Select(r => r.TableName!)
             .ToList();
+    }
+
+    private static int ParseCapacity(string tableType)
+    {
+        if (string.IsNullOrWhiteSpace(tableType)) return 2;
+        
+        var matchSeat = System.Text.RegularExpressions.Regex.Match(tableType, @"^(\d+)-Seat", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matchSeat.Success)
+        {
+            return int.Parse(matchSeat.Groups[1].Value);
+        }
+        
+        var matchNguoi = System.Text.RegularExpressions.Regex.Match(tableType, @"Bàn\s+(?:lớn\s+)?(\d+)\s+người", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matchNguoi.Success)
+        {
+            return int.Parse(matchNguoi.Groups[1].Value);
+        }
+        
+        var matchDigits = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)");
+        if (matchDigits.Success)
+        {
+            return int.Parse(matchDigits.Value);
+        }
+        
+        return 2;
     }
 }

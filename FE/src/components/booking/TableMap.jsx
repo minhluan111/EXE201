@@ -21,6 +21,29 @@ const comTamTableImages = {
   "4-Seat Outdoor": "/assets/comtamno/n4_1.jpg",
 };
 
+const samHouseTableImages = {
+  "Bàn 2 người ngoài trời": "/assets/samhouse/tables/n1.jpg",
+  "Bàn 3 người trong góc": "/assets/samhouse/tables/t1_2.jpg",
+  "Bàn 4 người gần cửa ra vào": "/assets/samhouse/tables/t1_3.jpg",
+  "Bàn 4 người cạnh cửa sổ (Có quạt)": "/assets/samhouse/tables/t1_4.jpg",
+  "Bàn 4 người cạnh cửa sổ": "/assets/samhouse/tables/t1_5.jpg",
+  "Bàn 4 người góc ngoài trời": "/assets/samhouse/tables/t2_1.jpg",
+  "Bàn 4 người máy lạnh tầng 2": "/assets/samhouse/tables/t2_2.jpg",
+  "Bàn 4 người trong góc (Tầng 3)": "/assets/samhouse/tables/t3_1.jpg",
+  "Bàn 2 người trong góc (Tầng 3)": "/assets/samhouse/tables/t3_2.jpg",
+  "Bàn 3 người gần cửa sổ (Tầng 3)": "/assets/samhouse/tables/t3_3.jpg",
+  "Bàn lớn 10 người họp nhóm": "/assets/samhouse/tables/t3_4.jpg",
+  "Bàn 6 người cạnh cửa sổ (Tầng 3)": "/assets/samhouse/tables/t3_5.jpg",
+  "Bàn 2 người ngoài trời (Tầng 3)": "/assets/samhouse/tables/t3_6.jpg",
+  "Bàn 1 người ngoài trời (Tầng 3)": "/assets/samhouse/tables/t3_7.jpg",
+  "2-Seat Corner": "/assets/samhouse/tables/t3_2.jpg",
+  "2-Seat Window": "/assets/samhouse/tables/t3_2.jpg",
+  "2-Seat Bar": "/assets/samhouse/tables/t3_2.jpg",
+  "4-Seat Indoor": "/assets/samhouse/tables/t2_2.jpg",
+  "4-Seat Tatami": "/assets/samhouse/tables/t2_2.jpg",
+  "4-Seat Outdoor": "/assets/samhouse/tables/t3_6.jpg",
+};
+
 const areaDescriptions = {
   "Window": "Bàn cạnh cửa sổ view đường phố, lãng mạn và yên tĩnh. Phù hợp cho 1–2 người.",
   "Corner": "Góc khuất riêng tư, ánh sáng ấm cúng. Phù hợp cho các buổi trò chuyện hai người.",
@@ -32,6 +55,7 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const [zoomedImage, setZoomedImage] = useState(null);
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
 
   return (
     <>
@@ -45,8 +69,8 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
-          const imageList = isComTam ? comTamTableImages : tableImages;
-          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : "/assets/images/4-Seat Indoor.jpg";
+          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : tableImages);
+          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : "/assets/images/4-Seat Indoor.jpg");
 
           const image =
             table.previewImage ||

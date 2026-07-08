@@ -38,10 +38,15 @@ export function TenantProvider({ children }) {
           const rawName = rawData.name || rawData.TenantName || "";
           const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha");
           const isComTam = rawName.toLowerCase().includes("cơm tấm");
+          const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse");
+          
           localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
+          localStorage.setItem("tenant_is_samhouse", isSamHouse ? "true" : "false");
           
           if (isComTam) {
             document.documentElement.setAttribute('data-tenant', 'comtam');
+          } else if (isSamHouse) {
+            document.documentElement.setAttribute('data-tenant', 'samhouse');
           } else {
             document.documentElement.setAttribute('data-tenant', 'matcha');
           }
@@ -57,15 +62,15 @@ export function TenantProvider({ children }) {
           // Set dynamic title and favicon
           const name = isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime");
           document.title = name;
-          const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : "/assets/images/logo.jpg");
+          const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : "/assets/images/logo.jpg"));
           normalizedData.logo = logo;
           const favicon = document.querySelector("link[rel*='icon']");
           if (favicon) {
             favicon.href = logo;
           }
-
+ 
           // Apply dynamic theme color if available (only for non-Matcha tenants to preserve original css tokens)
-          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor || (isComTam ? "#E07B39" : null);
+          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor || (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : null));
           if (themeColor && !isMatcha) {
             const root = document.documentElement;
             const hsl = hexToHsl(themeColor);

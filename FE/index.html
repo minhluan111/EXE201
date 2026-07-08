@@ -9,12 +9,19 @@
       (function() {
         const host = window.location.hostname.toLowerCase();
         const storedIsComTam = localStorage.getItem("tenant_is_comtam") === "true";
+        const storedIsSamHouse = localStorage.getItem("tenant_is_samhouse") === "true";
         const isComTam = host.includes("comtam") || storedIsComTam;
+        const isSamHouse = host.includes("samhouse") || storedIsSamHouse;
         if (isComTam) {
           document.title = "Cơm Tấm Ngọ";
           document.documentElement.setAttribute('data-tenant', 'comtam');
           const fav = document.getElementById("favicon-link");
           if (fav) fav.href = "/assets/comtamno/logo.jpg";
+        } else if (isSamHouse) {
+          document.title = "Cafe Sam House";
+          document.documentElement.setAttribute('data-tenant', 'samhouse');
+          const fav = document.getElementById("favicon-link");
+          if (fav) fav.href = "/assets/samhouse/decor/logo.png";
         } else {
           document.documentElement.setAttribute('data-tenant', 'matcha');
         }
