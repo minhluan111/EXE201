@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useAuth } from "../context/useAuthContext.js";
+import { useTenant } from "@/context/TenantContext";
 
 const COLORS = {
   moss: "#788B45",
@@ -22,6 +23,11 @@ const COLORS = {
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const info = useMemo(() => user || {}, [user]);
 
   return (
@@ -206,7 +212,7 @@ export default function ProfilePage() {
                        Chào mừng bạn!
                     </Typography>
                     <Typography sx={{ fontSize: "14px" }}>
-                      Cảm ơn bạn đã là thành viên của Yakishime. Hãy khám phá thực đơn
+                      Cảm ơn bạn đã là thành viên của {tenant?.name || "Yakishime"}. Hãy khám phá thực đơn
                       và đặt bàn ngay!
                     </Typography>
                   </Alert>

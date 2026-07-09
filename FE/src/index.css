@@ -88,6 +88,42 @@ html.dark[data-tenant="samhouse"] {
   --glass-border: rgba(139, 69, 19, 0.20);
 }
 
+html[data-tenant="hoatearoom"] {
+  --matcha:       #1E4620;
+  --matcha-light: #2E6F40;
+  --matcha-dark:  #0C2B14;
+  --forest:       #183D21;
+  --forest-dark:  #0A210F;
+  --bg:           #FFFDF9;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #F2F7F3;
+  --cream:        #E8EFEA;
+  --text:         #152319;
+  --text-muted:   #546B5C;
+  --text-light:   #829A8B;
+  --border:       rgba(46, 111, 64, 0.18);
+  --glass-bg:     rgba(255, 253, 249, 0.72);
+  --glass-border: rgba(46, 111, 64, 0.20);
+}
+
+html.dark[data-tenant="hoatearoom"] {
+  --matcha:       #74C38E; /* Bright high-contrast green for links/highlights */
+  --matcha-light: #9DECB7; /* Hover state bright green */
+  --matcha-dark:  #4E9B66; /* Sub-highlights */
+  --forest:       #8CD8A4; /* Brighter forest green for headings in dark mode */
+  --forest-dark:  #2D6031;
+  --bg:           #11251A; /* Significantly lighter moss green background */
+  --bg-card:      #1C3B2A; /* Lighter card green */
+  --bg-alt:       #264F3A; /* Lighter input background */
+  --cream:        #32664B;
+  --text:         #FFFFFF; /* Pure white for high contrast */
+  --text-muted:   #E2ECE7; /* Light silver-white-green */
+  --text-light:   #C0D5C9; /* Soft light green-gray */
+  --border:       rgba(116, 195, 142, 0.32); /* Slightly more defined borders */
+  --glass-bg:     rgba(17, 37, 26, 0.85);
+  --glass-border: rgba(116, 195, 142, 0.30);
+}
+
 html[data-tenant="monquanchat"] {
   --matcha:       #8B1A1A;
   --matcha-light: #A52A2A;

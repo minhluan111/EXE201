@@ -64,6 +64,24 @@ const monQuanChatTableImages = {
   "4-Seat Outdoor": "/assets/monquanchat/tables/ban_8.jpg",
 };
 
+const hoaTeaRoomTableImages = {
+  "Bàn N2 - 6 người (Tầng 1, cửa sổ)": "/assets/hoatearoom/tables/n2.jpg",
+  "Bàn N2.1 - 4 người (Tầng 1, quầy bar)": "/assets/hoatearoom/tables/n2_1.jpg",
+  "Bàn N2.2 - 4 người (Tầng 2, cửa sổ)": "/assets/hoatearoom/tables/n2_2.jpg",
+  "Bàn N2.3 - 2 người (Tầng 2, ổ điện)": "/assets/hoatearoom/tables/n2_3.jpg",
+  "Bàn N2.4 - 2 người (Tầng 2, cửa sổ)": "/assets/hoatearoom/tables/n2_4.jpg",
+  "Bàn N2.5 - 2 người (Tầng 2, ban công)": "/assets/hoatearoom/tables/n2_5.jpg",
+  "Bàn N2.6 - 2 người (Tầng 2, trong góc)": "/assets/hoatearoom/tables/n2_6.jpg",
+  "Bàn N2.7 - 2 người (Tầng 2, ban công ngoài)": "/assets/hoatearoom/tables/n2_7.jpg",
+  "Bàn N2.8 - 2 người (Tầng 1, kệ sách)": "/assets/hoatearoom/tables/n2_8.jpg",
+  "2-Seat Corner": "/assets/hoatearoom/tables/n2_8.jpg",
+  "2-Seat Window": "/assets/hoatearoom/tables/n2_4.jpg",
+  "2-Seat Bar": "/assets/hoatearoom/tables/n2_1.jpg",
+  "4-Seat Indoor": "/assets/hoatearoom/tables/n2_2.jpg",
+  "4-Seat Tatami": "/assets/hoatearoom/tables/n2_2.jpg",
+  "4-Seat Outdoor": "/assets/hoatearoom/tables/n2_7.jpg",
+};
+
 const areaDescriptions = {
   "Window": "Bàn cạnh cửa sổ view đường phố, lãng mạn và yên tĩnh. Phù hợp cho 1–2 người.",
   "Corner": "Góc khuất riêng tư, ánh sáng ấm cúng. Phù hợp cho các buổi trò chuyện hai người.",
@@ -77,6 +95,7 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
 
   return (
     <>
@@ -90,8 +109,8 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
-          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : tableImages));
-          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : "/assets/images/4-Seat Indoor.jpg"));
+          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : (isHoaTeaRoom ? hoaTeaRoomTableImages : tableImages)));
+          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : (isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" : "/assets/images/4-Seat Indoor.jpg")));
 
           const image =
             table.previewImage ||

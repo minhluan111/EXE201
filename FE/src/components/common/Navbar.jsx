@@ -22,6 +22,7 @@ export default function Navbar() {
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const [scrolled, setScrolled]       = useState(false);
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -101,7 +102,7 @@ export default function Navbar() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                 color: "var(--matcha)",
-                textTransform: (isComTam || isSamHouse || isMonQuanChat) ? "none" : "lowercase",
+                textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom) ? "none" : "lowercase",
               }}
             >
               {tenant?.name || "yakishime"}

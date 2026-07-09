@@ -50,6 +50,7 @@ export default function ForgotPasswordPage() {
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [globalErr, setGlobalErr] = useState("");
@@ -85,7 +86,7 @@ export default function ForgotPasswordPage() {
         position: "relative", overflow: "hidden",
         backgroundImage: isComTam 
           ? "url('/assets/comtamno/hero.jpg')" 
-          : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')")),
+          : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=900&q=85')"))),
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
         <div style={{ 
@@ -97,7 +98,9 @@ export default function ForgotPasswordPage() {
                 ? "linear-gradient(135deg, rgba(20,10,5,0.8) 0%, rgba(139,69,19,0.7) 100%)" 
                 : (isMonQuanChat
                     ? "linear-gradient(135deg, rgba(30,10,10,0.8) 0%, rgba(139,26,26,0.7) 100%)"
-                    : "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)"))
+                    : (isHoaTeaRoom
+                        ? "linear-gradient(135deg, rgba(6,18,12,0.8) 0%, rgba(46,111,64,0.7) 100%)"
+                        : "linear-gradient(135deg, rgba(15,31,18,0.8) 0%, rgba(47,91,62,0.7) 100%)")))
         }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
@@ -107,7 +110,9 @@ export default function ForgotPasswordPage() {
                   ? <Coffee size={24} style={{ color: "#BAAFA8" }} />
                   : (isMonQuanChat
                       ? <span style={{ fontSize: 24 }}>🍲</span>
-                      : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />))
+                      : (isHoaTeaRoom
+                          ? <span style={{ fontSize: 24 }}>🍃</span>
+                          : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />)))
             }
             <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: "capitalize" }}>
               {tenant?.name || "yakishime"}

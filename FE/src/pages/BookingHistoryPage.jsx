@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTenant } from "@/context/TenantContext";
 
 import {
   Calendar,
@@ -22,6 +23,11 @@ import { useAvailabilityHub } from "../hooks/useAvailabilityHub.js";
 
 export default function BookingHistoryPage() {
   const { token } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
@@ -288,8 +294,15 @@ export default function BookingHistoryPage() {
                 lineHeight: 1.6,
               }}
             >
-              Theo dõi trạng thái các cuộc hẹn trà đạo và lịch sử trải nghiệm
-              của quý khách tại Yakishime Matcha.
+              {isComTam 
+                ? "Theo dõi trạng thái các cuộc hẹn dùng cơm và lịch sử trải nghiệm của quý khách tại Cơm Tấm Ngọ." 
+                : (isSamHouse 
+                    ? "Theo dõi trạng thái các cuộc hẹn đặt chỗ và lịch sử trải nghiệm của quý khách tại Sam Houses."
+                    : (isMonQuanChat
+                        ? "Theo dõi trạng thái các cuộc hẹn đặt bàn và lịch sử trải nghiệm của quý khách tại Món Quảng Chất."
+                        : (isHoaTeaRoom
+                            ? "Theo dõi trạng thái các cuộc hẹn đặt bàn thưởng trà và lịch sử trải nghiệm của quý khách tại Hòa Tea Room."
+                            : "Theo dõi trạng thái các cuộc hẹn trà đạo và lịch sử trải nghiệm của quý khách tại Yakishime Matcha.")))}
             </p>
           </motion.div>
         </div>

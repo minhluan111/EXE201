@@ -6,6 +6,17 @@ const getTenantDomain = () => {
   if (host && host !== 'localhost' && host !== '127.0.0.1') {
     return host;
   }
+  // Check URL query parameter first
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tenantParam = urlParams.get("tenant");
+    if (tenantParam) {
+      localStorage.setItem("dev_tenant_domain", tenantParam);
+      return tenantParam;
+    }
+    const saved = localStorage.getItem("dev_tenant_domain");
+    if (saved) return saved;
+  }
   return import.meta.env.VITE_TENANT_DOMAIN || "exe-201-flax.vercel.app";
 };
 const TENANT_DOMAIN = getTenantDomain();
@@ -193,6 +204,7 @@ function mapMenuCategory(category, name = "") {
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   
   if (isComTam) {
     const catVal = String(category || "").trim().toLowerCase();
@@ -201,6 +213,51 @@ function mapMenuCategory(category, name = "") {
     if (catVal === "3" || catVal.includes("dessert")) return "Desserts";
     if (catVal === "4" || catVal.includes("snack")) return "Snack";
     return "MainCourse";
+  }
+
+  if (isHoaTeaRoom) {
+    const lowerName = String(name || "").toLowerCase();
+    const catVal = String(category || "").trim().toLowerCase();
+
+    if (
+      lowerName.includes("workshop") ||
+      lowerName.includes("vẽ ly") ||
+      lowerName.includes("tô vẽ")
+    ) {
+      return "Experiences";
+    }
+    if (
+      lowerName.includes("flower") ||
+      lowerName.includes("hộp hoa") ||
+      lowerName.includes("lài mia") ||
+      lowerName.includes("trà sữa")
+    ) {
+      return "MilkTea";
+    }
+    if (
+      lowerName.includes("corn") ||
+      lowerName.includes("kaze") ||
+      lowerName.includes("coco") ||
+      lowerName.includes("kumori") ||
+      lowerName.includes("tiramisu") ||
+      lowerName.includes("ube") ||
+      lowerName.includes("khoai mỡ")
+    ) {
+      return "MatchaSpecial";
+    }
+    if (
+      lowerName.includes("latte") ||
+      lowerName.includes("whisk") ||
+      lowerName.includes("cổ điển")
+    ) {
+      return "MatchaClassic";
+    }
+
+    if (catVal === "1" || catVal.includes("special")) return "MatchaSpecial";
+    if (catVal === "2" || catVal.includes("classic")) return "MatchaClassic";
+    if (catVal === "3" || catVal.includes("milktea")) return "MilkTea";
+    if (catVal === "4" || catVal.includes("experience")) return "Experiences";
+    return "MatchaSpecial";
   }
 
   if (isSamHouse) {
@@ -267,7 +324,9 @@ function mapMenuCategory(category, name = "") {
   if (
     value.includes("snack") ||
     lowerName.includes("croissant") ||
-    lowerName.includes("mochi")
+    lowerName.includes("mochi") ||
+    lowerName.includes("workshop") ||
+    lowerName.includes("vẽ ly")
   ) {
     return "Food";
   }
@@ -497,6 +556,7 @@ async function getTablesWithAreas() {
   const activeAreas = seatingAreas.filter((area) => area.isActive || area.is_active);
 
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   const tables = [];
   activeAreas.forEach((area) => {
     const tableTypeText = String(area.tableType || area.table_type || "");
@@ -525,6 +585,13 @@ async function getTablesWithAreas() {
       let displayName = `Bàn ${area.area} ${i}`;
       if (isMonQuanChat) {
         const numMatch = tableTypeText.match(/^Bàn\s+(\d+)/i);
+        if (numMatch) {
+          displayName = `Bàn ${numMatch[1]}`;
+        } else {
+          displayName = tableTypeText;
+        }
+      } else if (isHoaTeaRoom) {
+        const numMatch = tableTypeText.match(/^Bàn\s+(N\d+(?:\.\d+)?)/i);
         if (numMatch) {
           displayName = `Bàn ${numMatch[1]}`;
         } else {
@@ -1035,27 +1102,31 @@ export async function restaurantInfoGet() {
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || TENANT_DOMAIN.toLowerCase().includes("hoatea") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  
   const defaultMapUrl = isComTam
     ? "https://maps.google.com/maps?q=C%C6%A1m%20T%E1%BA%A5m%20Ng%E1%BB%8D%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"
     : ((isSamHouse || isMonQuanChat)
         ? "https://maps.google.com/maps?q=%C4%90%C6%B0%E1%BB%9Dng%20GS1%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
-        : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed");
+        : (isHoaTeaRoom
+            ? "https://maps.google.com/maps?q=18/2%20%C4%90%C6%B0%E1%BB%9Dng%20s%E1%BB%91%204%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
+            : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"));
 
   if (!result.ok || !result.data) {
     console.warn("Using offline mock data fallback for restaurantInfoGet");
     return {
       ok: true,
       data: {
-        name: isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : "Yakishime")),
+        name: isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime"))),
         address: isComTam 
           ? "106 Đường GS1, Khu Phố Đông Hòa, Dĩ An, Bình Dương" 
-          : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ")),
-        hotline: isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : "0945781173")),
-        email: isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : "hello@yakicafe.local")),
-        openHours: isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : "08:00 - 22:00")),
+          : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ"))),
+        hotline: isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173"))),
+        email: isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local"))),
+        openHours: isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00"))),
         mapEmbedUrl: defaultMapUrl,
-        themeColor: isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : "#2D6A4F")),
-        logo: isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : "/assets/images/logo.jpg"))
+        themeColor: isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F"))),
+        logo: isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")))
       }
     };
   }
@@ -1335,6 +1406,7 @@ function getMockMenuItems() {
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
 
   if (isComTam) {
     return [
@@ -1374,6 +1446,19 @@ function getMockMenuItems() {
       { id: "mq8", name: "Cam vắt", price: 25000, category: "Drink", imageUrl: "/assets/monquanchat/menu/cam_vat.jpg", description: "Nước cam vắt nguyên chất ngọt mát thanh nhiệt dồi dào vitamin C cực tốt cho sức khỏe.", tag: "none" },
       { id: "mq9", name: "Thơm ép", price: 25000, category: "Drink", imageUrl: "/assets/monquanchat/menu/thom_ep.jpg", description: "Nước ép quả thơm (dứa) tươi nguyên chất chua ngọt thanh mát giải nhiệt ngày hè cực đã.", tag: "none" },
       { id: "mq10", name: "Trà tắc", price: 20000, category: "Drink", imageUrl: "/assets/monquanchat/menu/tra_tac.jpg", description: "Trà tắc mát lạnh chua ngọt sảng khoái đánh tan nắng nóng.", tag: "none" }
+    ];
+  }
+
+  if (isHoaTeaRoom) {
+    return [
+      { id: "htr1", name: "ASA Corn Matcha", price: 49000, category: "MatchaSpecial", imageUrl: "/assets/hoatearoom/menu/asa_corn_matcha.jpg", description: "Matcha nguyên chất kết hợp cùng lớp sữa bắp thơm bùi ngọt dịu.", tag: "signature" },
+      { id: "htr2", name: "KAZE Coco Matcha", price: 49000, category: "MatchaSpecial", imageUrl: "/assets/hoatearoom/menu/kaze_coco_matcha.jpg", description: "Sự kết hợp sảng khoái giữa matcha Nhật Bản đậm vị và nước dừa xiêm thanh ngọt.", tag: "best_seller" },
+      { id: "htr3", name: "KUMORI Matcha Tiramisu", price: 49000, category: "MatchaSpecial", imageUrl: "/assets/hoatearoom/menu/kumori_matcha_tiramisu.jpg", description: "Matcha đá xay cùng tiramisu kem béo ngậy, bánh lady fingers giòn tan.", tag: "trending" },
+      { id: "htr4", name: "UBE Matcha Khoai Mỡ", price: 49000, category: "MatchaSpecial", imageUrl: "/assets/hoatearoom/menu/ube_matcha.jpg", description: "Matcha Nhật Bản kết hợp cùng sốt khoai mỡ tím thơm ngon ngọt bùi độc đáo.", tag: "none" },
+      { id: "htr5", name: "Matcha Latte Cổ Điển", price: 45000, category: "MatchaClassic", imageUrl: "/assets/hoatearoom/menu/matcha_latte.jpg", description: "Sự kết hợp cổ điển giữa matcha Nhật Bản thượng hạng và sữa tươi thanh trùng béo nhẹ.", tag: "none" },
+      { id: "htr6", name: "Matcha Latte Coldwhisk", price: 45000, category: "MatchaClassic", imageUrl: "/assets/hoatearoom/menu/matcha_latte_coldwhisk.jpg", description: "Matcha tươi đánh bọt lạnh công phu quyện cùng sữa tươi nguyên chất thanh mát.", tag: "none" },
+      { id: "htr7", name: "Flower Box Trà Sữa", price: 99000, category: "MilkTea", imageUrl: "/assets/hoatearoom/menu/flower_box.jpg", description: "Set quà tặng đặc biệt gồm một hộp hoa tươi xinh xắn kèm trà sữa lài Mia thơm ngát.", tag: "none" },
+      { id: "htr8", name: "Workshop vẽ ly (Giá nước + 5.000₫)", price: 5000, category: "Experiences", imageUrl: "/assets/hoatearoom/menu/workshop_ve_ly.jpg", description: "Trải nghiệm tự tay thiết kế và tô vẽ chiếc ly gốm xinh xắn của riêng bạn tại quán.", tag: "none" }
     ];
   }
 

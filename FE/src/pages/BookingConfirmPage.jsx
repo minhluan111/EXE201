@@ -30,6 +30,9 @@ export default function BookingConfirmPage() {
   const { user, token } = useAuth();
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const { selected: contextSelected, clear } = useBookingContext();
 
   // Scroll to top on mount
@@ -242,7 +245,7 @@ export default function BookingConfirmPage() {
                 lineHeight: 1.6,
               }}
             >
-              {isComTam ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : "Vui lòng xem lại thông tin chi tiết phòng trà và điền các ghi chú"}
+              {isComTam ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : (isSamHouse ? "Vui lòng xem lại thông tin đặt chỗ và điền các ghi chú" : (isMonQuanChat ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : (isHoaTeaRoom ? "Vui lòng xem lại thông tin đặt bàn trà và điền các ghi chú" : "Vui lòng xem lại thông tin chi tiết phòng trà và điền các ghi chú")))}
               đặc biệt để chúng tôi chuẩn bị đón tiếp quý khách một cách hoàn
               hảo nhất.
             </p>
@@ -305,7 +308,7 @@ export default function BookingConfirmPage() {
                     margin: 0,
                   }}
                 >
-                  {isComTam ? "Thông Tin Đặt Bàn" : "Thông Tin Phòng Trà"}
+                  {isComTam ? "Thông Tin Đặt Bàn" : (isSamHouse ? "Thông Tin Đặt Chỗ" : (isMonQuanChat ? "Thông Tin Đặt Bàn" : (isHoaTeaRoom ? "Thông Tin Bàn Trà" : "Thông Tin Phòng Trà")))}
                 </h2>
                 <p
                   style={{
@@ -314,7 +317,7 @@ export default function BookingConfirmPage() {
                     margin: "2px 0 0",
                   }}
                 >
-                  Chi tiết không gian trà đạo quý khách đã chọn
+                  {isComTam ? "Chi tiết bàn ăn quý khách đã chọn" : (isSamHouse ? "Chi tiết vị trí ngồi quý khách đã chọn" : (isMonQuanChat ? "Chi tiết bàn ăn quý khách đã chọn" : (isHoaTeaRoom ? "Chi tiết vị trí thưởng trà quý khách đã chọn" : "Chi tiết không gian trà đạo quý khách đã chọn")))}
                 </p>
               </div>
             </div>
@@ -434,7 +437,7 @@ export default function BookingConfirmPage() {
                 }}
               >
                 <MessageSquare size={16} style={{ color: "var(--matcha)" }} />
-                {isComTam ? "Ghi chú đặc biệt cho Nhà Hàng" : "Ghi chú đặc biệt cho Phòng Trà"}
+                {isComTam ? "Ghi chú đặc biệt cho Nhà Hàng" : (isSamHouse ? "Ghi chú đặc biệt cho Quán" : (isMonQuanChat ? "Ghi chú đặc biệt cho Quán" : (isHoaTeaRoom ? "Ghi chú đặc biệt cho Trà Quán" : "Ghi chú đặc biệt cho Phòng Trà")))}
               </label>
               <textarea
                 rows={4}

@@ -32,6 +32,14 @@ const SAM_HOUSE_CATEGORIES = [
   { key: "Other",      label: "Khác",        },
 ];
 
+const HOA_TEA_ROOM_CATEGORIES = [
+  { key: "all",           label: "Tất cả",            emoji: "🍵" },
+  { key: "MatchaSpecial", label: "Matcha Đặc Sản",     emoji: "✨" },
+  { key: "MatchaClassic", label: "Matcha Truyền Thống", emoji: "🍃" },
+  { key: "MilkTea",       label: "Trà Sữa & Set Quà",  emoji: "🎁" },
+  { key: "Experiences",   label: "Trải nghiệm",       emoji: "🎨" },
+];
+
 const TAGS = [
   { key: "all",        label: "Tất cả" },
   { key: "best_seller",label: "Bán chạy nhất" },
@@ -68,7 +76,8 @@ export default function MenuPage() {
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
-  const CATEGORIES = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : MATCHA_CATEGORIES);
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const CATEGORIES = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES));
 
   const [q, setQ]               = useState("");
   const [category, setCategory] = useState("all");

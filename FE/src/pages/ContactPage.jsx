@@ -5,9 +5,15 @@ import {
 } from "lucide-react";
 import { restaurantInfoGet, feedbackCreate, feedbackGetMy } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
+import { useTenant } from "@/context/TenantContext";
 
 export default function ContactPage() {
   const { token } = useAuth();
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const [info, setInfo] = useState(null);
 
   const [title, setTitle] = useState("");
@@ -81,7 +87,7 @@ export default function ContactPage() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "clamp(40px, 6vw, 56px)",
               fontWeight: 700,
-              color: "var(--forest)",
+              color: "var(--matcha)",
               textTransform: "uppercase",
               margin: "0 0 12px"
             }}>
@@ -121,7 +127,7 @@ export default function ContactPage() {
               }}>
                 <h2 style={{
                   fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 26, fontWeight: 700, color: "var(--forest)",
+                  fontSize: 26, fontWeight: 700, color: "var(--matcha)",
                   textTransform: "uppercase", margin: "0 0 24px",
                   display: "flex", alignItems: "center", gap: 10
                 }}>
@@ -201,7 +207,7 @@ export default function ContactPage() {
                   <MapPin size={20} style={{ color: "var(--matcha)" }} />
                   <h2 style={{
                     fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: 20, fontWeight: 700, color: "var(--forest)",
+                    fontSize: 20, fontWeight: 700, color: "var(--matcha)",
                     textTransform: "uppercase", margin: 0
                   }}>
                     Vị Trí Cửa Hàng
@@ -239,7 +245,7 @@ export default function ContactPage() {
               }}>
                 <h2 style={{
                   fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 26, fontWeight: 700, color: "var(--forest)",
+                  fontSize: 26, fontWeight: 700, color: "var(--matcha)",
                   textTransform: "uppercase", margin: "0 0 24px",
                   display: "flex", alignItems: "center", gap: 10
                 }}>
@@ -276,7 +282,7 @@ export default function ContactPage() {
                     <textarea
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
-                      placeholder="Ý kiến đóng góp cụ thể của bạn để giúp Yakishime hoàn thiện hơn..."
+                      placeholder={isComTam ? "Ý kiến đóng góp cụ thể của bạn để giúp Cơm Tấm Ngọ hoàn thiện hơn..." : (isSamHouse ? "Ý kiến đóng góp cụ thể của bạn để giúp Sam Houses hoàn thiện hơn..." : (isMonQuanChat ? "Ý kiến đóng góp cụ thể của bạn để giúp Món Quảng Chất hoàn thiện hơn..." : (isHoaTeaRoom ? "Ý kiến đóng góp cụ thể của bạn để giúp Hòa Tea Room hoàn thiện hơn..." : "Ý kiến đóng góp cụ thể của bạn để giúp Yakishime hoàn thiện hơn...")))}
                       rows={6}
                       style={{
                         width: "100%", padding: "12px 16px",

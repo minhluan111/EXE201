@@ -53,6 +53,9 @@ function InteractiveRating({ value, onChange }) {
 function ReviewItem({ review }) {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const initials = review.user?.full_name?.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() ?? "?";
   const date = new Date(review.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -100,7 +103,7 @@ function ReviewItem({ review }) {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: "var(--matcha)", textTransform: "uppercase", letterSpacing: "0.02em" }}>
-                {isComTam ? "🌾" : "🍵"} Phản hồi từ {tenant?.name || "Yakishime"} Manager
+                {isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵")))} Phản hồi từ {tenant?.name || "Yakishime"} Manager
               </span>
             </div>
             <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0, lineHeight: 1.5 }}>
