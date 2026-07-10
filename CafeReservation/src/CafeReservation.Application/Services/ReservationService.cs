@@ -63,8 +63,7 @@ public class ReservationService : IReservationService
             throw new DomainException("Reservations must be made at least 30 minutes before arrival at the restaurant.");
         }
 
-        await _unitOfWork.BeginTransactionAsync(ct);
-        try
+        return await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             var area = await _seatingAreaRepository.GetByIdForUpdateAsync(request.SeatingAreaId, ct)
                 ?? throw new NotFoundException(nameof(SeatingArea), request.SeatingAreaId);
@@ -112,7 +111,6 @@ public class ReservationService : IReservationService
 
             await _reservationRepository.AddAsync(reservation, ct);
             await _unitOfWork.SaveChangesAsync(ct);
-            await _unitOfWork.CommitAsync(ct);
 
             _logger.LogInformation("Reservation {Code} created (Reserved) for guest {GuestName}",
                 reservation.ReservationCode, request.GuestName);
@@ -122,12 +120,7 @@ public class ReservationService : IReservationService
 
             reservation.SeatingArea = area;
             return MapToResponse(reservation);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackAsync(ct);
-            throw;
-        }
+        }, ct);
     }
 
     public async Task<ReservationResponse> GetByIdAsync(Guid reservationId, CancellationToken ct = default)
@@ -200,8 +193,7 @@ public class ReservationService : IReservationService
 
 
 
-        await _unitOfWork.BeginTransactionAsync(ct);
-        try
+        return await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             var area = await _seatingAreaRepository.GetByIdForUpdateAsync(reservation.SeatingAreaId, ct)
                 ?? throw new NotFoundException(nameof(SeatingArea), reservation.SeatingAreaId);
@@ -231,7 +223,6 @@ public class ReservationService : IReservationService
 
             await _reservationRepository.UpdateAsync(reservation, ct);
             await _unitOfWork.SaveChangesAsync(ct);
-            await _unitOfWork.CommitAsync(ct);
 
             _logger.LogInformation("Reservation {Code} rescheduled → back to Reserved", reservation.ReservationCode);
 
@@ -240,12 +231,7 @@ public class ReservationService : IReservationService
 
             reservation.SeatingArea = area;
             return MapToResponse(reservation);
-        }
-        catch
-        {
-            await _unitOfWork.RollbackAsync(ct);
-            throw;
-        }
+        }, ct);
     }
 
     public async Task<PagedResult<ReservationResponse>> GetAllAsync(ReservationFilterRequest filter, CancellationToken ct = default)

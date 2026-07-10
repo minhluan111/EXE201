@@ -19,8 +19,55 @@ import {
 import { bookingCancel, bookingMe, bookingReschedule } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 import { useAvailabilityHub } from "../hooks/useAvailabilityHub.js";
+import { useTenant } from "@/context/TenantContext";
+
+const DEFAULT_TIME_SLOTS = [
+  "08:00",
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
+  "19:00",
+  "20:00",
+  "21:00",
+];
+
+function parseOpeningHours(str) {
+  if (!str) return [];
+  const pattern = /(\d{1,2}:\d{2})\s*[-\u2013\u2014\u2012\u2010]\s*(\d{1,2}:\d{2})/g;
+  const intervals = [];
+  for (const match of str.matchAll(pattern)) {
+    const [sh, sm] = match[1].split(":").map(Number);
+    const [eh, em] = match[2].split(":").map(Number);
+    intervals.push({ start: sh * 60 + sm, end: eh * 60 + em });
+  }
+  return intervals;
+}
+
+function generateTimeSlots(intervals) {
+  if (intervals.length === 0) return DEFAULT_TIME_SLOTS;
+  const slots = [];
+  for (const { start, end } of intervals) {
+    let t = Math.ceil(start / 60) * 60;
+    if (t < start) t += 60;
+    while (t + 60 <= end) {
+      const h = String(Math.floor(t / 60)).padStart(2, "0");
+      const m = String(t % 60).padStart(2, "0");
+      slots.push(`${h}:${m}`);
+      t += 60;
+    }
+  }
+  return slots.length > 0 ? slots : DEFAULT_TIME_SLOTS;
+}
 
 export default function BookingHistoryPage() {
+  const { tenant } = useTenant();
   const { token } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -43,6 +90,12 @@ export default function BookingHistoryPage() {
     return `${year}-${month}-${day}`;
   }, []);
 
+  const tenantTimeSlots = useMemo(() => {
+    const openHours = tenant?.openHours || tenant?.openingHours;
+    const intervals = parseOpeningHours(openHours);
+    return generateTimeSlots(intervals);
+  }, [tenant]);
+
   const filteredRescheduleTimeSlots = useMemo(() => {
     const today = new Date();
     const year = today.getFullYear();
@@ -50,11 +103,10 @@ export default function BookingHistoryPage() {
     const day = String(today.getDate()).padStart(2, "0");
     const todayStrLocal = `${year}-${month}-${day}`;
     const isToday = rescheduleDate === todayStrLocal;
-    const TIME_SLOTS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
 
-    if (!isToday) return TIME_SLOTS;
+    if (!isToday) return tenantTimeSlots;
 
-    return TIME_SLOTS.filter((slot) => {
+    return tenantTimeSlots.filter((slot) => {
       const [hours, minutes] = slot.split(":").map(Number);
       const slotDate = new Date(today);
       slotDate.setHours(hours, minutes, 0, 0);
