@@ -1,47 +1,52 @@
 import { createTheme } from "@mui/material/styles";
 
-const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  teal: "#3E6A7A",
-  cream: "#E9E5D4",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
-};
-
 const muiTheme = createTheme({
   palette: {
     primary: {
-      main: COLORS.moss,
-      dark: COLORS.forest,
-      light: "#A8B973",
+      main: "var(--matcha)",
+      dark: "var(--matcha-dark)",
+      light: "var(--matcha-light)",
       contrastText: "#fff",
     },
     secondary: {
-      main: COLORS.teal,
-      dark: "#2D4F5E",
-      light: "#6A8A9A",
+      main: "var(--forest)",
+      dark: "var(--forest-dark)",
+      light: "var(--matcha-light)",
       contrastText: "#fff",
     },
     background: {
-      default: COLORS.soft,
-      paper: "#FFFFFF",
+      default: "var(--bg)",
+      paper: "var(--bg-card)",
     },
     text: {
-      primary: COLORS.dark,
-      secondary: "#666666",
+      primary: "var(--text)",
+      secondary: "var(--text-muted)",
+      disabled: "var(--text-light)",
     },
+    divider: "var(--border)",
     success: {
-      main: COLORS.moss,
+      main: "var(--matcha)",
+      dark: "var(--matcha-dark)",
+      light: "var(--matcha-light)",
+      contrastText: "#fff",
     },
     error: {
       main: "#EF5350",
+      dark: "#C62828",
+      light: "#E57373",
+      contrastText: "#fff",
     },
     warning: {
       main: "#FFA726",
+      dark: "#F57C00",
+      light: "#FFB74D",
+      contrastText: "#fff",
     },
     info: {
-      main: COLORS.teal,
+      main: "var(--forest)",
+      dark: "var(--forest-dark)",
+      light: "var(--matcha-light)",
+      contrastText: "#fff",
     },
   },
   typography: {
@@ -49,40 +54,42 @@ const muiTheme = createTheme({
     h1: {
       fontSize: "2.5rem",
       fontWeight: 700,
-      color: COLORS.dark,
+      color: "var(--text)",
     },
     h2: {
       fontSize: "2rem",
       fontWeight: 700,
-      color: COLORS.dark,
+      color: "var(--text)",
     },
     h3: {
       fontSize: "1.75rem",
       fontWeight: 600,
-      color: COLORS.dark,
+      color: "var(--text)",
     },
     h4: {
       fontSize: "1.5rem",
       fontWeight: 600,
-      color: COLORS.dark,
+      color: "var(--text)",
     },
     h5: {
       fontSize: "1.25rem",
       fontWeight: 600,
-      color: COLORS.dark,
+      color: "var(--text)",
     },
     h6: {
       fontSize: "1rem",
       fontWeight: 600,
-      color: COLORS.dark,
+      color: "var(--text)",
     },
     body1: {
       fontSize: "1rem",
       lineHeight: 1.5,
+      color: "var(--text)",
     },
     body2: {
       fontSize: "0.875rem",
       lineHeight: 1.5,
+      color: "var(--text-muted)",
     },
   },
   shape: {
@@ -103,9 +110,9 @@ const muiTheme = createTheme({
           },
         },
         containedPrimary: {
-          background: `linear-gradient(135deg, ${COLORS.moss} 0%, ${COLORS.forest} 100%)`,
+          background: `linear-gradient(135deg, var(--matcha) 0%, var(--forest) 100%)`,
           "&:hover": {
-            background: `linear-gradient(135deg, ${COLORS.forest} 0%, ${COLORS.moss} 100%)`,
+            background: `linear-gradient(135deg, var(--forest) 0%, var(--matcha) 100%)`,
           },
         },
       },
@@ -114,7 +121,7 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: "16px",
-          border: `1px solid ${COLORS.soft}`,
+          border: `1px solid var(--border)`,
           boxShadow: "0 8px 24px rgba(0, 0, 0, 0.10)",
           transition: "all 0.3s ease",
           "&:hover": {
@@ -128,11 +135,21 @@ const muiTheme = createTheme({
         root: {
           "& .MuiOutlinedInput-root": {
             borderRadius: "8px",
+            color: "var(--text)",
+            "& fieldset": {
+              borderColor: "var(--border)",
+            },
             "&:hover fieldset": {
-              borderColor: COLORS.moss,
+              borderColor: "var(--matcha)",
             },
             "&.Mui-focused fieldset": {
-              borderColor: COLORS.moss,
+              borderColor: "var(--matcha)",
+            },
+          },
+          "& .MuiInputLabel-root": {
+            color: "var(--text-muted)",
+            "&.Mui-focused": {
+              color: "var(--matcha)",
             },
           },
         },
@@ -141,8 +158,8 @@ const muiTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "white !important",
-          color: COLORS.dark + " !important",
+          backgroundColor: "var(--bg-card) !important",
+          color: "var(--text) !important",
           boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
         },
       },
@@ -151,7 +168,7 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiBadge-badge": {
-            backgroundColor: COLORS.moss,
+            backgroundColor: "var(--matcha)",
           },
         },
       },
@@ -159,11 +176,12 @@ const muiTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          backgroundColor: COLORS.soft,
+          backgroundColor: "var(--bg-alt)",
+          color: "var(--text)",
           borderRadius: "20px",
         },
         colorPrimary: {
-          backgroundColor: COLORS.moss,
+          backgroundColor: "var(--matcha)",
           color: "#fff",
         },
       },

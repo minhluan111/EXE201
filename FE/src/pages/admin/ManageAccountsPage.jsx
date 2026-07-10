@@ -26,10 +26,10 @@ import { adminGetUsers, adminUpdateUserRole, adminDeleteUser } from "../../servi
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
 
 const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  soft: "#F5F5F0",
-  border: "rgba(0, 0, 0, 0.08)",
+  moss: "var(--matcha)",
+  forest: "var(--forest)",
+  soft: "var(--bg)",
+  border: "var(--border)",
 };
 
 export default function ManageAccountsPage() {

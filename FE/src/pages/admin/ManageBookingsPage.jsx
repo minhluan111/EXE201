@@ -32,11 +32,11 @@ import AdminHeader from "../../components/admin/AdminHeader.jsx";
 import { useAvailabilityHub } from "../../hooks/useAvailabilityHub.js";
 
 const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
-  border: "rgba(0, 0, 0, 0.08)",
+  moss: "var(--matcha)",
+  forest: "var(--forest)",
+  soft: "var(--bg)",
+  dark: "var(--text)",
+  border: "var(--border)",
 };
 
 export default function ManageBookingsPage() {

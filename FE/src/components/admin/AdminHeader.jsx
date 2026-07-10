@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 
 const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
+  moss: "var(--matcha)",
+  forest: "var(--forest)",
 };
 
 export default function AdminHeader({ title, subtitle }) {

@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 
 const COLORS = {
-  moss: "#788B45",
+  moss: "var(--matcha)",
 };
 
 export default function Loading({ label = "Loading..." }) {
@@ -17,7 +17,7 @@ export default function Loading({ label = "Loading..." }) {
       }}
     >
       <CircularProgress sx={{ color: COLORS.moss }} />
-      <Typography sx={{ color: "#666" }}>{label}</Typography>
+      <Typography sx={{ color: "var(--text-muted)" }}>{label}</Typography>
     </Box>
   );
 }

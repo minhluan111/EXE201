@@ -340,8 +340,13 @@ export default function Navbar() {
               }}
             >
               <div style={{ padding: "0 24px 24px", borderBottom: "1px solid var(--border)" }}>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 700, color: "var(--matcha)" }}>
-                  yakishime
+                <span style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
+                  color: "var(--matcha)",
+                  textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom) ? "none" : "lowercase",
+                }}>
+                  {tenant?.name || "yakishime"}
                 </span>
               </div>
 

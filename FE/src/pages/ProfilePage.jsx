@@ -13,12 +13,12 @@ import { useAuth } from "../context/useAuthContext.js";
 import { useTenant } from "@/context/TenantContext";
 
 const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  teal: "#3E6A7A",
-  cream: "#E9E5D4",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
+  moss: "var(--matcha)",
+  forest: "var(--forest)",
+  teal: "var(--matcha-dark)",
+  cream: "var(--cream)",
+  soft: "var(--bg)",
+  dark: "var(--text)",
 };
 
 export default function ProfilePage() {
@@ -200,11 +200,11 @@ export default function ProfilePage() {
                   <Alert
                     severity="info"
                     sx={{
-                      backgroundColor: `${COLORS.forest}10`,
-                      borderColor: `${COLORS.forest}30`,
-                      color: COLORS.forest,
+                      backgroundColor: "var(--bg-alt)",
+                      borderColor: "var(--border)",
+                      color: "var(--forest)",
                       "& .MuiAlert-icon": {
-                        color: COLORS.forest,
+                        color: "var(--forest)",
                       },
                     }}
                   >

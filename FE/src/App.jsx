@@ -6,6 +6,8 @@ import Footer from "./components/common/Footer.jsx";
 import AppShell from "./routes/AppShell.jsx";
 import FloatingChatBubble from "./components/common/FloatingChatBubble.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import muiTheme from "./theme/muiTheme.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import "./index.css";
 
@@ -87,10 +89,12 @@ function Layout() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AppShell>
-        <ScrollToTop />
-        <Layout />
-      </AppShell>
+      <MuiThemeProvider theme={muiTheme}>
+        <AppShell>
+          <ScrollToTop />
+          <Layout />
+        </AppShell>
+      </MuiThemeProvider>
     </ThemeProvider>
   );
 }

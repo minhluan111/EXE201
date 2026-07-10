@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 
 const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
+  moss: "var(--matcha)",
+  forest: "var(--forest)",
 };
 
 export default function SectionHeading({
@@ -45,7 +45,8 @@ export default function SectionHeading({
           sx={{
             mt: 2,
             fontSize: { xs: "16px", md: "18px" },
-            opacity: 0.7,
+            color: "var(--text-muted)",
+            opacity: 0.85,
             maxWidth: "500px",
             mx: align === "center" ? "auto" : 0,
           }}

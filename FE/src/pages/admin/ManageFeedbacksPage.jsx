@@ -20,10 +20,10 @@ import { useAuth } from "../../context/useAuthContext.js";
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
 
 const COLORS = {
-  moss: "#788B45",
-  forest: "#2F5B3E",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
+  moss: "var(--matcha)",
+  forest: "var(--forest)",
+  soft: "var(--bg)",
+  dark: "var(--text)",
 };
 
 export default function ManageFeedbacksPage() {

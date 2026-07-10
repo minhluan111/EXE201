@@ -370,15 +370,27 @@ function mapMenuItem(item, avgRating = 0) {
     imageUrl = imageUrl + (imageUrl.includes("?") ? "&" : "?") + "v=3";
   }
 
+  let price = Number(item.price || 0);
+  let name = item.name || "";
+  if (
+    name.toLowerCase().includes("vẽ ly") ||
+    name.toLowerCase().includes("ve ly") ||
+    item.id === "htr8" ||
+    String(item.id).toLowerCase().includes("htr8")
+  ) {
+    price = 5000;
+    name = "Workshop vẽ ly (Giá nước + 5.000₫)";
+  }
+
   return {
     id: item.id,
-    name: item.name,
+    name,
     category,
     image_url: imageUrl,
     imageUrl,
-    price: Number(item.price || 0),
+    price,
     description: item.description || "",
-    tag: (String(item.name || "").toLowerCase().includes("tôm thịt") || String(item.name || "").toLowerCase().includes("ba chỉ") || String(item.name || "").toLowerCase().includes("cao lầu")) ? "signature" : mapMenuTag(item.tag),
+    tag: (String(name).toLowerCase().includes("tôm thịt") || String(name).toLowerCase().includes("ba chỉ") || String(name).toLowerCase().includes("cao lầu")) ? "signature" : mapMenuTag(item.tag),
     sales_count: Number(item.salesCount || item.sales_count || 0),
     salesCount: Number(item.salesCount || item.sales_count || 0),
     avg_rating: avgRating,

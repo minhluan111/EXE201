@@ -107,21 +107,21 @@ html[data-tenant="hoatearoom"] {
 }
 
 html.dark[data-tenant="hoatearoom"] {
-  --matcha:       #74C38E; /* Bright high-contrast green for links/highlights */
-  --matcha-light: #9DECB7; /* Hover state bright green */
-  --matcha-dark:  #4E9B66; /* Sub-highlights */
-  --forest:       #8CD8A4; /* Brighter forest green for headings in dark mode */
-  --forest-dark:  #2D6031;
-  --bg:           #11251A; /* Significantly lighter moss green background */
-  --bg-card:      #1C3B2A; /* Lighter card green */
-  --bg-alt:       #264F3A; /* Lighter input background */
-  --cream:        #32664B;
-  --text:         #FFFFFF; /* Pure white for high contrast */
-  --text-muted:   #E2ECE7; /* Light silver-white-green */
-  --text-light:   #C0D5C9; /* Soft light green-gray */
-  --border:       rgba(116, 195, 142, 0.32); /* Slightly more defined borders */
-  --glass-bg:     rgba(17, 37, 26, 0.85);
-  --glass-border: rgba(116, 195, 142, 0.30);
+  --matcha:       #8CD8A4; /* Bright mint-green for links/highlights - high contrast */
+  --matcha-light: #A5EBBC; /* Hover state bright green */
+  --matcha-dark:  #5CA373; /* Sub-highlights */
+  --forest:       #A5EBBC; /* Brighter forest green for headings */
+  --forest-dark:  #3E7A54;
+  --bg:           #0B120D; /* Very dark tea-black background - matches other tenants */
+  --bg-card:      #121F17; /* Very dark green-card background for depth */
+  --bg-alt:       #1B2E22; /* Dark input background */
+  --cream:        #253F2E;
+  --text:         #F5FDF8; /* Off-white with a soft green tint for eye comfort */
+  --text-muted:   #BDD0C4; /* Soft silver-green-gray */
+  --text-light:   #8EA395; /* Soft light green-gray */
+  --border:       rgba(140, 216, 164, 0.18); /* Clean, subtle borders */
+  --glass-bg:     rgba(11, 18, 13, 0.85);
+  --glass-border: rgba(140, 216, 164, 0.20);
 }
 
 html[data-tenant="monquanchat"] {

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { restaurantInfoGet } from "../services/apiClient.js";
+import { useThemeMode } from "./ThemeContext.jsx";
 
 const TenantCtx = createContext(null);
 
@@ -82,21 +83,7 @@ export function TenantProvider({ children }) {
           if (favicon) {
             favicon.href = logo;
           }
- 
-          // Apply dynamic theme color if available (only for non-Matcha tenants to preserve original css tokens)
-          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor || (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isHoaTeaRoom ? "#1E4620" : null)));
-          if (themeColor && !isMatcha) {
-            const root = document.documentElement;
-            const hsl = hexToHsl(themeColor);
-            if (hsl) {
-              const [h, s, l] = hsl;
-              root.style.setProperty('--matcha', `hsl(${h}, ${s}%, ${l}%)`);
-              root.style.setProperty('--matcha-light', `hsl(${h}, ${s}%, ${Math.min(l + 10, 95)}%)`);
-              root.style.setProperty('--matcha-dark', `hsl(${h}, ${s}%, ${Math.max(l - 10, 10)}%)`);
-              root.style.setProperty('--forest', `hsl(${h}, ${Math.max(s - 15, 10)}%, ${Math.max(l - 15, 10)}%)`);
-              root.style.setProperty('--forest-dark', `hsl(${h}, ${Math.max(s - 20, 10)}%, ${Math.max(l - 25, 5)}%)`);
-            }
-          }
+
       } catch (err) {
         console.error("Failed to load tenant info, using offline fallback:", err);
         const urlParams = new URLSearchParams(window.location.search);
@@ -126,6 +113,47 @@ export function TenantProvider({ children }) {
     }
     loadTenant();
   }, []);
+
+  const themeMode = useThemeMode();
+  const isDark = themeMode ? themeMode.isDark : false;
+
+  useEffect(() => {
+    if (!tenant) return;
+    const rawName = tenant.name || tenant.TenantName || "";
+    const isComTam = rawName.toLowerCase().includes("cơm tấm") || String(tenant.tenantName).toLowerCase().includes("comtam");
+    const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse") || String(tenant.tenantName).toLowerCase().includes("samhouse");
+    const isMonQuanChat = rawName.toLowerCase().includes("quảng") || rawName.toLowerCase().includes("monquanchat") || String(tenant.tenantName).toLowerCase().includes("monquanchat");
+    const isHoaTeaRoom = rawName.toLowerCase().includes("hoa") || rawName.toLowerCase().includes("hoà") || rawName.toLowerCase().includes("hòa") || String(tenant.tenantName).toLowerCase().includes("hoatearoom");
+    const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha") || String(tenant.tenantName).toLowerCase().includes("matcha");
+
+    const themeColor = tenant.themeColor || tenant.ThemeColor || (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isHoaTeaRoom ? "#1E4620" : null)));
+    if (themeColor && !isMatcha) {
+      const root = document.documentElement;
+      const hsl = hexToHsl(themeColor);
+      if (hsl) {
+        let [h, s, l] = hsl;
+        
+        // If dark mode is active, make the dynamic colors soft and not glaring (pastel sage/matcha style)
+        if (isDark) {
+          l = 52; // Soft legibility on dark background
+          s = 38; // Muted saturation for pastel comfort (no neon glare)
+        }
+        
+        root.style.setProperty('--matcha', `hsl(${h}, ${s}%, ${l}%)`);
+        root.style.setProperty('--matcha-light', `hsl(${h}, ${s}%, ${Math.min(l + 10, 95)}%)`);
+        root.style.setProperty('--matcha-dark', `hsl(${h}, ${s}%, ${Math.max(l - 10, 10)}%)`);
+        root.style.setProperty('--forest', `hsl(${h}, ${Math.max(s - 15, 10)}%, ${isDark ? 60 : Math.max(l - 15, 10)}%)`);
+        root.style.setProperty('--forest-dark', `hsl(${h}, ${Math.max(s - 20, 10)}%, ${isDark ? 10 : Math.max(l - 25, 5)}%)`);
+      }
+    } else if (isMatcha) {
+      const root = document.documentElement;
+      root.style.removeProperty('--matcha');
+      root.style.removeProperty('--matcha-light');
+      root.style.removeProperty('--matcha-dark');
+      root.style.removeProperty('--forest');
+      root.style.removeProperty('--forest-dark');
+    }
+  }, [tenant, isDark]);
 
   return (
     <TenantCtx.Provider value={{ tenant, loading }}>

@@ -33,10 +33,10 @@ import {
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
 
 const COLORS = {
-  forest: "#2F5B3E",
-  soft: "#F5F5F0",
-  dark: "#1F1F1F",
-  border: "rgba(0, 0, 0, 0.08)",
+  forest: "var(--forest)",
+  soft: "var(--bg)",
+  dark: "var(--text)",
+  border: "var(--border)",
 };
 
 const AREAS = [
