@@ -20,8 +20,6 @@ import {
 import { bookingCancel, bookingMe, bookingReschedule } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 import { useAvailabilityHub } from "../hooks/useAvailabilityHub.js";
-import { useTenant } from "@/context/TenantContext";
-
 const DEFAULT_TIME_SLOTS = [
   "08:00",
   "09:00",
@@ -70,7 +68,6 @@ function generateTimeSlots(intervals) {
 export default function BookingHistoryPage() {
   const { tenant } = useTenant();
   const { token } = useAuth();
-  const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
