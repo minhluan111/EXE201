@@ -36,11 +36,52 @@ public class SeatingAreaRepository : ISeatingAreaRepository
             .ThenBy(s => s.TableType)
             .ToListAsync(ct);
 
-    public async Task<IReadOnlyList<SeatingArea>> GetByTableCapacityAsync(int requiredCapacity, CancellationToken ct = default) =>
-        await _db.SeatingAreas
+    public async Task<IReadOnlyList<SeatingArea>> GetByTableCapacityAsync(int requiredCapacity, CancellationToken ct = default)
+    {
+        var activeAreas = await _db.SeatingAreas
             .AsNoTracking()
-            .Where(s => s.IsActive && s.TableType.StartsWith(requiredCapacity.ToString()))
+            .Where(s => s.IsActive)
             .ToListAsync(ct);
+
+        return activeAreas
+            .Where(s => {
+                var capacity = ParseCapacity(s.TableType);
+                if (requiredCapacity == 2)
+                {
+                    return capacity >= 1 && capacity <= 3;
+                }
+                else
+                {
+                    return capacity >= 4;
+                }
+            })
+            .ToList();
+    }
+
+    private static int ParseCapacity(string tableType)
+    {
+        if (string.IsNullOrWhiteSpace(tableType)) return 2;
+        
+        var matchNguoi = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)\s*người", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matchNguoi.Success)
+        {
+            return int.Parse(matchNguoi.Groups[1].Value);
+        }
+        
+        var matchSeat = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)-Seat", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matchSeat.Success)
+        {
+            return int.Parse(matchSeat.Groups[1].Value);
+        }
+        
+        var matchDigits = System.Text.RegularExpressions.Regex.Match(tableType, @"(\d+)");
+        if (matchDigits.Success)
+        {
+            return int.Parse(matchDigits.Groups[1].Value);
+        }
+        
+        return 2;
+    }
 
     public async Task AddAsync(SeatingArea area, CancellationToken ct = default) =>
         await _db.SeatingAreas.AddAsync(area, ct);

@@ -50,6 +50,7 @@ export default function ManageTablesPage() {
   const { token } = useAuth();
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -410,7 +411,9 @@ export default function ManageTablesPage() {
                 const displayTableType = matchSeats ? matchSeats[2] : item.tableType;
                 const cardImage = item.previewImage || (isComTam 
                    ? (maxSeats === "4" ? "/assets/comtamno/n4_2.jpg" : "/assets/comtamno/n2_2.jpg")
-                   : (maxSeats === "4" ? "/assets/images/space_indoor.png" : "/assets/images/space_corner.png"));
+                   : (isSamHouse 
+                       ? (maxSeats === "4" ? "/assets/samhouse/tables/t2_2.jpg" : "/assets/samhouse/tables/t3_2.jpg")
+                       : (maxSeats === "4" ? "/assets/images/space_indoor.png" : "/assets/images/space_corner.png")));
 
                 return (
                   <Card

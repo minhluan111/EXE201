@@ -17,6 +17,9 @@ export default function FloatingChatBubble() {
   const { token, user } = useAuth();
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -335,7 +338,7 @@ export default function FloatingChatBubble() {
                     <MessageSquare size={16} />
                     {isManager 
                       ? (activeFeedbackId ? "Trả lời: " + activeFeedback?.user?.full_name : "Quản lý Hội Thoại") 
-                      : `${tenant?.name || "Yakishime"} Support ${isComTam ? "🌾" : "🍵"}`}
+                      : `${tenant?.name || "Yakishime"} Support ${isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵")))}`}
                   </h3>
                   <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#10B981" }} />
@@ -575,7 +578,7 @@ export default function FloatingChatBubble() {
                             return (
                               <div key={idx} style={{ alignSelf: "flex-start", maxWidth: "85%", display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: 4 }}>
                                 <span style={{ fontSize: 10, color: "var(--matcha)", fontWeight: 700, marginBottom: 2 }}>
-                                  {isComTam ? "🌾" : "🍵"} {tenant?.name || "Yakishime"} Manager
+                                  {isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵")))} {tenant?.name || "Yakishime"} Manager
                                 </span>
                                 <div style={{
                                   background: "rgba(255, 255, 255, 0.04)",

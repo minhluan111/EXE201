@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
   Leaf, Clock, MapPin, Star, ArrowRight, Award,
-  ChevronLeft, ChevronRight, Quote, MessageSquare, Sparkles, Users, Flame, Calendar
+  ChevronLeft, ChevronRight, Quote, MessageSquare, Sparkles, Users, Flame, Calendar, Coffee, Utensils
 } from "lucide-react";
 import { menuList, getTestimonials } from "../services/apiClient";
 import { useTenant } from "@/context/TenantContext";
@@ -121,6 +121,20 @@ const COM_TAM_TESTIMONIALS = [
   { name: "Phạm Quốc Toàn", role: "Lập trình viên", rating: 5, text: "Bữa trưa lý tưởng của tôi. Đùi gà nướng mật ong siêu to khổng lồ, da giòn thịt ngọt béo. Giá cả rất phải chăng." },
 ];
 
+const SAM_HOUSE_TESTIMONIALS = [
+  { name: "Nguyễn Minh Anh", role: "Foodie & Học sinh", rating: 5, text: "Không gian ở Cafe Sam House cực kỳ lý tưởng để học bài. Cà phê muối béo ngậy mặn mặn đậm đà, rất vừa miệng!" },
+  { name: "Trần Hữu Đức", role: "Freelancer", rating: 5, text: "Tôi thích góc bàn cạnh cửa sổ tầng 3, yên tĩnh và có đầy đủ ổ điện. Bạc xỉu của quán thơm nồng và không bị quá ngọt." },
+  { name: "Lê Thị Thu Hà", role: "Kiến trúc sư", rating: 5, text: "Thiết kế tông gỗ ấm cúng tạo cảm giác rất dễ chịu. Trà xoài Macchiato có lớp kem sữa siêu béo mịn sánh ngậy, rất đáng tiền." },
+  { name: "Phạm Quốc Toàn", role: "Lập trình viên", rating: 5, text: "Lục trà sữa mật ong trân châu trắng là món tủ của tôi mỗi lần làm việc ở đây. Quán chạy nhạc nhẹ nhàng, nhân viên thân thiện." },
+];
+
+const MON_QUAN_CHAT_TESTIMONIALS = [
+  { name: "Nguyễn Minh Anh", role: "Khách quen xứ Quảng", rating: 5, text: "Mỳ Quảng tôm thịt ở đây ngon đúng điệu, nước nhân đậm đà, bánh tráng giòn rụm. Ăn một tô là nhớ ngay quê nhà Quảng Nam!" },
+  { name: "Trần Hữu Đức", role: "Nhà báo du lịch", rating: 5, text: "Tôi cực kỳ ấn tượng với món Bánh tráng cuốn thịt heo ba chỉ. Rau sống siêu đa dạng, thịt heo luộc mềm và mắm nêm thì thơm ngon nồng nàn!" },
+  { name: "Lê Thị Thu Hà", role: "Nhà thiết kế", rating: 5, text: "Không gian mộc mạc bên hồ cá koi làm tôi thấy rất thư thái. Cao lầu sợi mì dai sần sật, da heo giòn tan rất chuẩn vị Hội An." },
+  { name: "Phạm Quốc Toàn", role: "Kỹ sư xây dựng", rating: 5, text: "Bánh xèo tôm thịt vỏ giòn rụm, nước sốt tương đậu phộng béo bùi ngon khó cưỡng. Địa điểm lý tưởng để họp mặt gia đình cuối tuần." }
+];
+
 const GALLERY = [
   { url: "/assets/images/space_decor1.png", h: 280, label: "Góc phòng trà" },
   { url: "/assets/images/space_decor2.png", h: 220, label: "Bình hoa nghệ thuật" },
@@ -137,6 +151,23 @@ const COM_TAM_GALLERY = [
   { url: "/assets/comtamno/n4_1.jpg", h: 220, label: "Bàn 4 người ngoài sân" },
   { url: "/assets/comtamno/n4_2.jpg", h: 280, label: "Bàn ăn ấm cúng" },
   { url: "/assets/comtamno/n6_1.jpg", h: 240, label: "Bàn tiệc ngoài trời" },
+];
+
+const SAM_HOUSE_GALLERY = [
+  { url: "/assets/samhouse/decor/img_4891.jpg", h: 280, label: "Góc check-in gấu bông" },
+  { url: "/assets/samhouse/decor/img_4892.jpg", h: 220, label: "Mặt tiền đón khách" },
+  { url: "/assets/samhouse/decor/img_4901.jpg", h: 260, label: "Góc check-in trăng tròn" },
+  { url: "/assets/samhouse/decor/img_4902.jpg", h: 220, label: "Không gian ngoài trời lung linh" },
+  { url: "/assets/samhouse/decor/img_4903.jpg", h: 280, label: "Lối lên lầu ấm cúng" },
+  { url: "/assets/samhouse/decor/img_4904.jpg", h: 240, label: "Đội ngũ nhân viên thân thiện" },
+  { url: "/assets/samhouse/decor/img_4905.jpg", h: 260, label: "Đội ngũ nhân viên thân thiện" },
+];
+
+const MON_QUAN_CHAT_GALLERY = [
+  { url: "/assets/monquanchat/tables/ban_6.jpg", h: 280, label: "Không gian mộc mạc đậm chất quê" },
+  { url: "/assets/monquanchat/decor/decor_2.jpg", h: 220, label: "Hồ cá Koi thư giãn ngoài trời" },
+  { url: "/assets/monquanchat/tables/ban_7.jpg", h: 260, label: "Góc sân vườn thoáng đãng" },
+  { url: "/assets/monquanchat/tables/ban_1.jpg", h: 220, label: "Không gian trong nhà máy lạnh" },
 ];
 
 // ── Philosophy Watermarks & Pillars ───────────────────────────────────────────
@@ -197,14 +228,115 @@ const COM_TAM_PHILOSOPHIES = [
   }
 ];
 
+const SAM_HOUSE_PHILOSOPHIES = [
+  {
+    kanji: "Hương",
+    romaji: "HƯƠNG",
+    title: "Hương Thơm",
+    desc: "Hạt cà phê Robusta và Arabica tuyển chọn kỹ lưỡng, rang xay tại chỗ lan tỏa hương thơm nồng nàn quyến rũ."
+  },
+  {
+    kanji: "Chất",
+    romaji: "CHẤT",
+    title: "Chất Lượng",
+    desc: "Nguyên liệu tự nhiên sạch sẽ, sữa tươi thanh trùng béo mịn kết hợp trà hảo hạng mang lại thức uống mát lành tròn vị."
+  },
+  {
+    kanji: "Tâm",
+    romaji: "TÂM",
+    title: "Chân Thành",
+    desc: "Pha chế bằng cả sự cẩn thận và phục vụ bằng cả tấm lòng, mang đến cho thực khách những ly đồ uống hoàn hảo nhất."
+  },
+  {
+    kanji: "Ấm",
+    romaji: "ẤM",
+    title: "Ấm Cúng",
+    desc: "Không gian tông gỗ ấm áp, ánh sáng dịu nhẹ là nơi lý tưởng để tụ họp bạn bè, học tập làm việc hay thư giãn riêng tư."
+  }
+];
+
+const MON_QUAN_CHAT_PHILOSOPHIES = [
+  {
+    kanji: "Vị",
+    romaji: "VỊ",
+    title: "Hương Vị Quảng",
+    desc: "Nước nhân ngọt lịm từ tôm thịt cùng mắm nêm gia truyền, mang trọn tinh hoa ẩm thực xứ Quảng nồng ấm."
+  },
+  {
+    kanji: "Chất",
+    romaji: "CHẤT",
+    title: "Chất Lượng",
+    desc: "Rau rừng, bánh tráng nướng giòn rụm kết hợp thịt heo ba chỉ ngọt thơm tự nhiên sạch sẽ chuẩn VietGAP."
+  },
+  {
+    kanji: "Mộc",
+    romaji: "MỘC",
+    title: "Mộc Mạc",
+    desc: "Thiết kế không gian mang đậm bản sắc quê nhà miền Trung thanh bình, chân chất, tạo sự thoải mái gần gũi."
+  },
+  {
+    kanji: "Tâm",
+    romaji: "TÂM",
+    title: "Tâm Huyết",
+    desc: "Mang cả tấm lòng gửi gắm vào từng sợi mì Cao lầu, đĩa bánh xèo giòn tan, phục vụ quý khách như người thân."
+  }
+];
+
+const HOA_TEA_ROOM_TESTIMONIALS = [
+  { name: "Nguyễn Minh Anh", role: "Khách hàng thân thiết", rating: 5, text: "Trà sữa bắp ASA rất thơm ngon và ngọt bùi tự nhiên. Không gian quán mang tông gỗ xanh cực kỳ tinh tế và thư giãn!" },
+  { name: "Trần Hữu Đức", role: "Freelancer", rating: 5, text: "Góc bàn N2.4 cạnh cửa sổ là địa điểm làm việc yêu thích của tôi. Có đầy đủ ổ điện, wifi ổn định và không gian thì cực kỳ yên tĩnh." },
+  { name: "Lê Thị Thu Hà", role: "Nhà thiết kế đồ họa", rating: 5, text: "Nước uống ngon miệng, đặc biệt là KUMORI kem tiramisu béo mịn. Trải nghiệm tô vẽ ly ở đây rất thú vị và đậm chất nghệ thuật." },
+  { name: "Phạm Quốc Toàn", role: "Khách quen cuối tuần", rating: 5, text: "Cực kỳ thích Matcha Latte Coldwhisk của quán. Matcha được đánh bọt lạnh công phu, uống rất thanh mát và hậu ngọt dễ chịu." }
+];
+
+const HOA_TEA_ROOM_GALLERY = [
+  { url: "/assets/hoatearoom/decor/decor_1.jpg", h: 280, label: "Góc phòng trà mộc mạc" },
+  { url: "/assets/hoatearoom/decor/decor_2.jpg", h: 220, label: "Ban công tầng 2 thoáng đãng" },
+  { url: "/assets/hoatearoom/decor/decor_3.jpg", h: 260, label: "Kệ sách gỗ và hoa sen" },
+  { url: "/assets/hoatearoom/decor/decor_4.jpg", h: 220, label: "Góc thưởng trà tĩnh lặng" },
+  { url: "/assets/hoatearoom/menu/asa_corn_matcha.jpg", h: 280, label: "Matcha bắp ASA đặc trưng" },
+  { url: "/assets/hoatearoom/menu/workshop_ve_ly.jpg", h: 240, label: "Workshop tô vẽ ly gốm" },
+  { url: "/assets/hoatearoom/menu/flower_box.jpg", h: 260, label: "Hộp quà Flower Box trà sữa" }
+];
+
+const HOA_TEA_ROOM_PHILOSOPHIES = [
+  {
+    kanji: "Hương",
+    romaji: "HƯƠNG",
+    title: "Hương Thơm",
+    desc: "Hương thơm nồng nàn quyến rũ từ bột trà xanh Nhật Bản thượng hạng quyện cùng lớp sữa tươi béo ngậy."
+  },
+  {
+    kanji: "Chất",
+    romaji: "CHẤT",
+    title: "Chất Lượng",
+    desc: "Nguyên liệu tự nhiên thanh sạch, matcha Uji nhập khẩu trực tiếp kết hợp sữa tươi thanh trùng béo mịn tốt cho sức khỏe."
+  },
+  {
+    kanji: "Mộc",
+    romaji: "MỘC",
+    title: "Mộc Mạc",
+    desc: "Thiết kế không gian tối giản, mang đậm sắc màu thiền định tĩnh lặng, mang lại sự bình yên thư thái trong tâm hồn."
+  },
+  {
+    kanji: "Tâm",
+    romaji: "TÂM",
+    title: "Tận Tâm",
+    desc: "Mỗi tách trà đều được pha chế tỉ mỉ thủ công, gửi gắm trọn vẹn sự tận tâm chân thành tới quý khách."
+  }
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const currentPhilosophies = isComTam ? COM_TAM_PHILOSOPHIES : PHILOSOPHIES;
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const currentPhilosophies = isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : PHILOSOPHIES)));
   const [products,  setProducts]  = useState([]);
   const [loading,   setLoading]   = useState(true);
-  const [reviewsList, setReviewsList] = useState(isComTam ? COM_TAM_TESTIMONIALS : TESTIMONIALS);
+  const [reviewsList, setReviewsList] = useState(isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : TESTIMONIALS))));
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
 
@@ -246,7 +378,7 @@ export default function HomePage() {
         
         const enrichFallback = () => {
           if (loadedProducts.length > 0) {
-            const enriched = (isComTam ? COM_TAM_TESTIMONIALS : TESTIMONIALS).map(t => {
+            const enriched = (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : TESTIMONIALS))).map(t => {
               const product = loadedProducts.find(p => 
                 t.text.toLowerCase().includes(p.name.toLowerCase())
               ) || loadedProducts[0];
@@ -332,7 +464,7 @@ export default function HomePage() {
     navigate("/booking", { state: { guests: quickGuests, date: targetDate } });
   };
 
-  const currentGallery = isComTam ? COM_TAM_GALLERY : GALLERY;
+  const currentGallery = isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : GALLERY)));
   const duplicatedGallery = [...currentGallery, ...currentGallery];
 
   return (
@@ -355,7 +487,7 @@ export default function HomePage() {
           style={{
             position: "absolute", inset: "-20%",
             y: heroY,
-            backgroundImage: isComTam ? "url('/assets/comtamno/hero.jpg')" : "url('/assets/images/hero_img.jpg')",
+            backgroundImage: isComTam ? "url('/assets/comtamno/hero.jpg')" : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('/assets/images/hero_img.jpg')"))),
             backgroundSize: "cover", backgroundPosition: "center",
           }}
         />
@@ -365,17 +497,29 @@ export default function HomePage() {
           position: "absolute", inset: 0,
           background: isComTam
             ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(100,45,10,0.75) 50%, rgba(30,15,5,0.8) 100%)"
-            : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)"
+            : (isSamHouse 
+                ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(80,40,15,0.75) 50%, rgba(20,10,5,0.8) 100%)"
+                : (isMonQuanChat
+                    ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(90,20,20,0.75) 50%, rgba(30,10,10,0.8) 100%)"
+                    : (isHoaTeaRoom
+                        ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(30,70,40,0.75) 50%, rgba(6,18,12,0.8) 100%)"
+                        : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)")))
         }} />
         <div style={{
           position: "absolute", inset: 0,
           background: isComTam
             ? "radial-gradient(ellipse at center bottom, rgba(224,123,57,0.15) 0%, transparent 70%)"
-            : "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)"
+            : (isSamHouse
+                ? "radial-gradient(ellipse at center bottom, rgba(139,69,19,0.15) 0%, transparent 70%)"
+                : (isMonQuanChat
+                    ? "radial-gradient(ellipse at center bottom, rgba(139,26,26,0.15) 0%, transparent 70%)"
+                    : (isHoaTeaRoom
+                        ? "radial-gradient(ellipse at center bottom, rgba(116,195,142,0.15) 0%, transparent 70%)"
+                        : "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)")))
         }} />
 
         {/* Falling Leaves Background Layer */}
-        {!isComTam && (
+        {!isComTam && !isSamHouse && !isMonQuanChat && (
           <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 1 }}>
             {[...Array(8)].map((_, i) => {
               const delay = i * 2.8;
@@ -413,11 +557,12 @@ export default function HomePage() {
               <span style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "6px 18px", borderRadius: 50,
-                border: "1px solid rgba(141,175,90,0.4)",
-                background: "rgba(141,175,90,0.12)",
-                color: "rgba(200,230,160,0.9)", fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
+                border: isComTam ? "1px solid rgba(224,123,57,0.4)" : (isSamHouse ? "1px solid rgba(139,69,19,0.4)" : (isMonQuanChat ? "1px solid rgba(139,26,26,0.4)" : (isHoaTeaRoom ? "1px solid rgba(46,111,64,0.4)" : "1px solid rgba(141,175,90,0.4)"))),
+                background: isComTam ? "rgba(224,123,57,0.12)" : (isSamHouse ? "rgba(139,69,19,0.12)" : (isMonQuanChat ? "rgba(139,26,26,0.12)" : (isHoaTeaRoom ? "rgba(46,111,64,0.12)" : "rgba(141,175,90,0.12)"))),
+                color: isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#9AB3A2" : "rgba(200,230,160,0.9)"))), fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
               }}>
-                <Leaf size={13} /> {isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : "Matcha · Zen · Cao cấp"}
+                {isSamHouse ? <Coffee size={13} /> : (isMonQuanChat ? <Utensils size={13} /> : <Leaf size={13} />)}
+                {isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : (isSamHouse ? "Cà Phê · Trà Sữa · Không Gian" : (isMonQuanChat ? "Món Quảng · Hương Vị · Miền Trung" : (isHoaTeaRoom ? "Hòa Tea Room · Trà Sữa · Vẽ Ly" : "Matcha · Zen · Cao cấp")))}
               </span>
             </motion.div>
 
@@ -434,7 +579,22 @@ export default function HomePage() {
               {isComTam ? (
                 <>
                   Cơm Tấm Ngọ<br />
-                  <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>Đậm Đà Vị Quê Hương</span>
+                  <span style={{ color: "var(--matcha)", fontStyle: "italic" }}>Đậm Đà Vị Quê Hương</span>
+                </>
+              ) : isSamHouse ? (
+                <>
+                  Sam Houses<br />
+                  <span style={{ color: "var(--matcha)", fontStyle: "italic" }}>Hương Vị Khó Quên</span>
+                </>
+              ) : isMonQuanChat ? (
+                <>
+                  Món Quảng Chất<br />
+                  <span style={{ color: "var(--matcha)", fontStyle: "italic" }}>Đậm Đà Vị Miền Trung</span>
+                </>
+              ) : isHoaTeaRoom ? (
+                <>
+                  Hòa Tea Room<br />
+                  <span style={{ color: "rgba(163,223,181,0.95)", fontStyle: "italic" }}>Nhịp Sống Chậm Lại</span>
                 </>
               ) : (
                 <>
@@ -451,7 +611,13 @@ export default function HomePage() {
             }}>
               {isComTam 
                 ? "Cơm sườn bì chả gia truyền · Sườn nướng mật ong than hồng thơm ngọt · Canh rong biển thanh mát tại Cần Thơ"
-                : "Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống · Không gian thiền định tại Cần Thơ"}
+                : (isSamHouse 
+                    ? "Cà phê muối béo ngậy · Trà sữa Olong đậm đà · Không gian học tập, làm việc yên tĩnh lý tưởng tại Đông Hòa" 
+                    : (isMonQuanChat
+                        ? "Mỳ Quảng thơm ngon · Bánh tráng cuốn thịt heo ba chỉ đậm vị · Cao lầu Hội An chuẩn vị tại Dĩ An"
+                        : (isHoaTeaRoom
+                            ? "Matcha dừa xiêm mát lạnh · Trà sữa lài Mia thơm ngát · Trải nghiệm tô vẽ ly gốm thư giãn tại Đông Hòa"
+                            : "Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống · Không gian thiền định tại Cần Thơ")))}
             </motion.p>
 
             {/* CTAs removed since they exist in the navbar */}
@@ -462,8 +628,8 @@ export default function HomePage() {
               flexWrap: "wrap",
             }}>
               {[
-                { icon: MapPin, text: tenant?.address || "57 Nguyễn Cư Trinh, Cần Thơ" },
-                { icon: Clock, text: `${tenant?.openHours || tenant?.openingHours || "08:00 – 22:00"} mỗi ngày` },
+                { icon: MapPin, text: tenant?.address || (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Cần Thơ")) },
+                { icon: Clock, text: `${tenant?.openHours || tenant?.openingHours || (isMonQuanChat ? "10:00 – 22:00" : (isSamHouse ? "07:30 – 22:00" : "08:00 – 22:00"))} mỗi ngày` },
                 { icon: Star,  text: "4.9 ⭐ (200+ đánh giá)" },
               ].map((p, i) => (
                 <div key={i} style={{
@@ -506,7 +672,7 @@ export default function HomePage() {
           >
             <motion.div variants={fadeUp} style={{ textAlign: "center", marginBottom: 64 }}>
               <span style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                {isComTam ? "Triết lý ẩm thực" : "Triết lý Trà đạo Chado"}
+                {isComTam ? "Triết lý ẩm thực" : (isSamHouse ? "Triết lý thức uống" : (isMonQuanChat ? "Triết lý ẩm thực" : (isHoaTeaRoom ? "Triết lý không gian" : "Triết lý Trà đạo Chado")))}
               </span>
               <h2 style={{
                 fontFamily: "'Cormorant Garamond', serif",
@@ -514,7 +680,7 @@ export default function HomePage() {
                 fontWeight: 700, color: "var(--text)", margin: "12px 0 0",
                 lineHeight: 1.1
               }}>
-                {isComTam ? "Tinh hoa trong từng đĩa cơm" : "Nghệ thuật trong từng tách trà"}
+                {isComTam ? "Tinh hoa trong từng đĩa cơm" : (isSamHouse ? "Đậm đà trong từng tách cà phê" : (isMonQuanChat ? "Tinh hoa ẩm thực Quảng Nam" : (isHoaTeaRoom ? "Nghệ thuật thưởng trà chiều" : "Nghệ thuật trong từng tách trà")))}
               </h2>
               <div style={{ width: 60, height: 2, background: "var(--matcha)", margin: "20px auto 0" }} />
             </motion.div>
@@ -542,12 +708,12 @@ export default function HomePage() {
                   {/* Calligraphy Kanji Watermark */}
                   <span style={{
                     position: "absolute", 
-                    top: isComTam ? 10 : -20, 
-                    right: isComTam ? 10 : -10,
+                    top: (isComTam || isSamHouse || isMonQuanChat) ? 10 : -20, 
+                    right: (isComTam || isSamHouse || isMonQuanChat) ? 10 : -10,
                     fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: isComTam ? 90 : 160, 
+                    fontSize: (isComTam || isSamHouse || isMonQuanChat) ? 90 : 160, 
                     fontWeight: 800,
-                    color: isComTam ? "rgba(224, 123, 57, 0.04)" : "rgba(107, 143, 62, 0.04)",
+                    color: isComTam ? "rgba(224, 123, 57, 0.04)" : (isSamHouse ? "rgba(139, 69, 19, 0.04)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.04)" : "rgba(107, 143, 62, 0.04)")),
                     lineHeight: 1, pointerEvents: "none", userSelect: "none"
                   }}>
                     {p.kanji}
@@ -557,7 +723,8 @@ export default function HomePage() {
                     {/* Romaji pill */}
                     <span style={{
                       display: "inline-block", padding: "3px 10px", borderRadius: 50,
-                      background: "rgba(107,143,62,0.08)", color: "var(--matcha)",
+                      background: isComTam ? "rgba(224,123,57,0.08)" : (isSamHouse ? "rgba(139,69,19,0.08)" : (isMonQuanChat ? "rgba(139,26,26,0.08)" : "rgba(107,143,62,0.08)")),
+                      color: "var(--matcha)",
                       fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 18
                     }}>
                       {p.romaji}
@@ -586,7 +753,7 @@ export default function HomePage() {
                     display: "flex", alignItems: "center", gap: 6,
                     fontSize: 13, fontWeight: 700, color: "var(--matcha)"
                   }}>
-                    {isComTam ? "Hương vị Cơm Tấm Ngọ" : "Tinh thần Zen-Matcha"}
+                    {isComTam ? "Hương vị Cơm Tấm Ngọ" : (isSamHouse ? "Hương vị Sam Houses" : (isMonQuanChat ? "Hương vị Món Quảng Chất" : "Tinh thần Zen-Matcha"))}
                   </div>
                 </motion.div>
               ))}
@@ -610,7 +777,7 @@ export default function HomePage() {
                   Được yêu thích nhất
                 </span>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-                  {isComTam ? "Món Ăn Đặc Trưng" : "Món Nước Đặc Trưng"}
+                  {(isComTam || isMonQuanChat) ? "Món Ăn Đặc Trưng" : "Món Nước Đặc Trưng"}
                 </h2>
               </div>
               <motion.button
@@ -666,7 +833,7 @@ export default function HomePage() {
               Không gian quán
             </span>
             <h2 className="sumie-fade" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-              {isComTam ? "Không gian ẩm cúng" : "Zen trong từng góc nhỏ"}
+              {isComTam ? "Không gian ẩm cúng" : (isSamHouse ? "Góc nhỏ ấm cúng" : (isMonQuanChat ? "Không gian mộc mạc" : "Zen trong từng góc nhỏ"))}
             </h2>
           </motion.div>
         </div>
@@ -732,7 +899,7 @@ export default function HomePage() {
                 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.05em" }}>{g.label}</span>
                   <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>
-                    {isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : "Không gian Yakishime"}
+                    {isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : (isSamHouse ? "Không gian Sam Houses" : (isMonQuanChat ? "Không gian Món Quảng Chất" : (isHoaTeaRoom ? "Không gian Hòa Tea Room" : "Không gian Yakishime")))}
                   </span>
                 </div>
               </motion.div>
@@ -785,9 +952,9 @@ export default function HomePage() {
                 exit={{ opacity: 0, scale: 0.96, y: -20 }}
                 transition={{ duration: 0.45, ease: "easeOut" }}
                 style={{
-                  background: "rgba(22, 32, 25, 0.65)",
+                  background: isComTam ? "rgba(31, 22, 18, 0.65)" : (isSamHouse ? "rgba(28, 22, 19, 0.65)" : (isMonQuanChat ? "rgba(28, 14, 13, 0.65)" : (isHoaTeaRoom ? "rgba(6, 26, 15, 0.65)" : "rgba(22, 32, 25, 0.65)"))),
                   backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(141, 175, 90, 0.18)",
+                  border: isComTam ? "1px solid rgba(224, 123, 57, 0.18)" : (isSamHouse ? "1px solid rgba(139, 69, 19, 0.18)" : (isMonQuanChat ? "1px solid rgba(139, 26, 26, 0.18)" : (isHoaTeaRoom ? "1px solid rgba(46, 111, 64, 0.18)" : "1px solid rgba(141, 175, 90, 0.18)"))),
                   borderRadius: 32,
                   padding: "54px 48px",
                   boxShadow: "var(--shadow-lg)",
@@ -800,7 +967,7 @@ export default function HomePage() {
                   position: "absolute", top: 12, right: 36,
                   fontSize: 140, fontWeight: 900,
                   fontFamily: "'Cormorant Garamond', serif",
-                  color: isComTam ? "rgba(224, 123, 57, 0.06)" : "rgba(141, 175, 90, 0.06)",
+                  color: isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.06)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.06)" : "rgba(141, 175, 90, 0.06)"))),
                   lineHeight: 1, pointerEvents: "none", userSelect: "none"
                 }}>
                   “
@@ -820,11 +987,11 @@ export default function HomePage() {
                       alignItems: "center",
                       gap: 14,
                       marginBottom: 26,
-                      background: isComTam ? "rgba(224, 123, 57, 0.12)" : "rgba(107, 143, 62, 0.12)",
+                      background: isComTam ? "rgba(224, 123, 57, 0.12)" : (isSamHouse ? "rgba(139, 69, 19, 0.12)" : "rgba(107, 143, 62, 0.12)"),
                       backdropFilter: "blur(12px)",
                       padding: "8px 18px 8px 10px",
                       borderRadius: "20px",
-                      border: isComTam ? "1px solid rgba(224, 123, 57, 0.3)" : "1px solid rgba(141, 175, 90, 0.3)",
+                      border: isComTam ? "1px solid rgba(224, 123, 57, 0.3)" : (isSamHouse ? "1px solid rgba(139, 69, 19, 0.3)" : "1px solid rgba(141, 175, 90, 0.3)"),
                       cursor: "pointer",
                       transition: "all 0.3s ease",
                       boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
@@ -898,7 +1065,7 @@ export default function HomePage() {
 
                 {reviewsList[activeTestimonial]?.reply && (
                   <div style={{
-                    background: "rgba(107, 143, 62, 0.12)",
+                    background: isComTam ? "rgba(224, 123, 57, 0.12)" : (isSamHouse ? "rgba(139, 69, 19, 0.12)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.12)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.12)" : "rgba(107, 143, 62, 0.12)"))),
                     borderLeft: "3px solid var(--matcha-light)",
                     borderRadius: "10px",
                     padding: "14px 20px",
@@ -906,7 +1073,7 @@ export default function HomePage() {
                     maxWidth: "560px",
                     margin: "0 auto 36px",
                     boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-                    border: "1px solid rgba(141, 175, 90, 0.15)",
+                    border: isComTam ? "1px solid rgba(224, 123, 57, 0.15)" : (isSamHouse ? "1px solid rgba(139, 69, 19, 0.15)" : (isMonQuanChat ? "1px solid rgba(139, 26, 26, 0.15)" : (isHoaTeaRoom ? "1px solid rgba(46, 111, 64, 0.15)" : "1px solid rgba(141, 175, 90, 0.15)"))),
                     boxSizing: "border-box"
                   }}>
                     <span style={{ 
@@ -918,7 +1085,7 @@ export default function HomePage() {
                       letterSpacing: "0.05em", 
                       marginBottom: 6 
                     }}>
-                      🍵 Phản hồi từ Yakishime Manager
+                      {isComTam ? "🍚 Phản hồi từ Cơm Tấm Ngọ" : (isSamHouse ? "☕ Phản hồi từ Sam Houses" : (isMonQuanChat ? "🍲 Phản hồi từ Món Quảng Chất" : (isHoaTeaRoom ? "🍃 Phản hồi từ Hòa Tea Room" : "🍵 Phản hồi từ Yakishime Manager")))}
                     </span>
                     <p style={{ fontSize: 13.5, color: "#CBD5E1", margin: 0, lineHeight: 1.5, fontStyle: "normal" }}>
                       {reviewsList[activeTestimonial].reply}
@@ -993,8 +1160,8 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.75 }}
             style={{
-              background: "linear-gradient(135deg, var(--forest-dark) 0%, rgba(22,32,25,0.95) 100%)",
-              border: "1px solid rgba(141, 175, 90, 0.22)",
+              background: isComTam ? "linear-gradient(135deg, #1E0F05 0%, rgba(31,22,18,0.95) 100%)" : (isSamHouse ? "linear-gradient(135deg, #1C110C 0%, rgba(28,22,19,0.95) 100%)" : (isMonQuanChat ? "linear-gradient(135deg, #2B0A0A 0%, rgba(28,14,13,0.95) 100%)" : (isHoaTeaRoom ? "linear-gradient(135deg, #061A0F 0%, rgba(13,26,18,0.95) 100%)" : "linear-gradient(135deg, var(--forest-dark) 0%, rgba(22,32,25,0.95) 100%)"))),
+              border: isComTam ? "1px solid rgba(224, 123, 57, 0.22)" : (isSamHouse ? "1px solid rgba(139, 69, 19, 0.22)" : (isMonQuanChat ? "1px solid rgba(139, 26, 26, 0.22)" : (isHoaTeaRoom ? "1px solid rgba(46, 111, 64, 0.22)" : "1px solid rgba(141, 175, 90, 0.22)"))),
               borderRadius: 36,
               padding: "60px 48px",
               boxShadow: "var(--shadow-lg)",
@@ -1003,8 +1170,8 @@ export default function HomePage() {
             }}
           >
             {/* Blurry glow background blobs */}
-            <div style={{ position: "absolute", top: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: "rgba(107,143,62,0.18)", filter: "blur(50px)" }} />
-            <div style={{ position: "absolute", bottom: -50, right: -50, width: 250, height: 250, borderRadius: "50%", background: "rgba(141,175,90,0.12)", filter: "blur(50px)" }} />
+            <div style={{ position: "absolute", top: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: isComTam ? "rgba(224,123,57,0.18)" : (isSamHouse ? "rgba(139,69,19,0.18)" : (isMonQuanChat ? "rgba(139,26,26,0.18)" : (isHoaTeaRoom ? "rgba(46,111,64,0.18)" : "rgba(107,143,62,0.18)"))), filter: "blur(50px)" }} />
+            <div style={{ position: "absolute", bottom: -50, right: -50, width: 250, height: 250, borderRadius: "50%", background: isComTam ? "rgba(224,123,57,0.12)" : (isSamHouse ? "rgba(139,69,19,0.12)" : (isMonQuanChat ? "rgba(139,26,26,0.12)" : (isHoaTeaRoom ? "rgba(46,111,64,0.12)" : "rgba(141,175,90,0.12)"))), filter: "blur(50px)" }} />
 
             {/* Split Grid */}
             <div style={{
@@ -1021,7 +1188,7 @@ export default function HomePage() {
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: 6,
                   padding: "4px 12px", borderRadius: 50,
-                  background: "rgba(141,175,90,0.15)",
+                  background: isComTam ? "rgba(224,123,57,0.15)" : (isSamHouse ? "rgba(139,69,19,0.15)" : (isMonQuanChat ? "rgba(139,26,26,0.15)" : (isHoaTeaRoom ? "rgba(46,111,64,0.15)" : "rgba(141,175,90,0.15)"))),
                   color: "var(--matcha-light)", fontSize: 12, fontWeight: 700, letterSpacing: "0.1em",
                   textTransform: "uppercase", marginBottom: 18
                 }}>
@@ -1034,12 +1201,22 @@ export default function HomePage() {
                   fontWeight: 700, color: "#fff", margin: "0 0 16px",
                   lineHeight: 1.15
                 }}>
-                  Trải nghiệm tĩnh lặng<br />
-                  <span style={{ color: "rgba(175,215,120,0.95)", fontStyle: "italic" }}>trong từng góc thiền</span>
+                  {isComTam ? "Bữa ăn ấm cúng" : (isSamHouse ? "Không gian ấm áp" : (isMonQuanChat ? "Bữa ăn đậm vị" : (isHoaTeaRoom ? "Góc nhỏ yên bình" : "Trải nghiệm tĩnh lặng")))}<br />
+                  <span style={{ color: "var(--matcha)", fontStyle: "italic" }}>
+                    {isComTam ? "bên mâm cơm gia đình" : (isSamHouse ? "cho ngày làm việc hiệu quả" : (isMonQuanChat ? "đậm đà hương vị miền Trung" : (isHoaTeaRoom ? "tận hưởng tinh hoa trà chiều" : "trong từng góc thiền")))}
+                  </span>
                 </h2>
 
                 <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 15.5, lineHeight: 1.7, margin: "0 0 28px", maxWidth: 440 }}>
-                  Không gian trà đạo thiền định Yakishime giới hạn số lượng bàn ngồi để duy trì không khí tĩnh tại. Đăng ký sớm để giữ vị trí ngắm trà đạo tốt nhất.
+                  {isComTam 
+                    ? "Quán cơm tấm Ngọ giới hạn số lượng bàn vào giờ cao điểm trưa và tối. Vui lòng đặt bàn trước để gia đình có vị trí ngồi thoải mái nhất." 
+                    : (isSamHouse 
+                        ? "Không gian làm việc và học tập tại Sam Houses giới hạn số lượng bàn để duy trì sự tập trung và yên tĩnh tối đa." 
+                        : (isMonQuanChat
+                            ? "Không gian ăn uống tại Món Quảng Chất giới hạn số lượng bàn vào giờ trưa/tối để đem lại bữa ăn thảnh thơi nhất. Đăng ký giữ chỗ ngay!"
+                            : (isHoaTeaRoom
+                                ? "Không gian tại Hòa Tea Room giới hạn số lượng bàn ngồi để mang lại trải nghiệm thưởng trà tĩnh lặng và riêng tư nhất. Hãy đăng ký đặt bàn ngay!"
+                                : "Không gian trà đạo thiền định Yakishime giới hạn số lượng bàn ngồi để duy trì không khí tĩnh tại. Đăng ký sớm để giữ vị trí ngắm trà đạo tốt nhất.")))}
                 </p>
 
                 {/* Status indicator */}

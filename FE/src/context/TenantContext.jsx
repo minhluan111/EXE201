@@ -33,15 +33,30 @@ export function TenantProvider({ children }) {
     async function loadTenant() {
       try {
         const res = await restaurantInfoGet();
-        if (res.ok) {
-          const rawData = res.data;
+        if (!res.ok) {
+          throw new Error("API failed");
+        }
+        const rawData = res.data;
           const rawName = rawData.name || rawData.TenantName || "";
           const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha");
           const isComTam = rawName.toLowerCase().includes("cơm tấm");
+          const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse");
+          const isMonQuanChat = rawName.toLowerCase().includes("quảng") || rawName.toLowerCase().includes("monquanchat");
+          const isHoaTeaRoom = rawName.toLowerCase().includes("hoa") || rawName.toLowerCase().includes("hoà") || rawName.toLowerCase().includes("hòa");
+          
           localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
+          localStorage.setItem("tenant_is_samhouse", isSamHouse ? "true" : "false");
+          localStorage.setItem("tenant_is_monquanchat", isMonQuanChat ? "true" : "false");
+          localStorage.setItem("tenant_is_hoatearoom", isHoaTeaRoom ? "true" : "false");
           
           if (isComTam) {
             document.documentElement.setAttribute('data-tenant', 'comtam');
+          } else if (isSamHouse) {
+            document.documentElement.setAttribute('data-tenant', 'samhouse');
+          } else if (isMonQuanChat) {
+            document.documentElement.setAttribute('data-tenant', 'monquanchat');
+          } else if (isHoaTeaRoom) {
+            document.documentElement.setAttribute('data-tenant', 'hoatearoom');
           } else {
             document.documentElement.setAttribute('data-tenant', 'matcha');
           }
@@ -50,6 +65,10 @@ export function TenantProvider({ children }) {
           if (isMatcha) {
             normalizedData.name = "yakishime";
             normalizedData.address = "57 Nguyễn Cư Trinh, Cần Thơ";
+          } else if (isMonQuanChat && !normalizedData.address) {
+            normalizedData.address = "201 QL1K, Đông Hòa, Dĩ An, Bình Dương";
+          } else if (isHoaTeaRoom && !normalizedData.address) {
+            normalizedData.address = "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương";
           }
           
           setTenant(normalizedData);
@@ -57,15 +76,15 @@ export function TenantProvider({ children }) {
           // Set dynamic title and favicon
           const name = isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime");
           document.title = name;
-          const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : "/assets/images/logo.jpg");
+          const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")));
           normalizedData.logo = logo;
           const favicon = document.querySelector("link[rel*='icon']");
           if (favicon) {
             favicon.href = logo;
           }
-
+ 
           // Apply dynamic theme color if available (only for non-Matcha tenants to preserve original css tokens)
-          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor || (isComTam ? "#E07B39" : null);
+          const themeColor = normalizedData.themeColor || normalizedData.ThemeColor || (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isHoaTeaRoom ? "#1E4620" : null)));
           if (themeColor && !isMatcha) {
             const root = document.documentElement;
             const hsl = hexToHsl(themeColor);
@@ -78,9 +97,29 @@ export function TenantProvider({ children }) {
               root.style.setProperty('--forest-dark', `hsl(${h}, ${Math.max(s - 20, 10)}%, ${Math.max(l - 25, 5)}%)`);
             }
           }
-        }
       } catch (err) {
-        console.error("Failed to load tenant info:", err);
+        console.error("Failed to load tenant info, using offline fallback:", err);
+        const urlParams = new URLSearchParams(window.location.search);
+        const tenantQuery = urlParams.get("tenant") || "";
+        const host = (tenantQuery + " " + window.location.hostname + " " + (import.meta.env.VITE_TENANT_DOMAIN || "")).toLowerCase();
+        
+        const isComTam = host.includes("comtam");
+        const isSamHouse = host.includes("samhouse") || host.includes("sam house") || host.includes("sam");
+        const isMonQuanChat = host.includes("quang") || host.includes("monquanchat");
+        const isHoaTeaRoom = host.includes("hoa") || host.includes("hoà") || host.includes("hòa");
+        
+        const fallbackTenant = {
+          id: isComTam ? "0af4c82f-e6fb-4711-805f-9413e216536c" : (isSamHouse ? "a03d87a2-72d4-48c3-8fc4-a04f2234f0d8" : (isMonQuanChat ? "147f2752-1116-4a07-ae77-f17c283bcf53" : (isHoaTeaRoom ? "6f9c9e88-3482-45e0-b6a3-2f801bfb7f8c" : "11111111-0000-0000-0000-000000000001"))),
+          name: isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime"))),
+          tenantName: isComTam ? "comtam" : (isSamHouse ? "samhouse" : (isMonQuanChat ? "monquanchat" : (isHoaTeaRoom ? "hoatearoom" : "matcha"))),
+          logo: isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg"))),
+          address: isComTam ? "57 Nguyễn Cư Trinh, Cần Thơ" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Cần Thơ"))),
+          hotline: isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173"))),
+          email: isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local"))),
+          openHours: isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00"))),
+          themeColor: isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F")))
+        };
+        setTenant(fallbackTenant);
       } finally {
         setLoading(false);
       }

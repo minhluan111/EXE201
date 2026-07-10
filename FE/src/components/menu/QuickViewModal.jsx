@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import { menuReviews, reviewCreate } from "../../services/mockApi";
 import { useAuth } from "@/context/AuthContext";
+import { useTenant } from "@/context/TenantContext";
 
 // ── Star rating input ────────────────────────────────────────────────────────
 function StarInput({ value, onChange }) {
@@ -37,6 +38,11 @@ function StarInput({ value, onChange }) {
 
 // ── Review item ──────────────────────────────────────────────────────────────
 function ReviewItem({ review }) {
+  const { tenant } = useTenant();
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const initials =
     review.user?.full_name
       ?.split(" ")
@@ -145,7 +151,7 @@ function ReviewItem({ review }) {
                   letterSpacing: "0.02em",
                 }}
               >
-                🍵 Phản hồi từ Yakishime Manager
+                {isComTam ? "🌾 Phản hồi từ Cơm Tấm Ngọ" : (isSamHouse ? "☕ Phản hồi từ Sam Houses" : (isMonQuanChat ? "🍲 Phản hồi từ Món Quảng Chất" : (isHoaTeaRoom ? "🍃 Phản hồi từ Hòa Tea Room" : "🍵 Phản hồi từ Yakishime Manager")))}
               </span>
             </div>
             <p
