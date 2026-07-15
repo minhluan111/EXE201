@@ -394,6 +394,7 @@ function mapMenuItem(item, avgRating = 0) {
     sales_count: Number(item.salesCount || item.sales_count || 0),
     salesCount: Number(item.salesCount || item.sales_count || 0),
     avg_rating: avgRating,
+    ingredients: item.ingredients || [],
   };
 }
 

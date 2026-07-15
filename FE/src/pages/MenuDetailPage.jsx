@@ -206,6 +206,7 @@ export default function MenuDetailPage() {
     new:         { label: "✨ Mới",         color: "#3B82F6" },
   };
   const badge = BADGE_MAP[menu.tag];
+  const isCombo = menu.name.toLowerCase().includes("combo");
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
@@ -277,7 +278,17 @@ export default function MenuDetailPage() {
               />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
               
-              {badge && (
+              {isCombo ? (
+                <div style={{
+                  position: "absolute", bottom: 20, left: 20,
+                  padding: "6px 16px", borderRadius: 50,
+                  background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
+                  color: "#FFD700", fontSize: 13, fontWeight: 700,
+                  boxShadow: "var(--shadow-sm)"
+                }}>
+                  🎁 Combo Ưu Đãi
+                </div>
+              ) : badge && (
                 <div style={{
                   position: "absolute", bottom: 20, left: 20,
                   padding: "6px 16px", borderRadius: 50,
@@ -362,7 +373,7 @@ export default function MenuDetailPage() {
                     fontSize: 12, fontWeight: 700, color: "var(--text-muted)",
                     letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12
                   }}>
-                    Thành phần món ăn
+                    {isCombo ? "Các món trong Combo" : "Thành phần món ăn"}
                   </h3>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {menu.ingredients.map((ing, i) => (
