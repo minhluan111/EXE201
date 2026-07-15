@@ -2,16 +2,19 @@ import { createTheme } from "@mui/material/styles";
 
 const muiTheme = createTheme({
   palette: {
+    getContrastText: (color) => {
+      return "#ffffff";
+    },
     primary: {
       main: "var(--matcha)",
-      dark: "var(--matcha-dark)",
-      light: "var(--matcha-light)",
+      dark: "#2F5B3E",
+      light: "#8DAF5A",
       contrastText: "#fff",
     },
     secondary: {
       main: "var(--forest)",
-      dark: "var(--forest-dark)",
-      light: "var(--matcha-light)",
+      dark: "#1E3D28",
+      light: "#8DAF5A",
       contrastText: "#fff",
     },
     background: {
@@ -26,8 +29,8 @@ const muiTheme = createTheme({
     divider: "var(--border)",
     success: {
       main: "var(--matcha)",
-      dark: "var(--matcha-dark)",
-      light: "var(--matcha-light)",
+      dark: "#2F5B3E",
+      light: "#8DAF5A",
       contrastText: "#fff",
     },
     error: {
@@ -44,8 +47,8 @@ const muiTheme = createTheme({
     },
     info: {
       main: "var(--forest)",
-      dark: "var(--forest-dark)",
-      light: "var(--matcha-light)",
+      dark: "#1E3D28",
+      light: "#8DAF5A",
       contrastText: "#fff",
     },
   },
