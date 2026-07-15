@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle, Leaf, CheckCircle } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle, Leaf, CheckCircle, Coffee } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTenant } from "@/context/TenantContext";
 

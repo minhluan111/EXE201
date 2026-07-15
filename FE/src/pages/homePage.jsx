@@ -158,7 +158,7 @@ const SAM_HOUSE_GALLERY = [
   { url: "/assets/samhouse/decor/img_4892.jpg", h: 220, label: "Mặt tiền đón khách" },
   { url: "/assets/samhouse/decor/img_4901.jpg", h: 260, label: "Góc check-in trăng tròn" },
   { url: "/assets/samhouse/decor/img_4902.jpg", h: 220, label: "Không gian ngoài trời lung linh" },
-  { url: "/assets/samhouse/decor/img_4903.jpg", h: 280, label: "Lối lên lầu ấm cúng" },
+  { url: "/assets/samhouse/decor/img_4903.jpg", h: 280, label: "Lối lên lầu" },
   { url: "/assets/samhouse/decor/img_4904.jpg", h: 240, label: "Đội ngũ nhân viên thân thiện" },
   { url: "/assets/samhouse/decor/img_4905.jpg", h: 260, label: "Đội ngũ nhân viên thân thiện" },
 ];
@@ -833,7 +833,7 @@ export default function HomePage() {
               Không gian quán
             </span>
             <h2 className="sumie-fade" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-              {isComTam ? "Không gian ẩm cúng" : (isSamHouse ? "Góc nhỏ ấm cúng" : (isMonQuanChat ? "Không gian mộc mạc" : "Zen trong từng góc nhỏ"))}
+              {isComTam ? "Không gian ẩm cúng" : (isSamHouse ? "Góc nhỏ lung linh" : (isMonQuanChat ? "Không gian mộc mạc" : "Zen trong từng góc nhỏ"))}
             </h2>
           </motion.div>
         </div>
