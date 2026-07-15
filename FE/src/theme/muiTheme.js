@@ -6,31 +6,31 @@ const muiTheme = createTheme({
       return "#ffffff";
     },
     primary: {
-      main: "var(--matcha)",
+      main: "#8DAF5A",
       dark: "#2F5B3E",
       light: "#8DAF5A",
       contrastText: "#fff",
     },
     secondary: {
-      main: "var(--forest)",
+      main: "#1E3D28",
       dark: "#1E3D28",
       light: "#8DAF5A",
       contrastText: "#fff",
     },
     background: {
-      default: "var(--bg)",
-      paper: "var(--bg-card)",
+      default: "#F7F5EF",
+      paper: "#FFFFFF",
     },
     text: {
-      primary: "var(--text)",
-      secondary: "var(--text-muted)",
-      disabled: "var(--text-light)",
+      primary: "#1C1C1A",
+      secondary: "#6B6860",
+      disabled: "#9A9890",
     },
-    divider: "var(--border)",
+    divider: "rgba(107, 143, 62, 0.18)",
     success: {
-      main: "var(--matcha)",
+      main: "#8DAF5A",
       dark: "#2F5B3E",
-      light: "#8DAF5A",
+      light: "#B7D78C",
       contrastText: "#fff",
     },
     error: {
@@ -46,7 +46,7 @@ const muiTheme = createTheme({
       contrastText: "#fff",
     },
     info: {
-      main: "var(--forest)",
+      main: "#2F5B3E",
       dark: "#1E3D28",
       light: "#8DAF5A",
       contrastText: "#fff",
