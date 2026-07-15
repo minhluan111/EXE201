@@ -1,5 +1,45 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)comtam(.*)"
+        }
+      ],
+      "destination": "/comtam.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)samhouse(.*)"
+        }
+      ],
+      "destination": "/samhouse.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(quang|monquanchat)(.*)"
+        }
+      ],
+      "destination": "/monquanchat.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)hoa(.*)"
+        }
+      ],
+      "destination": "/hoatearoom.html"
+    },
+    { "source": "/(.*)", "destination": "/yakishime.html" }
   ]
 }

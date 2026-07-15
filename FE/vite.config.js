@@ -10,4 +10,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        comtam: path.resolve(__dirname, 'comtam.html'),
+        samhouse: path.resolve(__dirname, 'samhouse.html'),
+        monquanchat: path.resolve(__dirname, 'monquanchat.html'),
+        hoatearoom: path.resolve(__dirname, 'hoatearoom.html'),
+      },
+    },
+  },
 });
