@@ -295,7 +295,7 @@ const HOA_TEA_ROOM_GALLERY = [
   { url: "/assets/hoatearoom/decor/decor_3.jpg", h: 260, label: "Kệ sách gỗ và hoa sen" },
   { url: "/assets/hoatearoom/decor/decor_4.jpg", h: 220, label: "Góc thưởng trà tĩnh lặng" },
   { url: "/assets/hoatearoom/menu/asa_corn_matcha.jpg", h: 280, label: "Matcha bắp ASA đặc trưng" },
-  { url: "/assets/hoatearoom/menu/workshop_ve_ly.jpg", h: 240, label: "Workshop tô vẽ ly gốm" },
+  { url: "/assets/hoatearoom/menu/workshop_ve_ly.jpg", h: 240, label: "Workshop tô vẽ ly" },
   { url: "/assets/hoatearoom/menu/flower_box.jpg", h: 260, label: "Hộp quà Flower Box trà sữa" }
 ];
 

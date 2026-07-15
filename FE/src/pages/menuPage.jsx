@@ -20,8 +20,6 @@ const COM_TAM_CATEGORIES = [
   { key: "all",        label: "Tất cả",      },
   { key: "MainCourse", label: "Món chính",    },
   { key: "Drink",      label: "Đồ uống",      },
-  { key: "Snack",      label: "Ăn kèm",       },
-  { key: "Desserts",   label: "Tráng miệng",   },
 ];
 
 const SAM_HOUSE_CATEGORIES = [
@@ -137,9 +135,6 @@ export default function MenuPage() {
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "100px 24px 80px" }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              Thực đơn
-            </span>
             <h1 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "clamp(48px, 7vw, 80px)", fontWeight: 700,
