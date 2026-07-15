@@ -73,7 +73,7 @@ export default function MenuPage() {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const CATEGORIES = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES));
 
@@ -84,15 +84,29 @@ export default function MenuPage() {
   const [items, setItems]       = useState([]);
   const [quickViewItem, setQuickViewItem] = useState(null);
   const [tabSticky, setTabSticky]         = useState(false);
+  const [availableCategoryKeys, setAvailableCategoryKeys] = useState([]);
 
   // Fetch
   useEffect(() => {
     setLoading(true);
     menuList({ q, category, tag }).then((res) => {
-      setItems(res.ok ? res.data : []);
+      if (res.ok) {
+        setItems(res.data);
+        if (category === "all" && !q && tag === "all") {
+          const keys = Array.from(new Set(res.data.map((item) => item.category)));
+          setAvailableCategoryKeys(keys);
+        }
+      } else {
+        setItems([]);
+      }
       setLoading(false);
     });
   }, [q, category, tag]);
+
+  const visibleCategories = useMemo(() => {
+    if (availableCategoryKeys.length === 0) return CATEGORIES;
+    return CATEGORIES.filter((cat) => cat.key === "all" || availableCategoryKeys.includes(cat.key));
+  }, [CATEGORIES, availableCategoryKeys]);
 
   // Sticky tabs detection
   useEffect(() => {
@@ -163,7 +177,7 @@ export default function MenuPage() {
       }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ display: "flex", gap: 4, overflowX: "auto", padding: "12px 0", scrollbarWidth: "none" }}>
-            {CATEGORIES.map((cat) => (
+            {visibleCategories.map((cat) => (
               <motion.button
                 key={cat.key}
                 whileHover={{ scale: 1.04 }}

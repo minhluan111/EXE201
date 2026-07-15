@@ -250,9 +250,28 @@ export default function BookingPage() {
             return;
           }
 
-          const suitableTables = res.data.filter(
-            (table) => table.max_seats >= numPeople,
-          );
+          const suitableTables = res.data.filter((table) => {
+            if (table.max_seats < numPeople) return false;
+            
+            const has2or3Seats = res.data.some(t => t.max_seats === 2 || t.max_seats === 3);
+            const has3or4Seats = res.data.some(t => t.max_seats === 3 || t.max_seats === 4);
+            
+            if (numPeople <= 2) {
+              if (has2or3Seats) {
+                return table.max_seats === 2 || table.max_seats === 3;
+              } else {
+                return table.max_seats === 4;
+              }
+            } else if (numPeople <= 4) {
+              if (has3or4Seats) {
+                return table.max_seats === 3 || table.max_seats === 4;
+              } else {
+                return table.max_seats === 5 || table.max_seats === 6;
+              }
+            } else {
+              return table.max_seats >= 5;
+            }
+          });
 
           setFloorTables(suitableTables);
 
@@ -291,7 +310,8 @@ export default function BookingPage() {
 
   const canSelect = (table) => {
     if (!table) return false;
-    return table.status === "available" && table.max_seats >= numPeople;
+    if (table.status !== "available") return false;
+    return floorTables.some((t) => t.name === table.name || t.id === table.id);
   };
 
   const handleNextStep = () => {
@@ -712,7 +732,7 @@ export default function BookingPage() {
                     marginTop: 14,
                   }}
                 >
-                  {isMonQuanChat ? "→ Bàn phù hợp cho nhóm từ 4-6 người" : (numPeople <= 2 ? "→ Bàn đôi (2 ghế)" : "→ Bàn nhóm (4-10 ghế)")}
+                  {isMonQuanChat ? "→ Bàn phù hợp cho nhóm từ 4-6 người" : (numPeople <= 2 ? "→ Bàn đôi (2 ghế)" : (numPeople <= 4 ? "→ Bàn nhóm (4 ghế)" : "→ Bàn nhóm (6-10 ghế)"))}
                 </p>
               </div>
             </motion.div>

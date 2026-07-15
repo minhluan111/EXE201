@@ -136,12 +136,16 @@ const MON_QUAN_CHAT_TESTIMONIALS = [
 ];
 
 const GALLERY = [
-  { url: "/assets/images/space_decor1.png", h: 280, label: "Góc phòng trà" },
-  { url: "/assets/images/space_decor2.png", h: 220, label: "Bình hoa nghệ thuật" },
-  { url: "/assets/images/space_decor3.png", h: 260, label: "Tĩnh lặng thiền đạo" },
-  { url: "/assets/images/space_decor4.png", h: 220, label: "Bình sen thiền định" },
-  { url: "/assets/images/space_decor5.jpg", h: 280, label: "Mặt tiền Yaki Café" },
-  { url: "/assets/images/space_window.jpg", h: 240, label: "Cửa sổ trúc xanh" },
+  { url: "/assets/yakishime/space/khong_gian_quan.jpg", h: 280, label: "Không gian quán ấm cúng" },
+  { url: "/assets/yakishime/space/khong_gian.jpg", h: 220, label: "Góc thiền tĩnh lặng" },
+  { url: "/assets/yakishime/space/ko_gian_quan.jpg", h: 260, label: "Cửa sổ trúc xanh" },
+  { url: "/assets/yakishime/space/ko_gian_1.jpg", h: 220, label: "Kệ trưng bày gốm sứ tinh tế" },
+  { url: "/assets/yakishime/space/ko_gian.jpg", h: 280, label: "Đèn nghệ thuật lá sen" },
+  { url: "/assets/yakishime/decor/img_6260.png", h: 240, label: "Bình gốm Nhật Bản" },
+  { url: "/assets/yakishime/decor/img_6261.png", h: 260, label: "Lối vào an nhiên" },
+  { url: "/assets/yakishime/decor/img_6262.png", h: 220, label: "Tĩnh lặng thiền đạo" },
+  { url: "/assets/yakishime/decor/img_6263.png", h: 280, label: "Bình hoa nghệ thuật" },
+  { url: "/assets/yakishime/decor/img_6265.png", h: 260, label: "Cây thông nghệ thuật" },
 ];
 
 const COM_TAM_GALLERY = [
@@ -331,7 +335,7 @@ export default function HomePage() {
   const { tenant } = useTenant();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const currentPhilosophies = isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : PHILOSOPHIES)));
   const [products,  setProducts]  = useState([]);

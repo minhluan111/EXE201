@@ -201,9 +201,9 @@ function mapAuthResponse(data) {
 }
 
 function mapMenuCategory(category, name = "") {
-  const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
-  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   
   if (isComTam) {
@@ -567,8 +567,12 @@ async function getTablesWithAreas() {
   const seatingAreas = await getSeatingAreas();
   const activeAreas = seatingAreas.filter((area) => area.isActive || area.is_active);
 
-  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
+  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  const isYakishime = TENANT_DOMAIN.toLowerCase().includes("yakishime") || TENANT_DOMAIN.toLowerCase().includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom);
+
   const tables = [];
   activeAreas.forEach((area) => {
     const tableTypeText = String(area.tableType || area.table_type || "");
@@ -602,8 +606,8 @@ async function getTablesWithAreas() {
         } else {
           displayName = tableTypeText;
         }
-      } else if (isHoaTeaRoom) {
-        const numMatch = tableTypeText.match(/^Bàn\s+(N\d+(?:\.\d+)?)/i);
+      } else if (isHoaTeaRoom || isYakishime) {
+        const numMatch = tableTypeText.match(/^Bàn\s+([NS]\d+(?:\.\d+)?)/i);
         if (numMatch) {
           displayName = `Bàn ${numMatch[1]}`;
         } else {
@@ -882,6 +886,13 @@ export async function tablesList() {
   return { ok: true, data: await getTablesWithAreas() };
 }
 
+export async function getAvailability({ date, guestCount }) {
+  const result = await requestJson("/api/public/availability", {
+    query: { date, guestCount },
+  });
+  return result;
+}
+
 export async function bookingCheckStatus({
   booking_date,
   booking_time,
@@ -1113,7 +1124,7 @@ export async function restaurantInfoGet() {
   
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
-  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || TENANT_DOMAIN.toLowerCase().includes("hoatea") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   
   const defaultMapUrl = isComTam
@@ -1417,7 +1428,7 @@ export async function adminReplyReview({ token, id, reply }) {
 function getMockMenuItems() {
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
-  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
 
   if (isComTam) {
@@ -1476,10 +1487,11 @@ function getMockMenuItems() {
 
   // Fallback to Matcha
   return [
-    { id: "m1", name: "Premium Uji Matcha", price: 65000, category: "Traditional", imageUrl: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=600&q=80", description: "Bột trà xanh cao cấp nhập khẩu trực tiếp từ vùng Uji, Kyoto. Hương vị trà thanh mát, đắng nhẹ hậu ngọt tự nhiên.", tag: "signature" },
-    { id: "m2", name: "Matcha Oat Latte", price: 55000, category: "Latte", imageUrl: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&q=80", description: "Sự kết hợp hoàn hảo giữa Matcha Uji thanh khiết và sữa yến mạch béo nhẹ lành tính cho sức khỏe.", tag: "best_seller" },
-    { id: "m3", name: "Hojicha Latte", price: 50000, category: "Hojicha", imageUrl: "https://images.unsplash.com/photo-1594631252845-29fc4589947e?w=600&q=80", description: "Lá trà xanh rang Hojicha thơm lừng mùi khói gỗ kết hợp lớp bọt sữa tươi béo mịn màng.", tag: "trending" },
-    { id: "m4", name: "Matcha Tiramisu", price: 48000, category: "Desserts", imageUrl: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&q=80", description: "Bánh Tiramisu cốt Matcha ẩm mịn quyện kem Mascarpone béo ngậy thơm ngon tuyệt vời.", tag: "best_seller" },
-    { id: "m5", name: "Homemade Warabi Mochi", price: 45000, category: "Food", imageUrl: "https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=600&q=80", description: "Mochi bột sắn dây dẻo mát lăn qua thính đậu nành Kinako thơm dịu rưới sốt đường đen Kuromitsu.", tag: "signature" }
+    { id: "m1", name: "Matcha Latte (Vũ Thuỷ)", price: 45000, category: "Latte", imageUrl: "/assets/yakishime/menu/matcha_latte.jpg", description: "Sự kết hợp hoàn hảo giữa bột matcha Uji nguyên chất và sữa tươi thanh trùng béo dịu.", tag: "normal" },
+    { id: "m2", name: "Coco Matcha (Thanh Minh)", price: 49000, category: "Latte", imageUrl: "/assets/yakishime/menu/coco_matcha.jpg", description: "Sự kết hợp tươi mát độc đáo giữa vị đậm đà thanh khiết của trà xanh Uji và nước dừa xiêm tự nhiên.", tag: "best_seller" },
+    { id: "m3", name: "Almond Latte (Tiểu Hàn)", price: 49000, category: "Latte", imageUrl: "/assets/yakishime/menu/almond_latte.jpg", description: "Matcha Latte thơm lừng kết hợp cùng sữa hạnh nhân béo bùi, giàu dinh dưỡng.", tag: "trending" },
+    { id: "m4", name: "Mango Matcha (Xuân Phân)", price: 49000, category: "Latte", imageUrl: "/assets/yakishime/menu/mango_matcha.jpg", description: "Thức uống mùa hè sảng khoái với lớp mứt xoài chín ngọt lịm quyện cùng matcha nguyên chất.", tag: "new" },
+    { id: "m5", name: "Coco Jasmine", price: 50000, category: "Traditional", imageUrl: "/assets/yakishime/menu/coco_jasmine.jpg", description: "Hương vị hoa nhài thanh tao hòa quyện nước dừa xiêm mát lành.", tag: "normal" },
+    { id: "m6", name: "Pistachio Matcha", price: 50000, category: "Latte", imageUrl: "/assets/yakishime/menu/pistachio_matcha.jpg", description: "Matcha béo ngậy kết hợp lớp sốt hạt dẻ cười (pistachio) thơm bùi đặc trưng.", tag: "best_seller" }
   ];
 }

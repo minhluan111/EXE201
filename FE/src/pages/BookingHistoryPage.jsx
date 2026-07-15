@@ -17,7 +17,7 @@ import {
   Trash2,
   Coffee,
 } from "lucide-react";
-import { bookingCancel, bookingMe, bookingReschedule } from "../services/apiClient.js";
+import { bookingCancel, bookingMe, bookingReschedule, getAvailability } from "../services/apiClient.js";
 import { useAuth } from "../context/useAuthContext.js";
 import { useAvailabilityHub } from "../hooks/useAvailabilityHub.js";
 const DEFAULT_TIME_SLOTS = [
@@ -84,6 +84,8 @@ export default function BookingHistoryPage() {
   const [showRescheduleModal, setShowRescheduleModal] = useState(null);
   const [rescheduleDate, setRescheduleDate] = useState("");
   const [rescheduleTime, setRescheduleTime] = useState("");
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
   const todayStr = useMemo(() => {
     const d = new Date();
@@ -99,6 +101,41 @@ export default function BookingHistoryPage() {
     return generateTimeSlots(intervals);
   }, [tenant]);
 
+  // Fetch slot availability for rescheduling
+  useEffect(() => {
+    if (!showRescheduleModal || !rescheduleDate) {
+      setAvailableSlots([]);
+      return;
+    }
+    const b = list.find((item) => item.id === showRescheduleModal);
+    if (!b) return;
+
+    setLoadingSlots(true);
+    getAvailability({ date: rescheduleDate, guestCount: b.guestCount || b.num_of_people || 2 })
+      .then((res) => {
+        if (res.ok && Array.isArray(res.data)) {
+          const area = res.data.find(a => a.seatingAreaId === b.seatingAreaId || a.seating_area_id === b.seatingAreaId || a.seatingAreaId === b.seating_area_id || a.seating_area_id === b.seating_area_id);
+          if (area && Array.isArray(area.availableSlots)) {
+            const slots = area.availableSlots.map(s => {
+              const time = s.startTime || s.start_time || "";
+              return time.substring(0, 5);
+            });
+            setAvailableSlots(slots);
+          } else {
+            setAvailableSlots([]);
+          }
+        } else {
+          setAvailableSlots(null); // Fallback on API failure
+        }
+      })
+      .catch(() => {
+        setAvailableSlots(null);
+      })
+      .finally(() => {
+        setLoadingSlots(false);
+      });
+  }, [rescheduleDate, showRescheduleModal, list]);
+
   const filteredRescheduleTimeSlots = useMemo(() => {
     const today = new Date();
     const year = today.getFullYear();
@@ -107,16 +144,23 @@ export default function BookingHistoryPage() {
     const todayStrLocal = `${year}-${month}-${day}`;
     const isToday = rescheduleDate === todayStrLocal;
 
-    if (!isToday) return tenantTimeSlots;
+    let slots = tenantTimeSlots;
+    if (isToday) {
+      slots = tenantTimeSlots.filter((slot) => {
+        const [hours, minutes] = slot.split(":").map(Number);
+        const slotDate = new Date(today);
+        slotDate.setHours(hours, minutes, 0, 0);
+        const timeDiffMinutes = (slotDate.getTime() - today.getTime()) / (1000 * 60);
+        return timeDiffMinutes >= 30;
+      });
+    }
 
-    return tenantTimeSlots.filter((slot) => {
-      const [hours, minutes] = slot.split(":").map(Number);
-      const slotDate = new Date(today);
-      slotDate.setHours(hours, minutes, 0, 0);
-      const timeDiffMinutes = (slotDate.getTime() - today.getTime()) / (1000 * 60);
-      return timeDiffMinutes >= 30;
-    });
-  }, [rescheduleDate]);
+    if (availableSlots !== null) {
+      slots = slots.filter(slot => availableSlots.includes(slot));
+    }
+
+    return slots;
+  }, [rescheduleDate, tenantTimeSlots, availableSlots]);
 
   useEffect(() => {
     if (rescheduleTime && !filteredRescheduleTimeSlots.includes(rescheduleTime)) {
@@ -437,25 +481,37 @@ export default function BookingHistoryPage() {
                           </div>
                           <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 700, color: "var(--text)", margin: 0 }}>Chọn giờ</h4>
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
-                          {filteredRescheduleTimeSlots.map((t) => (
-                            <motion.button
-                              key={t}
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => setRescheduleTime(t)}
-                              style={{
-                                padding: "8px 0", borderRadius: 10, fontSize: 12, fontWeight: 700, border: "1.5px solid",
-                                borderColor: rescheduleTime === t ? "var(--matcha)" : "var(--border)",
-                                background: rescheduleTime === t ? "linear-gradient(135deg,var(--matcha),var(--forest))" : "var(--bg-alt)",
-                                color: rescheduleTime === t ? "#fff" : "var(--text-muted)",
-                                cursor: "pointer", transition: "all 0.2s",
-                                boxShadow: rescheduleTime === t ? "0 4px 12px rgba(107,143,62,0.2)" : "none"
-                              }}
-                            >
-                              {t}
-                            </motion.button>
-                          ))}
+                        <div style={{ display: "grid", gridTemplateColumns: filteredRescheduleTimeSlots.length > 0 ? "repeat(4, 1fr)" : "1fr", gap: 8 }}>
+                          {loadingSlots ? (
+                            <div style={{ gridColumn: "1 / -1", textAlign: "center", color: "var(--text-muted)", padding: "12px 0", fontSize: 13 }}>
+                              Đang kiểm tra bàn trống...
+                            </div>
+                          ) : (
+                            filteredRescheduleTimeSlots.length > 0 ? (
+                              filteredRescheduleTimeSlots.map((t) => (
+                                <motion.button
+                                  key={t}
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() => setRescheduleTime(t)}
+                                  style={{
+                                    padding: "8px 0", borderRadius: 10, fontSize: 12, fontWeight: 700, border: "1.5px solid",
+                                    borderColor: rescheduleTime === t ? "var(--matcha)" : "var(--border)",
+                                    background: rescheduleTime === t ? "linear-gradient(135deg,var(--matcha),var(--forest))" : "var(--bg-alt)",
+                                    color: rescheduleTime === t ? "#fff" : "var(--text-muted)",
+                                    cursor: "pointer", transition: "all 0.2s",
+                                    boxShadow: rescheduleTime === t ? "0 4px 12px rgba(107,143,62,0.2)" : "none"
+                                  }}
+                                >
+                                  {t}
+                                </motion.button>
+                              ))
+                            ) : (
+                              <div style={{ gridColumn: "1 / -1", textAlign: "center", color: "#ef4444", padding: "12px 0", fontSize: 13, fontWeight: 600 }}>
+                                Rất tiếc, ngày này không còn bàn trống!
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     </div>
