@@ -152,8 +152,6 @@ export default function ProfilePage() {
 
                   <Box
                     sx={{
-                      pb: 2,
-                      borderBottom: `1px solid ${COLORS.cream}`,
                       pt: 2,
                     }}
                   >
