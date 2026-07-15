@@ -177,20 +177,6 @@ export default function ProfilePage() {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ pt: 2 }}>
-                    <Typography sx={{ fontSize: "12px", color: "#666", mb: 1 }}>
-                       Ngày tham gia
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: COLORS.dark,
-                      }}
-                    >
-                      {new Date().toLocaleDateString("vi-VN")}
-                    </Typography>
-                  </Box>
                 </Box>
 
                 {/* Welcome Message */}
