@@ -943,28 +943,41 @@ export async function bookingCheckStatus({
   ];
 
   const targetTime = normalizeTime(booking_time);
-  const allowedAreaIds = new Set(
-    availability
-      .filter(
-        (area) =>
-          Array.isArray(area.availableSlots) &&
-          area.availableSlots.some(
-            (slot) => normalizeTime(slot.startTime) === targetTime,
-          ),
-      )
-      .map((area) => area.seatingAreaId),
-  );
+  const areaRiskMap = new Map();
+
+  availability.forEach((area) => {
+    if (Array.isArray(area.availableSlots)) {
+      const slot = area.availableSlots.find(
+        (s) => normalizeTime(s.startTime) === targetTime,
+      );
+      if (slot) {
+        areaRiskMap.set(area.seatingAreaId, {
+          riskLevel: slot.riskLevel || "Available",
+          riskMessage: slot.riskMessage || "",
+        });
+      }
+    }
+  });
 
   return {
     ok: true,
     data: tables.map((table) => {
       let status = "occupied";
-      if (table.seatingAreaId && allowedAreaIds.has(table.seatingAreaId)) {
+      let riskLevel = "Available";
+      let riskMessage = "";
+      
+      if (table.seatingAreaId && areaRiskMap.has(table.seatingAreaId)) {
+        const riskInfo = areaRiskMap.get(table.seatingAreaId);
         status = occupiedTables.includes(table.name) ? "occupied" : "available";
+        riskLevel = riskInfo.riskLevel;
+        riskMessage = riskInfo.riskMessage;
       }
+      
       return {
         ...table,
         status,
+        riskLevel,
+        riskMessage
       };
     }),
   };

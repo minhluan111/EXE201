@@ -67,7 +67,7 @@ function generateTimeSlots(intervals) {
 
 export default function BookingHistoryPage() {
   const { tenant } = useTenant();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
@@ -238,6 +238,20 @@ export default function BookingHistoryPage() {
 
   const cancel = (id) => {
     setShowCancelModal(id);
+  };
+
+  const canCancel = (b) => {
+    if (user?.role === "manager" || user?.role === "admin") return true;
+    
+    // Check CancelBeforeMinutes from tenant, default to 30
+    const cancelLimit = tenant?.cancelBeforeMinutes || 30;
+    
+    if (!b.booking_date || !b.booking_time) return false;
+    const bookingDateTime = new Date(`${b.booking_date}T${b.booking_time}`);
+    const now = new Date();
+    
+    const diffMinutes = (bookingDateTime - now) / (1000 * 60);
+    return diffMinutes >= cancelLimit;
   };
 
   const handleConfirmCancel = async () => {
@@ -887,25 +901,36 @@ export default function BookingHistoryPage() {
                       )}
                     </motion.button>
 
-                    <motion.button
-                      disabled={cancelling === b.id}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setShowCancelModal(b.id)}
-                      className="cancel-appointment-btn"
-                    >
-                      {cancelling === b.id ? (
-                        <>
-                          <Loader2 size={13} className="animate-spin" />
-                          <span>Đang Hủy...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Trash2 size={13} />
-                          <span>Hủy Lịch Đặt Bàn</span>
-                        </>
-                      )}
-                    </motion.button>
+                    {canCancel(b) ? (
+                      <motion.button
+                        disabled={cancelling === b.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowCancelModal(b.id)}
+                        className="cancel-appointment-btn"
+                      >
+                        {cancelling === b.id ? (
+                          <>
+                            <Loader2 size={13} className="animate-spin" />
+                            <span>Đang Hủy...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 size={13} />
+                            <span>Hủy Lịch Đặt Bàn</span>
+                          </>
+                        )}
+                      </motion.button>
+                    ) : (
+                      <div
+                        className="cancel-appointment-btn"
+                        style={{ opacity: 0.5, cursor: "not-allowed", border: "1px solid rgba(239, 68, 68, 0.2)" }}
+                        title={`Không thể hủy trước giờ hẹn dưới ${tenant?.cancelBeforeMinutes || 30} phút.`}
+                      >
+                        <Trash2 size={13} />
+                        <span>Không thể hủy (Quá sát giờ)</span>
+                      </div>
+                    )}
                   </div>
                 )}
 

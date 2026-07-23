@@ -276,13 +276,36 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
                       fontSize: "12px",
                       fontWeight: 600,
                       background:
-                        table.status === "available"
-                          ? "rgba(34,197,94,.15)"
-                          : "rgba(239,68,68,.15)",
-                      color: table.status === "available" ? "#16a34a" : "#dc2626",
+                        table.status !== "available"
+                          ? "rgba(239,68,68,.15)"
+                          : table.riskLevel === "High"
+                            ? "rgba(239,68,68,.15)"
+                            : table.riskLevel === "Medium"
+                              ? "rgba(249,115,22,.15)"
+                              : table.riskLevel === "Low"
+                                ? "rgba(234,179,8,.15)"
+                                : "rgba(34,197,94,.15)",
+                      color:
+                        table.status !== "available"
+                          ? "#dc2626"
+                          : table.riskLevel === "High"
+                            ? "#dc2626"
+                            : table.riskLevel === "Medium"
+                              ? "#ea580c"
+                              : table.riskLevel === "Low"
+                                ? "#ca8a04"
+                                : "#16a34a",
                     }}
                   >
-                    {table.status === "available" ? "Còn trống" : "Đã đặt"}
+                    {table.status !== "available"
+                      ? "Đã đặt"
+                      : table.riskLevel === "High"
+                        ? "Trống (Rủi ro cao)"
+                        : table.riskLevel === "Medium"
+                          ? "Trống (Rủi ro TB)"
+                          : table.riskLevel === "Low"
+                            ? "Trống (Rủi ro thấp)"
+                            : "Còn trống"}
                   </span>
 
                   {selected?.id === table.id && (
@@ -306,6 +329,22 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
                     }}
                   >
                     Không phù hợp với số người đã chọn
+                  </p>
+                )}
+
+                {selectable && table.status === "available" && table.riskLevel && table.riskLevel !== "Available" && table.riskMessage && (
+                  <p
+                    style={{
+                      marginTop: "10px",
+                      color: table.riskLevel === "High" ? "#dc2626" : table.riskLevel === "Medium" ? "#ea580c" : "#ca8a04",
+                      fontSize: "12px",
+                      background: table.riskLevel === "High" ? "rgba(239,68,68,.05)" : table.riskLevel === "Medium" ? "rgba(249,115,22,.05)" : "rgba(234,179,8,.05)",
+                      padding: "6px 8px",
+                      borderRadius: "6px",
+                      borderLeft: `2px solid ${table.riskLevel === "High" ? "#dc2626" : table.riskLevel === "Medium" ? "#ea580c" : "#ca8a04"}`
+                    }}
+                  >
+                    {table.riskMessage}
                   </p>
                 )}
               </div>
