@@ -9,6 +9,7 @@ import { useTenant } from "@/context/TenantContext";
 
 const MATCHA_CATEGORIES = [
   { key: "all",        label: "Tất cả",      },
+  { key: "Combo",      label: "Combo ưu đãi",},
   { key: "Traditional",label: "Truyền thống",  },
   { key: "Latte",      label: "Latte",        },
   { key: "Hojicha",    label: "Hojicha",     },
@@ -18,12 +19,14 @@ const MATCHA_CATEGORIES = [
 
 const COM_TAM_CATEGORIES = [
   { key: "all",        label: "Tất cả",      },
+  { key: "Combo",      label: "Combo ưu đãi",},
   { key: "MainCourse", label: "Món chính",    },
   { key: "Drink",      label: "Đồ uống",      },
 ];
 
 const SAM_HOUSE_CATEGORIES = [
   { key: "all",        label: "Tất cả",      },
+  { key: "Combo",      label: "Combo ưu đãi",},
   { key: "Coffee",     label: "Cà phê",      },
   { key: "MilkTea",    label: "Trà sữa",     },
   { key: "FruitTea",   label: "Trà trái cây",},
@@ -32,6 +35,7 @@ const SAM_HOUSE_CATEGORIES = [
 
 const HOA_TEA_ROOM_CATEGORIES = [
   { key: "all",           label: "Tất cả",            emoji: "🍵" },
+  { key: "Combo",         label: "Combo ưu đãi",       emoji: "🎁" },
   { key: "MatchaSpecial", label: "Matcha Đặc Sản",     emoji: "✨" },
   { key: "MatchaClassic", label: "Matcha Truyền Thống", emoji: "🍃" },
   { key: "MilkTea",       label: "Trà Sữa & Set Quà",  emoji: "🎁" },
@@ -41,8 +45,8 @@ const HOA_TEA_ROOM_CATEGORIES = [
 const TAGS = [
   { key: "all",        label: "Tất cả" },
   { key: "best_seller",label: "Bán chạy nhất" },
-  { key: "signature",  label: "Đặc trưng" },
   { key: "trending",   label: "Xu hướng" },
+  { key: "new",        label: "Món mới" },
 ];
 
 // ── Skeleton grid ────────────────────────────────────────────────────────────
@@ -105,7 +109,7 @@ export default function MenuPage() {
 
   const visibleCategories = useMemo(() => {
     if (availableCategoryKeys.length === 0) return CATEGORIES;
-    return CATEGORIES.filter((cat) => cat.key === "all" || availableCategoryKeys.includes(cat.key));
+    return CATEGORIES.filter((cat) => cat.key === "all" || cat.key === "Combo" || availableCategoryKeys.includes(cat.key) || availableCategoryKeys.includes(cat.key + "s"));
   }, [CATEGORIES, availableCategoryKeys]);
 
   // Sticky tabs detection

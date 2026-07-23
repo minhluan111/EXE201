@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
@@ -23,8 +23,11 @@ import {
   Checkbox,
   ListItemText,
   OutlinedInput,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { Plus, Edit2, Trash2, Tag, Coffee, RefreshCw } from "lucide-react";
+import { Plus, Edit2, Trash2, Tag, Coffee, RefreshCw, ChevronDown, Minus } from "lucide-react";
 import { useAuth } from "../../context/useAuthContext.js";
 import {
   adminGetMenu,
@@ -33,6 +36,7 @@ import {
   adminDeleteMenuItem,
 } from "../../services/apiClient.js";
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
+import { useTenant } from "@/context/TenantContext";
 
 const COLORS = {
   moss: "var(--matcha)",
@@ -41,24 +45,97 @@ const COLORS = {
   dark: "var(--text)",
 };
 
-const CATEGORIES = [
-  { value: "Drink", label: "Đồ uống " },
+const MATCHA_CATEGORIES = [
+  { value: "Combo",      label: "Combo ưu đãi" },
+  { value: "Traditional",label: "Truyền thống" },
+  { value: "Latte",      label: "Latte" },
+  { value: "Hojicha",    label: "Hojicha" },
+  { value: "Desserts",   label: "Tráng miệng" },
+  { value: "Food",       label: "Món ăn" },
+];
+
+const COM_TAM_CATEGORIES = [
+  { value: "Combo",      label: "Combo ưu đãi" },
   { value: "MainCourse", label: "Món chính" },
-  { value: "Dessert", label: "Tráng miệng " },
-  { value: "Snack", label: "Ăn nhẹ" },
+  { value: "Drink",      label: "Đồ uống" },
+  { value: "Dessert",    label: "Tráng miệng" },
+  { value: "Snack",      label: "Ăn nhẹ" },
+];
+
+const SAM_HOUSE_CATEGORIES = [
+  { value: "Combo",      label: "Combo ưu đãi" },
+  { value: "Coffee",     label: "Cà phê" },
+  { value: "MilkTea",    label: "Trà sữa" },
+  { value: "FruitTea",   label: "Trà trái cây" },
+  { value: "Other",      label: "Khác" },
+];
+
+const HOA_TEA_ROOM_CATEGORIES = [
+  { value: "Combo",         label: "Combo ưu đãi" },
+  { value: "MatchaSpecial", label: "Matcha Đặc Sản" },
+  { value: "MatchaClassic", label: "Matcha Truyền Thống" },
+  { value: "MilkTea",       label: "Trà Sữa & Set Quà" },
+  { value: "Experiences",   label: "Trải nghiệm" },
 ];
 
 const TAGS = [
-  { value: "Normal", label: "Bình thường" },
   { value: "BestSeller", label: "Bán chạy (Best Seller)" },
-  { value: "Trending", label: "Món xu hướng" },
+  { value: "Trending", label: "Món xu hướng (Trending)" },
   { value: "New", label: "Món mới (New)" },
+  { value: "Normal", label: "Bình thường" },
 ];
+
+const formatPriceInput = (val) => {
+  if (val === "" || val === null || val === undefined) return "";
+  const numStr = String(val).replace(/\D/g, "");
+  if (!numStr) return "";
+  return parseInt(numStr, 10).toLocaleString("vi-VN");
+};
+
+const uploadImageToImgBB = async (file) => {
+  const formDataImg = new FormData();
+  formDataImg.append("image", file);
+  const uploadRes = await fetch(
+    "https://api.imgbb.com/1/upload?key=0407d749b1703d2a6b06b9d2988625e3",
+    { method: "POST", body: formDataImg }
+  );
+  const uploadJson = await uploadRes.json();
+  if (!uploadJson.success) {
+    throw new Error(uploadJson.error?.message || "Lỗi không xác định từ ImgBB");
+  }
+  return uploadJson.data.url;
+};
 
 export default function ManageMenuPage() {
   const { token } = useAuth();
+  const { tenant } = useTenant();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  
+  const tenantCategories = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES));
+
+  const availableCategoryValues = useMemo(() => {
+    const vals = new Set(list.map(item => item.category));
+    if (vals.has("Dessert")) vals.add("Desserts");
+    if (vals.has("Desserts")) vals.add("Dessert");
+    return Array.from(vals);
+  }, [list]);
+
+  const filterCategories = useMemo(() => {
+    if (availableCategoryValues.length === 0) return tenantCategories;
+    const filtered = tenantCategories.filter(cat => cat.value === "Combo" || availableCategoryValues.includes(cat.value));
+    const uniqueLabels = new Set();
+    return filtered.filter(cat => {
+      if (uniqueLabels.has(cat.label)) return false;
+      uniqueLabels.add(cat.label);
+      return true;
+    });
+  }, [tenantCategories, availableCategoryValues]);
 
   // Search, filter, and sort states
   const [search, setSearch] = useState("");
@@ -107,6 +184,8 @@ export default function ManageMenuPage() {
     name: "",
     category: "Drink",
     imageUrl: "",
+    imageBase64: "",
+    imageFile: null,
     price: "",
     description: "",
     tag: "Normal",
@@ -118,10 +197,12 @@ export default function ManageMenuPage() {
   const [openCombo, setOpenCombo] = useState(false);
   const [comboData, setComboData] = useState({
     name: "",
-    selectedItems: [],
+    selectedItems: {},
     price: "",
-    category: "MainCourse",
+    category: "Combo",
     imageUrl: "",
+    imageBase64: "",
+    imageFile: null,
   });
   const [comboErrors, setComboErrors] = useState({});
 
@@ -144,6 +225,8 @@ export default function ManageMenuPage() {
       name: "",
       category: "Drink",
       imageUrl: "",
+      imageBase64: "",
+      imageFile: null,
       price: "",
       description: "",
       tag: "Normal",
@@ -155,10 +238,12 @@ export default function ManageMenuPage() {
   const handleOpenCombo = () => {
     setComboData({
       name: "",
-      selectedItems: [],
+      selectedItems: {},
       price: "",
-      category: "MainCourse",
+      category: "Combo",
       imageUrl: "",
+      imageBase64: "",
+      imageFile: null,
     });
     setComboErrors({});
     setOpenCombo(true);
@@ -167,7 +252,8 @@ export default function ManageMenuPage() {
   const validateCombo = () => {
     const errs = {};
     if (!comboData.name.trim()) errs.name = "Vui lòng nhập tên Combo.";
-    if (comboData.selectedItems.length < 2) errs.selectedItems = "Combo phải bao gồm ít nhất 2 món.";
+    const totalItems = Object.values(comboData.selectedItems).reduce((a, b) => a + b, 0);
+    if (totalItems < 2) errs.selectedItems = "Combo phải bao gồm ít nhất 2 món.";
     if (!comboData.price || Number(comboData.price) <= 0) {
       errs.price = "Giá ưu đãi phải là số lớn hơn 0.";
     }
@@ -182,24 +268,48 @@ export default function ManageMenuPage() {
     }
 
     setSaving(true);
-    const selectedItemObjects = list.filter((i) => comboData.selectedItems.includes(i.id));
-    const originalPrice = selectedItemObjects.reduce((acc, curr) => acc + curr.price, 0);
-    const savings = originalPrice - Number(comboData.price);
-    const itemNames = selectedItemObjects.map(i => i.name);
-    
-    let description = `Bao gồm: ${itemNames.join(", ")}.`;
-    if (savings > 0) {
-      description += ` Tiết kiệm ${savings.toLocaleString("vi-VN")}đ!`;
+    let finalImageUrl = (comboData.imageUrl || "").trim();
+
+    if (comboData.imageFile) {
+      try {
+        finalImageUrl = await uploadImageToImgBB(comboData.imageFile);
+      } catch (err) {
+        alert(err.message || "Lỗi kết nối khi tải ảnh lên.");
+        setSaving(false);
+        return;
+      }
+    } else if (comboData.imageBase64 && !finalImageUrl) {
+      finalImageUrl = comboData.imageBase64;
     }
 
-    const comboName = comboData.name.trim().toLowerCase().includes("combo") 
-      ? comboData.name.trim() 
+    const selectedIds = Object.keys(comboData.selectedItems);
+    let originalPrice = 0;
+    const itemNames = [];
+    selectedIds.forEach(id => {
+      const item = list.find(i => i.id === id);
+      if (item) {
+        const qty = comboData.selectedItems[id];
+        originalPrice += item.price * qty;
+        itemNames.push(qty > 1 ? `${qty} ${item.name}` : item.name);
+      }
+    });
+    const savings = originalPrice - Number(comboData.price);
+
+    let description = "";
+    if (savings > 0) {
+      description = `Tiết kiệm ${savings.toLocaleString("vi-VN")}đ! Bao gồm: ${itemNames.join(", ")}.`;
+    } else {
+      description = `Bao gồm: ${itemNames.join(", ")}.`;
+    }
+
+    const comboName = comboData.name.trim().toLowerCase().includes("combo")
+      ? comboData.name.trim()
       : `Combo ${comboData.name.trim()}`;
 
     const payload = {
       name: comboName,
       category: comboData.category,
-      imageUrl: comboData.imageUrl.trim() || null,
+      imageUrl: finalImageUrl || null,
       price: Number(comboData.price),
       description: description,
       tag: "Normal",
@@ -223,6 +333,8 @@ export default function ManageMenuPage() {
       name: item.name,
       category: item.category,
       imageUrl: item.imageUrl || "",
+      imageBase64: "",
+      imageFile: null,
       price: item.price,
       description: item.description || "",
       tag: item.tag,
@@ -248,10 +360,24 @@ export default function ManageMenuPage() {
     }
 
     setSaving(true);
+    let finalImageUrl = (formData.imageUrl || "").trim();
+
+    if (formData.imageFile) {
+      try {
+        finalImageUrl = await uploadImageToImgBB(formData.imageFile);
+      } catch (err) {
+        alert(err.message || "Lỗi kết nối khi tải ảnh lên.");
+        setSaving(false);
+        return;
+      }
+    } else if (formData.imageBase64 && !finalImageUrl) {
+      finalImageUrl = formData.imageBase64;
+    }
+
     const payload = {
       name: formData.name.trim(),
       category: formData.category,
-      imageUrl: formData.imageUrl.trim() || null,
+      imageUrl: finalImageUrl || null,
       price: Number(formData.price),
       description: formData.description.trim() || null,
       tag: formData.tag,
@@ -271,6 +397,35 @@ export default function ManageMenuPage() {
     } else {
       alert(res.message || "Thao tác thất bại.");
     }
+  };
+
+  const handleFileChange = (e, isCombo = false) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Vui lòng chọn file hình ảnh hợp lệ.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Kích thước ảnh quá lớn, vui lòng chọn ảnh dưới 5MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (isCombo) {
+        setComboData({ ...comboData, imageBase64: reader.result, imageUrl: "", imageFile: file });
+      } else {
+        setFormData({ ...formData, imageBase64: reader.result, imageUrl: "", imageFile: file });
+      }
+    };
+    reader.onerror = (error) => {
+      console.error("Error reading file: ", error);
+      alert("Có lỗi xảy ra khi đọc file ảnh.");
+    };
   };
 
   const handleDelete = async (id) => {
@@ -312,8 +467,8 @@ export default function ManageMenuPage() {
                   borderColor: "var(--matcha)",
                   color: "var(--matcha)",
                   fontWeight: 600,
-                  "&:hover": { 
-                    borderColor: "var(--forest)", 
+                  "&:hover": {
+                    borderColor: "var(--forest)",
                     color: "var(--forest)",
                     background: "rgba(107, 143, 62, 0.05)"
                   },
@@ -394,7 +549,7 @@ export default function ManageMenuPage() {
                       }}
                     >
                       <MenuItem value="">Tất cả danh mục</MenuItem>
-                      {CATEGORIES.map((cat) => (
+                      {filterCategories.map((cat) => (
                         <MenuItem key={cat.value} value={cat.value}>
                           {cat.label}
                         </MenuItem>
@@ -618,7 +773,7 @@ export default function ManageMenuPage() {
 
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1, borderTop: "1px solid var(--border)" }}>
                       <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                        Mục: {CATEGORIES.find((c) => c.value === item.category)?.label || item.category}
+                        Mục: {tenantCategories.find((c) => c.value === item.category)?.label || item.category}
                       </Typography>
                       <Box sx={{ display: "flex", gap: 0.5 }}>
                         <Tooltip title="Chỉnh sửa">
@@ -709,7 +864,7 @@ export default function ManageMenuPage() {
                       "& fieldset": { border: "none" },
                     }}
                   >
-                    {CATEGORIES.map((cat) => (
+                    {tenantCategories.filter(c => c.value !== "Combo").map((cat) => (
                       <MenuItem key={cat.value} value={cat.value}>
                         {cat.label}
                       </MenuItem>
@@ -748,9 +903,9 @@ export default function ManageMenuPage() {
               <TextField
                 fullWidth
                 placeholder="Nhập giá bán..."
-                type="number"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                type="text"
+                value={formatPriceInput(formData.price)}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value.replace(/\D/g, "") })}
                 error={!!formErrors.price}
                 helperText={formErrors.price}
                 size="small"
@@ -768,26 +923,30 @@ export default function ManageMenuPage() {
 
             <Box>
               <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
-                Đường dẫn ảnh món ăn (Link URL)
+                Ảnh món ăn
               </Typography>
-              <TextField
+              <Button
+                component="label"
+                variant="outlined"
                 fullWidth
-                placeholder="https://images.unsplash.com/..."
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                size="small"
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px",
-                    background: "var(--bg-alt)",
-                    "& fieldset": { border: "none" },
-                  },
+                  borderRadius: "12px",
+                  borderColor: "transparent",
+                  color: "var(--text)",
+                  textTransform: "none",
+                  justifyContent: "flex-start",
+                  padding: "8.5px 14px",
+                  background: "var(--bg-alt)",
+                  "&:hover": { borderColor: "var(--matcha)", background: "rgba(107, 143, 62, 0.05)" }
                 }}
-              />
+              >
+                {formData.imageBase64 || formData.imageUrl ? "Đã có ảnh (Nhấn để đổi)" : "📁 Chọn file ảnh..."}
+                <input type="file" accept="image/*" hidden onChange={(e) => handleFileChange(e, false)} />
+              </Button>
             </Box>
 
             {/* Live Image Preview */}
-            {formData.imageUrl && formData.imageUrl.trim() && (
+            {(formData.imageBase64 || (formData.imageUrl && formData.imageUrl.trim())) && (
               <Box
                 sx={{
                   display: "flex",
@@ -817,7 +976,7 @@ export default function ManageMenuPage() {
                   }}
                 >
                   <img
-                    src={formData.imageUrl.trim()}
+                    src={formData.imageBase64 || formData.imageUrl.trim()}
                     alt="Xem trước ảnh"
                     style={{ maxWidth: "100%", maxHeight: 180, objectFit: "contain", borderRadius: "12px" }}
                     onError={(e) => {
@@ -907,9 +1066,9 @@ export default function ManageMenuPage() {
           🎁 Thêm Combo ưu đãi
         </DialogTitle>
         <DialogContent sx={{ pt: "24px !important" }}>
-          <Grid container spacing={4}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 4 }}>
             {/* Left Side: Form */}
-            <Grid item xs={12} md={5}>
+            <Box sx={{ width: { xs: '100%', sm: '40%' }, flexShrink: 0 }}>
               <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 2.5, mt: 1 }}>
                 <Box>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
@@ -917,7 +1076,7 @@ export default function ManageMenuPage() {
                   </Typography>
                   <TextField
                     fullWidth
-                    placeholder="Ví dụ: Combo Trưa Vui Vẻ"
+                    placeholder="Tên gọi của Combo"
                     value={comboData.name}
                     onChange={(e) => setComboData({ ...comboData, name: e.target.value })}
                     error={!!comboErrors.name}
@@ -935,28 +1094,7 @@ export default function ManageMenuPage() {
                   />
                 </Box>
 
-                <Box>
-                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
-                    Danh mục của Combo
-                  </Typography>
-                  <FormControl fullWidth size="small">
-                    <Select
-                      value={comboData.category}
-                      onChange={(e) => setComboData({ ...comboData, category: e.target.value })}
-                      sx={{
-                        borderRadius: "12px",
-                        background: "var(--bg-alt)",
-                        "& fieldset": { border: "none" },
-                      }}
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <MenuItem key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
+
 
                 <Box>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
@@ -964,10 +1102,10 @@ export default function ManageMenuPage() {
                   </Typography>
                   <TextField
                     fullWidth
-                    placeholder="Nhập giá bán Combo..."
-                    type="number"
-                    value={comboData.price}
-                    onChange={(e) => setComboData({ ...comboData, price: e.target.value })}
+                    placeholder="Nhập giá bán Combo"
+                    type="text"
+                    value={formatPriceInput(comboData.price)}
+                    onChange={(e) => setComboData({ ...comboData, price: e.target.value.replace(/\D/g, "") })}
                     error={!!comboErrors.price}
                     helperText={comboErrors.price}
                     size="small"
@@ -985,26 +1123,30 @@ export default function ManageMenuPage() {
 
                 <Box>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
-                    Đường dẫn ảnh Combo (Link URL)
+                    Ảnh Combo
                   </Typography>
-                  <TextField
+                  <Button
+                    component="label"
+                    variant="outlined"
                     fullWidth
-                    placeholder="https://images.unsplash.com/..."
-                    value={comboData.imageUrl}
-                    onChange={(e) => setComboData({ ...comboData, imageUrl: e.target.value })}
-                    size="small"
                     sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "var(--bg-alt)",
-                        "& fieldset": { border: "none" },
-                      },
+                      borderRadius: "12px",
+                      borderColor: "transparent",
+                      color: "var(--text)",
+                      textTransform: "none",
+                      justifyContent: "flex-start",
+                      padding: "8.5px 14px",
+                      background: "var(--bg-alt)",
+                      "&:hover": { borderColor: "var(--matcha)", background: "rgba(107, 143, 62, 0.05)" }
                     }}
-                  />
+                  >
+                    {comboData.imageBase64 || comboData.imageUrl ? "Đã có ảnh (Nhấn để đổi)" : "📁 Chọn file ảnh"}
+                    <input type="file" accept="image/*" hidden onChange={(e) => handleFileChange(e, true)} />
+                  </Button>
                 </Box>
 
                 {/* Live Image Preview */}
-                {comboData.imageUrl && comboData.imageUrl.trim() && (
+                {(comboData.imageBase64 || (comboData.imageUrl && comboData.imageUrl.trim())) && (
                   <Box
                     sx={{
                       display: "flex",
@@ -1034,7 +1176,7 @@ export default function ManageMenuPage() {
                       }}
                     >
                       <img
-                        src={comboData.imageUrl.trim()}
+                        src={comboData.imageBase64 || comboData.imageUrl.trim()}
                         alt="Xem trước ảnh"
                         style={{ maxWidth: "100%", maxHeight: 180, objectFit: "contain", borderRadius: "12px" }}
                         onError={(e) => {
@@ -1058,11 +1200,18 @@ export default function ManageMenuPage() {
                     Tóm tắt Combo
                   </Typography>
                   <Typography sx={{ fontSize: "13px", color: "var(--text)", mb: 0.5 }}>
-                    Đã chọn: <strong>{comboData.selectedItems.length} món</strong>
+                    Đã chọn: <strong>{Object.values(comboData.selectedItems).reduce((a, b) => a + b, 0)} món</strong>
                   </Typography>
                   <Typography sx={{ fontSize: "13px", color: "var(--text)" }}>
-                    Tổng giá gốc: <strong style={{ textDecoration: "line-through", color: "var(--text-muted)" }}>
-                      {list.filter(i => comboData.selectedItems.includes(i.id)).reduce((acc, curr) => acc + curr.price, 0).toLocaleString("vi-VN")}đ
+                    Tổng giá gốc: <strong style={{ color: "var(--text-muted)" }}>
+                      {(() => {
+                        let total = 0;
+                        Object.keys(comboData.selectedItems).forEach(id => {
+                          const item = list.find(i => i.id === id);
+                          if (item) total += item.price * comboData.selectedItems[id];
+                        });
+                        return total.toLocaleString("vi-VN");
+                      })()}đ
                     </strong>
                   </Typography>
                   {comboErrors.selectedItems && (
@@ -1072,14 +1221,14 @@ export default function ManageMenuPage() {
                   )}
                 </Box>
               </Box>
-            </Grid>
+            </Box>
 
             {/* Right Side: Menu List */}
-            <Grid item xs={12} md={7}>
-              <Box sx={{ 
-                height: "100%", 
-                maxHeight: "360px", 
-                overflowY: "auto", 
+            <Box sx={{ width: { xs: '100%', sm: '60%' }, flexGrow: 1 }}>
+              <Box sx={{
+                height: "100%",
+                maxHeight: "360px",
+                overflowY: "auto",
                 pr: 1,
                 "&::-webkit-scrollbar": { width: "6px" },
                 "&::-webkit-scrollbar-thumb": { background: "rgba(107, 143, 62, 0.3)", borderRadius: "10px" },
@@ -1088,50 +1237,142 @@ export default function ManageMenuPage() {
                 <Typography sx={{ fontSize: "14px", fontWeight: 700, color: "var(--text)", mb: 2 }}>
                   Chọn món vào Combo
                 </Typography>
-                <Grid container spacing={1.5}>
-                  {list.filter(item => !item.name.toLowerCase().includes("combo")).map((item) => (
-                    <Grid item xs={12} sm={6} key={item.id}>
-                      <Box
-                        onClick={() => {
-                          const newSelected = comboData.selectedItems.includes(item.id)
-                            ? comboData.selectedItems.filter(id => id !== item.id)
-                            : [...comboData.selectedItems, item.id];
-                          setComboData({ ...comboData, selectedItems: newSelected });
-                        }}
+
+                {(() => {
+                  const groupedItems = list
+                    .filter(item => !item.name.toLowerCase().includes("combo") && item.category !== "Combo")
+                    .reduce((acc, item) => {
+                      const cat = tenantCategories.find(c => c.value === item.category);
+                      const key = cat ? cat.value : "Other";
+                      const label = cat ? cat.label : "Khác";
+
+                      if (!acc[key]) {
+                        acc[key] = { label, items: [] };
+                      }
+                      acc[key].items.push(item);
+                      return acc;
+                    }, {});
+
+                  return Object.keys(groupedItems).map((key) => {
+                    const group = groupedItems[key];
+                    return (
+                      <Accordion
+                        key={key}
+                        disableGutters
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          p: 1.5,
+                          mb: 1.5,
                           borderRadius: "12px",
-                          border: "1px solid",
-                          borderColor: comboData.selectedItems.includes(item.id) ? "var(--matcha)" : "var(--border)",
-                          background: comboData.selectedItems.includes(item.id) ? "rgba(107, 143, 62, 0.05)" : "var(--bg-alt)",
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          "&:hover": { borderColor: "var(--matcha)" },
-                          height: "100%"
+                          "&:before": { display: "none" },
+                          boxShadow: "none",
+                          border: "1px solid var(--border)",
+                          background: "transparent",
+                          overflow: "hidden"
                         }}
                       >
-                        <Checkbox 
-                          checked={comboData.selectedItems.includes(item.id)} 
-                          size="small" 
-                          sx={{ p: 0, mr: 1.5, color: "var(--matcha)", "&.Mui-checked": { color: "var(--matcha)" } }} 
-                        />
-                        <Box sx={{ overflow: "hidden" }}>
-                          <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {item.name}
+                        <AccordionSummary
+                          expandIcon={<ChevronDown size={18} color="var(--text)" />}
+                          sx={{
+                            minHeight: "48px",
+                            "&.Mui-expanded": { minHeight: "48px" },
+                            background: "var(--bg-alt)",
+                            borderBottom: "1px solid var(--border)"
+                          }}
+                        >
+                          <Typography sx={{ fontSize: "14px", fontWeight: 700, color: "var(--text)" }}>
+                            {group.label} ({group.items.length})
                           </Typography>
-                          <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                            {item.price.toLocaleString("vi-VN")}đ
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ p: 1.5 }}>
+                          <Grid container spacing={1.5}>
+                            {group.items.map((item) => (
+                              <Grid item xs={12} sm={6} key={item.id}>
+                                <Box
+                                  onClick={() => {
+                                    const newSelected = { ...comboData.selectedItems };
+                                    if (newSelected[item.id]) {
+                                      delete newSelected[item.id];
+                                    } else {
+                                      newSelected[item.id] = 1;
+                                    }
+                                    setComboData({ ...comboData, selectedItems: newSelected });
+                                  }}
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    p: 1.5,
+                                    borderRadius: "12px",
+                                    border: "1px solid",
+                                    borderColor: comboData.selectedItems[item.id] ? "var(--matcha)" : "var(--border)",
+                                    background: comboData.selectedItems[item.id] ? "rgba(107, 143, 62, 0.05)" : "var(--bg-alt)",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s",
+                                    "&:hover": { borderColor: "var(--matcha)" },
+                                    height: "100%"
+                                  }}
+                                >
+                                  <Checkbox
+                                    checked={!!comboData.selectedItems[item.id]}
+                                    size="small"
+                                    sx={{ p: 0, mr: 1.5, color: "var(--matcha)", "&.Mui-checked": { color: "var(--matcha)" } }}
+                                  />
+                                  <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+                                    <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                      {item.name}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                                      {item.price.toLocaleString("vi-VN")}đ
+                                    </Typography>
+                                  </Box>
+                                  {!!comboData.selectedItems[item.id] && (
+                                    <Box
+                                      onClick={(e) => e.stopPropagation()}
+                                      sx={{ display: "flex", alignItems: "center", gap: 0.5, ml: 1, bgcolor: "var(--bg)", borderRadius: "8px", border: "1px solid var(--border)", p: 0.5 }}
+                                    >
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          const qty = comboData.selectedItems[item.id];
+                                          const newSelected = { ...comboData.selectedItems };
+                                          if (qty > 1) {
+                                            newSelected[item.id] = qty - 1;
+                                          } else {
+                                            delete newSelected[item.id];
+                                          }
+                                          setComboData({ ...comboData, selectedItems: newSelected });
+                                        }}
+                                        sx={{ p: 0.2, color: "var(--text-muted)", "&:hover": { color: "var(--matcha)" } }}
+                                      >
+                                        <Minus size={14} />
+                                      </IconButton>
+                                      <Typography sx={{ fontSize: "13px", fontWeight: 600, minWidth: "16px", textAlign: "center", color: "var(--text)" }}>
+                                        {comboData.selectedItems[item.id]}
+                                      </Typography>
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          setComboData({
+                                            ...comboData,
+                                            selectedItems: { ...comboData.selectedItems, [item.id]: comboData.selectedItems[item.id] + 1 }
+                                          });
+                                        }}
+                                        sx={{ p: 0.2, color: "var(--text-muted)", "&:hover": { color: "var(--matcha)" } }}
+                                      >
+                                        <Plus size={14} />
+                                      </IconButton>
+                                    </Box>
+                                  )}
+                                </Box>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  });
+                })()}
               </Box>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </DialogContent>
         <DialogActions sx={{ borderTop: "1px solid var(--border)", mt: 2, p: 2 }}>
           <Button onClick={() => setOpenCombo(false)} sx={{ textTransform: "none", borderRadius: "10px", color: "var(--text-muted)" }}>

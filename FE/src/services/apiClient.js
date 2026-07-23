@@ -201,6 +201,13 @@ function mapAuthResponse(data) {
 }
 
 function mapMenuCategory(category, name = "") {
+  const value = String(category || "").toLowerCase();
+  const lowerName = String(name || "").toLowerCase();
+  
+  if (value === "5" || value === "combo" || lowerName.includes("combo")) {
+    return "Combo";
+  }
+
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
@@ -305,37 +312,37 @@ function mapMenuCategory(category, name = "") {
     return "Coffee";
   }
 
-  const value = String(category || "").toLowerCase();
-  const lowerName = String(name || "").toLowerCase();
+  const globalValue = String(category || "").toLowerCase();
+  const globalLowerName = String(name || "").toLowerCase();
 
-  if (lowerName.includes("hojicha")) {
+  if (globalLowerName.includes("hojicha")) {
     return "Hojicha";
   }
 
   if (
-    lowerName.includes("tiramisu") ||
-    lowerName.includes("parfait") ||
-    lowerName.includes("cake") ||
-    lowerName.includes("dessert")
+    globalLowerName.includes("tiramisu") ||
+    globalLowerName.includes("parfait") ||
+    globalLowerName.includes("cake") ||
+    globalLowerName.includes("dessert")
   ) {
     return "Desserts";
   }
 
   if (
-    value.includes("snack") ||
-    lowerName.includes("croissant") ||
-    lowerName.includes("mochi") ||
-    lowerName.includes("workshop") ||
-    lowerName.includes("vẽ ly")
+    globalValue.includes("snack") ||
+    globalLowerName.includes("croissant") ||
+    globalLowerName.includes("mochi") ||
+    globalLowerName.includes("workshop") ||
+    globalLowerName.includes("vẽ ly")
   ) {
     return "Food";
   }
 
   if (
-    value.includes("drink") ||
-    value.includes("coffee") ||
-    lowerName.includes("cà phê") ||
-    lowerName.includes("bạc xỉu")
+    globalValue.includes("drink") ||
+    globalValue.includes("coffee") ||
+    globalLowerName.includes("cà phê") ||
+    globalLowerName.includes("bạc xỉu")
   ) {
     return "Traditional";
   }
