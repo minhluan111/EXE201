@@ -614,13 +614,13 @@ export default function HomePage() {
               maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7,
             }}>
               {isComTam 
-                ? "Cơm sườn bì chả gia truyền · Sườn nướng mật ong than hồng thơm ngọt · Canh rong biển thanh mát tại Cần Thơ"
+                ? "Cơm sườn bì chả gia truyền · Sườn nướng mật ong than hồng thơm ngọt · Canh rong biển thanh mát tại Đông Hòa"
                 : (isSamHouse 
                     ? "Cà phê muối béo ngậy · Trà sữa Olong đậm đà · Không gian học tập, làm việc yên tĩnh lý tưởng tại Đông Hòa" 
                     : (isMonQuanChat
-                        ? "Mỳ Quảng thơm ngon · Bánh tráng cuốn thịt heo ba chỉ đậm vị · Cao lầu Hội An chuẩn vị tại Dĩ An"
+                        ? "Mỳ Quảng thơm ngon · Bánh tráng cuốn thịt heo ba chỉ đậm vị · Cao lầu Hội An chuẩn vị tại Đông Hòa"
                         : (isHoaTeaRoom
-                            ? "Matcha dừa xiêm mát lạnh · Trà sữa lài Mia thơm ngát · Trải nghiệm tô vẽ ly gốm thư giãn tại Đông Hòa"
+                            ? "Matcha dừa xiêm mát lạnh · Trà sữa lài Mia thơm ngát · Trải nghiệm tô vẽ ly gốm thư giãn tại Cần Thơ"
                             : "Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống · Không gian thiền định tại Cần Thơ")))}
             </motion.p>
 
