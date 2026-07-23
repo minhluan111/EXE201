@@ -38,7 +38,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Real-time (SignalR) & Background Workers
 builder.Services.AddSignalR();
 builder.Services.AddScoped<CafeReservation.Application.Interfaces.IAvailabilityNotifier, SignalRAvailabilityNotifier>();
-builder.Services.AddHostedService<CafeReservation.Api.Workers.AutoCancelReservationWorker>();
+builder.Services.AddHostedService<CafeReservation.Api.Workers.ReservationStatusWorker>();
 
 // Controllers
 builder.Services.AddControllers()

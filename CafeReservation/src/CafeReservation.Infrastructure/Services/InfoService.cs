@@ -32,7 +32,11 @@ public class InfoService : IInfoService
             OpeningHours = info?.OpeningHours ?? string.Empty,
             MapUrl = info?.MapUrl,
             ThemeColor = tenant.ThemeColor,
-            Logo = tenant.Logo
+            Logo = tenant.Logo,
+            NoShowAfterMinutes = info?.NoShowAfterMinutes ?? 15,
+            CancelBeforeMinutes = info?.CancelBeforeMinutes ?? 30,
+            BookingLeadMinutes = info?.BookingLeadMinutes ?? 30,
+            ConfirmationDeadlineMinutes = info?.ConfirmationDeadlineMinutes ?? 30
         };
     }
 }

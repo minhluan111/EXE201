@@ -7,6 +7,6 @@ public interface IUnitOfWork
     Task BeginTransactionAsync(CancellationToken ct = default);
     Task CommitAsync(CancellationToken ct = default);
     Task RollbackAsync(CancellationToken ct = default);
-    Task ExecuteInTransactionAsync(Func<Task> operation, CancellationToken ct = default);
-    Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, CancellationToken ct = default);
+    Task ExecuteInTransactionAsync(Func<Task> operation, System.Data.IsolationLevel? isolationLevel = null, CancellationToken ct = default);
+    Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, System.Data.IsolationLevel? isolationLevel = null, CancellationToken ct = default);
 }

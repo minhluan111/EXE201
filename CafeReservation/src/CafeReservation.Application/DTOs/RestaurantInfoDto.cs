@@ -10,4 +10,10 @@ public class RestaurantInfoDto
     public string? MapUrl { get; set; }
     public string? ThemeColor { get; set; }
     public string? Logo { get; set; }
+
+    // Reservation Policy
+    public int NoShowAfterMinutes { get; set; }
+    public int CancelBeforeMinutes { get; set; }
+    public int BookingLeadMinutes { get; set; }
+    public int ConfirmationDeadlineMinutes { get; set; }
 }

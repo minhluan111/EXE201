@@ -56,16 +56,17 @@ public class ReservationService : IReservationService
             throw new DomainException($"Reservations are only available between: {openingHours}");
         }
 
+        var bookingLeadMins = info?.BookingLeadMinutes ?? 30;
         var nowVietnam = DateTime.UtcNow.AddHours(7);
         var reservationDateTime = request.ReservationDate.ToDateTime(request.StartTime);
-        if (reservationDateTime < nowVietnam.AddMinutes(30))
+        if (reservationDateTime < nowVietnam.AddMinutes(bookingLeadMins))
         {
-            throw new DomainException("Reservations must be made at least 30 minutes before arrival at the restaurant.");
+            throw new DomainException($"Reservations must be made at least {bookingLeadMins} minutes before arrival at the restaurant.");
         }
 
         return await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            var area = await _seatingAreaRepository.GetByIdForUpdateAsync(request.SeatingAreaId, ct)
+            var area = await _seatingAreaRepository.GetByIdAsync(request.SeatingAreaId, ct)
                 ?? throw new NotFoundException(nameof(SeatingArea), request.SeatingAreaId);
 
             if (!area.IsActive)
@@ -77,18 +78,28 @@ public class ReservationService : IReservationService
 
             var startTime = request.StartTime;
 
-            var overlapping = await _reservationRepository.CountOverlappingAsync(
-                area.Id, request.ReservationDate, startTime, endTime, null, ct);
+            // Lấy tất cả active reservations của area này trong ngày để tính Timeline Risk
+            var activeBookings = await _reservationRepository.GetActiveReservationsForDateAsync(request.ReservationDate, ct);
+            var areaBookings = activeBookings.Where(b => b.SeatingAreaId == area.Id).ToList();
 
-            if (overlapping >= area.ReservableTables)
-                throw new ConflictException("No tables are available for the selected time slot.");
+            string? assignedTable = request.TableName;
+            var riskLevel = RiskLevel.High;
 
-            if (!string.IsNullOrEmpty(request.TableName))
+            if (!string.IsNullOrEmpty(assignedTable))
             {
-                var isTableOccupied = await _reservationRepository.AnyOverlappingTableAsync(
-                    request.TableName, request.ReservationDate, startTime, endTime, null, ct);
-                if (isTableOccupied)
-                    throw new ConflictException($"Bàn {request.TableName} đã được đặt trong khoảng thời gian này.");
+                // Nếu khách chọn bàn cụ thể, kiểm tra xem có conflict đúng khung giờ không
+                var isConflict = areaBookings.Any(b => b.TableName == assignedTable && b.StartTime == startTime);
+                if (isConflict) throw new ConflictException($"Bàn {assignedTable} đã có người đặt vào lúc {startTime}.");
+
+                riskLevel = CalculateRiskLevel(startTime, areaBookings.Where(b => b.TableName == assignedTable));
+            }
+            else
+            {
+                // Nếu không chọn bàn, tìm bàn ảo ít rủi ro nhất
+                var isConflict = areaBookings.Count(b => b.StartTime == startTime) >= area.ReservableTables;
+                if (isConflict) throw new ConflictException("Đã hết bàn trống vào lúc " + startTime + ".");
+
+                riskLevel = CalculateBestAvailableRiskLevel(startTime, area.ReservableTables, areaBookings);
             }
 
             var reservation = new Reservation
@@ -103,7 +114,7 @@ public class ReservationService : IReservationService
                 StartTime = startTime,
                 EndTime = endTime,
                 GuestCount = request.GuestCount,
-                Status = ReservationStatus.Reserved,   // always starts as Reserved
+                Status = riskLevel == RiskLevel.Available ? ReservationStatus.Confirmed : ReservationStatus.Reserved,
                 TableName = request.TableName,
                 SpecialNote = request.SpecialNote,
                 CreatedAt = DateTime.UtcNow
@@ -112,15 +123,23 @@ public class ReservationService : IReservationService
             await _reservationRepository.AddAsync(reservation, ct);
             await _unitOfWork.SaveChangesAsync(ct);
 
-            _logger.LogInformation("Reservation {Code} created (Reserved) for guest {GuestName}",
-                reservation.ReservationCode, request.GuestName);
+            _logger.LogInformation("Reservation {Code} created ({Status}) for guest {GuestName}",
+                reservation.ReservationCode, reservation.Status, request.GuestName);
 
-            // Notify availability change – no email until Staff confirms
             _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
+
+            if (reservation.Status == ReservationStatus.Confirmed)
+            {
+                // Send email immediately if Auto Confirmed
+                await _emailService.SendReservationConfirmationAsync(
+                    reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id,
+                    reservation.ReservationDate.ToDateTime(reservation.StartTime),
+                    $"{area.TableType} - {area.Area}", ct);
+            }
 
             reservation.SeatingArea = area;
             return MapToResponse(reservation);
-        }, ct);
+        }, System.Data.IsolationLevel.Serializable, ct);
     }
 
     public async Task<ReservationResponse> GetByIdAsync(Guid reservationId, CancellationToken ct = default)
@@ -150,6 +169,17 @@ public class ReservationService : IReservationService
 
         if (reservation.Status == ReservationStatus.CheckedIn)
             throw new DomainException("Checked-in reservations cannot be cancelled.");
+
+        var info = await _infoService.GetRestaurantInfoAsync(ct);
+        var cancelBeforeMins = info?.CancelBeforeMinutes ?? 30;
+        
+        var nowVietnam = DateTime.UtcNow.AddHours(7);
+        var reservationDateTime = reservation.ReservationDate.ToDateTime(reservation.StartTime);
+        
+        if (nowVietnam > reservationDateTime.AddMinutes(-cancelBeforeMins))
+        {
+            throw new DomainException($"Reservations can only be cancelled at least {cancelBeforeMins} minutes before the arrival time.");
+        }
 
         reservation.Status = ReservationStatus.Cancelled;
 
@@ -184,54 +214,60 @@ public class ReservationService : IReservationService
             throw new DomainException($"Reservations are only available between: {openingHours}");
         }
 
+        var bookingLeadMins = info?.BookingLeadMinutes ?? 30;
         var nowVietnam = DateTime.UtcNow.AddHours(7);
         var reservationDateTime = request.ReservationDate.ToDateTime(request.StartTime);
-        if (reservationDateTime < nowVietnam.AddMinutes(30))
+        if (reservationDateTime < nowVietnam.AddMinutes(bookingLeadMins))
         {
-            throw new DomainException("Reservations must be made at least 30 minutes before arrival at the restaurant.");
+            throw new DomainException($"Reservations must be made at least {bookingLeadMins} minutes before arrival at the restaurant.");
         }
 
 
 
         return await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            var area = await _seatingAreaRepository.GetByIdForUpdateAsync(reservation.SeatingAreaId, ct)
+            var area = await _seatingAreaRepository.GetByIdAsync(reservation.SeatingAreaId, ct)
                 ?? throw new NotFoundException(nameof(SeatingArea), reservation.SeatingAreaId);
 
-            var overlapping = await _reservationRepository.CountOverlappingAsync(
-                reservation.SeatingAreaId, request.ReservationDate, request.StartTime, newEnd, reservationId, ct);
+            var activeBookings = await _reservationRepository.GetActiveReservationsForDateAsync(request.ReservationDate, ct);
+            var areaBookings = activeBookings.Where(b => b.SeatingAreaId == area.Id && b.Id != reservationId).ToList();
 
-            if (overlapping >= area.ReservableTables)
-                throw new ConflictException("No tables are available for the selected time slot.");
+            var riskLevel = RiskLevel.High;
 
             if (!string.IsNullOrEmpty(reservation.TableName))
             {
-                var isTableOccupied = await _reservationRepository.AnyOverlappingTableAsync(
-                    reservation.TableName, request.ReservationDate, request.StartTime, newEnd, reservationId, ct);
-                if (isTableOccupied)
-                    throw new ConflictException($"Bàn {reservation.TableName} đã được đặt trong khoảng thời gian này.");
+                var isConflict = areaBookings.Any(b => b.TableName == reservation.TableName && b.StartTime == request.StartTime);
+                if (isConflict) throw new ConflictException($"Bàn {reservation.TableName} đã có người đặt vào lúc {request.StartTime}.");
+
+                riskLevel = CalculateRiskLevel(request.StartTime, areaBookings.Where(b => b.TableName == reservation.TableName));
+            }
+            else
+            {
+                var isConflict = areaBookings.Count(b => b.StartTime == request.StartTime) >= area.ReservableTables;
+                if (isConflict) throw new ConflictException("Đã hết bàn trống vào lúc " + request.StartTime + ".");
+
+                riskLevel = CalculateBestAvailableRiskLevel(request.StartTime, area.ReservableTables, areaBookings);
             }
 
             reservation.ReservationDate = request.ReservationDate;
             reservation.StartTime = request.StartTime;
             reservation.EndTime = newEnd;
 
-            // After reschedule, always go back to Reserved – Staff must re-confirm
-            reservation.Status = ReservationStatus.Reserved;
-            reservation.ConfirmedAt = null;
-            reservation.ConfirmedBy = null;
+            // Tự động Confirm nếu an toàn, nếu không thì đưa về Reserved
+            reservation.Status = riskLevel == RiskLevel.Available ? ReservationStatus.Confirmed : ReservationStatus.Reserved;
+            reservation.ConfirmedAt = riskLevel == RiskLevel.Available ? DateTime.UtcNow : null;
+            reservation.ConfirmedBy = riskLevel == RiskLevel.Available ? "System (Reschedule)" : null;
 
             await _reservationRepository.UpdateAsync(reservation, ct);
             await _unitOfWork.SaveChangesAsync(ct);
 
-            _logger.LogInformation("Reservation {Code} rescheduled → back to Reserved", reservation.ReservationCode);
+            _logger.LogInformation("Reservation {Code} rescheduled → {Status}", reservation.ReservationCode, reservation.Status);
 
             _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
-            // No email sent on reschedule – wait for Staff to confirm again
 
             reservation.SeatingArea = area;
             return MapToResponse(reservation);
-        }, ct);
+        }, System.Data.IsolationLevel.Serializable, ct);
     }
 
     public async Task<PagedResult<ReservationResponse>> GetAllAsync(ReservationFilterRequest filter, CancellationToken ct = default)
@@ -319,14 +355,27 @@ public class ReservationService : IReservationService
 
             foreach (var (start, end) in slots)
             {
-                // Đếm overlap trong memory — không cần thêm DB query
-                var count = areaReservations.Count(r =>
-                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
-                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
-                );
+                // Conflict count based on exact start time (Concurrency)
+                var count = areaReservations.Count(r => r.StartTime == start);
 
                 if (count < area.ReservableTables)
-                    available.Add(new TimeSlot { StartTime = start, EndTime = end });
+                {
+                    // Calculate risk for UI
+                    var risk = CalculateBestAvailableRiskLevel(start, area.ReservableTables, areaReservations);
+                    
+                    available.Add(new TimeSlot 
+                    { 
+                        StartTime = start, 
+                        EndTime = end,
+                        RiskLevel = risk.ToString(),
+                        RiskMessage = risk switch {
+                            RiskLevel.Available => "Available",
+                            RiskLevel.Low => "Low Risk",
+                            RiskLevel.Medium => "Medium Risk",
+                            _ => "High Risk"
+                        }
+                    });
+                }
             }
 
             result.Add(new AvailabilityResponse
@@ -341,6 +390,59 @@ public class ReservationService : IReservationService
         }
 
         return result;
+    }
+
+    private enum RiskLevel { Available = 0, Low = 1, Medium = 2, High = 3 }
+
+    private RiskLevel CalculateRiskLevel(TimeOnly newStart, IEnumerable<Reservation> existingBookings)
+    {
+        if (!existingBookings.Any()) return RiskLevel.Available;
+        
+        double minDistanceMinutes = existingBookings.Min(b => Math.Abs((newStart - b.StartTime).TotalMinutes));
+        
+        if (minDistanceMinutes < 60) return RiskLevel.High;
+        if (minDistanceMinutes < 120) return RiskLevel.High;
+        if (minDistanceMinutes < 180) return RiskLevel.Medium;
+        if (minDistanceMinutes < 240) return RiskLevel.Low;
+        
+        return RiskLevel.Available;
+    }
+
+    private RiskLevel CalculateBestAvailableRiskLevel(TimeOnly newStart, int reservableTables, List<Reservation> areaBookings)
+    {
+        var tables = Enumerable.Range(0, reservableTables).Select(_ => new List<TimeOnly>()).ToList();
+        
+        var tableGroups = areaBookings.Where(b => !string.IsNullOrEmpty(b.TableName)).GroupBy(b => b.TableName).ToList();
+        int tableIdx = 0;
+        foreach (var group in tableGroups)
+        {
+            if (tableIdx < reservableTables)
+            {
+                tables[tableIdx].AddRange(group.Select(b => b.StartTime));
+                tableIdx++;
+            }
+        }
+        
+        var unassigned = areaBookings.Where(b => string.IsNullOrEmpty(b.TableName)).OrderBy(b => b.StartTime).ToList();
+        foreach (var b in unassigned)
+        {
+            var bestTable = tables.OrderByDescending(t => 
+                t.Count == 0 ? double.MaxValue : t.Min(st => Math.Abs((st - b.StartTime).TotalMinutes))
+            ).First();
+            bestTable.Add(b.StartTime);
+        }
+        
+        var bestRiskForNew = tables.Select(t => {
+            if (t.Count == 0) return RiskLevel.Available;
+            double minDiff = t.Min(st => Math.Abs((st - newStart).TotalMinutes));
+            if (minDiff < 60) return RiskLevel.High;
+            if (minDiff < 120) return RiskLevel.High;
+            if (minDiff < 180) return RiskLevel.Medium;
+            if (minDiff < 240) return RiskLevel.Low;
+            return RiskLevel.Available;
+        }).Min();
+        
+        return bestRiskForNew;
     }
 
     // ── Staff actions ─────────────────────────────────────────────────────────

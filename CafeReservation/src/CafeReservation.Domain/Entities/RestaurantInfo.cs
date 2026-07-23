@@ -13,5 +13,11 @@ public class RestaurantInfo
     public string OpeningHours { get; set; } = string.Empty;
     public string? MapUrl { get; set; }
 
+    // Reservation Policy (Multi-tenant config)
+    public int NoShowAfterMinutes { get; set; } = 15;
+    public int CancelBeforeMinutes { get; set; } = 30;
+    public int BookingLeadMinutes { get; set; } = 30;
+    public int ConfirmationDeadlineMinutes { get; set; } = 30;
+
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

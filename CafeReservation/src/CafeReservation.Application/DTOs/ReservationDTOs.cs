@@ -76,6 +76,8 @@ public class TimeSlot
 {
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
+    public string RiskLevel { get; set; } = "Available"; // Available, Low, Medium, High
+    public string? RiskMessage { get; set; }
 }
 
 // Admin Filtering & Pagination

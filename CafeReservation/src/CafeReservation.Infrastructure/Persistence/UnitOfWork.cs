@@ -20,6 +20,11 @@ public class UnitOfWork : IUnitOfWork
         _transaction = await _db.Database.BeginTransactionAsync(ct);
     }
 
+    public async Task BeginTransactionAsync(System.Data.IsolationLevel isolationLevel, CancellationToken ct = default)
+    {
+        _transaction = await _db.Database.BeginTransactionAsync(isolationLevel, ct);
+    }
+
     public async Task CommitAsync(CancellationToken ct = default)
     {
         if (_transaction != null)
@@ -40,12 +45,16 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public Task ExecuteInTransactionAsync(Func<Task> operation, CancellationToken ct = default)
+    public Task ExecuteInTransactionAsync(Func<Task> operation, System.Data.IsolationLevel? isolationLevel = null, CancellationToken ct = default)
     {
         var strategy = _db.Database.CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
-            await BeginTransactionAsync(ct);
+            if (isolationLevel.HasValue)
+                await BeginTransactionAsync(isolationLevel.Value, ct);
+            else
+                await BeginTransactionAsync(ct);
+                
             try
             {
                 await operation();
@@ -59,12 +68,16 @@ public class UnitOfWork : IUnitOfWork
         });
     }
 
-    public Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, CancellationToken ct = default)
+    public Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, System.Data.IsolationLevel? isolationLevel = null, CancellationToken ct = default)
     {
         var strategy = _db.Database.CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
-            await BeginTransactionAsync(ct);
+            if (isolationLevel.HasValue)
+                await BeginTransactionAsync(isolationLevel.Value, ct);
+            else
+                await BeginTransactionAsync(ct);
+
             try
             {
                 var result = await operation();
