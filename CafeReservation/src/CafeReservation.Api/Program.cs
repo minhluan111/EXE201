@@ -177,8 +177,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<AvailabilityHub>("/hub/availability");
 
-app.MapGet("/debug/endpoints", (EndpointDataSource endpointSource) =>
-{
-    return endpointSource.Endpoints.Select(e => e.DisplayName);
-});
+app.MapGet("/debug/endpoints", (EndpointDataSource endpointSource) => endpointSource.Endpoints.Select(e => e.DisplayName));
 await app.RunAsync();
