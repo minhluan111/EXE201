@@ -17,7 +17,13 @@ public static class OpeningHoursParser
         if (string.IsNullOrWhiteSpace(openingHoursStr))
             return result;
 
-        var matches = TimePattern.Matches(openingHoursStr);
+        // Normalize various dash characters to ASCII hyphen
+        var normalizedStr = openingHoursStr
+            .Replace('–', '-') // En Dash
+            .Replace('—', '-') // Em Dash
+            .Replace('−', '-'); // Unicode Minus
+
+        var matches = TimePattern.Matches(normalizedStr);
         foreach (Match match in matches)
         {
             if (TimeOnly.TryParse(match.Groups["start"].Value, out var start) &&
@@ -30,13 +36,27 @@ public static class OpeningHoursParser
         return result;
     }
 
-    public static bool IsWithinOpeningHours(TimeOnly targetStart, TimeOnly targetEnd, IReadOnlyList<(TimeOnly Start, TimeOnly End)> intervals)
+    public static bool IsWithinOpeningHours(
+        TimeOnly targetStart, 
+        TimeOnly targetEnd, 
+        IReadOnlyList<(TimeOnly Start, TimeOnly End)> intervals,
+        TimeOnly? fallbackStart = null,
+        TimeOnly? fallbackEnd = null)
     {
-        if (intervals.Count == 0) return true; // Default allow if format is empty/invalid
+        if (intervals.Count == 0)
+        {
+            if (fallbackStart.HasValue && fallbackEnd.HasValue)
+            {
+                var fs = fallbackStart.Value;
+                var fe = fallbackEnd.Value;
+                return targetStart >= fs && targetStart <= fe && targetEnd >= fs && targetEnd <= fe && targetEnd >= targetStart;
+            }
+            return true; // Default allow if format is empty/invalid
+        }
 
         foreach (var interval in intervals)
         {
-            if (targetStart >= interval.Start && targetEnd <= interval.End)
+            if (targetStart >= interval.Start && targetStart <= interval.End && targetEnd >= interval.Start && targetEnd <= interval.End && targetEnd >= targetStart)
             {
                 return true;
             }

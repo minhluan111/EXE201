@@ -3,6 +3,7 @@ using System;
 using CafeReservation.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CafeReservation.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260723194550_AddReservationPolicyToRestaurantInfo")]
+    partial class AddReservationPolicyToRestaurantInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,39 +254,18 @@ namespace CafeReservation.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int>("AutoConfirmThresholdMinutes")
-                        .HasColumnType("integer");
-
                     b.Property<int>("BookingLeadMinutes")
                         .HasColumnType("integer");
 
                     b.Property<int>("CancelBeforeMinutes")
                         .HasColumnType("integer");
 
-                    b.Property<TimeOnly>("ClosingTime")
-                        .HasColumnType("time without time zone");
-
                     b.Property<int>("ConfirmationDeadlineMinutes")
                         .HasColumnType("integer");
-
-                    b.Property<int>("HighRiskThresholdMinutes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(60);
-
-                    b.Property<int>("LowRiskThresholdMinutes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(180);
 
                     b.Property<string>("MapUrl")
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
-
-                    b.Property<int>("MediumRiskThresholdMinutes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(120);
 
                     b.Property<int>("NoShowAfterMinutes")
                         .HasColumnType("integer");
@@ -292,9 +274,6 @@ namespace CafeReservation.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
-
-                    b.Property<TimeOnly>("OpeningTime")
-                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Phone")
                         .IsRequired()

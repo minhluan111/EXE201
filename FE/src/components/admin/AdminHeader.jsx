@@ -9,6 +9,7 @@ import {
   UtensilsCrossed,
   Layers,
   Star,
+  Settings,
   LogOut,
 } from "lucide-react";
 
@@ -70,6 +71,12 @@ export default function AdminHeader({ title, subtitle }) {
       path: "/admin/reviews",
       icon: Star,
       roles: ["manager"],
+    },
+    {
+      label: "Cấu hình nhà hàng",
+      path: "/admin/settings",
+      icon: Settings,
+      roles: ["manager", "admin"],
     },
   ].filter((item) => item.roles.includes(user.role));
 

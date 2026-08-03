@@ -14,4 +14,7 @@ public interface ICurrentTenantService
 
     /// <summary>Domain của tenant hiện tại (dùng để tạo link URL động).</summary>
     string TenantDomain { get; }
+
+    /// <summary>Set TenantId thủ công cho background jobs hoặc test scope.</summary>
+    void SetTenantId(Guid tenantId);
 }

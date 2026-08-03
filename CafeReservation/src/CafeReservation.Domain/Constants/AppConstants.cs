@@ -4,10 +4,6 @@ public static class AppConstants
 {
     public const int ReservationDurationMinutes = 60;
     public const int HoldingTimeMinutes = 45;
-
-    public static readonly TimeOnly OpeningHour = new(8, 0);
-    public static readonly TimeOnly ClosingHour = new(20, 0);
-
     public static class TableTypes
     {
         public const string Window2Seat = "2-Seat Window";

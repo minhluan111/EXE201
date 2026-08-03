@@ -14,5 +14,9 @@ public class RestaurantInfoConfiguration : IEntityTypeConfiguration<RestaurantIn
         builder.Property(x => x.Phone).HasMaxLength(20).IsRequired();
         builder.Property(x => x.OpeningHours).HasMaxLength(200).IsRequired();
         builder.Property(x => x.MapUrl).HasMaxLength(1000);
+
+        builder.Property(x => x.HighRiskThresholdMinutes).HasDefaultValue(60);
+        builder.Property(x => x.MediumRiskThresholdMinutes).HasDefaultValue(120);
+        builder.Property(x => x.LowRiskThresholdMinutes).HasDefaultValue(180);
     }
 }

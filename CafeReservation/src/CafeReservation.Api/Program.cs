@@ -38,7 +38,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Real-time (SignalR) & Background Workers
 builder.Services.AddSignalR();
 builder.Services.AddScoped<CafeReservation.Application.Interfaces.IAvailabilityNotifier, SignalRAvailabilityNotifier>();
-builder.Services.AddHostedService<CafeReservation.Api.Workers.AutoCancelReservationWorker>();
+builder.Services.AddHostedService<CafeReservation.Api.Workers.ReservationStatusWorker>();
 
 // Controllers
 builder.Services.AddControllers()
@@ -177,8 +177,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<AvailabilityHub>("/hub/availability");
 
-app.MapGet("/debug/endpoints", (EndpointDataSource endpointSource) =>
-{
-    return endpointSource.Endpoints.Select(e => e.DisplayName);
-});
+app.MapGet("/debug/endpoints", (EndpointDataSource endpointSource) => endpointSource.Endpoints.Select(e => e.DisplayName));
 await app.RunAsync();

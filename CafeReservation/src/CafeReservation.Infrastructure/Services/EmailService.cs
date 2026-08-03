@@ -100,6 +100,30 @@ public class EmailService : IEmailService
         await SendAsync(payload, ct);
     }
 
+    public async Task SendNoShowNotificationAsync(
+        string toEmail, string userName, string reservationCode, Guid reservationId, CancellationToken ct = default)
+    {
+        var (rName, rAddress) = await GetRestaurantInfoAsync(ct);
+        var payload = new
+        {
+            sender = new { name = rName, email = SenderEmail },
+            to = new[] { new { email = toEmail, name = userName } },
+            subject = $"Thông báo vắng mặt (No-Show) – {reservationCode}",
+            htmlContent = $"""
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px">
+                  <h2 style="color:#ea580c">Thông báo vắng mặt (No-Show)</h2>
+                  <p>Xin chào <strong>{userName}</strong>,</p>
+                  <p>Chúng tôi rất tiếc vì bạn đã không đến đúng giờ cho lịch đặt bàn <strong>{reservationCode}</strong> và lịch đặt bàn đã được chuyển sang trạng thái No-Show theo quy định của quán.</p>
+                  <p>Hẹn gặp lại bạn trong những lần trải nghiệm tiếp theo!</p>
+                  <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
+                  <p style="color:#999;font-size:12px">{rName} &bull; {rAddress}</p>
+                </div>
+            """
+        };
+
+        await SendAsync(payload, ct);
+    }
+
     public async Task SendRescheduleConfirmationAsync(
         string toEmail, string userName, string reservationCode, Guid reservationId,
         DateTime newDateTime, CancellationToken ct = default)

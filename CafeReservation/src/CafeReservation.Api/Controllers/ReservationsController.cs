@@ -65,7 +65,7 @@ public class ReservationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Cancel(Guid id, CancellationToken ct)
     {
-        await _reservationService.CancelAsync(id, ct);
+        await _reservationService.CancelAsync(id, bypassPolicy: false, ct);
         return Ok(new { message = "Reservation has been successfully cancelled." });
     }
 

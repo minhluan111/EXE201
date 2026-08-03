@@ -19,6 +19,7 @@ import AdminManageBookingsPage from "../pages/admin/ManageBookingsPage.jsx";
 import AdminManageReviewsPage from "../pages/admin/ManageReviewsPage.jsx";
 import AdminManageFeedbacksPage from "../pages/admin/ManageFeedbacksPage.jsx";
 import AdminManageAccountsPage from "../pages/admin/ManageAccountsPage.jsx";
+import AdminManageSettingsPage from "../pages/admin/ManageSettingsPage.jsx";
 import ProtectedRoute from "../components/common/ProtectedRoute.jsx";
 import PublicRoute from "../components/common/PublicRoute.jsx";
 
@@ -116,6 +117,14 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute roleRequired="manager">
             <AdminManageReviewsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/settings"
+        element={
+          <ProtectedRoute roleRequired="manager">
+            <AdminManageSettingsPage />
           </ProtectedRoute>
         }
       />

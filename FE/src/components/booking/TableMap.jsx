@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ZoomIn, X } from "lucide-react";
+import { ZoomIn, X, Lock } from "lucide-react";
 import { useTenant } from "@/context/TenantContext";
 
 const tableImages = {
@@ -140,6 +140,11 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
 
           const description = table.seatingArea?.description || areaDescriptions[table.area] || "";
 
+          const displayType = table.displayType || "Available";
+          const riskLevel = table.riskLevel || "Available";
+          const isConflict = displayType === "Conflict" || displayType === "Occupied" || table.status === "occupied" || table.status === "reserved" || table.status === "booked" || table.status === "conflict";
+          const isLocked = !isConflict && (displayType === "Locked" || table.status === "locked" || table.status === "maintenance" || table.status === "disabled" || table.is_active === false || table.isActive === false || table.status === "unavailable");
+
           return (
             <motion.div
               key={table.id}
@@ -275,14 +280,31 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
                       borderRadius: "999px",
                       fontSize: "12px",
                       fontWeight: 600,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
                       background:
-                        table.status === "available"
-                          ? "rgba(34,197,94,.15)"
-                          : "rgba(239,68,68,.15)",
-                      color: table.status === "available" ? "#16a34a" : "#dc2626",
+                        isConflict ? "rgba(107, 114, 128, 0.15)"
+                          : isLocked ? "rgba(75, 85, 99, 0.15)"
+                            : displayType === "TimelineNotice" ? "rgba(59, 130, 246, 0.15)"
+                              : displayType === "BookingRisk" ?
+                                (riskLevel === "High" ? "rgba(239, 68, 68, 0.15)" : riskLevel === "Medium" ? "rgba(249, 115, 22, 0.15)" : "rgba(234, 179, 8, 0.15)")
+                                : "rgba(34, 197, 94, 0.15)",
+                      color:
+                        isConflict ? "#4b5563"
+                          : isLocked ? "#374151"
+                            : displayType === "TimelineNotice" ? "#1d4ed8"
+                              : displayType === "BookingRisk" ?
+                                (riskLevel === "High" ? "#b91c1c" : riskLevel === "Medium" ? "#c2410c" : "#a16207")
+                                : "#16a34a",
                     }}
                   >
-                    {table.status === "available" ? "Còn trống" : "Đã đặt"}
+                    {isLocked && !isConflict && <Lock size={12} />}
+                    {isConflict ? "Đã được đặt"
+                      : isLocked ? "Đã khóa"
+                        : displayType === "TimelineNotice" ? "Có lịch đặt tiếp theo"
+                          : displayType === "BookingRisk" ? (riskLevel === "High" ? "Có khả năng phải chờ cao" : riskLevel === "Medium" ? "Có khả năng phải chờ" : "Có khả năng phải chờ thấp")
+                            : "Còn trống"}
                   </span>
 
                   {selected?.id === table.id && (

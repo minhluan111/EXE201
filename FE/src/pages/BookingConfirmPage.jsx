@@ -163,7 +163,8 @@ export default function BookingConfirmPage() {
 
     const res = await bookingCreate({
       token,
-      table_id: tableId,
+      seatingAreaId: table.seatingAreaId,
+      tableName: table.name,
       booking_date,
       booking_time,
       num_of_people,
@@ -173,6 +174,7 @@ export default function BookingConfirmPage() {
     setLoading(false);
 
     if (!res.ok) {
+      attemptKeyRef.current = null; // Reset attempt key on failure to allow retry
       setError(res.message || "Đặt bàn thất bại. Vui lòng thử lại.");
       return;
     }

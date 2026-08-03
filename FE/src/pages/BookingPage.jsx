@@ -7,7 +7,10 @@ import {
   Users,
   MapPin,
   ChevronRight,
+  ChevronDown,
   CheckCircle,
+  Lock,
+  Check,
 } from "lucide-react";
 import { bookingCheckStatus, tablesList } from "../services/apiClient.js";
 import { useBookingContext } from "../context/useBookingContext.js";
@@ -188,6 +191,8 @@ export default function BookingPage() {
   const [floorTables, setFloorTables] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [legendOpen, setLegendOpen] = useState(false);
+  const [showLegendHelp, setShowLegendHelp] = useState(false);
 
   // Build time slots from tenant opening hours
   const tenantTimeSlots = useMemo(() => {
@@ -216,10 +221,11 @@ export default function BookingPage() {
 
       const timeDiffMs = slotDate.getTime() - today.getTime();
       const timeDiffMinutes = timeDiffMs / (1000 * 60);
+      const leadTime = tenant?.bookingLeadMinutes ?? 15;
 
-      return timeDiffMinutes >= 30; // Must be at least 30 minutes in the future
+      return timeDiffMinutes >= leadTime; // Must be at least leadTime minutes in the future
     });
-  }, [bookingDate, tenantTimeSlots]);
+  }, [bookingDate, tenantTimeSlots, tenant?.bookingLeadMinutes]);
 
   // Reset bookingTime if it is no longer valid for the selected date
   useEffect(() => {
@@ -250,28 +256,9 @@ export default function BookingPage() {
             return;
           }
 
-          const suitableTables = res.data.filter((table) => {
-            if (table.max_seats < numPeople) return false;
-            
-            const has2or3Seats = res.data.some(t => t.max_seats === 2 || t.max_seats === 3);
-            const has3or4Seats = res.data.some(t => t.max_seats === 3 || t.max_seats === 4);
-            
-            if (numPeople <= 2) {
-              if (has2or3Seats) {
-                return table.max_seats === 2 || table.max_seats === 3;
-              } else {
-                return table.max_seats === 4;
-              }
-            } else if (numPeople <= 4) {
-              if (has3or4Seats) {
-                return table.max_seats === 3 || table.max_seats === 4;
-              } else {
-                return table.max_seats === 5 || table.max_seats === 6;
-              }
-            } else {
-              return table.max_seats >= 5;
-            }
-          });
+          const suitableTables = res.data.filter(
+            (table) => table.max_seats >= numPeople
+          );
 
           setFloorTables(suitableTables);
 
@@ -337,8 +324,9 @@ export default function BookingPage() {
       slotDate.setHours(hours, minutes, 0, 0);
 
       const diffMinutes = (slotDate.getTime() - now.getTime()) / (1000 * 60);
-      if (diffMinutes < 30) {
-        setError("Thời gian đặt bàn phải trước khi đến quán ít nhất 30 phút.");
+      const leadTime = tenant?.bookingLeadMinutes ?? 15;
+      if (diffMinutes < leadTime) {
+        setError(`Thời gian đặt bàn phải trước khi đến quán ít nhất ${leadTime} phút.`);
         return;
       }
     }
@@ -705,7 +693,7 @@ export default function BookingPage() {
                       onClick={() => setNumPeople(n)}
                       style={{
                         flex: 1,
-                        padding: "14px 0",
+                        padding: "9px 0",
                         borderRadius: 14,
                         border: "1.5px solid",
                         borderColor:
@@ -755,18 +743,21 @@ export default function BookingPage() {
               >
                 {/* Summary card */}
                 <div
+                  className="hide-scrollbar"
                   style={{
                     position: "sticky",
-                    top: 88,
+                    top: 80,
                     alignSelf: "flex-start",
+                    maxHeight: legendOpen ? "calc(100vh - 80px)" : "none",
+                    overflowY: legendOpen ? "auto" : "visible",
                   }}
                 >
                   <div
                     style={{
                       background: "var(--bg-card)",
-                      borderRadius: 24,
+                      borderRadius: 20,
                       border: "1px solid var(--border)",
-                      padding: "28px",
+                      padding: "20px",
                       boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
                     }}
                   >
@@ -776,7 +767,7 @@ export default function BookingPage() {
                         fontSize: 22,
                         fontWeight: 700,
                         color: "var(--text)",
-                        margin: "0 0 20px",
+                        margin: "0 0 12px",
                       }}
                     >
                       Chi tiết đặt bàn
@@ -809,7 +800,7 @@ export default function BookingPage() {
                           display: "flex",
                           alignItems: "center",
                           gap: 14,
-                          padding: "14px 0",
+                          padding: "9px 0",
                           borderBottom: "1px solid var(--border)",
                         }}
                       >
@@ -927,9 +918,9 @@ export default function BookingPage() {
                       onClick={handleProceed}
                       disabled={!selected}
                       style={{
-                        marginTop: 20,
+                        marginTop: 14,
                         width: "100%",
-                        padding: "15px",
+                        padding: "12px",
                         borderRadius: 50,
                         border: "none",
                         cursor: selected ? "pointer" : "not-allowed",
@@ -952,6 +943,219 @@ export default function BookingPage() {
                       {selected ? "Xác nhận đặt chỗ" : "Chọn một bàn"}
                       {selected && <ChevronRight size={18} />}
                     </motion.button>
+                  </div>
+
+                  {/* LEGEND PANEL CARD UNDER BOOKING DETAILS */}
+                  <div
+                    style={{
+                      background: "var(--bg-card)",
+                      borderRadius: 20,
+                      border: "1px solid var(--border)",
+                      padding: "16px 20px",
+                      boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
+                      marginTop: 16,
+                    }}
+                  >
+                    <div
+                      onClick={() => setLegendOpen(!legendOpen)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
+                    >
+                      <h3
+                        style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 19,
+                          fontWeight: 700,
+                          color: "var(--text)",
+                          margin: 0,
+                        }}
+                      >
+                        Hướng dẫn trạng thái bàn
+                      </h3>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <ChevronDown
+                          size={18}
+                          color="var(--text)"
+                          style={{
+                            transform: legendOpen ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.2s ease",
+                          }}
+                        />
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowLegendHelp(!showLegendHelp);
+                          }}
+                          onMouseEnter={() => setShowLegendHelp(true)}
+                          onMouseLeave={() => setShowLegendHelp(false)}
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: "50%",
+                            border: "1.5px solid var(--text-muted)",
+                            color: "var(--text-muted)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 12,
+                            fontWeight: 700,
+                            cursor: "pointer",
+                            position: "relative",
+                          }}
+                        >
+                          ?
+                          <AnimatePresence>
+                            {showLegendHelp && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                                transition={{ duration: 0.15 }}
+                                onClick={(e) => e.stopPropagation()}
+                                style={{
+                                  position: "absolute",
+                                  right: 0,
+                                  top: "calc(100% + 10px)",
+                                  width: 260,
+                                  background: "var(--bg-card)",
+                                  border: "1px solid var(--border)",
+                                  borderRadius: 14,
+                                  padding: "12px 14px",
+                                  boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+                                  zIndex: 100,
+                                  textAlign: "left",
+                                  cursor: "default",
+                                }}
+                              >
+                                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text)", marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+                                  <span style={{ color: "#3b82f6" }}>💡</span> Ý nghĩa trạng thái
+                                </div>
+                                <div style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5, fontWeight: "normal" }}>
+                                  Hệ thống tự động phân tích và gợi ý tình trạng bàn dựa trên lịch đặt chỗ thực tế, giúp bạn dễ dàng chọn vị trí và thời gian phù hợp nhất.
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </div>
+                    </div>
+
+                    <AnimatePresence>
+                      {legendOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          style={{ overflow: "hidden" }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 14,
+                              marginTop: 16,
+                              borderTop: "1px solid var(--border)",
+                              paddingTop: 16,
+                            }}
+                          >
+                            {[
+                              {
+                                color: "#22c55e",
+                                bg: "rgba(34, 197, 94, 0.15)",
+                                title: "Còn trống",
+                                desc: "Bàn còn trống, sẵn sàng phục vụ.",
+                                icon: <Check size={11} color="#ffffff" strokeWidth={3} />,
+                              },
+                              {
+                                color: "#3b82f6",
+                                bg: "rgba(59, 130, 246, 0.15)",
+                                title: "Có lịch đặt tiếp theo",
+                                desc: "Bàn này đã có khách đặt vào khung giờ sau. Nếu bạn dự định ngồi lâu, cửa hàng có thể sẽ cần hỗ trợ sắp xếp chỗ ngồi để phục vụ khách tiếp theo.",
+                                icon: <Clock size={11} color="#ffffff" strokeWidth={2.5} />,
+                              },
+                              {
+                                color: "#eab308",
+                                bg: "rgba(234, 179, 8, 0.15)",
+                                title: "Có khả năng phải chờ thấp",
+                                desc: "Bàn này đã có khách đặt trước bạn nhưng khoảng cách giữa hai lượt đặt khá an toàn. Thông thường cửa hàng vẫn có thể chuẩn bị bàn đúng giờ.",
+                                icon: <span style={{ color: "#ffffff", fontWeight: 900, fontSize: 12, lineHeight: 1, fontFamily: "system-ui, sans-serif" }}>!</span>,
+                              },
+                              {
+                                color: "#f97316",
+                                bg: "rgba(249, 115, 22, 0.15)",
+                                title: "Có khả năng phải chờ",
+                                desc: "Bàn này đã có khách đặt ở khung giờ trước bạn. Có khả năng thấp nếu khách trước dùng bàn lâu hơn dự kiến, bạn có thể cần chờ thêm hoặc được cửa hàng hỗ trợ đổi sang bàn khác.",
+                                icon: <span style={{ color: "#ffffff", fontWeight: 900, fontSize: 12, lineHeight: 1, fontFamily: "system-ui, sans-serif" }}>!</span>,
+                              },
+                              {
+                                color: "#ef4444",
+                                bg: "rgba(239, 68, 68, 0.15)",
+                                title: "Có khả năng phải chờ cao",
+                                desc: "Bàn này đã có khách đặt ở khung giờ trước bạn. Nếu khách trước dùng bàn lâu hơn dự kiến, bạn có thể cần chờ thêm hoặc được cửa hàng hỗ trợ đổi sang bàn khác.",
+                                icon: <span style={{ color: "#ffffff", fontWeight: 900, fontSize: 12, lineHeight: 1, fontFamily: "system-ui, sans-serif" }}>!</span>,
+                              },
+                              {
+                                color: "#6b7280",
+                                bg: "rgba(107, 114, 128, 0.15)",
+                                title: "Đã được đặt",
+                                desc: "Bàn đã có khách đặt trong khung giờ bạn chọn.",
+                                icon: <Calendar size={11} color="#ffffff" strokeWidth={2.5} />,
+                              },
+                              {
+                                color: "#4b5563",
+                                bg: "rgba(75, 85, 99, 0.15)",
+                                title: "Bàn đã khóa",
+                                desc: "Bàn đang tạm ngừng phục vụ hoặc bảo trì.",
+                                icon: <Lock size={11} color="#ffffff" strokeWidth={2.5} />,
+                              },
+                            ].map((item, index) => (
+                              <div key={index} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                                <div
+                                  style={{
+                                    width: 28,
+                                    height: 28,
+                                    borderRadius: "50%",
+                                    background: item.bg,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexShrink: 0,
+                                    marginTop: 1,
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      width: 18,
+                                      height: 18,
+                                      borderRadius: "50%",
+                                      background: item.color,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    {item.icon}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div style={{ fontSize: 13.5, fontWeight: 700, color: item.color }}>
+                                    {item.title}
+                                  </div>
+                                  <div style={{ fontSize: 12, color: "var(--text)", marginTop: 2, lineHeight: "1.45" }}>
+                                    {item.desc}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -1023,6 +1227,43 @@ export default function BookingPage() {
                         canSelect={canSelect}
                       />
                     )}
+
+                    {/* BLUE INFO BANNER BELOW TABLES */}
+                    <div
+                      style={{
+                        marginTop: 28,
+                        padding: "16px 20px",
+                        borderRadius: 16,
+                        background: "rgba(59, 130, 246, 0.08)",
+                        border: "1px solid rgba(59, 130, 246, 0.22)",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: "50%",
+                          border: "1.5px solid #3b82f6",
+                          color: "#3b82f6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 12,
+                          fontWeight: "bold",
+                          flexShrink: 0,
+                          marginTop: 1,
+                        }}
+                      >
+                        i
+                      </div>
+                      <div style={{ fontSize: 13, color: "var(--text)", lineHeight: "1.5" }}>
+                        <div style={{ fontWeight: 600, color: "#1d4ed8" }}>Các trạng thái đánh giá dựa trên lịch đặt hiện tại và có thể thay đổi theo thời gian.</div>
+                        <div style={{ marginTop: 2, color: "var(--text-muted)" }}>Bạn vẫn có thể chọn bàn khác hoặc thay đổi thời gian để có nhiều lựa chọn phù hợp hơn.</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

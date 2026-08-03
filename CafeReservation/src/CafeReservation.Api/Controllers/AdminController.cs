@@ -16,13 +16,39 @@ public class AdminController : ControllerBase
 {
     private readonly IReservationService _reservationService;
     private readonly ISeatingAreaService _seatingAreaService;
+    private readonly IInfoService _infoService;
     private readonly AppDbContext _db;
 
-    public AdminController(IReservationService reservationService, ISeatingAreaService seatingAreaService, AppDbContext db)
+    public AdminController(
+        IReservationService reservationService,
+        ISeatingAreaService seatingAreaService,
+        IInfoService infoService,
+        AppDbContext db)
     {
         _reservationService = reservationService;
         _seatingAreaService = seatingAreaService;
+        _infoService = infoService;
         _db = db;
+    }
+
+    // Update restaurant info & policy configuration (Manager & Admin only)
+    [HttpPut("restaurant-info")]
+    [Authorize(Roles = "Admin,Manager")]
+    [ProducesResponseType(typeof(RestaurantInfoDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateRestaurantInfo([FromBody] UpdateRestaurantInfoRequest request, CancellationToken ct)
+    {
+        var result = await _infoService.UpdateRestaurantInfoAsync(request, ct);
+        return Ok(result);
+    }
+
+    // Auto-parse Google Maps URL to extract Address, Phone & Opening Hours (Manager & Admin only)
+    [HttpPost("restaurant-info/parse-map-url")]
+    [Authorize(Roles = "Admin,Manager")]
+    [ProducesResponseType(typeof(ParseMapUrlResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ParseMapUrl([FromBody] ParseMapUrlRequest request, CancellationToken ct)
+    {
+        var result = await _infoService.ParseMapUrlAsync(request, ct);
+        return Ok(result);
     }
 
 // Get dashboard statistics (Manager only)
@@ -43,6 +69,7 @@ public class AdminController : ControllerBase
         [FromQuery] DateOnly? date,
         [FromQuery] string?   status,
         [FromQuery] string?   search,
+        [FromQuery] string?   sortBy,
         [FromQuery] int       page     = 1,
         [FromQuery] int       pageSize = 20,
         CancellationToken     ct       = default)
@@ -52,6 +79,7 @@ public class AdminController : ControllerBase
             Date     = date,
             Status   = status,
             Search   = search,
+            SortBy   = sortBy,
             Page     = page,
             PageSize = pageSize
         };
@@ -66,7 +94,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Cancel(Guid id, CancellationToken ct)
     {
-        await _reservationService.CancelAsync(id, ct);
+        await _reservationService.CancelAsync(id, bypassPolicy: true, ct);
         return NoContent();
     }
 

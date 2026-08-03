@@ -54,6 +54,33 @@ public class ReservationResponse
     public string? CheckedInBy { get; set; }
     public string? CheckInImageUrl { get; set; }
     public string? CheckInNote { get; set; }
+
+    // Staff Review Workflow Fields (Derived runtime fields)
+    public string RiskLevel { get; set; } = "Available";
+    public string DisplayType { get; set; } = "Available";
+    public string ReviewStatus { get; set; } = "PendingReview"; // PendingReview | Reviewed | NotRequired
+    public int ReviewPriority { get; set; } = 5;
+    public string ReviewBadge { get; set; } = "Bình thường";
+    public string? ReviewExplanation { get; set; }
+
+    // Operational Booking Priority Fields
+    public string BookingPriority { get; set; } = "Normal"; // PriorityBefore | PriorityAfter | Normal
+    public string BookingPriorityLabel { get; set; } = "⚪ Bình thường";
+    public string? BookingPriorityExplanation { get; set; }
+    public List<TableTimelineContextDto> TableTimelineContext { get; set; } = new();
+}
+
+public class TableTimelineContextDto
+{
+    public Guid ReservationId { get; set; }
+    public string ReservationCode { get; set; } = string.Empty;
+    public string GuestName { get; set; } = string.Empty;
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public bool IsCurrentItem { get; set; }
+    public string PriorityLabel { get; set; } = string.Empty;
+    public string RiskLabel { get; set; } = string.Empty;
 }
 
 public class AvailabilityRequest
@@ -76,6 +103,19 @@ public class TimeSlot
 {
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
+    public string RiskLevel { get; set; } = "Available"; // Available, Low, Medium, High
+    public string? RiskMessage { get; set; }
+    public string SuggestedStatus { get; set; } = "available";
+    public List<TableRiskDetail> TableRisks { get; set; } = new();
+}
+
+public class TableRiskDetail
+{
+    public string TableName { get; set; } = string.Empty;
+    public string RiskLevel { get; set; } = "Available"; // Available, Low, Medium, High, Conflict
+    public string? RiskMessage { get; set; }
+    public string SuggestedStatus { get; set; } = "available";
+    public string DisplayType { get; set; } = "Available"; // Available, TimelineNotice, BookingRisk, Occupied, Conflict
 }
 
 // Admin Filtering & Pagination
@@ -85,6 +125,7 @@ public class ReservationFilterRequest
     public DateOnly? Date { get; set; }
     public string? Status { get; set; }
     public string? Search { get; set; }  // reservation code or guest name
+    public string? SortBy { get; set; }  // reviewPriority | bookingTime | createdTime | guestName | status
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 }

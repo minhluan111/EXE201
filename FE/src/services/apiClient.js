@@ -22,128 +22,7 @@ const getTenantDomain = () => {
 const TENANT_DOMAIN = getTenantDomain();
 const SESSION_KEY = "vizza.session";
 
-const TABLE_LAYOUT = [
-  {
-    id: 1,
-    name: "Bàn A1",
-    area: "Window",
-    max_seats: 2,
-    coordinate_x: 10,
-    coordinate_y: 10,
-    shape: "pair",
-    imageType: "2-Seat Window",
-  },
-  {
-    id: 2,
-    name: "Bàn A2",
-    area: "Corner",
-    max_seats: 2,
-    coordinate_x: 30,
-    coordinate_y: 10,
-    shape: "pair",
-    imageType: "2-Seat Corner",
-  },
-  {
-    id: 3,
-    name: "Bàn A3",
-    area: "Indoor",
-    max_seats: 4,
-    coordinate_x: 55,
-    coordinate_y: 10,
-    shape: "quad",
-    imageType: "4-Seat Indoor",
-  },
-  {
-    id: 4,
-    name: "Bàn A4",
-    area: "Outdoor",
-    max_seats: 4,
-    coordinate_x: 75,
-    coordinate_y: 10,
-    shape: "quad",
-    imageType: "4-Seat Outdoor",
-  },
-  {
-    id: 5,
-    name: "Bàn B1",
-    area: "Window",
-    max_seats: 2,
-    coordinate_x: 10,
-    coordinate_y: 40,
-    shape: "pair",
-    imageType: "2-Seat Window",
-  },
-  {
-    id: 6,
-    name: "Bàn B2",
-    area: "Corner",
-    max_seats: 2,
-    coordinate_x: 30,
-    coordinate_y: 40,
-    shape: "pair",
-    imageType: "2-Seat Bar",
-  },
-  {
-    id: 7,
-    name: "Bàn B3",
-    area: "Indoor",
-    max_seats: 4,
-    coordinate_x: 55,
-    coordinate_y: 40,
-    shape: "quad",
-    imageType: "4-Seat Tatami",
-  },
-  {
-    id: 8,
-    name: "Bàn B4",
-    area: "Outdoor",
-    max_seats: 4,
-    coordinate_x: 75,
-    coordinate_y: 40,
-    shape: "quad",
-    imageType: "4-Seat Outdoor",
-  },
-  {
-    id: 9,
-    name: "Bàn C1",
-    area: "Window",
-    max_seats: 2,
-    coordinate_x: 10,
-    coordinate_y: 68,
-    shape: "pair",
-    imageType: "2-Seat Window",
-  },
-  {
-    id: 10,
-    name: "Bàn C2",
-    area: "Corner",
-    max_seats: 2,
-    coordinate_x: 30,
-    coordinate_y: 68,
-    shape: "pair",
-    imageType: "2-Seat Corner",
-  },
-  {
-    id: 11,
-    name: "Bàn C3",
-    area: "Indoor",
-    max_seats: 4,
-    coordinate_x: 55,
-    coordinate_y: 68,
-    shape: "quad",
-    imageType: "4-Seat Indoor",
-  },
-  {
-    id: 12,
-    name: "Bàn C4",
-    area: "Outdoor",
-    max_seats: 4,
-    coordinate_x: 75,
-    coordinate_y: 68,
-    shape: "quad",
-    imageType: "4-Seat Outdoor",
-  },
-];
+
 
 const FALLBACK_MENU_IMAGES = {
   Traditional:
@@ -704,6 +583,16 @@ function normalizeReservation(reservation, tables = []) {
     createdAt: reservation.createdAt,
     checkInImageUrl: reservation.checkInImageUrl,
     checkInNote: reservation.checkInNote,
+    riskLevel: reservation.riskLevel || "Available",
+    displayType: reservation.displayType || "Available",
+    reviewStatus: reservation.reviewStatus || "PendingReview",
+    reviewPriority: reservation.reviewPriority ?? 5,
+    reviewBadge: reservation.reviewBadge || "Bình thường",
+    reviewExplanation: reservation.reviewExplanation || "",
+    bookingPriority: reservation.bookingPriority || "Normal",
+    bookingPriorityLabel: reservation.bookingPriorityLabel || "⚪ Bình thường",
+    bookingPriorityExplanation: reservation.bookingPriorityExplanation || "",
+    tableTimelineContext: Array.isArray(reservation.tableTimelineContext) ? reservation.tableTimelineContext : [],
     table,
   };
 }
@@ -908,16 +797,13 @@ export async function bookingCheckStatus({
 }) {
   const tables = await getTablesWithAreas();
 
-  // 1. Fetch available areas for both 2-seat and 4-seat areas concurrently
-  const [avail2Result, avail4Result, occupiedResult] = await Promise.all([
+  // 1. Fetch available areas for both 2-seat and 4-seat areas concurrently from Backend SSOT
+  const [avail2Result, avail4Result] = await Promise.all([
     requestJson("/api/public/availability", {
       query: { date: booking_date, guestCount: 2 },
     }),
     requestJson("/api/public/availability", {
       query: { date: booking_date, guestCount: 4 },
-    }),
-    requestJson("/api/public/occupied-tables", {
-      query: { date: booking_date, time: normalizeTime(booking_time) },
     }),
   ]);
 
@@ -925,17 +811,15 @@ export async function bookingCheckStatus({
     console.warn("Using offline mock data fallback for bookingCheckStatus");
     return {
       ok: true,
-      data: tables.map((table, idx) => ({
+      data: tables.map((table) => ({
         ...table,
-        status: idx % 6 === 0 ? "occupied" : "available",
+        status: "available",
+        riskLevel: "Available",
+        riskMessage: "Available",
+        suggestedStatus: "available",
       })),
     };
   }
-
-  const occupiedTables =
-    occupiedResult.ok && Array.isArray(occupiedResult.data)
-      ? occupiedResult.data
-      : [];
 
   const availability = [
     ...(Array.isArray(avail2Result.data) ? avail2Result.data : []),
@@ -943,28 +827,92 @@ export async function bookingCheckStatus({
   ];
 
   const targetTime = normalizeTime(booking_time);
-  const allowedAreaIds = new Set(
-    availability
-      .filter(
-        (area) =>
-          Array.isArray(area.availableSlots) &&
-          area.availableSlots.some(
-            (slot) => normalizeTime(slot.startTime) === targetTime,
-          ),
-      )
-      .map((area) => area.seatingAreaId),
-  );
+  const areaRiskMap = new Map();
+  const tableRiskMap = new Map();
+
+  availability.forEach((area) => {
+    if (Array.isArray(area.availableSlots)) {
+      const slot = area.availableSlots.find(
+        (s) => normalizeTime(s.startTime) === targetTime,
+      );
+      if (slot) {
+        areaRiskMap.set(area.seatingAreaId, {
+          riskLevel: slot.riskLevel || "Available",
+          displayType: slot.displayType || "Available",
+          riskMessage: slot.riskMessage || "",
+          suggestedStatus: slot.suggestedStatus || (slot.riskLevel === "Conflict" ? "occupied" : "available"),
+        });
+
+        const trList = slot.tableRisks || slot.TableRisks || [];
+        if (Array.isArray(trList)) {
+          trList.forEach((tr) => {
+            const tName = tr.tableName || tr.TableName || "";
+            if (tName) {
+              tableRiskMap.set(tName.toLowerCase(), {
+                riskLevel: tr.riskLevel || tr.RiskLevel || "Available",
+                displayType: tr.displayType || tr.DisplayType || "Available",
+                riskMessage: tr.riskMessage || tr.RiskMessage || "",
+                suggestedStatus: tr.suggestedStatus || tr.SuggestedStatus || ((tr.riskLevel || tr.RiskLevel) === "Conflict" ? "occupied" : "available"),
+              });
+            }
+          });
+        }
+      }
+    }
+  });
 
   return {
     ok: true,
     data: tables.map((table) => {
-      let status = "occupied";
-      if (table.seatingAreaId && allowedAreaIds.has(table.seatingAreaId)) {
-        status = occupiedTables.includes(table.name) ? "occupied" : "available";
+      let status = "available";
+      let riskLevel = "Available";
+      let displayType = "Available";
+      let riskMessage = "";
+      let suggestedStatus = "available";
+
+      const tableNameKey = (table.name || "").toLowerCase();
+      if (tableRiskMap.has(tableNameKey)) {
+        const tr = tableRiskMap.get(tableNameKey);
+        riskLevel = tr.riskLevel;
+        displayType = tr.displayType;
+        riskMessage = tr.riskMessage;
+        suggestedStatus = tr.suggestedStatus;
+        status = suggestedStatus;
+      } else if (table.seatingAreaId && areaRiskMap.has(table.seatingAreaId)) {
+        const ar = areaRiskMap.get(table.seatingAreaId);
+        riskLevel = ar.riskLevel;
+        displayType = ar.displayType;
+        riskMessage = ar.riskMessage;
+        suggestedStatus = ar.suggestedStatus;
+        status = suggestedStatus;
       }
+
+      // Normalize riskMessage to exactly match user business rules
+      if (displayType === "Available") {
+        riskMessage = "Bàn còn trống, sẵn sàng phục vụ.";
+      } else if (displayType === "TimelineNotice") {
+        riskMessage = "Bàn này đã có khách đặt vào khung giờ sau. Nếu dùng bữa lâu hơn dự kiến, nhà hàng có thể cần hỗ trợ sắp xếp chỗ ngồi để phục vụ khách tiếp theo.";
+      } else if (displayType === "BookingRisk") {
+        if (riskLevel === "High") {
+          riskMessage = "Bàn này đã có khách đặt ở khung giờ trước bạn. Nếu khách trước dùng bàn lâu hơn dự kiến, bạn có thể cần chờ thêm hoặc được nhà hàng hỗ trợ đổi sang bàn khác.";
+        } else if (riskLevel === "Medium") {
+          riskMessage = "Bàn này đã có khách đặt ở khung giờ trước bạn. Có khả năng thấp nếu khách trước dùng bàn lâu hơn dự kiến, bạn có thể cần chờ thêm hoặc được nhà hàng hỗ trợ đổi sang bàn khác.";
+        } else {
+          riskMessage = "Bàn này đã có khách đặt trước bạn nhưng khoảng cách giữa hai lượt đặt khá an toàn. Thông thường nhà hàng vẫn có thể chuẩn bị bàn đúng giờ.";
+        }
+      } else if (displayType === "Conflict" || displayType === "Occupied" || status === "occupied") {
+        riskMessage = "Bàn đã có khách đặt trong khung giờ bạn chọn.";
+      } else if (displayType === "Locked" || status === "locked" || status === "maintenance") {
+        riskMessage = "Bàn đang tạm ngừng phục vụ hoặc bảo trì.";
+      }
+
       return {
         ...table,
         status,
+        riskLevel,
+        displayType,
+        riskMessage,
+        suggestedStatus,
       };
     }),
   };
@@ -972,7 +920,8 @@ export async function bookingCheckStatus({
 
 export async function bookingCreate({
   token,
-  table_id,
+  seatingAreaId,
+  tableName,
   booking_date,
   booking_time,
   num_of_people,
@@ -983,19 +932,18 @@ export async function bookingCreate({
   if (!bearer || !user)
     return { ok: false, message: "Vui lòng đăng nhập để đặt bàn." };
 
-  const tables = await getTablesWithAreas();
-  const table = tables.find((item) => String(item.id) === String(table_id));
-  if (!table?.seatingAreaId)
+  if (!seatingAreaId)
     return { ok: false, message: "Không tìm thấy khu vực bàn phù hợp." };
 
   const result = await requestJson("/api/reservations", {
     method: "POST",
+    token: bearer,
     body: {
-      seatingAreaId: table.seatingAreaId,
+      seatingAreaId: seatingAreaId,
       reservationDate: booking_date,
       startTime: normalizeTime(booking_time),
       guestCount: Number(num_of_people),
-      tableName: table.name,
+      tableName: tableName,
       specialNote: String(note || "").trim(),
       guestName: user.full_name,
       guestEmail: user.email,
@@ -1004,6 +952,8 @@ export async function bookingCreate({
   });
 
   if (!result.ok) return result;
+  
+  const tables = await getTablesWithAreas();
   return { ok: true, data: normalizeReservation(result.data, tables) };
 }
 
@@ -1062,6 +1012,29 @@ export async function bookingReschedule({ token, id, booking_date, booking_time 
 
   const tables = await getTablesWithAreas();
   return { ok: true, data: normalizeReservation(result.data, tables) };
+}
+
+export async function adminGetRestaurantInfo() {
+  const bearer = currentToken();
+  return await requestJson("/api/public/restaurant-info", { token: bearer });
+}
+
+export async function adminUpdateRestaurantInfo(data) {
+  const bearer = currentToken();
+  return await requestJson("/api/admin/restaurant-info", {
+    method: "PUT",
+    token: bearer,
+    body: data,
+  });
+}
+
+export async function adminParseMapUrl({ mapUrl }) {
+  const bearer = currentToken();
+  return await requestJson("/api/admin/restaurant-info/parse-map-url", {
+    method: "POST",
+    token: bearer,
+    body: { mapUrl },
+  });
 }
 
 // STAFF ACTIONS (Staff role only)
@@ -1253,6 +1226,7 @@ export async function adminGetBookings({
   date,
   status,
   search,
+  sortBy,
   page,
   pageSize,
 }) {
@@ -1263,6 +1237,7 @@ export async function adminGetBookings({
   if (date) query.date = date;
   if (status) query.status = status;
   if (search) query.search = search;
+  if (sortBy) query.sortBy = sortBy;
   if (page) query.page = page;
   if (pageSize) query.pageSize = pageSize;
 
