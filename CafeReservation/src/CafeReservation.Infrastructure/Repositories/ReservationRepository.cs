@@ -69,55 +69,6 @@ public class ReservationRepository : IReservationRepository
         return (items, total);
     }
 
-    /// <summary>
-    /// Count overlapping CONFIRMED or SEATED reservations using: newStart &lt; existingEnd AND newEnd &gt; existingStart
-    /// </summary>
-    public async Task<int> CountOverlappingAsync(
-        Guid seatingAreaId,
-        DateOnly date,
-        TimeOnly start,
-        TimeOnly end,
-        Guid? excludeId = null,
-        CancellationToken ct = default)
-    {
-        var query = _db.Reservations
-            .Where(r =>
-                r.SeatingAreaId == seatingAreaId &&
-                r.ReservationDate == date &&
-                (
-                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
-                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
-                ));
-
-        if (excludeId.HasValue)
-            query = query.Where(r => r.Id != excludeId.Value);
-
-        return await query.CountAsync(ct);
-    }
-
-    public async Task<bool> AnyOverlappingTableAsync(
-        string tableName,
-        DateOnly date,
-        TimeOnly start,
-        TimeOnly end,
-        Guid? excludeId = null,
-        CancellationToken ct = default)
-    {
-        var query = _db.Reservations
-            .Where(r =>
-                r.TableName == tableName &&
-                r.ReservationDate == date &&
-                (
-                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
-                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
-                ));
-
-        if (excludeId.HasValue)
-            query = query.Where(r => r.Id != excludeId.Value);
-
-        return await query.AnyAsync(ct);
-    }
-
     public async Task<IReadOnlyList<Reservation>> GetOverlappingReservationsAsync(
         DateOnly date,
         TimeOnly start,
@@ -129,8 +80,7 @@ public class ReservationRepository : IReservationRepository
             .Where(r =>
                 r.ReservationDate == date &&
                 (
-                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved) && start < r.EndTime && end > r.StartTime) ||
-                    (r.Status == ReservationStatus.CheckedIn && end > r.StartTime)
+                    ((r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Reserved || r.Status == ReservationStatus.CheckedIn) && start < r.EndTime && end > r.StartTime)
                 )
             )
             .ToListAsync(ct);
@@ -150,14 +100,20 @@ public class ReservationRepository : IReservationRepository
                 (r.Status == ReservationStatus.Confirmed ||
                  r.Status == ReservationStatus.CheckedIn ||
                  r.Status == ReservationStatus.Reserved))
-            .Select(r => new Reservation
-            {
-                Id            = r.Id,
-                SeatingAreaId = r.SeatingAreaId,
-                StartTime     = r.StartTime,
-                EndTime       = r.EndTime,
-                Status        = r.Status,
-            })
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Reservation>> GetActiveReservationsAcrossAllTenantsAsync(
+        DateOnly date, CancellationToken ct = default)
+    {
+        return await _db.Reservations
+            .IgnoreQueryFilters()
+            .Include(r => r.SeatingArea)
+            .Where(r =>
+                r.ReservationDate == date &&
+                (r.Status == ReservationStatus.Confirmed ||
+                 r.Status == ReservationStatus.CheckedIn ||
+                 r.Status == ReservationStatus.Reserved))
             .ToListAsync(ct);
     }
 

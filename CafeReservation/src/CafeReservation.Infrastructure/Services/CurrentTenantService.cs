@@ -16,10 +16,14 @@ public class CurrentTenantService : ICurrentTenantService
         _httpContextAccessor = httpContextAccessor;
     }
 
+    private Guid? _manualTenantId;
+
     public Guid TenantId
     {
         get
         {
+            if (_manualTenantId.HasValue) return _manualTenantId.Value;
+
             var context = _httpContextAccessor.HttpContext;
             if (context?.Items.TryGetValue("TenantId", out var value) == true
                 && value is Guid tenantId)
@@ -32,10 +36,13 @@ public class CurrentTenantService : ICurrentTenantService
         }
     }
 
+    public void SetTenantId(Guid tenantId) => _manualTenantId = tenantId;
+
     public bool IsResolved
     {
         get
         {
+            if (_manualTenantId.HasValue && _manualTenantId.Value != Guid.Empty) return true;
             var context = _httpContextAccessor.HttpContext;
             return context?.Items.ContainsKey("TenantId") == true;
         }

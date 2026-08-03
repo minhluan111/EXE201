@@ -12,12 +12,9 @@ public class CreateReservationRequestValidator : AbstractValidator<CreateReserva
             .NotEmpty().WithMessage("Seating area is required.");
 
         RuleFor(x => x.ReservationDate)
-            .Must(date => date >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+            .Must(date => date >= DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7).Date))
             .WithMessage("Reservation date must be today or in the future.");
 
-        RuleFor(x => x.StartTime)
-            .Must(t => t >= new TimeOnly(8, 0) && t <= new TimeOnly(20, 0))
-            .WithMessage("Start time must be between 08:00 and 20:00.");
 
         RuleFor(x => x.GuestCount)
             .InclusiveBetween(1, AppConstants.GuestCountRules.LargeGroupMax)
@@ -46,11 +43,8 @@ public class RescheduleReservationRequestValidator : AbstractValidator<Reschedul
     public RescheduleReservationRequestValidator()
     {
         RuleFor(x => x.ReservationDate)
-            .Must(date => date >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+            .Must(date => date >= DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7).Date))
             .WithMessage("Reservation date must be today or in the future.");
 
-        RuleFor(x => x.StartTime)
-            .Must(t => t >= new TimeOnly(8, 0) && t <= new TimeOnly(20, 0))
-            .WithMessage("Start time must be between 08:00 and 20:00.");
     }
 }

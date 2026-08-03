@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
@@ -15,7 +15,6 @@ import {
   Paper,
   TextField,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   Chip,
@@ -24,19 +23,52 @@ import {
   Pagination,
   Grid,
   Divider,
-  Skeleton,
+  IconButton,
+  Menu,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import WarningIcon from "@mui/icons-material/Warning";
+import StarIcon from "@mui/icons-material/Star";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import CheckIcon from "@mui/icons-material/Check";
+import CancelIcon from "@mui/icons-material/Cancel";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
 import { useAuth } from "../../context/useAuthContext.js";
 import { adminGetBookings, adminUpdateBookingStatus, adminConfirmBooking, adminRejectBooking, adminCheckInBooking } from "../../services/apiClient.js";
 import AdminHeader from "../../components/admin/AdminHeader.jsx";
 import { useAvailabilityHub } from "../../hooks/useAvailabilityHub.js";
 
+// Harmonized Global Design Tokens matching index.css
 const COLORS = {
   moss: "var(--matcha)",
+  matchaLight: "var(--matcha-light)",
   forest: "var(--forest)",
-  soft: "var(--bg)",
-  dark: "var(--text)",
+  bg: "var(--bg)",
+  card: "var(--bg-card)",
+  alt: "var(--bg-alt)",
+  text: "var(--text)",
+  textMuted: "var(--text-muted)",
   border: "var(--border)",
+  shadowSm: "var(--shadow-sm)",
+  shadowMd: "var(--shadow-md)",
+};
+
+const getTodayFormatted = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 export default function ManageBookingsPage() {
@@ -47,26 +79,28 @@ export default function ManageBookingsPage() {
 
   // Filter states
   const [search, setSearch] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(getTodayFormatted());
   const [status, setStatus] = useState(""); // "" means All
+  const [riskFilter, setRiskFilter] = useState(""); // "" means All
+  const [quickPill, setQuickPill] = useState("all"); // all | pending | preferred | highRisk | confirmed
+  const [sortBy, setSortBy] = useState("reviewPriority");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  // Action Menu state (⋮ dropdown)
+  const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
+  const [activeMenuBooking, setActiveMenuBooking] = useState(null);
+
   // Check-in modal state
-  const [checkInModal, setCheckInModal] = useState(null); // booking object
-  const [checkInImage, setCheckInImage] = useState(null); // File object
+  const [checkInModal, setCheckInModal] = useState(null);
+  const [checkInImage, setCheckInImage] = useState(null);
   const [checkInImagePreview, setCheckInImagePreview] = useState("");
   const [checkInNote, setCheckInNote] = useState("");
   const [checkInLoading, setCheckInLoading] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Details modal state
-  const [detailsModal, setdetailsModal] = useState(null); // booking object
-  const [imgLoaded, setImgLoaded] = useState(false);
-
-  useEffect(() => {
-    setImgLoaded(false);
-  }, [detailsModal?.checkInImageUrl]);
+  // Details Side Panel state
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const fetchBookings = async () => {
     setLoading(true);
@@ -75,6 +109,7 @@ export default function ManageBookingsPage() {
       search: search || undefined,
       date: date || undefined,
       status: status || undefined,
+      sortBy: sortBy || undefined,
       page,
       pageSize,
     });
@@ -85,35 +120,78 @@ export default function ManageBookingsPage() {
     setLoading(false);
   };
 
-  // Run query on state changes
   useEffect(() => {
     fetchBookings();
-  }, [token, date, status, page, pageSize]);
+  }, [token, date, status, sortBy, page, pageSize]);
 
-  // SignalR: auto-refresh when other admin/staff makes changes
+  // SignalR: auto-refresh
   useAvailabilityHub(() => {
     fetchBookings();
   }, !!token);
 
-  const handleSearchClear = () => {
-    setSearch("");
-    setPage(1);
-  };
+  // Filter list by client-side pills / risk filters
+  const filteredList = useMemo(() => {
+    return list.filter((b) => {
+      if (riskFilter && b.riskLevel !== riskFilter) return false;
 
-  // Update local list instead of full refresh
+      if (quickPill === "pending") {
+        const isPending = String(b.status || "").toLowerCase() === "reserved" || b.reviewStatus === "PendingReview";
+        if (!isPending) return false;
+      } else if (quickPill === "preferred") {
+        if (b.bookingPriority !== "Preferred") return false;
+      } else if (quickPill === "highRisk") {
+        if (b.riskLevel !== "High") return false;
+      } else if (quickPill === "confirmed") {
+        if (String(b.status || "").toLowerCase() !== "confirmed") return false;
+      }
+      return true;
+    });
+  }, [list, riskFilter, quickPill]);
+
+  // Calculate Summary Metrics
+  const summaryMetrics = useMemo(() => {
+    let pending = 0;
+    let preferred = 0;
+    let highRisk = 0;
+    let confirmed = 0;
+
+    list.forEach((b) => {
+      const s = String(b.status || "").toLowerCase();
+      if (s === "reserved" || b.reviewStatus === "PendingReview") pending++;
+      if (b.bookingPriority === "Preferred") preferred++;
+      if (b.riskLevel === "High") highRisk++;
+      if (s === "confirmed") confirmed++;
+    });
+
+    return { pending, preferred, highRisk, confirmed };
+  }, [list]);
+
   const handleAction = async (actionFn, id, options = {}) => {
+    closeActionMenu();
     const res = await actionFn({ token, id, ...options });
     if (res.ok) {
-      // Optimistically update local list so no full reload needed
       setList((prev) =>
         prev.map((b) => (b.id === id ? { ...b, ...res.data } : b))
       );
+      if (selectedBooking && selectedBooking.id === id) {
+        setSelectedBooking((prev) => ({ ...prev, ...res.data }));
+      }
     } else {
       alert("Thao tác thất bại: " + (res.message || "Lỗi hệ thống"));
     }
   };
 
-  // Handle file pick
+  const openActionMenu = (event, booking) => {
+    event.stopPropagation();
+    setActionMenuAnchor(event.currentTarget);
+    setActiveMenuBooking(booking);
+  };
+
+  const closeActionMenu = () => {
+    setActionMenuAnchor(null);
+    setActiveMenuBooking(null);
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -121,14 +199,12 @@ export default function ManageBookingsPage() {
     setCheckInImagePreview(URL.createObjectURL(file));
   };
 
-  // Upload image to a free hosting then do check-in
   const handleConfirmCheckIn = async () => {
     if (!checkInModal) return;
     setCheckInLoading(true);
     let imageUrl = null;
 
     if (checkInImage) {
-      // Upload to imgbb (free image hosting) using binary file
       try {
         const formData = new FormData();
         formData.append("image", checkInImage);
@@ -175,107 +251,344 @@ export default function ManageBookingsPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const compressImage = (file, maxWidth = 1024, maxHeight = 1024, quality = 0.75) =>
-    new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-          } else {
-            if (height > maxHeight) {
-              width = Math.round((width * maxHeight) / height);
-              height = maxHeight;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, width, height);
-
-          canvas.toBlob(
-            (blob) => {
-              const compressedFile = new File([blob], file.name.replace(/\.\w+$/, ".jpg"), {
-                type: "image/jpeg",
-                lastModified: Date.now(),
-              });
-              resolve(compressedFile);
-            },
-            "image/jpeg",
-            quality
-          );
-        };
-      };
-    });
-
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-    });
-
-  const getStatusBadge = (statusStr) => {
+  const getStatusBadge = (statusStr, reviewStatusStr) => {
     const s = String(statusStr || "").toLowerCase();
+    let mainChip;
     if (s === "completed") {
-      return <Chip label="Đã hoàn thành" color="info" size="small" sx={{ fontWeight: 600 }} />;
+      mainChip = <Chip label="✓ Hoàn thành" color="info" size="small" sx={{ fontWeight: 600, height: 22, fontSize: 11 }} />;
+    } else if (s === "cancelled") {
+      mainChip = <Chip label="Đã hủy" color="error" size="small" sx={{ fontWeight: 600, height: 22, fontSize: 11 }} />;
+    } else if (s === "noshow") {
+      mainChip = <Chip label="Vắng mặt" color="warning" size="small" sx={{ fontWeight: 600, height: 22, fontSize: 11 }} />;
+    } else if (s === "checkedin") {
+      mainChip = <Chip label="● Đang sử dụng" color="secondary" size="small" sx={{ fontWeight: 700, height: 22, fontSize: 11 }} />;
+    } else if (s === "reserved") {
+      mainChip = (
+        <Chip
+          label="Đã đặt"
+          size="small"
+          sx={{ fontWeight: 700, height: 22, fontSize: 11, bgcolor: "rgba(245, 158, 11, 0.15)", color: "#b45309" }}
+        />
+      );
+    } else {
+      mainChip = <Chip label="✓ Đã xác nhận" color="success" size="small" sx={{ fontWeight: 600, height: 22, fontSize: 11 }} />;
     }
-    if (s === "cancelled") {
-      return <Chip label="Đã hủy lịch" color="error" size="small" sx={{ fontWeight: 600 }} />;
+
+    const isReviewed = reviewStatusStr === "Reviewed" || s === "confirmed" || s === "checkedin" || s === "completed";
+
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.3, alignItems: "flex-start" }}>
+        {mainChip}
+        {s === "reserved" ? (
+          <Typography variant="caption" sx={{ fontSize: "10px", color: "#b45309", fontWeight: 600 }}>
+            Chờ xác nhận
+          </Typography>
+        ) : (
+          isReviewed && s !== "cancelled" && s !== "noshow" && (
+            <Typography variant="caption" sx={{ fontSize: "10px", color: COLORS.forest, fontWeight: 600 }}>
+              Đã được nhân viên xem xét
+            </Typography>
+          )
+        )}
+      </Box>
+    );
+  };
+
+  const getPriorityBadge = (booking) => {
+    const key = booking.bookingPriority || "Normal";
+    if (key === "Preferred") {
+      return (
+        <Typography variant="caption" sx={{ fontSize: "11px", fontWeight: 700, color: "#d97706" }}>
+          ⭐ Được ưu tiên
+        </Typography>
+      );
     }
-    if (s === "noshow") {
-      return <Chip label="Vắng mặt" color="warning" size="small" sx={{ fontWeight: 600 }} />;
+    return (
+      <Typography variant="caption" sx={{ fontSize: "11px", color: COLORS.textMuted, fontWeight: 500 }}>
+        Bình thường
+      </Typography>
+    );
+  };
+
+  const getRiskBadge = (booking) => {
+    const badge = booking.reviewBadge || "Bình thường";
+    const displayType = booking.displayType || "Available";
+    const risk = booking.riskLevel || "Available";
+
+    if (badge === "Có lịch đặt tiếp theo" || displayType === "TimelineNotice") {
+      return (
+        <Chip
+          label="🔵 Có lịch tiếp theo"
+          size="small"
+          sx={{
+            fontWeight: 700,
+            fontSize: "11px",
+            height: "20px",
+            borderColor: "#3b82f6",
+            color: "#1d4ed8",
+            bgcolor: "rgba(59, 130, 246, 0.12)",
+            border: "1px solid #3b82f6",
+          }}
+        />
+      );
     }
-    if (s === "checkedin") {
-      return <Chip label="Đã Check-in" color="secondary" size="small" sx={{ fontWeight: 600 }} />;
+    if (badge.includes("Cao") || (displayType === "BookingRisk" && risk === "High")) {
+      return (
+        <Chip
+          label="🔴 Khả năng chờ - Cao"
+          size="small"
+          sx={{ fontWeight: 700, fontSize: "11px", height: "20px", bgcolor: "#ef4444", color: "#ffffff" }}
+        />
+      );
     }
-    if (s === "reserved") {
-      return <Chip label="Đã đặt (chờ XN)" color="default" size="small" sx={{ fontWeight: 600 }} />;
+    if (badge.includes("Trung bình") || (displayType === "BookingRisk" && risk === "Medium")) {
+      return (
+        <Chip
+          label="🟠 Khả năng chờ - Vừa"
+          size="small"
+          sx={{ fontWeight: 700, fontSize: "11px", height: "20px", bgcolor: "#f97316", color: "#ffffff" }}
+        />
+      );
     }
-    return <Chip label="Đã xác nhận" color="success" size="small" sx={{ fontWeight: 600 }} />;
+    if (badge.includes("Thấp") || (displayType === "BookingRisk" && risk === "Low")) {
+      return (
+        <Chip
+          label="🟡 Khả năng chờ - Thấp"
+          size="small"
+          sx={{
+            fontWeight: 700,
+            fontSize: "11px",
+            height: "20px",
+            borderColor: "#eab308",
+            color: "#a16207",
+            bgcolor: "rgba(234, 179, 8, 0.15)",
+            border: "1px solid #eab308",
+          }}
+        />
+      );
+    }
+    if (displayType === "Conflict" || badge === "Đã được đặt") {
+      return (
+        <Chip
+          label="🔴 Đã được đặt"
+          size="small"
+          variant="outlined"
+          sx={{ fontWeight: 600, fontSize: "11px", height: "20px", color: "#dc2626", borderColor: "#fca5a5" }}
+        />
+      );
+    }
+    return (
+      <Chip
+        label="🟢 An toàn"
+        size="small"
+        sx={{
+          fontWeight: 700,
+          fontSize: "11px",
+          height: "20px",
+          bgcolor: "rgba(107, 143, 62, 0.15)",
+          color: COLORS.forest,
+        }}
+      />
+    );
   };
 
   return (
-    <Box sx={{ bgcolor: "var(--bg)", minHeight: "100vh" }}>
-      {/* Dynamic Header */}
+    <Box sx={{ bgcolor: COLORS.bg, minHeight: "100vh" }}>
+      {/* Global Header synchronized with Admin Header System */}
       <AdminHeader
         title="Quản lý đặt bàn"
-        subtitle="Xem danh sách, tìm kiếm và thay đổi trạng thái đặt bàn của thực khách theo thời gian thực."
+        subtitle="Theo dõi, đánh giá và xử lý các đơn đặt bàn theo thời gian thực."
       />
 
-      {/* Main Content */}
-      <Box sx={{ py: 6, bgcolor: COLORS.soft, minHeight: "65vh" }}>
-        <Container maxWidth="lg">
-          {/* Filter Card */}
+      {/* Main Container with Centered Dynamic Animation */}
+      <Box sx={{ py: 4, px: { xs: 2, md: 4 }, bgcolor: COLORS.bg }}>
+        <Box
+          sx={{
+            maxWidth: selectedBooking ? "100%" : "1240px",
+            mx: "auto",
+            transition: "all 0.35s var(--ease-smooth, cubic-bezier(0.4, 0, 0.2, 1))",
+          }}
+        >
+          {/* 5 Summary Metric Cards synchronized with theme */}
+          <Grid container spacing={2} sx={{ mb: 2.5 }}>
+            <Grid item xs={6} sm={4} md={2.4}>
+              <Card
+                onClick={() => setQuickPill(quickPill === "pending" ? "all" : "pending")}
+                sx={{
+                  borderRadius: 2.5,
+                  p: 1.8,
+                  cursor: "pointer",
+                  border: `1.5px solid ${quickPill === "pending" ? "var(--matcha)" : COLORS.border}`,
+                  bgcolor: COLORS.card,
+                  boxShadow: COLORS.shadowSm,
+                  transition: "all 0.2s var(--ease-smooth)",
+                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
+                      CHỜ XỬ LÝ
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                      {summaryMetrics.pending}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
+                      Đơn
+                    </Typography>
+                  </Box>
+                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(245, 158, 11, 0.12)", color: "#d97706" }}>
+                    <AccessTimeIcon />
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+
+            <Grid item xs={6} sm={4} md={2.4}>
+              <Card
+                onClick={() => setQuickPill(quickPill === "preferred" ? "all" : "preferred")}
+                sx={{
+                  borderRadius: 2.5,
+                  p: 1.8,
+                  cursor: "pointer",
+                  border: `1.5px solid ${quickPill === "preferred" ? "var(--matcha)" : COLORS.border}`,
+                  bgcolor: COLORS.card,
+                  boxShadow: COLORS.shadowSm,
+                  transition: "all 0.2s var(--ease-smooth)",
+                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
+                      ĐƯỢC ƯU TIÊN
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                      {summaryMetrics.preferred}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
+                      Đơn
+                    </Typography>
+                  </Box>
+                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(234, 179, 8, 0.12)", color: "#ca8a04" }}>
+                    <StarIcon />
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+
+            <Grid item xs={6} sm={4} md={2.4}>
+              <Card
+                onClick={() => setQuickPill(quickPill === "highRisk" ? "all" : "highRisk")}
+                sx={{
+                  borderRadius: 2.5,
+                  p: 1.8,
+                  cursor: "pointer",
+                  border: `1.5px solid ${quickPill === "highRisk" ? "#ef4444" : COLORS.border}`,
+                  bgcolor: COLORS.card,
+                  boxShadow: COLORS.shadowSm,
+                  transition: "all 0.2s var(--ease-smooth)",
+                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
+                      RISK CAO
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                      {summaryMetrics.highRisk}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
+                      Đơn
+                    </Typography>
+                  </Box>
+                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(239, 68, 68, 0.12)", color: "#dc2626" }}>
+                    <WarningIcon />
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+
+            <Grid item xs={6} sm={4} md={2.4}>
+              <Card
+                onClick={() => setQuickPill(quickPill === "confirmed" ? "all" : "confirmed")}
+                sx={{
+                  borderRadius: 2.5,
+                  p: 1.8,
+                  cursor: "pointer",
+                  border: `1.5px solid ${quickPill === "confirmed" ? "var(--matcha)" : COLORS.border}`,
+                  bgcolor: COLORS.card,
+                  boxShadow: COLORS.shadowSm,
+                  transition: "all 0.2s var(--ease-smooth)",
+                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
+                      ĐÃ XÁC NHẬN
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                      {summaryMetrics.confirmed}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
+                      Đơn
+                    </Typography>
+                  </Box>
+                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(107, 143, 62, 0.12)", color: COLORS.forest }}>
+                    <CheckCircleIcon />
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+
+            <Grid item xs={6} sm={4} md={2.4}>
+              <Card
+                sx={{
+                  borderRadius: 2.5,
+                  p: 1.8,
+                  border: `1px solid ${COLORS.border}`,
+                  bgcolor: COLORS.card,
+                  boxShadow: COLORS.shadowSm,
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
+                      HÔM NAY
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                      {total}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
+                      Tổng đơn
+                    </Typography>
+                  </Box>
+                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(59, 130, 246, 0.12)", color: "#2563eb" }}>
+                    <CalendarTodayIcon />
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Single Line Filter Inputs + Quick Pills */}
           <Card
             sx={{
-              borderRadius: 3,
+              borderRadius: 2.5,
               border: `1px solid ${COLORS.border}`,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-              mb: 4,
+              bgcolor: COLORS.card,
+              boxShadow: COLORS.shadowSm,
+              mb: 2.5,
             }}
           >
-            <CardContent sx={{ p: 3 }}>
-              <Grid container spacing={3} sx={{ alignItems: "flex-end" }}>
-                <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
-                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
-                    Tìm kiếm khách hàng
-                  </Typography>
+            <CardContent sx={{ p: 2 }}>
+              <Grid container spacing={1.5} sx={{ alignItems: "center", mb: 1.5 }}>
+                <Grid item xs={12} sm={4} md={3.5}>
                   <TextField
                     fullWidth
-                    placeholder="Tên, Email hoặc Số điện thoại..."
+                    placeholder="Tìm mã đặt bàn / khách hàng / SĐT..."
                     variant="outlined"
                     size="small"
                     value={search}
@@ -283,25 +596,21 @@ export default function ManageBookingsPage() {
                       setSearch(e.target.value);
                       setPage(1);
                     }}
+                    InputProps={{
+                      startAdornment: <SearchIcon sx={{ color: COLORS.textMuted, mr: 1, fontSize: 18 }} />,
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "var(--bg-alt)",
-                        "& fieldset": { border: "none" },
-                        "&:hover fieldset": { border: "none" },
-                        "&.Mui-focused fieldset": { border: "none" },
+                        borderRadius: "8px",
+                        background: COLORS.alt,
+                        height: "36px",
+                        "& fieldset": { border: `1px solid ${COLORS.border}` },
                       },
-                      "& input": {
-                        fontSize: "14px",
-                        color: "var(--text)",
-                      }
+                      "& input": { fontSize: "12.5px", color: COLORS.text },
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
-                    Lọc theo ngày
-                  </Typography>
+                <Grid item xs={6} sm={2.5} md={2}>
                   <TextField
                     fullWidth
                     type="date"
@@ -314,23 +623,38 @@ export default function ManageBookingsPage() {
                     }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "var(--bg-alt)",
-                        "& fieldset": { border: "none" },
-                        "&:hover fieldset": { border: "none" },
-                        "&.Mui-focused fieldset": { border: "none" },
+                        borderRadius: "8px",
+                        background: COLORS.alt,
+                        height: "36px",
+                        "& fieldset": { border: `1px solid ${COLORS.border}` },
                       },
-                      "& input": {
-                        fontSize: "14px",
-                        color: "var(--text)",
-                      }
+                      "& input": { fontSize: "12.5px", color: COLORS.text },
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
-                  <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
-                    Trạng thái đặt bàn
-                  </Typography>
+                <Grid item xs={6} sm={2.5} md={2}>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      value={riskFilter}
+                      onChange={(e) => setRiskFilter(e.target.value)}
+                      displayEmpty
+                      sx={{
+                        borderRadius: "8px",
+                        background: COLORS.alt,
+                        height: "36px",
+                        fontSize: "12.5px",
+                        color: COLORS.text,
+                      }}
+                    >
+                      <MenuItem value="">Tất cả Risk</MenuItem>
+                      <MenuItem value="High">🔴 Risk Cao</MenuItem>
+                      <MenuItem value="Medium">🟠 Risk Vừa</MenuItem>
+                      <MenuItem value="Low">🟡 Risk Thấp</MenuItem>
+                      <MenuItem value="Available">🟢 An toàn</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6} sm={3} md={2.5}>
                   <FormControl fullWidth size="small">
                     <Select
                       value={status}
@@ -340,230 +664,636 @@ export default function ManageBookingsPage() {
                       }}
                       displayEmpty
                       sx={{
-                        borderRadius: "12px",
-                        background: "var(--bg-alt)",
-                        "& fieldset": { border: "none" },
-                        "&:hover fieldset": { border: "none" },
-                        "&.Mui-focused fieldset": { border: "none" },
-                        fontSize: "14px",
-                        color: "var(--text)",
-                        "& .MuiSelect-select": {
-                          minWidth: "120px",
-                        }
+                        borderRadius: "8px",
+                        background: COLORS.alt,
+                        height: "36px",
+                        fontSize: "12.5px",
+                        color: COLORS.text,
                       }}
                     >
                       <MenuItem value="">Tất cả trạng thái</MenuItem>
-                      <MenuItem value="Reserved">Đã đặt (chờ XN)</MenuItem>
+                      <MenuItem value="Reserved">Đã đặt (Chờ XN)</MenuItem>
                       <MenuItem value="Confirmed">Đã xác nhận</MenuItem>
-                      <MenuItem value="CheckedIn">Đã Check-in</MenuItem>
-                      <MenuItem value="Completed">Đã hoàn thành</MenuItem>
-                      <MenuItem value="Cancelled">Đã hủy lịch</MenuItem>
-                      <MenuItem value="NoShow">Vắng mặt</MenuItem>
+                      <MenuItem value="CheckedIn">Đang sử dụng</MenuItem>
+                      <MenuItem value="Completed">Hoàn thành</MenuItem>
+                      <MenuItem value="Cancelled">Đã hủy</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-                  <Typography
-                    sx={{
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      mb: 0.8,
-                      visibility: "hidden",
-                      display: { xs: "none", sm: "block" }
-                    }}
-                  >
-                    &nbsp;
-                  </Typography>
+                <Grid item xs={6} sm={2} md={2}>
                   <Button
                     fullWidth
-                    variant="outlined"
-                    color="inherit"
+                    variant="text"
                     onClick={() => {
                       setSearch("");
-                      setDate("");
+                      setDate(getTodayFormatted());
                       setStatus("");
+                      setRiskFilter("");
+                      setQuickPill("all");
+                      setSortBy("reviewPriority");
                       setPage(1);
                     }}
                     sx={{
-                      borderRadius: "12px",
-                      background: "var(--bg-alt)",
-                      border: "none",
-                      height: "40px",
-                      color: "var(--text)",
+                      borderRadius: "8px",
+                      height: "36px",
+                      color: COLORS.textMuted,
                       textTransform: "none",
-                      fontSize: "14px",
+                      fontSize: "12.5px",
                       fontWeight: 600,
-                      "&:hover": {
-                        background: "rgba(0,0,0,0.06)",
-                        border: "none",
-                      }
                     }}
                   >
-                    Xóa lọc
+                    🔄 Đặt lại lọc
                   </Button>
                 </Grid>
               </Grid>
+
+              {/* Quick Pills Row synchronized with Theme Primary */}
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", pt: 0.5 }}>
+                <Chip
+                  label={`Tất cả (${total})`}
+                  onClick={() => setQuickPill("all")}
+                  sx={{
+                    fontWeight: 700,
+                    height: 26,
+                    fontSize: "11.5px",
+                    borderRadius: "6px",
+                    bgcolor: quickPill === "all" ? "var(--matcha)" : "transparent",
+                    color: quickPill === "all" ? "#fff" : COLORS.text,
+                    borderColor: quickPill === "all" ? "var(--matcha)" : COLORS.border,
+                  }}
+                />
+                <Chip
+                  label={`⏳ Chờ xử lý (${summaryMetrics.pending})`}
+                  onClick={() => setQuickPill("pending")}
+                  variant={quickPill === "pending" ? "filled" : "outlined"}
+                  color={quickPill === "pending" ? "warning" : "default"}
+                  sx={{ fontWeight: 600, height: 26, fontSize: "11.5px", borderRadius: "6px" }}
+                />
+                <Chip
+                  label={`⭐ Được ưu tiên (${summaryMetrics.preferred})`}
+                  onClick={() => setQuickPill("preferred")}
+                  sx={{
+                    fontWeight: 700,
+                    height: 26,
+                    fontSize: "11.5px",
+                    borderRadius: "6px",
+                    bgcolor: quickPill === "preferred" ? "#eab308" : "transparent",
+                    color: quickPill === "preferred" ? "#fff" : "#a16207",
+                    borderColor: "#eab308",
+                  }}
+                />
+                <Chip
+                  label={`🔴 Risk cao (${summaryMetrics.highRisk})`}
+                  onClick={() => setQuickPill("highRisk")}
+                  color={quickPill === "highRisk" ? "error" : "default"}
+                  variant={quickPill === "highRisk" ? "filled" : "outlined"}
+                  sx={{ fontWeight: 600, height: 26, fontSize: "11.5px", borderRadius: "6px" }}
+                />
+                <Chip
+                  label={`✓ Đã xác nhận (${summaryMetrics.confirmed})`}
+                  onClick={() => setQuickPill("confirmed")}
+                  color={quickPill === "confirmed" ? "success" : "default"}
+                  variant={quickPill === "confirmed" ? "filled" : "outlined"}
+                  sx={{ fontWeight: 600, height: 26, fontSize: "11.5px", borderRadius: "6px" }}
+                />
+              </Box>
             </CardContent>
           </Card>
 
-          {/* Bookings Table Card */}
-          <Card
-            sx={{
-              borderRadius: 3,
-              border: `1px solid ${COLORS.border}`,
-              boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-              overflow: "hidden",
-            }}
-          >
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", py: 12 }}>
-                <CircularProgress sx={{ color: COLORS.forest }} />
-              </Box>
-            ) : list.length === 0 ? (
-              <Box sx={{ py: 12, textAlign: "center" }}>
-                <Typography variant="h6" sx={{ color: "#888", fontWeight: 500 }}>
-                  Không tìm thấy lịch đặt bàn nào phù hợp.
-                </Typography>
-              </Box>
-            ) : (
-              <>
-                <TableContainer>
-                  <Table sx={{ minWidth: 800 }}>
-                    <TableHead sx={{ bgcolor: "rgba(47, 91, 62, 0.05)" }}>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Mã Đặt Bàn</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Khách Hàng</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Thông Tin Liên Hệ</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Ngày giờ tạo</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Ngày giờ đặt</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Số Khách / Bàn</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest }}>Trạng Thái</TableCell>
-                        <TableCell sx={{ fontWeight: 700, color: COLORS.forest, width: 200 }}>Cập Nhật Trạng Thái</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {list.map((booking) => (
-                        <TableRow key={booking.id} hover>
-                          <TableCell sx={{ fontWeight: 600 }}>{booking.reservation_code}</TableCell>
-                          <TableCell>
-                            <Typography sx={{ fontWeight: 600, fontSize: "14px" }}>
-                              {booking.guest_name}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ fontSize: "13px" }}>{booking.guest_phone}</Typography>
-                            <Typography sx={{ fontSize: "12px", color: "#666" }}>{booking.guest_email}</Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ fontWeight: 500, fontSize: "14px" }}>
-                              {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("vi-VN", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                              }) : "—"}
-                            </Typography>
-                            <Typography sx={{ fontSize: "12px", color: COLORS.moss, fontWeight: 500 }}>
-                              {booking.createdAt ? new Date(booking.createdAt).toLocaleTimeString("vi-VN", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }) : ""}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ fontWeight: 500, fontSize: "14px" }}>
-                              {booking.booking_date}
-                            </Typography>
-                            <Typography sx={{ fontSize: "12px", color: COLORS.moss, fontWeight: 500 }}>
-                              {booking.booking_time}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
-                              {booking.num_of_people} người
-                            </Typography>
-                            <Typography sx={{ fontSize: "12px", color: "#666" }}>
-                              {booking.table?.name || "Bàn tự động"} ({booking.seating_area_table_type || "2-seat"})
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{getStatusBadge(booking.status)}</TableCell>
-                          <TableCell>
-                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                              {String(booking.status || "").toLowerCase() === "reserved" && (
-                                <>
-                                  <Button size="small" variant="contained" color="success" onClick={() => handleAction(adminConfirmBooking, booking.id)}>
-                                    Xác nhận
-                                  </Button>
-                                  <Button size="small" variant="outlined" color="error" onClick={() => handleAction(adminRejectBooking, booking.id)}>
-                                    Từ chối
-                                  </Button>
-                                </>
-                              )}
-                              {String(booking.status || "").toLowerCase() === "confirmed" && (
-                                <>
-                                  <Button
-                                    size="small"
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => setCheckInModal(booking)}
-                                  >
-                                    Check In
-                                  </Button>
-                                  <Button size="small" variant="outlined" color="error" onClick={() => handleAction(adminUpdateBookingStatus, booking.id, { status: "Cancelled" })}>
-                                    Hủy
-                                  </Button>
-                                </>
-                              )}
-                              {String(booking.status || "").toLowerCase() === "checkedin" && (
-                                <Button size="small" variant="contained" color="info" onClick={() => handleAction(adminUpdateBookingStatus, booking.id, { status: "Completed" })}>
-                                  Hoàn thành
-                                </Button>
-                              )}
-                              {String(booking.status || "").toLowerCase() === "completed" && (
-                                <Button size="small" variant="outlined" color="primary" onClick={() => setdetailsModal(booking)}>
-                                  Chi tiết
-                                </Button>
-                              )}
-                              {["cancelled", "noshow"].includes(String(booking.status || "").toLowerCase()) && (
-                                <Typography variant="caption" color="text.secondary">
-                                  Không có hành động
-                                </Typography>
-                              )}
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+          {/* Main Content Layout: Table (Left) + Side Panel (Right) */}
+          <Grid container spacing={2.5}>
+            {/* Table Container Column */}
+            <Grid item xs={12} lg={selectedBooking ? 8 : 12} sx={{ transition: "all 0.35s var(--ease-smooth)" }}>
+              <Card
+                sx={{
+                  borderRadius: 2.5,
+                  border: `1px solid ${COLORS.border}`,
+                  bgcolor: COLORS.card,
+                  boxShadow: COLORS.shadowSm,
+                  overflow: "hidden",
+                }}
+              >
+                {loading ? (
+                  <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
+                    <CircularProgress sx={{ color: "var(--matcha)" }} />
+                  </Box>
+                ) : filteredList.length === 0 ? (
+                  <Box sx={{ py: 8, textAlign: "center" }}>
+                    <Typography variant="body2" sx={{ color: COLORS.textMuted, fontWeight: 500 }}>
+                      Không tìm thấy lịch đặt bàn nào phù hợp.
+                    </Typography>
+                  </Box>
+                ) : (
+                  <>
+                    <TableContainer>
+                      <Table sx={{ minWidth: 700 }}>
+                        <TableHead sx={{ bgcolor: "var(--bg-alt)" }}>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                              BOOKING & GIỜ
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                              KHÁCH HÀNG
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                              LỊCH & BÀN
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                              ĐÁNH GIÁ (PRIORITY & RISK)
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                              TRẠNG THÁI
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px", width: 180, textAlign: "right" }}>
+                              THAO TÁC
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {filteredList.map((booking) => {
+                            const isHistorical = ["completed", "cancelled", "noshow"].includes(
+                              String(booking.status || "").toLowerCase()
+                            );
+                            const isHighRisk = booking.riskLevel === "High";
+                            const isPending = String(booking.status || "").toLowerCase() === "reserved";
+                            const isSelected = selectedBooking?.id === booking.id;
 
-                {/* Pagination */}
-                <Box
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    borderTop: `1px solid ${COLORS.border}`,
-                    flexDirection: { xs: "column", sm: "row" },
-                    gap: 2,
-                  }}
-                >
-                  <Typography variant="body2" sx={{ opacity: 0.7 }}>
-                    Hiển thị {list.length} / {total} kết quả
-                  </Typography>
-                  <Pagination
-                    count={Math.ceil(total / pageSize)}
-                    page={page}
-                    onChange={(e, v) => setPage(v)}
-                    color="primary"
-                    size="medium"
-                  />
-                </Box>
-              </>
-            )}
-          </Card>
-        </Container>
+                            return (
+                              <TableRow
+                                key={booking.id}
+                                hover
+                                onClick={() => setSelectedBooking(booking)}
+                                sx={{
+                                  cursor: "pointer",
+                                  transition: "background 0.15s var(--ease-smooth)",
+                                  opacity: isHistorical ? 0.65 : 1,
+                                  bgcolor: isSelected ? "rgba(107, 143, 62, 0.08)" : isHistorical ? "transparent" : "transparent",
+                                  borderLeft: isHighRisk ? "4px solid #ef4444" : isPending ? "4px solid #f97316" : booking.bookingPriority === "Preferred" ? "4px solid #eab308" : "4px solid transparent",
+                                }}
+                              >
+                                {/* 1. BOOKING & GIỜ */}
+                                <TableCell sx={{ py: 1 }}>
+                                  <Typography sx={{ fontWeight: 700, color: booking.bookingPriority === "Preferred" ? "#d97706" : COLORS.text, fontSize: "13px", lineHeight: 1.2 }}>
+                                    {booking.bookingPriority === "Preferred" && "⭐ "}
+                                    {booking.reservation_code}
+                                  </Typography>
+                                  <Typography sx={{ fontSize: "11px", color: COLORS.textMuted }}>
+                                    {booking.booking_date} • {booking.booking_time}
+                                  </Typography>
+                                </TableCell>
+
+                                {/* 2. KHÁCH HÀNG */}
+                                <TableCell sx={{ py: 1 }}>
+                                  <Typography sx={{ fontWeight: 600, fontSize: "13px", color: COLORS.text }}>
+                                    {booking.guest_name}
+                                  </Typography>
+                                  <Typography sx={{ fontSize: "11px", color: COLORS.textMuted }}>
+                                    {booking.guest_phone}
+                                  </Typography>
+                                  <Typography sx={{ fontSize: "10.5px", color: COLORS.textMuted }}>
+                                    👥 {booking.num_of_people} khách
+                                  </Typography>
+                                </TableCell>
+
+                                {/* 3. LỊCH & BÀN */}
+                                <TableCell sx={{ py: 1 }}>
+                                  <Typography sx={{ fontWeight: 700, fontSize: "13px", color: "#c2410c" }}>
+                                    {booking.booking_time}
+                                  </Typography>
+                                  <Typography sx={{ fontSize: "11.5px", color: COLORS.text, fontWeight: 500 }}>
+                                    Bàn {booking.table?.name || "Corner 1"}
+                                  </Typography>
+                                  <Typography sx={{ fontSize: "10.5px", color: COLORS.textMuted }}>
+                                    {booking.num_of_people} người
+                                  </Typography>
+                                </TableCell>
+
+                                {/* 4. ĐÁNH GIÁ (PRIORITY & RISK DUAL LINE) */}
+                                <TableCell sx={{ py: 1 }}>
+                                  <Box sx={{ display: "flex", flexDirection: "column", gap: 0.3, alignItems: "flex-start" }}>
+                                    {getPriorityBadge(booking)}
+                                    {getRiskBadge(booking)}
+                                  </Box>
+                                </TableCell>
+
+                                {/* 5. TRẠNG THÁI */}
+                                <TableCell sx={{ py: 1 }}>
+                                  {getStatusBadge(booking.status, booking.reviewStatus)}
+                                </TableCell>
+
+                                {/* 6. THAO TÁC */}
+                                <TableCell sx={{ py: 1, textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
+                                  <Box sx={{ display: "flex", gap: 0.6, justifyContent: "flex-end", alignItems: "center" }}>
+                                    {String(booking.status || "").toLowerCase() === "reserved" && (
+                                      <>
+                                        <Button
+                                          size="small"
+                                          variant="contained"
+                                          onClick={() => handleAction(adminConfirmBooking, booking.id)}
+                                          sx={{
+                                            bgcolor: "var(--matcha)",
+                                            "&:hover": { bgcolor: "var(--matcha-dark)" },
+                                            fontSize: "11.5px",
+                                            px: 1.2,
+                                            py: 0.3,
+                                            minWidth: "auto",
+                                            fontWeight: 700,
+                                            borderRadius: "6px",
+                                            textTransform: "none",
+                                            whiteSpace: "nowrap",
+                                          }}
+                                        >
+                                          ✓ Xác nhận
+                                        </Button>
+                                        <Button
+                                          size="small"
+                                          variant="text"
+                                          onClick={() => handleAction(adminRejectBooking, booking.id)}
+                                          sx={{
+                                            color: "#d32f2f",
+                                            fontSize: "11.5px",
+                                            px: 1,
+                                            py: 0.3,
+                                            minWidth: "auto",
+                                            textTransform: "none",
+                                            whiteSpace: "nowrap",
+                                          }}
+                                        >
+                                          Từ chối
+                                        </Button>
+                                      </>
+                                    )}
+
+                                    {String(booking.status || "").toLowerCase() === "confirmed" && (
+                                      <Button
+                                        size="small"
+                                        variant="outlined"
+                                        onClick={() => setCheckInModal(booking)}
+                                        sx={{
+                                          color: "var(--matcha)",
+                                          borderColor: "var(--matcha)",
+                                          "&:hover": { borderColor: "var(--matcha-dark)", bgcolor: "rgba(107, 143, 62, 0.08)" },
+                                          fontSize: "11.5px",
+                                          px: 1.2,
+                                          py: 0.3,
+                                          minWidth: "auto",
+                                          fontWeight: 700,
+                                          borderRadius: "6px",
+                                          textTransform: "none",
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
+                                        Check In
+                                      </Button>
+                                    )}
+
+                                    {String(booking.status || "").toLowerCase() === "checkedin" && (
+                                      <Button
+                                        size="small"
+                                        variant="contained"
+                                        color="info"
+                                        onClick={() => handleAction(adminUpdateBookingStatus, booking.id, { status: "Completed" })}
+                                        sx={{
+                                          fontSize: "11.5px",
+                                          px: 1.2,
+                                          py: 0.3,
+                                          minWidth: "auto",
+                                          fontWeight: 700,
+                                          borderRadius: "6px",
+                                          textTransform: "none",
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
+                                        Hoàn thành
+                                      </Button>
+                                    )}
+
+                                    {isHistorical && (
+                                      <Button
+                                        size="small"
+                                        variant="text"
+                                        color="primary"
+                                        onClick={() => setSelectedBooking(booking)}
+                                        sx={{
+                                          fontSize: "11.5px",
+                                          px: 1,
+                                          py: 0.3,
+                                          minWidth: "auto",
+                                          textTransform: "none",
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
+                                        Chi tiết
+                                      </Button>
+                                    )}
+
+                                    <IconButton
+                                      size="small"
+                                      onClick={(e) => openActionMenu(e, booking)}
+                                      sx={{ p: 0.4 }}
+                                    >
+                                      <MoreVertIcon fontSize="small" />
+                                    </IconButton>
+                                  </Box>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    {/* Pagination Footer */}
+                    <Box
+                      sx={{
+                        p: 1.5,
+                        px: 2,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        borderTop: `1px solid ${COLORS.border}`,
+                        flexDirection: { xs: "column", sm: "row" },
+                        gap: 1,
+                      }}
+                    >
+                      <Typography variant="body2" sx={{ color: COLORS.textMuted, fontSize: "11.5px" }}>
+                        Hiển thị 1 - {filteredList.length} trên {total} đơn
+                      </Typography>
+                      <Pagination
+                        count={Math.ceil(total / pageSize)}
+                        page={page}
+                        onChange={(e, v) => setPage(v)}
+                        color="primary"
+                        size="small"
+                      />
+                    </Box>
+                  </>
+                )}
+              </Card>
+            </Grid>
+
+            {/* Right Side Panel (Side Panel matching user's exact mockup with smooth slide out animation) */}
+            <AnimatePresence>
+              {selectedBooking && (
+                <Grid item xs={12} lg={4}>
+                  <motion.div
+                    initial={{ opacity: 0, x: 40, scale: 0.96 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: 40, scale: 0.96 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  >
+                    <Card
+                      sx={{
+                        borderRadius: 2.5,
+                        border: `1px solid ${COLORS.border}`,
+                        boxShadow: COLORS.shadowSm,
+                        bgcolor: COLORS.card,
+                        p: 2.5,
+                        position: "sticky",
+                        top: 20,
+                      }}
+                    >
+                      {/* Header */}
+                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, pb: 1, borderBottom: `1px solid ${COLORS.border}` }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: COLORS.text, fontSize: "15px" }}>
+                          Chi tiết đặt bàn
+                        </Typography>
+                        <IconButton onClick={() => setSelectedBooking(null)} size="small">
+                          <CloseIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+
+                      {/* Reservation Code & Date */}
+                      <Box sx={{ mb: 2 }}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <Typography variant="h6" sx={{ fontWeight: 800, color: COLORS.text, fontSize: "17px" }}>
+                            {selectedBooking.reservation_code} <ContentCopyIcon sx={{ fontSize: 14, color: COLORS.textMuted, cursor: "pointer" }} />
+                          </Typography>
+
+                          {getStatusBadge(selectedBooking.status, selectedBooking.reviewStatus)}
+                        </Box>
+                        <Typography variant="caption" sx={{ color: COLORS.textMuted, display: "block", mt: 0.5, fontSize: "12px" }}>
+                          📅 {selectedBooking.booking_date} • {selectedBooking.booking_time}
+                        </Typography>
+                      </Box>
+
+                      {/* Section 1 — ĐÁNH GIÁ BOOKING */}
+                      <Box sx={{ mb: 2.5 }}>
+                        <Typography variant="caption" sx={{ fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", display: "block", mb: 0.8, fontSize: "11px" }}>
+                          ĐÁNH GIÁ BOOKING
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+                          {getPriorityBadge(selectedBooking)}
+                          {getRiskBadge(selectedBooking)}
+                        </Box>
+                        <Typography variant="body2" sx={{ fontSize: "12px", color: COLORS.text, lineHeight: 1.5, mb: 0.5 }}>
+                          {selectedBooking.bookingPriorityExplanation}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontSize: "12px", color: COLORS.textMuted, lineHeight: 1.5 }}>
+                          {selectedBooking.reviewExplanation || "Lịch đặt bàn an toàn."}
+                        </Typography>
+                      </Box>
+
+                      {/* Section 2 — TRẠNG THÁI */}
+                      <Box sx={{ mb: 2.5 }}>
+                        <Typography variant="caption" sx={{ fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", display: "block", mb: 0.8, fontSize: "11px" }}>
+                          TRẠNG THÁI
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: COLORS.text, fontSize: "13px" }}>
+                          {selectedBooking.status === "Reserved" ? "Đã đặt" : selectedBooking.status}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: COLORS.textMuted, display: "block", fontSize: "11.5px" }}>
+                          {selectedBooking.status === "Reserved" ? "Chờ xác nhận" : "Đã được nhân viên xem xét"}
+                        </Typography>
+                      </Box>
+
+                      {/* Section 3 — THÔNG TIN KHÁCH */}
+                      <Box sx={{ mb: 2.5 }}>
+                        <Typography variant="caption" sx={{ fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", display: "block", mb: 0.8, fontSize: "11px" }}>
+                          THÔNG TIN KHÁCH
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.6 }}>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", fontWeight: 600, color: COLORS.text }}>
+                            👤 {selectedBooking.guest_name}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.text }}>
+                            📞 {selectedBooking.guest_phone}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.textMuted }}>
+                            ✉ {selectedBooking.guest_email || "Chưa có email"}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.textMuted }}>
+                            👥 {selectedBooking.num_of_people} khách
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {/* Section 4 — LỊCH & BÀN */}
+                      <Box sx={{ mb: 2.5 }}>
+                        <Typography variant="caption" sx={{ fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", display: "block", mb: 0.8, fontSize: "11px" }}>
+                          LỊCH & BÀN
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.6 }}>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.text }}>
+                            🕒 Thời gian: <strong>{selectedBooking.booking_time}</strong>
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.text }}>
+                            📅 Ngày: {selectedBooking.booking_date}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.text }}>
+                            🪑 Bàn: {selectedBooking.table?.name || "Corner 1"}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12.5px", color: COLORS.text }}>
+                            👥 Số khách: {selectedBooking.num_of_people} người
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {/* Action Buttons Footer */}
+                      <Box sx={{ pt: 1.5, borderTop: `1px solid ${COLORS.border}`, display: "flex", gap: 1, alignItems: "center" }}>
+                        {String(selectedBooking.status || "").toLowerCase() === "reserved" && (
+                          <>
+                            <Button
+                              fullWidth
+                              variant="contained"
+                              onClick={() => handleAction(adminConfirmBooking, selectedBooking.id)}
+                              sx={{
+                                bgcolor: "var(--matcha)",
+                                "&:hover": { bgcolor: "var(--matcha-dark)" },
+                                borderRadius: "8px",
+                                fontWeight: 700,
+                                fontSize: "12.5px",
+                                textTransform: "none",
+                                py: 0.8,
+                              }}
+                            >
+                              ✓ Xác nhận
+                            </Button>
+                            <Button
+                              fullWidth
+                              variant="outlined"
+                              onClick={() => handleAction(adminRejectBooking, selectedBooking.id)}
+                              sx={{
+                                color: "#d32f2f",
+                                borderColor: "#d32f2f",
+                                "&:hover": { borderColor: "#b71c1c", bgcolor: "rgba(211, 47, 47, 0.04)" },
+                                borderRadius: "8px",
+                                fontSize: "12.5px",
+                                textTransform: "none",
+                                py: 0.8,
+                              }}
+                            >
+                              Từ chối
+                            </Button>
+                          </>
+                        )}
+
+                        {String(selectedBooking.status || "").toLowerCase() === "confirmed" && (
+                          <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={() => setCheckInModal(selectedBooking)}
+                            sx={{
+                              color: "var(--matcha)",
+                              borderColor: "var(--matcha)",
+                              "&:hover": { borderColor: "var(--matcha-dark)", bgcolor: "rgba(107, 143, 62, 0.08)" },
+                              borderRadius: "8px",
+                              fontWeight: 700,
+                              fontSize: "12.5px",
+                              textTransform: "none",
+                              py: 0.8,
+                            }}
+                          >
+                            Check In
+                          </Button>
+                        )}
+
+                        <IconButton onClick={(e) => openActionMenu(e, selectedBooking)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </Box>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              )}
+            </AnimatePresence>
+          </Grid>
+        </Box>
       </Box>
+
+      {/* ── Action Menu Dropdown (⋮ Options) ─────────────────────────────────── */}
+      <Menu
+        anchorEl={actionMenuAnchor}
+        open={Boolean(actionMenuAnchor)}
+        onClose={closeActionMenu}
+        PaperProps={{
+          sx: {
+            borderRadius: "10px",
+            minWidth: 160,
+            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+          },
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            if (activeMenuBooking) setSelectedBooking(activeMenuBooking);
+            closeActionMenu();
+          }}
+        >
+          <ListItemIcon>
+            <VisibilityIcon fontSize="small" color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Xem chi tiết" primaryTypographyProps={{ fontSize: "12.5px" }} />
+        </MenuItem>
+
+        {activeMenuBooking && String(activeMenuBooking.status).toLowerCase() === "reserved" && (
+          <>
+            <MenuItem onClick={() => handleAction(adminConfirmBooking, activeMenuBooking.id)}>
+              <ListItemIcon>
+                <CheckIcon fontSize="small" color="success" />
+              </ListItemIcon>
+              <ListItemText primary="Xác nhận đặt bàn" primaryTypographyProps={{ fontSize: "12.5px", fontWeight: 600, color: "#16a34a" }} />
+            </MenuItem>
+            <MenuItem onClick={() => handleAction(adminRejectBooking, activeMenuBooking.id)}>
+              <ListItemIcon>
+                <CancelIcon fontSize="small" color="error" />
+              </ListItemIcon>
+              <ListItemText primary="Từ chối đặt bàn" primaryTypographyProps={{ fontSize: "12.5px", color: "#dc2626" }} />
+            </MenuItem>
+          </>
+        )}
+
+        {activeMenuBooking && String(activeMenuBooking.status).toLowerCase() === "confirmed" && (
+          <>
+            <MenuItem
+              onClick={() => {
+                setCheckInModal(activeMenuBooking);
+                closeActionMenu();
+              }}
+            >
+              <ListItemIcon>
+                <HowToRegIcon fontSize="small" color="secondary" />
+              </ListItemIcon>
+              <ListItemText primary="Check In" primaryTypographyProps={{ fontSize: "12.5px", fontWeight: 600 }} />
+            </MenuItem>
+            <MenuItem onClick={() => handleAction(adminUpdateBookingStatus, activeMenuBooking.id, { status: "Cancelled" })}>
+              <ListItemIcon>
+                <CancelIcon fontSize="small" color="error" />
+              </ListItemIcon>
+              <ListItemText primary="Hủy lịch đặt" primaryTypographyProps={{ fontSize: "12.5px", color: "#dc2626" }} />
+            </MenuItem>
+          </>
+        )}
+
+        {activeMenuBooking && String(activeMenuBooking.status).toLowerCase() === "checkedin" && (
+          <MenuItem onClick={() => handleAction(adminUpdateBookingStatus, activeMenuBooking.id, { status: "Completed" })}>
+            <ListItemIcon>
+              <DoneAllIcon fontSize="small" color="info" />
+            </ListItemIcon>
+            <ListItemText primary="Hoàn thành đơn" primaryTypographyProps={{ fontSize: "12.5px", fontWeight: 600 }} />
+          </MenuItem>
+        )}
+      </Menu>
 
       {/* ── Check-in Modal ───────────────────────────────────────────────────── */}
       <AnimatePresence>
@@ -591,43 +1321,41 @@ export default function ManageBookingsPage() {
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 20, stiffness: 300 }}
               style={{
-                background: "var(--bg-card, #fff)",
+                background: COLORS.card,
                 borderRadius: "20px",
-                padding: "32px",
+                padding: "24px",
                 width: "100%",
-                maxWidth: "480px",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+                maxWidth: "440px",
+                boxShadow: COLORS.shadowMd,
               }}
             >
-              {/* Header */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: COLORS.forest, mb: 0.5 }}>
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: COLORS.forest, fontSize: "17px", mb: 0.5 }}>
                   Xác nhận Check-in
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666" }}>
+                <Typography variant="body2" sx={{ color: COLORS.textMuted, fontSize: "12.5px" }}>
                   Đơn <strong>{checkInModal.reservation_code}</strong> — Khách: <strong>{checkInModal.guest_name}</strong>
                 </Typography>
               </Box>
 
-              {/* Image Upload */}
               <Box
                 onClick={() => fileInputRef.current?.click()}
                 sx={{
-                  border: `2px dashed ${checkInImagePreview ? COLORS.moss : COLORS.border}`,
-                  borderRadius: "12px",
-                  p: 2,
+                  border: `2px dashed ${checkInImagePreview ? "var(--matcha)" : COLORS.border}`,
+                  borderRadius: "10px",
+                  p: 1.5,
                   mb: 2,
                   textAlign: "center",
                   cursor: "pointer",
-                  background: checkInImagePreview ? "rgba(120,139,69,0.04)" : "rgba(0,0,0,0.02)",
+                  background: checkInImagePreview ? "rgba(107, 143, 62, 0.04)" : COLORS.alt,
                   transition: "all 0.2s",
-                  "&:hover": { borderColor: COLORS.moss, background: "rgba(120,139,69,0.06)" },
-                  minHeight: 120,
+                  "&:hover": { borderColor: "var(--matcha)", background: "rgba(107, 143, 62, 0.06)" },
+                  minHeight: 100,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexDirection: "column",
-                  gap: 1,
+                  gap: 0.8,
                   overflow: "hidden",
                 }}
               >
@@ -635,15 +1363,14 @@ export default function ManageBookingsPage() {
                   <img
                     src={checkInImagePreview}
                     alt="Check-in preview"
-                    style={{ maxWidth: "100%", maxHeight: 220, borderRadius: 8, objectFit: "contain" }}
+                    style={{ maxWidth: "100%", maxHeight: 180, borderRadius: 8, objectFit: "contain" }}
                   />
                 ) : (
                   <>
-                    
-                    <Typography sx={{ fontSize: "13px", color: "#888", fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: "12.5px", color: COLORS.textMuted, fontWeight: 500 }}>
                       Nhấn để tải ảnh Check-in lên
                     </Typography>
-                    <Typography sx={{ fontSize: "11px", color: "#aaa" }}>
+                    <Typography sx={{ fontSize: "10.5px", color: COLORS.textMuted }}>
                       JPG, PNG, WEBP — tối đa 5MB
                     </Typography>
                   </>
@@ -662,7 +1389,7 @@ export default function ManageBookingsPage() {
                   size="small"
                   variant="text"
                   color="error"
-                  sx={{ mb: 2, fontSize: "12px" }}
+                  sx={{ mb: 1.5, fontSize: "11px" }}
                   onClick={() => {
                     setCheckInImage(null);
                     setCheckInImagePreview("");
@@ -673,31 +1400,29 @@ export default function ManageBookingsPage() {
                 </Button>
               )}
 
-              {/* Note */}
               <TextField
                 fullWidth
                 multiline
                 minRows={2}
-                maxRows={4}
+                maxRows={3}
                 label="Ghi chú / Chú thích (tuỳ chọn)"
                 value={checkInNote}
                 onChange={(e) => setCheckInNote(e.target.value)}
-                placeholder="VD: Khách đã vào, bàn 2 góc window..."
+                placeholder="VD: Khách đã vào bàn góc window..."
                 sx={{
-                  mb: 3,
-                  "& .MuiOutlinedInput-root": { borderRadius: "12px", fontSize: "14px" },
+                  mb: 2.5,
+                  "& .MuiOutlinedInput-root": { borderRadius: "10px", fontSize: "12.5px" },
                 }}
               />
 
-              {/* Actions */}
-              <Box sx={{ display: "flex", gap: 2 }}>
+              <Box sx={{ display: "flex", gap: 1.5 }}>
                 <Button
                   fullWidth
                   variant="outlined"
                   color="inherit"
                   onClick={closeCheckInModal}
                   disabled={checkInLoading}
-                  sx={{ borderRadius: "12px", textTransform: "none", fontWeight: 600 }}
+                  sx={{ borderRadius: "10px", textTransform: "none", fontWeight: 600, fontSize: "12.5px" }}
                 >
                   Hủy bỏ
                 </Button>
@@ -707,147 +1432,17 @@ export default function ManageBookingsPage() {
                   onClick={handleConfirmCheckIn}
                   disabled={checkInLoading}
                   sx={{
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                     textTransform: "none",
                     fontWeight: 700,
-                    background: `linear-gradient(135deg, ${COLORS.moss}, ${COLORS.forest})`,
-                    "&:hover": { background: COLORS.forest },
+                    fontSize: "12.5px",
+                    background: `linear-gradient(135deg, var(--matcha), var(--forest))`,
+                    "&:hover": { background: "var(--forest)" },
                   }}
                 >
-                  {checkInLoading ? <CircularProgress size={18} sx={{ color: "#fff" }} /> : "Xác nhận Check-in"}
+                  {checkInLoading ? <CircularProgress size={16} sx={{ color: "#fff" }} /> : "Xác nhận Check-in"}
                 </Button>
               </Box>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Details Modal ──────────────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {detailsModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.55)",
-              backdropFilter: "blur(4px)",
-              zIndex: 1300,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "16px",
-            }}
-            onClick={(e) => e.target === e.currentTarget && setdetailsModal(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
-              style={{
-                background: "var(--bg-card, #fff)",
-                borderRadius: "20px",
-                padding: "32px",
-                width: "100%",
-                maxWidth: "480px",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
-              }}
-            >
-              {/* Header */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: COLORS.forest, mb: 0.5 }}>
-                  Chi tiết Check-in
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666" }}>
-                  Đơn <strong>{detailsModal.reservation_code}</strong> — Khách: <strong>{detailsModal.guest_name}</strong>
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: "12px",
-                  p: 1,
-                  mb: detailsModal.checkInImageUrl ? 1 : 3,
-                  textAlign: "center",
-                  background: "rgba(0,0,0,0.02)",
-                  minHeight: 120,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                }}
-              >
-                {detailsModal.checkInImageUrl ? (
-                  <Box sx={{ position: "relative", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    {!imgLoaded && (
-                      <Skeleton
-                        variant="rectangular"
-                        width="100%"
-                        height={200}
-                        sx={{ borderRadius: "8px" }}
-                        animation="wave"
-                      />
-                    )}
-                    <img
-                      src={detailsModal.checkInImageUrl}
-                      alt="Check-in preview"
-                      onLoad={() => setImgLoaded(true)}
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: 300,
-                        borderRadius: 8,
-                        objectFit: "contain",
-                        display: imgLoaded ? "block" : "none",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => window.open(detailsModal.checkInImageUrl, "_blank")}
-                      title="Bấm để xem ảnh gốc sắc nét"
-                    />
-                  </Box>
-                ) : (
-                  <Typography sx={{ fontSize: "14px", color: "#888" }}>
-                    Không có hình ảnh đính kèm.
-                  </Typography>
-                )}
-              </Box>
-
-              {detailsModal.checkInImageUrl && (
-                <Typography variant="caption" sx={{ display: "block", textAlign: "center", color: "#888", mb: 3 }}>
-                  Bấm vào ảnh để xem ảnh gốc chất lượng cao
-                </Typography>
-              )}
-
-              {/* Note Display */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, color: COLORS.forest, mb: 1 }}>
-                  Ghi chú:
-                </Typography>
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: "12px", background: "var(--bg-alt)", minHeight: "60px" }}>
-                  <Typography variant="body2" sx={{ color: "var(--text)" }}>
-                    {detailsModal.checkInNote || "Không có ghi chú."}
-                  </Typography>
-                </Paper>
-              </Box>
-
-              {/* Actions */}
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={() => setdetailsModal(null)}
-                sx={{
-                  borderRadius: "12px",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  background: `linear-gradient(135deg, ${COLORS.moss}, ${COLORS.forest})`,
-                  "&:hover": { background: COLORS.forest },
-                }}
-              >
-                Đóng
-              </Button>
             </motion.div>
           </motion.div>
         )}
