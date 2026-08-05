@@ -848,12 +848,17 @@ export async function bookingCheckStatus({
           trList.forEach((tr) => {
             const tName = tr.tableName || tr.TableName || "";
             if (tName) {
-              tableRiskMap.set(tName.toLowerCase(), {
+              // Normalize: strip "bàn " prefix to match frontend table.name keys (e.g. "Bàn Corner 1" -> "corner 1")
+              const normalizeKey = (n) => n.toLowerCase().replace(/^bàn\s+/i, "").trim();
+              const key = normalizeKey(tName);
+              const entry = {
                 riskLevel: tr.riskLevel || tr.RiskLevel || "Available",
                 displayType: tr.displayType || tr.DisplayType || "Available",
                 riskMessage: tr.riskMessage || tr.RiskMessage || "",
                 suggestedStatus: tr.suggestedStatus || tr.SuggestedStatus || ((tr.riskLevel || tr.RiskLevel) === "Conflict" ? "occupied" : "available"),
-              });
+              };
+              tableRiskMap.set(key, entry);           // "corner 1"
+              tableRiskMap.set(tName.toLowerCase(), entry); // "bàn corner 1" (fallback)
             }
           });
         }
@@ -870,7 +875,9 @@ export async function bookingCheckStatus({
       let riskMessage = "";
       let suggestedStatus = "available";
 
-      const tableNameKey = (table.name || "").toLowerCase();
+      // Normalize key: strip "bàn " prefix to match how tableRiskMap is keyed
+      const rawName = (table.name || "").toLowerCase();
+      const tableNameKey = rawName.replace(/^bàn\s+/i, "").trim();
       if (tableRiskMap.has(tableNameKey)) {
         const tr = tableRiskMap.get(tableNameKey);
         riskLevel = tr.riskLevel;

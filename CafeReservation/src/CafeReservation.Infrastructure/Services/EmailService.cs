@@ -1,5 +1,6 @@
 using CafeReservation.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.Json;
@@ -11,27 +12,41 @@ public class EmailService : IEmailService
     private readonly IConfiguration _configuration;
     private readonly ILogger<EmailService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly IInfoService _infoService;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     private string SenderEmail => _configuration["Email:From"] ?? "yakicafe.dev@gmail.com";
     private string DefaultSenderName => _configuration["Email:FromName"] ?? "Yakishime Café";
     private string ApiKey      => _configuration["Email:ApiKey"] ?? string.Empty;
     private string FrontendUrl => _configuration["FrontendUrl"] ?? "http://localhost:5173";
 
-    public EmailService(IConfiguration configuration, ILogger<EmailService> logger, HttpClient httpClient, IInfoService infoService)
+    public EmailService(
+        IConfiguration configuration,
+        ILogger<EmailService> logger,
+        HttpClient httpClient,
+        IServiceScopeFactory scopeFactory)
     {
         _configuration = configuration;
         _logger = logger;
         _httpClient = httpClient;
-        _infoService = infoService;
+        _scopeFactory = scopeFactory;
     }
 
     private async Task<(string Name, string Address)> GetRestaurantInfoAsync(CancellationToken ct)
     {
-        var info = await _infoService.GetRestaurantInfoAsync(ct);
-        var name = info?.TenantName ?? DefaultSenderName;
-        var address = info?.Address ?? "Việt Nam";
-        return (name, address);
+        try
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var infoService = scope.ServiceProvider.GetRequiredService<IInfoService>();
+            var info = await infoService.GetRestaurantInfoAsync(CancellationToken.None);
+            var name = info?.TenantName ?? DefaultSenderName;
+            var address = info?.Address ?? "Việt Nam";
+            return (name, address);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not fetch restaurant info for email notification; using defaults.");
+            return (DefaultSenderName, "Việt Nam");
+        }
     }
 
     public async Task SendReservationConfirmationAsync(
@@ -208,7 +223,7 @@ public class EmailService : IEmailService
             request.Headers.Add("api-key", ApiKey);
             request.Headers.Add("accept", "application/json");
 
-            var response = await _httpClient.SendAsync(request, ct);
+            var response = await _httpClient.SendAsync(request, CancellationToken.None);
 
             if (response.IsSuccessStatusCode)
             {
@@ -216,7 +231,7 @@ public class EmailService : IEmailService
             }
             else
             {
-                var responseContent = await response.Content.ReadAsStringAsync(ct);
+                var responseContent = await response.Content.ReadAsStringAsync(CancellationToken.None);
                 _logger.LogError("Failed to send email. Status: {Status}, Response: {Response}",
                     response.StatusCode, responseContent);
             }
@@ -227,3 +242,4 @@ public class EmailService : IEmailService
         }
     }
 }
+
