@@ -28,6 +28,18 @@ public class Reservation
     public string? SpecialNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Decision Engine Snapshot (Persisted immutable snapshot at creation time)
+    public string RiskLevel { get; set; } = "Available";
+    public string DisplayType { get; set; } = "Available";
+    public string ReviewStatus { get; set; } = "PendingReview";
+    public int ReviewPriority { get; set; } = 5;
+    public string ReviewBadge { get; set; } = "Bình thường";
+    public string? ReviewExplanation { get; set; }
+    public string BookingPriority { get; set; } = "Normal";
+    public string BookingPriorityLabel { get; set; } = "⚪ Bình thường";
+    public string? BookingPriorityExplanation { get; set; }
+    public DateTime? DecisionEvaluatedAt { get; set; }
+
     // Staff confirmation audit
     public DateTime? ConfirmedAt { get; set; }
     public string? ConfirmedBy { get; set; }   // Staff email who confirmed

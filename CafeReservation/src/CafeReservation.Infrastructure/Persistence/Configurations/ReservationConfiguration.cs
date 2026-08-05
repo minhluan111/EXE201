@@ -60,6 +60,18 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .HasColumnName("created_at")
             .IsRequired();
 
+        // Decision Engine Snapshot Fields (Persisted at Creation Time)
+        builder.Property(r => r.RiskLevel).HasColumnName("risk_level").HasMaxLength(50);
+        builder.Property(r => r.DisplayType).HasColumnName("display_type").HasMaxLength(50);
+        builder.Property(r => r.ReviewStatus).HasColumnName("review_status").HasMaxLength(50);
+        builder.Property(r => r.ReviewPriority).HasColumnName("review_priority");
+        builder.Property(r => r.ReviewBadge).HasColumnName("review_badge").HasMaxLength(100);
+        builder.Property(r => r.ReviewExplanation).HasColumnName("review_explanation").HasMaxLength(1000);
+        builder.Property(r => r.BookingPriority).HasColumnName("booking_priority").HasMaxLength(50);
+        builder.Property(r => r.BookingPriorityLabel).HasColumnName("booking_priority_label").HasMaxLength(100);
+        builder.Property(r => r.BookingPriorityExplanation).HasColumnName("booking_priority_explanation").HasMaxLength(1000);
+        builder.Property(r => r.DecisionEvaluatedAt).HasColumnName("decision_evaluated_at");
+
         // Staff confirmation audit fields
         builder.Property(r => r.ConfirmedAt)
             .HasColumnName("confirmed_at");
@@ -91,7 +103,6 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .HasDatabaseName("ix_reservations_area_date_status");
 
         // Prevent double-booking: unique constraint per table + date + time slot
-        // Applies to: Confirmed(0), CheckedIn(4), Reserved(5)
         builder.HasIndex(r => new { r.TableName, r.ReservationDate, r.StartTime })
             .HasDatabaseName("ix_reservations_unique_table_slot")
             .IsUnique()

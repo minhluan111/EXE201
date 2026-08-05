@@ -87,10 +87,22 @@ public class ReservationService : IReservationService
 
             var (assignedTable, riskLevel) = EvaluateAndAssignTable(area, startTime, request.TableName, areaBookings, info);
             var tableDetail = string.IsNullOrEmpty(assignedTable)
-                ? new TableRiskDetail { DisplayType = "Available" }
+                ? new TableRiskDetail { DisplayType = "Available", RiskLevel = "Available" }
                 : EvaluateTable(assignedTable, startTime, areaBookings, info);
 
             bool isAutoConfirm = riskLevel == RiskLevel.Available && tableDetail.DisplayType == "Available";
+            var targetStatus = isAutoConfirm ? ReservationStatus.Confirmed : ReservationStatus.Reserved;
+            var targetConfirmedBy = isAutoConfirm ? "System (AutoConfirm)" : null;
+
+            var (reviewStatus, reviewPriority, reviewBadge, reviewExplanation) = CalculateReviewInfo(tableDetail.DisplayType, tableDetail.RiskLevel, targetStatus, targetConfirmedBy);
+
+            var dummyForPriority = new Reservation
+            {
+                Status = targetStatus,
+                ConfirmedBy = targetConfirmedBy,
+                TableName = assignedTable
+            };
+            var (priorityKey, priorityLabel, priorityExplanation, _) = CalculateBookingPriority(dummyForPriority, areaBookings, info ?? new RestaurantInfoDto());
 
             var reservation = new Reservation
             {
@@ -104,12 +116,24 @@ public class ReservationService : IReservationService
                 StartTime = startTime,
                 EndTime = endTime,
                 GuestCount = request.GuestCount,
-                Status = isAutoConfirm ? ReservationStatus.Confirmed : ReservationStatus.Reserved,
+                Status = targetStatus,
                 ConfirmedAt = isAutoConfirm ? DateTime.UtcNow : null,
-                ConfirmedBy = isAutoConfirm ? "System (AutoConfirm)" : null,
+                ConfirmedBy = targetConfirmedBy,
                 TableName = assignedTable,
                 SpecialNote = request.SpecialNote,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+
+                // PERSIST IMMUTABLE DECISION ENGINE SNAPSHOT AT CREATION TIME
+                RiskLevel = tableDetail.RiskLevel,
+                DisplayType = tableDetail.DisplayType,
+                ReviewStatus = reviewStatus,
+                ReviewPriority = reviewPriority,
+                ReviewBadge = reviewBadge,
+                ReviewExplanation = reviewExplanation,
+                BookingPriority = priorityKey,
+                BookingPriorityLabel = priorityLabel,
+                BookingPriorityExplanation = priorityExplanation,
+                DecisionEvaluatedAt = DateTime.UtcNow
             };
 
             await _reservationRepository.AddAsync(reservation, ct);
@@ -268,21 +292,21 @@ public class ReservationService : IReservationService
             enriched.Add(enrichedItem);
         }
 
-        // Apply sorting based on filter.SortBy (Default: reviewPriority)
+        // Apply sorting based on status hierarchy (pending -> confirm -> complete -> cancel) then filter.SortBy
         IEnumerable<ReservationResponse> sortedQuery = enriched;
-        var sortBy = filter.SortBy?.ToLowerInvariant() ?? "reviewpriority";
+        var sortBy = filter.SortBy?.ToLowerInvariant() ?? "status";
 
         sortedQuery = sortBy switch
         {
-            "reviewpriority" => enriched.OrderBy(r => r.ReviewPriority)
-                                       .ThenBy(r => r.ReservationDate)
-                                       .ThenBy(r => r.StartTime),
-            "bookingtime" => enriched.OrderBy(r => r.ReservationDate)
+            "bookingtime" => enriched.OrderBy(r => GetStatusRank(r.Status))
+                                     .ThenBy(r => r.ReservationDate)
                                      .ThenBy(r => r.StartTime),
-            "createdtime" => enriched.OrderByDescending(r => r.CreatedAt),
-            "guestname" => enriched.OrderBy(r => r.GuestName),
-            "status" => enriched.OrderBy(r => r.Status),
-            _ => enriched.OrderBy(r => r.ReviewPriority)
+            "createdtime" => enriched.OrderBy(r => GetStatusRank(r.Status))
+                                     .ThenByDescending(r => r.CreatedAt),
+            "guestname" => enriched.OrderBy(r => GetStatusRank(r.Status))
+                                   .ThenBy(r => r.GuestName),
+            _ => enriched.OrderBy(r => GetStatusRank(r.Status))
+                          .ThenBy(r => r.ReviewPriority)
                           .ThenBy(r => r.ReservationDate)
                           .ThenBy(r => r.StartTime)
         };
@@ -296,6 +320,21 @@ public class ReservationService : IReservationService
         };
     }
 
+    private static int GetStatusRank(string? status)
+    {
+        var s = (status ?? "").ToLowerInvariant();
+        return s switch
+        {
+            "reserved" => 1,     // pending / Chờ xử lý
+            "confirmed" => 2,    // confirm / Đã xác nhận
+            "checkedin" => 3,    // đang sử dụng
+            "completed" => 4,    // complete / Hoàn thành
+            "cancelled" => 5,    // cancel / Đã hủy
+            "noshow" => 6,       // vắng mặt
+            _ => 99
+        };
+    }
+
     public async Task<ReservationResponse> UpdateStatusAsync(Guid reservationId, UpdateReservationStatusRequest request, CancellationToken ct = default)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId, ct)
@@ -303,6 +342,9 @@ public class ReservationService : IReservationService
 
         if (!Enum.TryParse<ReservationStatus>(request.Status, ignoreCase: true, out var newStatus))
             throw new DomainException($"Invalid status '{request.Status}'. Valid values: Confirmed, Cancelled, Completed, NoShow, Reserved, CheckedIn.");
+
+        // Load info BEFORE SaveChanges to avoid DbContext second-operation concurrency error
+        var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
 
         reservation.Status = newStatus;
         await _reservationRepository.UpdateAsync(reservation, ct);
@@ -329,7 +371,6 @@ public class ReservationService : IReservationService
         }
 
         _logger.LogInformation("Reservation {Code} status updated to {Status}", reservation.ReservationCode, newStatus);
-        var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
         return await MapToResponseWithReviewInfoAsync(reservation, info, null, ct);
     }
 
@@ -439,21 +480,8 @@ public class ReservationService : IReservationService
             throw new ConfigurationException("Dynamic Booking Policy thresholds must be ordered: High < Medium < Low.");
 
         var activeBookings = tableBookings.Where(b =>
-        {
-            if (b.Status == ReservationStatus.Confirmed || b.Status == ReservationStatus.CheckedIn)
-                return true;
-
-            if (b.Status == ReservationStatus.Reserved)
-            {
-                // Unconfirmed Reserved (Pending) bookings do NOT exert risk pressure on an already Confirmed or CheckedIn target booking!
-                if (targetStatus == ReservationStatus.Confirmed || targetStatus == ReservationStatus.CheckedIn)
-                    return false;
-
-                return true;
-            }
-
-            return false;
-        }).ToList();
+            b.Status == ReservationStatus.Confirmed || b.Status == ReservationStatus.CheckedIn
+        ).ToList();
 
         if (!activeBookings.Any())
             return RiskLevel.Available;
@@ -482,6 +510,42 @@ public class ReservationService : IReservationService
         return RiskLevel.Available;
     }
 
+    public static double CalculateReservationGapMinutes(TimeOnly start1, TimeOnly end1, TimeOnly start2, TimeOnly end2)
+    {
+        var tStart1 = start1.ToTimeSpan();
+        var tEnd1 = end1.ToTimeSpan();
+        var tStart2 = start2.ToTimeSpan();
+        var tEnd2 = end2.ToTimeSpan();
+
+        if (tStart2 >= tEnd1)
+        {
+            return (tStart2 - tEnd1).TotalMinutes;
+        }
+        if (tStart1 >= tEnd2)
+        {
+            return (tStart1 - tEnd2).TotalMinutes;
+        }
+        return 0;
+    }
+
+    public static string NormalizeTableName(string? tableName)
+    {
+        if (string.IsNullOrWhiteSpace(tableName)) return string.Empty;
+        var trimmed = tableName.Trim();
+        while (trimmed.StartsWith("Bàn ", StringComparison.OrdinalIgnoreCase))
+        {
+            trimmed = trimmed.Substring(4).Trim();
+        }
+        return trimmed.ToLowerInvariant();
+    }
+
+    public static bool AreTableNamesEqual(string? name1, string? name2)
+    {
+        if (string.IsNullOrWhiteSpace(name1) || string.IsNullOrWhiteSpace(name2))
+            return true;
+        return string.Equals(NormalizeTableName(name1), NormalizeTableName(name2), StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>
     /// SINGLE SOURCE OF TRUTH (SSOT) - Booking Decision Engine Helper.
     /// Evaluates a single table and returns standard risk details.
@@ -493,25 +557,13 @@ public class ReservationService : IReservationService
         RestaurantInfoDto info,
         ReservationStatus? targetStatus = null)
     {
-        var tableBookings = areaBookings.Where(b => string.Equals(b.TableName, tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+        var tableBookings = areaBookings.Where(b => AreTableNamesEqual(b.TableName, tableName)).ToList();
         var risk = EvaluateTableRisk(targetTime, tableBookings, info, targetStatus);
         
         string displayType = "Available";
         var activeBookings = tableBookings.Where(b =>
-        {
-            if (b.Status == ReservationStatus.Confirmed || b.Status == ReservationStatus.CheckedIn)
-                return true;
-
-            if (b.Status == ReservationStatus.Reserved)
-            {
-                if (targetStatus == ReservationStatus.Confirmed || targetStatus == ReservationStatus.CheckedIn)
-                    return false;
-
-                return true;
-            }
-
-            return false;
-        }).ToList();
+            b.Status == ReservationStatus.Confirmed || b.Status == ReservationStatus.CheckedIn
+        ).ToList();
 
         if (activeBookings.Any())
         {
@@ -591,30 +643,17 @@ public class ReservationService : IReservationService
         List<Reservation> areaBookings,
         RestaurantInfoDto info)
     {
-        if (!string.IsNullOrEmpty(requestedTableName))
+        string targetTable = !string.IsNullOrEmpty(requestedTableName)
+            ? requestedTableName
+            : (areaBookings.FirstOrDefault(b => !string.IsNullOrEmpty(b.TableName))?.TableName ?? $"Bàn {area.Area} 1");
+
+        var detail = EvaluateTable(targetTable, startTime, areaBookings, info);
+        var tableRisk = Enum.Parse<RiskLevel>(detail.RiskLevel);
+        if (tableRisk == RiskLevel.Conflict)
         {
-            var detail = EvaluateTable(requestedTableName, startTime, areaBookings, info);
-            var tableRisk = Enum.Parse<RiskLevel>(detail.RiskLevel);
-            if (tableRisk == RiskLevel.Conflict)
-            {
-                throw new ConflictException($"Bàn {requestedTableName} đã có người đặt hoặc trùng thời gian lúc {startTime}.");
-            }
-            return (requestedTableName, tableRisk);
+            throw new ConflictException($"Bàn {targetTable} đã có người đặt hoặc trùng thời gian lúc {startTime}.");
         }
-
-        var tableRisks = EvaluateAllTablesForArea(area, startTime, areaBookings, info);
-        var bestCandidate = tableRisks
-            .Where(t => t.RiskLevel != RiskLevel.Conflict.ToString())
-            .Select(t => (t.TableName, Risk: Enum.Parse<RiskLevel>(t.RiskLevel)))
-            .OrderBy(c => c.Risk)
-            .FirstOrDefault();
-
-        if (bestCandidate == default)
-        {
-            throw new ConflictException("Đã hết bàn trống vào lúc " + startTime + ".");
-        }
-
-        return bestCandidate;
+        return (targetTable, tableRisk);
     }
 
     private static string GetRiskMessage(RiskLevel risk) => risk switch
@@ -668,6 +707,9 @@ public class ReservationService : IReservationService
         if (reservation.Status != ReservationStatus.Reserved)
             throw new DomainException("Only Reserved reservations can be rejected.");
 
+        // Load info BEFORE SaveChanges to avoid DbContext second-operation concurrency error
+        var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
+
         reservation.Status = ReservationStatus.Cancelled;
 
         await _reservationRepository.UpdateAsync(reservation, ct);
@@ -678,10 +720,9 @@ public class ReservationService : IReservationService
         _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
         // Send cancellation email to guest
-        await _emailService.SendCancellationNotificationAsync(
+        _ = _emailService.SendCancellationNotificationAsync(
             reservation.GuestEmail, reservation.GuestName, reservation.ReservationCode, reservation.Id, ct);
 
-        var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
         return await MapToResponseWithReviewInfoAsync(reservation, info, null, ct);
     }
 
@@ -692,6 +733,9 @@ public class ReservationService : IReservationService
 
         if (reservation.Status != ReservationStatus.Confirmed)
             throw new DomainException("Only Confirmed reservations can be checked in.");
+
+        // Load info BEFORE SaveChanges to avoid DbContext second-operation concurrency error
+        var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
 
         reservation.Status          = ReservationStatus.CheckedIn;
         reservation.CheckedInAt     = DateTime.UtcNow;
@@ -706,7 +750,6 @@ public class ReservationService : IReservationService
 
         _ = _availabilityNotifier.NotifyAvailabilityChangedAsync(ct);
 
-        var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
         return await MapToResponseWithReviewInfoAsync(reservation, info, null, ct);
     }
 
@@ -828,42 +871,29 @@ public class ReservationService : IReservationService
         CancellationToken ct = default)
     {
         var response = MapToResponse(r);
-        var area = r.SeatingArea ?? (r.SeatingAreaId != Guid.Empty ? await _seatingAreaRepository.GetByIdAsync(r.SeatingAreaId, ct) : null);
 
-        var activeBookings = dateBookings ?? (await _reservationRepository.GetActiveReservationsForDateAsync(r.ReservationDate, ct)).Where(b => b.Id != r.Id).ToList();
-        var areaBookings = activeBookings.Where(b => b.SeatingAreaId == r.SeatingAreaId).ToList();
+        bool isConfirmedInDb = r.Status == ReservationStatus.Confirmed;
+        string effectivePriority = (isConfirmedInDb || r.BookingPriority == "Preferred")
+            ? "Preferred"
+            : (!string.IsNullOrEmpty(r.BookingPriority) ? r.BookingPriority : "Normal");
 
-        TableRiskDetail detail;
-        if (!string.IsNullOrEmpty(r.TableName))
-        {
-            detail = EvaluateTable(r.TableName, r.StartTime, areaBookings, info, r.Status);
-        }
-        else if (area != null)
-        {
-            var tableRisks = EvaluateAllTablesForArea(area, r.StartTime, areaBookings, info);
-            detail = tableRisks.OrderBy(t => Enum.Parse<RiskLevel>(t.RiskLevel)).FirstOrDefault()
-                     ?? new TableRiskDetail { RiskLevel = "Available", DisplayType = "Available" };
-        }
-        else
-        {
-            detail = new TableRiskDetail { RiskLevel = "Available", DisplayType = "Available" };
-        }
+        response.RiskLevel = !string.IsNullOrEmpty(r.RiskLevel) ? r.RiskLevel : "Available";
+        response.DisplayType = !string.IsNullOrEmpty(r.DisplayType) ? r.DisplayType : "Available";
+        response.ReviewStatus = !string.IsNullOrEmpty(r.ReviewStatus)
+            ? r.ReviewStatus
+            : (r.Status == ReservationStatus.Reserved ? "PendingReview" : "NotRequired");
+        response.ReviewPriority = r.ReviewPriority > 0 ? r.ReviewPriority : 5;
+        response.ReviewBadge = !string.IsNullOrEmpty(r.ReviewBadge) ? r.ReviewBadge : "🟢 An toàn";
+        response.ReviewExplanation = r.ReviewExplanation ?? "Lịch đặt bàn an toàn, sẵn sàng phục vụ.";
 
-        response.RiskLevel = detail.RiskLevel;
-        response.DisplayType = detail.DisplayType;
+        response.BookingPriority = effectivePriority;
+        response.BookingPriorityLabel = effectivePriority == "Preferred" ? "⭐ Được ưu tiên" : "⚪ Bình thường";
+        response.BookingPriorityExplanation = r.BookingPriorityExplanation ?? (effectivePriority == "Preferred"
+            ? "Booking này đã được xác nhận và được ưu tiên bảo vệ lịch đặt bàn khi các booking Risk phát sinh."
+            : "Booking này ở trạng thái chờ xác nhận, chưa thuộc nhóm ưu tiên bảo vệ lịch.");
 
-        var (reviewStatus, priority, badge, explanation) = CalculateReviewInfo(detail.DisplayType, detail.RiskLevel, r.Status, r.ConfirmedBy);
-        response.ReviewStatus = reviewStatus;
-        response.ReviewPriority = priority;
-        response.ReviewBadge = badge;
-        response.ReviewExplanation = explanation;
-
-        var allActiveDateBookings = dateBookings ?? (await _reservationRepository.GetActiveReservationsForDateAsync(r.ReservationDate, ct)).ToList();
-        var (priorityKey, priorityLabel, priorityExplanation, contextList) = CalculateBookingPriority(r, allActiveDateBookings, info);
-
-        response.BookingPriority = priorityKey;
-        response.BookingPriorityLabel = priorityLabel;
-        response.BookingPriorityExplanation = priorityExplanation;
+        var activeBookings = dateBookings ?? (await _reservationRepository.GetActiveReservationsForDateAsync(r.ReservationDate, ct)).ToList();
+        var (_, _, _, contextList) = CalculateBookingPriority(r, activeBookings, info);
         response.TableTimelineContext = contextList;
 
         return response;
@@ -875,21 +905,19 @@ public class ReservationService : IReservationService
         RestaurantInfoDto info)
     {
         // OFFICIAL BUSINESS RULE FOR BOOKING PRIORITY:
-        // IF Booking was Auto Confirmed -> Priority = Preferred / ⭐ Được ưu tiên
+        // IF Booking is Confirmed -> Priority = Preferred / ⭐ Được ưu tiên
         // ELSE -> Priority = Normal / ⚪ Bình thường
-        bool isAutoConfirmed = target.Status == ReservationStatus.Confirmed &&
-                               !string.IsNullOrEmpty(target.ConfirmedBy) &&
-                               target.ConfirmedBy.Contains("System");
+        bool isPreferred = target.Status == ReservationStatus.Confirmed;
 
-        string priorityKey = isAutoConfirmed ? "Preferred" : "Normal";
-        string priorityLabel = isAutoConfirmed ? "⭐ Được ưu tiên" : "⚪ Bình thường";
-        string priorityExplanation = isAutoConfirmed
-            ? "Booking này được hệ thống tự động xác nhận (Auto Confirm) và được ưu tiên bảo vệ khi các booking Risk phát sinh sau đó."
-            : "Booking này không thuộc nhóm booking được Auto Confirm ưu tiên.";
+        string priorityKey = isPreferred ? "Preferred" : "Normal";
+        string priorityLabel = isPreferred ? "⭐ Được ưu tiên" : "⚪ Bình thường";
+        string priorityExplanation = isPreferred
+            ? "Booking này đã được xác nhận (Auto Confirm hoặc Nhân viên xác nhận) và được ưu tiên bảo vệ khi các booking Risk phát sinh sau đó."
+            : "Booking này ở trạng thái chờ xác nhận, chưa thuộc nhóm ưu tiên bảo vệ lịch.";
 
         // Build Table Timeline Context List for Staff Detail View
         var tableBookings = activeTableBookings
-            .Where(b => !string.IsNullOrEmpty(target.TableName) && string.Equals(b.TableName, target.TableName, StringComparison.OrdinalIgnoreCase))
+            .Where(b => !string.IsNullOrEmpty(target.TableName) && AreTableNamesEqual(b.TableName, target.TableName))
             .OrderBy(b => b.StartTime)
             .ToList();
 
@@ -1026,13 +1054,27 @@ public class ReservationService : IReservationService
 
         var info = await _infoService.GetRestaurantInfoAsync(ct) ?? new RestaurantInfoDto();
         var activeBookings = await _reservationRepository.GetActiveReservationsForDateAsync(reservation.ReservationDate, ct);
+        // Exclude self from context — we're evaluating if THIS reservation can be promoted
         var areaBookings = activeBookings.Where(b => b.SeatingAreaId == reservation.SeatingAreaId && b.Id != reservationId).ToList();
 
+        // Guard: if another active booking already holds the exact same table+slot
+        // (Reserved, Confirmed, or CheckedIn), promoting this to Confirmed would violate the unique constraint
         if (!string.IsNullOrEmpty(reservation.TableName))
         {
+            var sameSlotConflict = areaBookings.Any(b =>
+                AreTableNamesEqual(b.TableName, reservation.TableName) &&
+                b.StartTime == reservation.StartTime &&
+                (b.Status == ReservationStatus.Reserved ||
+                 b.Status == ReservationStatus.Confirmed ||
+                 b.Status == ReservationStatus.CheckedIn));
+
+            if (sameSlotConflict) return false;
+
             var detail = EvaluateTable(reservation.TableName, reservation.StartTime, areaBookings, info);
-            var tableRisk = Enum.Parse<RiskLevel>(detail.RiskLevel);
-            return tableRisk == RiskLevel.Available;
+            // Must be Available risk AND no Conflict/Occupied overlap with existing Confirmed bookings
+            return detail.RiskLevel == RiskLevel.Available.ToString()
+                && detail.DisplayType != "Conflict"
+                && detail.DisplayType != "Occupied";
         }
         else
         {
@@ -1075,46 +1117,63 @@ public class ReservationService : IReservationService
 
             foreach (var reservation in group)
             {
-                // 1. Process NoShow for Confirmed
-                if (reservation.Status == ReservationStatus.Confirmed)
+                try
                 {
-                    var expirationTime = reservation.StartTime.AddMinutes(noShowMins);
-                    if (nowTime > expirationTime)
+                    // 1. Process NoShow for Confirmed
+                    if (reservation.Status == ReservationStatus.Confirmed)
                     {
-                        _logger.LogInformation(
-                            "Marking reservation {Code} (Tenant: {Tenant}) as NoShow. Guest didn't arrive within {Mins} mins of {Start}",
-                            reservation.ReservationCode, tenantId, noShowMins, reservation.StartTime);
-
-                        await UpdateStatusAsync(reservation.Id, new UpdateReservationStatusRequest { Status = ReservationStatus.NoShow.ToString() }, ct);
-                    }
-                }
-                
-                // 2. Process AutoCancel or AutoConfirm for Reserved
-                else if (reservation.Status == ReservationStatus.Reserved)
-                {
-                    var deadlineTime = reservation.StartTime.AddMinutes(-confDeadlineMins);
-                    if (nowTime > deadlineTime)
-                    {
-                        _logger.LogInformation(
-                            "Auto cancelling reservation {Code} (Tenant: {Tenant}). Not confirmed {Mins} mins before {Start}",
-                            reservation.ReservationCode, tenantId, confDeadlineMins, reservation.StartTime);
-
-                        await UpdateStatusAsync(reservation.Id, new UpdateReservationStatusRequest { Status = ReservationStatus.Cancelled.ToString() }, ct);
-                    }
-                    else
-                    {
-                        if (await CanConfirmAsync(reservation.Id, ct))
+                        var expirationTime = reservation.StartTime.AddMinutes(noShowMins);
+                        if (nowTime > expirationTime)
                         {
                             _logger.LogInformation(
-                                "Auto confirming reservation {Code} (Tenant: {Tenant}) as slot became available",
-                                reservation.ReservationCode, tenantId);
+                                "Marking reservation {Code} (Tenant: {Tenant}) as NoShow. Guest didn't arrive within {Mins} mins of {Start}",
+                                reservation.ReservationCode, tenantId, noShowMins, reservation.StartTime);
 
-                            await UpdateStatusAsync(reservation.Id, new UpdateReservationStatusRequest { Status = ReservationStatus.Confirmed.ToString() }, ct);
+                            await UpdateStatusAsync(reservation.Id, new UpdateReservationStatusRequest { Status = ReservationStatus.NoShow.ToString() }, ct);
+                        }
+                    }
+
+                    // 2. Process AutoCancel or AutoConfirm for Reserved
+                    else if (reservation.Status == ReservationStatus.Reserved)
+                    {
+                        var deadlineTime = reservation.StartTime.AddMinutes(-confDeadlineMins);
+                        if (nowTime > deadlineTime)
+                        {
+                            _logger.LogInformation(
+                                "Auto cancelling reservation {Code} (Tenant: {Tenant}). Not confirmed {Mins} mins before {Start}",
+                                reservation.ReservationCode, tenantId, confDeadlineMins, reservation.StartTime);
+
+                            await UpdateStatusAsync(reservation.Id, new UpdateReservationStatusRequest { Status = ReservationStatus.Cancelled.ToString() }, ct);
+                        }
+                        else
+                        {
+                            if (await CanConfirmAsync(reservation.Id, ct))
+                            {
+                                _logger.LogInformation(
+                                    "Auto confirming reservation {Code} (Tenant: {Tenant}) as slot became available",
+                                    reservation.ReservationCode, tenantId);
+
+                                await UpdateStatusAsync(reservation.Id, new UpdateReservationStatusRequest { Status = ReservationStatus.Confirmed.ToString() }, ct);
+                            }
                         }
                     }
                 }
+                catch (Exception dbEx) when (dbEx is NotFoundException ||
+                                              dbEx is DomainException ||
+                                              dbEx.GetType().Name == "DbUpdateException" || 
+                                              (dbEx.InnerException != null && dbEx.InnerException.GetType().Name.Contains("Postgres")))
+                {
+                    // Slot conflict, constraint violation, or deleted reservation — skip gracefully
+                    _logger.LogWarning("Automated status transition skipped for {Code}: {Message}", reservation.ReservationCode, dbEx.Message);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    _logger.LogError(ex, "Unexpected error processing automated transition for {Code}", reservation.ReservationCode);
+                }
             }
         }
+
+
     }
 
     private static int ParseCapacity(string tableType)

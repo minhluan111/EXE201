@@ -2,7 +2,6 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
-  Container,
   Typography,
   Card,
   CardContent,
@@ -12,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   TextField,
   FormControl,
   Select,
@@ -21,8 +19,6 @@ import {
   Button,
   CircularProgress,
   Pagination,
-  Grid,
-  Divider,
   IconButton,
   Menu,
   ListItemIcon,
@@ -42,6 +38,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 import { useAuth } from "../../context/useAuthContext.js";
 import { adminGetBookings, adminUpdateBookingStatus, adminConfirmBooking, adminRejectBooking, adminCheckInBooking } from "../../services/apiClient.js";
@@ -50,17 +48,17 @@ import { useAvailabilityHub } from "../../hooks/useAvailabilityHub.js";
 
 // Harmonized Global Design Tokens matching index.css
 const COLORS = {
-  moss: "var(--matcha)",
-  matchaLight: "var(--matcha-light)",
-  forest: "var(--forest)",
-  bg: "var(--bg)",
-  card: "var(--bg-card)",
-  alt: "var(--bg-alt)",
-  text: "var(--text)",
-  textMuted: "var(--text-muted)",
-  border: "var(--border)",
-  shadowSm: "var(--shadow-sm)",
-  shadowMd: "var(--shadow-md)",
+  moss: "var(--matcha, #6B8F3E)",
+  matchaLight: "var(--matcha-light, #8DAF5A)",
+  forest: "var(--forest, #2F5B3E)",
+  bg: "var(--bg, #F7F5EF)",
+  card: "var(--bg-card, #FFFFFF)",
+  alt: "var(--bg-alt, #EEEBD8)",
+  text: "var(--text, #1C1C1A)",
+  textMuted: "var(--text-muted, #6B6860)",
+  border: "var(--border, rgba(107, 143, 62, 0.18))",
+  shadowSm: "var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06))",
+  shadowMd: "var(--shadow-md, 0 8px 32px rgba(0,0,0,0.10))",
 };
 
 const getTodayFormatted = () => {
@@ -99,7 +97,7 @@ export default function ManageBookingsPage() {
   const [checkInLoading, setCheckInLoading] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Details Side Panel state
+  // Details Side Panel state (Defaults to null)
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   const fetchBookings = async () => {
@@ -129,13 +127,26 @@ export default function ManageBookingsPage() {
     fetchBookings();
   }, !!token);
 
-  // Filter list by client-side pills / risk filters
+  const getStatusRank = (statusStr) => {
+    const s = String(statusStr || "").toLowerCase();
+    switch (s) {
+      case "reserved": return 1;    // pending / Chờ xử lý
+      case "confirmed": return 2;   // confirm / Đã xác nhận
+      case "checkedin": return 3;   // đang sử dụng
+      case "completed": return 4;   // complete / Hoàn thành
+      case "cancelled": return 5;   // cancel / Đã hủy
+      case "noshow": return 6;      // vắng mặt
+      default: return 99;
+    }
+  };
+
+  // Filter and sort list by status hierarchy: pending -> confirm -> complete -> cancel
   const filteredList = useMemo(() => {
-    return list.filter((b) => {
+    const res = list.filter((b) => {
       if (riskFilter && b.riskLevel !== riskFilter) return false;
 
       if (quickPill === "pending") {
-        const isPending = String(b.status || "").toLowerCase() === "reserved" || b.reviewStatus === "PendingReview";
+        const isPending = String(b.status || "").toLowerCase() === "reserved";
         if (!isPending) return false;
       } else if (quickPill === "preferred") {
         if (b.bookingPriority !== "Preferred") return false;
@@ -145,6 +156,16 @@ export default function ManageBookingsPage() {
         if (String(b.status || "").toLowerCase() !== "confirmed") return false;
       }
       return true;
+    });
+
+    return [...res].sort((a, b) => {
+      const rankA = getStatusRank(a.status);
+      const rankB = getStatusRank(b.status);
+      if (rankA !== rankB) return rankA - rankB;
+
+      const dateCompare = String(a.booking_date || "").localeCompare(String(b.booking_date || ""));
+      if (dateCompare !== 0) return dateCompare;
+      return String(a.booking_time || "").localeCompare(String(b.booking_time || ""));
     });
   }, [list, riskFilter, quickPill]);
 
@@ -157,7 +178,10 @@ export default function ManageBookingsPage() {
 
     list.forEach((b) => {
       const s = String(b.status || "").toLowerCase();
-      if (s === "reserved" || b.reviewStatus === "PendingReview") pending++;
+      // Thẻ số liệu không tính các đơn đã Hoàn thành (completed) hoặc Đã hủy (cancelled)
+      if (s === "completed" || s === "cancelled") return;
+
+      if (s === "reserved") pending++;
       if (b.bookingPriority === "Preferred") preferred++;
       if (b.riskLevel === "High") highRisk++;
       if (s === "confirmed") confirmed++;
@@ -251,7 +275,7 @@ export default function ManageBookingsPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const getStatusBadge = (statusStr, reviewStatusStr) => {
+  const getStatusBadge = (statusStr, reviewStatusStr, confirmedBy) => {
     const s = String(statusStr || "").toLowerCase();
     let mainChip;
     if (s === "completed") {
@@ -286,7 +310,9 @@ export default function ManageBookingsPage() {
         ) : (
           isReviewed && s !== "cancelled" && s !== "noshow" && (
             <Typography variant="caption" sx={{ fontSize: "10px", color: COLORS.forest, fontWeight: 600 }}>
-              Đã được nhân viên xem xét
+              {String(confirmedBy || "").includes("System")
+                ? "Tự động xác nhận (Auto Confirm)"
+                : "Đã được nhân viên xem xét"}
             </Typography>
           )
         )}
@@ -393,418 +419,521 @@ export default function ManageBookingsPage() {
   };
 
   return (
-    <Box sx={{ bgcolor: COLORS.bg, minHeight: "100vh" }}>
-      {/* Global Header synchronized with Admin Header System */}
+    <Box sx={{ bgcolor: COLORS.bg, minHeight: "100vh", overflowX: "hidden" }}>
+      {/* Global Header */}
       <AdminHeader
         title="Quản lý đặt bàn"
         subtitle="Theo dõi, đánh giá và xử lý các đơn đặt bàn theo thời gian thực."
       />
 
-      {/* Main Container with Centered Dynamic Animation */}
-      <Box sx={{ py: 4, px: { xs: 2, md: 4 }, bgcolor: COLORS.bg }}>
+      {/* ═══════════════════════════════════════════════════════════════════════
+          BOUNDED CENTERED DASHBOARD WORKSPACE (MASTER CONTAINER)
+          Single shared container (width: 100%, max-width: 1500px, mx: auto)
+          Guarantees 100% Pixel-Perfect Vertical Left/Right Line Alignment!
+         ═══════════════════════════════════════════════════════════════════════ */}
+      <Box sx={{ py: 4, px: { xs: 2, md: 3.5 }, bgcolor: COLORS.bg, width: "100%", boxSizing: "border-box" }}>
         <Box
           sx={{
-            maxWidth: selectedBooking ? "100%" : "1240px",
+            width: "100%",
+            maxWidth: "1500px",
             mx: "auto",
             transition: "all 0.35s var(--ease-smooth, cubic-bezier(0.4, 0, 0.2, 1))",
           }}
         >
-          {/* 5 Summary Metric Cards synchronized with theme */}
-          <Grid container spacing={2} sx={{ mb: 2.5 }}>
-            <Grid item xs={6} sm={4} md={2.4}>
-              <Card
-                onClick={() => setQuickPill(quickPill === "pending" ? "all" : "pending")}
-                sx={{
-                  borderRadius: 2.5,
-                  p: 1.8,
-                  cursor: "pointer",
-                  border: `1.5px solid ${quickPill === "pending" ? "var(--matcha)" : COLORS.border}`,
-                  bgcolor: COLORS.card,
-                  boxShadow: COLORS.shadowSm,
-                  transition: "all 0.2s var(--ease-smooth)",
-                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
-                      CHỜ XỬ LÝ
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
-                      {summaryMetrics.pending}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
-                      Đơn
-                    </Typography>
-                  </Box>
-                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(245, 158, 11, 0.12)", color: "#d97706" }}>
-                    <AccessTimeIcon />
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-
-            <Grid item xs={6} sm={4} md={2.4}>
-              <Card
-                onClick={() => setQuickPill(quickPill === "preferred" ? "all" : "preferred")}
-                sx={{
-                  borderRadius: 2.5,
-                  p: 1.8,
-                  cursor: "pointer",
-                  border: `1.5px solid ${quickPill === "preferred" ? "var(--matcha)" : COLORS.border}`,
-                  bgcolor: COLORS.card,
-                  boxShadow: COLORS.shadowSm,
-                  transition: "all 0.2s var(--ease-smooth)",
-                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
-                      ĐƯỢC ƯU TIÊN
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
-                      {summaryMetrics.preferred}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
-                      Đơn
-                    </Typography>
-                  </Box>
-                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(234, 179, 8, 0.12)", color: "#ca8a04" }}>
-                    <StarIcon />
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-
-            <Grid item xs={6} sm={4} md={2.4}>
-              <Card
-                onClick={() => setQuickPill(quickPill === "highRisk" ? "all" : "highRisk")}
-                sx={{
-                  borderRadius: 2.5,
-                  p: 1.8,
-                  cursor: "pointer",
-                  border: `1.5px solid ${quickPill === "highRisk" ? "#ef4444" : COLORS.border}`,
-                  bgcolor: COLORS.card,
-                  boxShadow: COLORS.shadowSm,
-                  transition: "all 0.2s var(--ease-smooth)",
-                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
-                      RISK CAO
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
-                      {summaryMetrics.highRisk}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
-                      Đơn
-                    </Typography>
-                  </Box>
-                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(239, 68, 68, 0.12)", color: "#dc2626" }}>
-                    <WarningIcon />
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-
-            <Grid item xs={6} sm={4} md={2.4}>
-              <Card
-                onClick={() => setQuickPill(quickPill === "confirmed" ? "all" : "confirmed")}
-                sx={{
-                  borderRadius: 2.5,
-                  p: 1.8,
-                  cursor: "pointer",
-                  border: `1.5px solid ${quickPill === "confirmed" ? "var(--matcha)" : COLORS.border}`,
-                  bgcolor: COLORS.card,
-                  boxShadow: COLORS.shadowSm,
-                  transition: "all 0.2s var(--ease-smooth)",
-                  "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
-                      ĐÃ XÁC NHẬN
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
-                      {summaryMetrics.confirmed}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
-                      Đơn
-                    </Typography>
-                  </Box>
-                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(107, 143, 62, 0.12)", color: COLORS.forest }}>
-                    <CheckCircleIcon />
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-
-            <Grid item xs={6} sm={4} md={2.4}>
-              <Card
-                sx={{
-                  borderRadius: 2.5,
-                  p: 1.8,
-                  border: `1px solid ${COLORS.border}`,
-                  bgcolor: COLORS.card,
-                  boxShadow: COLORS.shadowSm,
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "10.5px" }}>
-                      HÔM NAY
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
-                      {total}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "11px" }}>
-                      Tổng đơn
-                    </Typography>
-                  </Box>
-                  <Box sx={{ p: 1, borderRadius: "10px", bgcolor: "rgba(59, 130, 246, 0.12)", color: "#2563eb" }}>
-                    <CalendarTodayIcon />
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-          </Grid>
-
-          {/* Single Line Filter Inputs + Quick Pills */}
-          <Card
+          {/* ── 1. KPI SECTION (5 Cards CSS Grid Aligned 100% Flush to Master Container Bounds) ─ */}
+          <Box
             sx={{
-              borderRadius: 2.5,
-              border: `1px solid ${COLORS.border}`,
-              bgcolor: COLORS.card,
-              boxShadow: COLORS.shadowSm,
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(3, 1fr)", md: "repeat(5, 1fr)" },
+              gap: 2,
               mb: 2.5,
+              boxSizing: "border-box",
             }}
           >
-            <CardContent sx={{ p: 2 }}>
-              <Grid container spacing={1.5} sx={{ alignItems: "center", mb: 1.5 }}>
-                <Grid item xs={12} sm={4} md={3.5}>
-                  <TextField
-                    fullWidth
-                    placeholder="Tìm mã đặt bàn / khách hàng / SĐT..."
-                    variant="outlined"
-                    size="small"
-                    value={search}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                      setPage(1);
-                    }}
-                    InputProps={{
-                      startAdornment: <SearchIcon sx={{ color: COLORS.textMuted, mr: 1, fontSize: 18 }} />,
-                    }}
+            <Card
+              onClick={() => setQuickPill(quickPill === "pending" ? "all" : "pending")}
+              sx={{
+                borderRadius: 2.5,
+                p: 2.2,
+                cursor: "pointer",
+                border: `1.5px solid ${quickPill === "pending" ? "var(--matcha)" : COLORS.border}`,
+                bgcolor: COLORS.card,
+                boxShadow: COLORS.shadowSm,
+                transition: "all 0.2s var(--ease-smooth)",
+                "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "11.5px" }}>
+                    CHỜ XỬ LÝ
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                    {summaryMetrics.pending}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "12px" }}>
+                    Đơn
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.2, borderRadius: "12px", bgcolor: "rgba(245, 158, 11, 0.12)", color: "#d97706" }}>
+                  <AccessTimeIcon sx={{ fontSize: 26 }} />
+                </Box>
+              </Box>
+            </Card>
+
+            <Card
+              onClick={() => setQuickPill(quickPill === "preferred" ? "all" : "preferred")}
+              sx={{
+                borderRadius: 2.5,
+                p: 2.2,
+                cursor: "pointer",
+                border: `1.5px solid ${quickPill === "preferred" ? "var(--matcha)" : COLORS.border}`,
+                bgcolor: COLORS.card,
+                boxShadow: COLORS.shadowSm,
+                transition: "all 0.2s var(--ease-smooth)",
+                "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "11.5px" }}>
+                    ĐƯỢC ƯU TIÊN
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                    {summaryMetrics.preferred}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "12px" }}>
+                    Đơn
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.2, borderRadius: "12px", bgcolor: "rgba(234, 179, 8, 0.12)", color: "#ca8a04" }}>
+                  <StarIcon sx={{ fontSize: 26 }} />
+                </Box>
+              </Box>
+            </Card>
+
+            <Card
+              onClick={() => setQuickPill(quickPill === "highRisk" ? "all" : "highRisk")}
+              sx={{
+                borderRadius: 2.5,
+                p: 2.2,
+                cursor: "pointer",
+                border: `1.5px solid ${quickPill === "highRisk" ? "#ef4444" : COLORS.border}`,
+                bgcolor: COLORS.card,
+                boxShadow: COLORS.shadowSm,
+                transition: "all 0.2s var(--ease-smooth)",
+                "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "11.5px" }}>
+                    RISK CAO
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                    {summaryMetrics.highRisk}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "12px" }}>
+                    Đơn
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.2, borderRadius: "12px", bgcolor: "rgba(239, 68, 68, 0.12)", color: "#dc2626" }}>
+                  <WarningIcon sx={{ fontSize: 26 }} />
+                </Box>
+              </Box>
+            </Card>
+
+            <Card
+              onClick={() => setQuickPill(quickPill === "confirmed" ? "all" : "confirmed")}
+              sx={{
+                borderRadius: 2.5,
+                p: 2.2,
+                cursor: "pointer",
+                border: `1.5px solid ${quickPill === "confirmed" ? "var(--matcha)" : COLORS.border}`,
+                bgcolor: COLORS.card,
+                boxShadow: COLORS.shadowSm,
+                transition: "all 0.2s var(--ease-smooth)",
+                "&:hover": { transform: "translateY(-2px)", boxShadow: COLORS.shadowMd },
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "11.5px" }}>
+                    ĐÃ XÁC NHẬN
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                    {summaryMetrics.confirmed}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "12px" }}>
+                    Đơn
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.2, borderRadius: "12px", bgcolor: "rgba(107, 143, 62, 0.12)", color: COLORS.forest }}>
+                  <CheckCircleIcon sx={{ fontSize: 26 }} />
+                </Box>
+              </Box>
+            </Card>
+
+            <Card
+              sx={{
+                borderRadius: 2.5,
+                p: 2.2,
+                border: `1px solid ${COLORS.border}`,
+                bgcolor: COLORS.card,
+                boxShadow: COLORS.shadowSm,
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, fontSize: "11.5px" }}>
+                    HÔM NAY
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: COLORS.text, my: 0.2 }}>
+                    {total}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: COLORS.textMuted, fontSize: "12px" }}>
+                    Tổng đơn
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.2, borderRadius: "12px", bgcolor: "rgba(59, 130, 246, 0.12)", color: "#2563eb" }}>
+                  <CalendarTodayIcon sx={{ fontSize: 26 }} />
+                </Box>
+              </Box>
+            </Card>
+          </Box>
+
+          {/* ── 2. FILTER SECTION (Modernized & Synchronized Aesthetics) ─────── */}
+          <Card
+            sx={{
+              width: "100%",
+              borderRadius: "16px",
+              border: `1px solid ${COLORS.border}`,
+              bgcolor: COLORS.card,
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
+              mb: 2.5,
+              boxSizing: "border-box",
+              overflow: "hidden",
+            }}
+          >
+            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "1.8fr 1fr 1fr 1.2fr auto" },
+                  gap: 1.5,
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
+                <TextField
+                  fullWidth
+                  placeholder="Tìm mã đặt bàn / tên khách / SĐT..."
+                  variant="outlined"
+                  size="small"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  slotProps={{
+                    input: {
+                      startAdornment: <SearchIcon sx={{ color: COLORS.textMuted, mr: 1, fontSize: 19 }} />,
+                    },
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                      background: "#FAFAFA",
+                      height: "40px",
+                      transition: "all 0.2s ease",
+                      "& fieldset": { border: `1px solid rgba(0,0,0,0.12)` },
+                      "&:hover fieldset": { borderColor: "var(--forest, #2F5B3E)" },
+                      "&.Mui-focused fieldset": { borderColor: "var(--forest, #2F5B3E)", borderWidth: "1.5px" },
+                    },
+                    "& input": { fontSize: "13px", color: COLORS.text, fontWeight: 500 },
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  type="date"
+                  variant="outlined"
+                  size="small"
+                  value={date}
+                  onChange={(e) => {
+                    setDate(e.target.value);
+                    setPage(1);
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                      background: "#FAFAFA",
+                      height: "40px",
+                      transition: "all 0.2s ease",
+                      "& fieldset": { border: `1px solid rgba(0,0,0,0.12)` },
+                      "&:hover fieldset": { borderColor: "var(--forest, #2F5B3E)" },
+                      "&.Mui-focused fieldset": { borderColor: "var(--forest, #2F5B3E)", borderWidth: "1.5px" },
+                    },
+                    "& input": { fontSize: "13px", color: COLORS.text, fontWeight: 500 },
+                  }}
+                />
+                <FormControl fullWidth size="small">
+                  <Select
+                    value={riskFilter}
+                    onChange={(e) => setRiskFilter(e.target.value)}
+                    displayEmpty
                     sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "8px",
-                        background: COLORS.alt,
-                        height: "36px",
-                        "& fieldset": { border: `1px solid ${COLORS.border}` },
-                      },
-                      "& input": { fontSize: "12.5px", color: COLORS.text },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6} sm={2.5} md={2}>
-                  <TextField
-                    fullWidth
-                    type="date"
-                    variant="outlined"
-                    size="small"
-                    value={date}
-                    onChange={(e) => {
-                      setDate(e.target.value);
-                      setPage(1);
-                    }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "8px",
-                        background: COLORS.alt,
-                        height: "36px",
-                        "& fieldset": { border: `1px solid ${COLORS.border}` },
-                      },
-                      "& input": { fontSize: "12.5px", color: COLORS.text },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6} sm={2.5} md={2}>
-                  <FormControl fullWidth size="small">
-                    <Select
-                      value={riskFilter}
-                      onChange={(e) => setRiskFilter(e.target.value)}
-                      displayEmpty
-                      sx={{
-                        borderRadius: "8px",
-                        background: COLORS.alt,
-                        height: "36px",
-                        fontSize: "12.5px",
-                        color: COLORS.text,
-                      }}
-                    >
-                      <MenuItem value="">Tất cả Risk</MenuItem>
-                      <MenuItem value="High">🔴 Risk Cao</MenuItem>
-                      <MenuItem value="Medium">🟠 Risk Vừa</MenuItem>
-                      <MenuItem value="Low">🟡 Risk Thấp</MenuItem>
-                      <MenuItem value="Available">🟢 An toàn</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={6} sm={3} md={2.5}>
-                  <FormControl fullWidth size="small">
-                    <Select
-                      value={status}
-                      onChange={(e) => {
-                        setStatus(e.target.value);
-                        setPage(1);
-                      }}
-                      displayEmpty
-                      sx={{
-                        borderRadius: "8px",
-                        background: COLORS.alt,
-                        height: "36px",
-                        fontSize: "12.5px",
-                        color: COLORS.text,
-                      }}
-                    >
-                      <MenuItem value="">Tất cả trạng thái</MenuItem>
-                      <MenuItem value="Reserved">Đã đặt (Chờ XN)</MenuItem>
-                      <MenuItem value="Confirmed">Đã xác nhận</MenuItem>
-                      <MenuItem value="CheckedIn">Đang sử dụng</MenuItem>
-                      <MenuItem value="Completed">Hoàn thành</MenuItem>
-                      <MenuItem value="Cancelled">Đã hủy</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={6} sm={2} md={2}>
-                  <Button
-                    fullWidth
-                    variant="text"
-                    onClick={() => {
-                      setSearch("");
-                      setDate(getTodayFormatted());
-                      setStatus("");
-                      setRiskFilter("");
-                      setQuickPill("all");
-                      setSortBy("reviewPriority");
-                      setPage(1);
-                    }}
-                    sx={{
-                      borderRadius: "8px",
-                      height: "36px",
-                      color: COLORS.textMuted,
-                      textTransform: "none",
-                      fontSize: "12.5px",
-                      fontWeight: 600,
+                      borderRadius: "10px",
+                      background: "#FAFAFA",
+                      height: "40px",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      color: COLORS.text,
+                      "& .MuiOutlinedInput-notchedOutline": { border: `1px solid rgba(0,0,0,0.12)` },
+                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "var(--forest, #2F5B3E)" },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "var(--forest, #2F5B3E)", borderWidth: "1.5px" },
                     }}
                   >
-                    🔄 Đặt lại lọc
-                  </Button>
-                </Grid>
-              </Grid>
+                    <MenuItem value="">Tất cả Risk</MenuItem>
+                    <MenuItem value="High">🔴 Risk Cao</MenuItem>
+                    <MenuItem value="Medium">🟠 Risk Vừa</MenuItem>
+                    <MenuItem value="Low">🟡 Risk Thấp</MenuItem>
+                    <MenuItem value="Available">🟢 An toàn</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth size="small">
+                  <Select
+                    value={status}
+                    onChange={(e) => {
+                      setStatus(e.target.value);
+                      setPage(1);
+                    }}
+                    displayEmpty
+                    sx={{
+                      borderRadius: "10px",
+                      background: "#FAFAFA",
+                      height: "40px",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      color: COLORS.text,
+                      "& .MuiOutlinedInput-notchedOutline": { border: `1px solid rgba(0,0,0,0.12)` },
+                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "var(--forest, #2F5B3E)" },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "var(--forest, #2F5B3E)", borderWidth: "1.5px" },
+                    }}
+                  >
+                    <MenuItem value="">Tất cả trạng thái</MenuItem>
+                    <MenuItem value="Reserved">⏳ Đã đặt (Chờ XN)</MenuItem>
+                    <MenuItem value="Confirmed">✓ Đã xác nhận</MenuItem>
+                    <MenuItem value="CheckedIn">👤 Đang sử dụng</MenuItem>
+                    <MenuItem value="Completed">✅ Hoàn thành</MenuItem>
+                    <MenuItem value="Cancelled">❌ Đã hủy</MenuItem>
+                  </Select>
+                </FormControl>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setSearch("");
+                    setDate(getTodayFormatted());
+                    setStatus("");
+                    setRiskFilter("");
+                    setQuickPill("all");
+                    setSortBy("reviewPriority");
+                    setPage(1);
+                  }}
+                  startIcon={<RestartAltIcon sx={{ fontSize: 18 }} />}
+                  sx={{
+                    borderRadius: "10px",
+                    height: "40px",
+                    px: 2,
+                    borderColor: "rgba(0,0,0,0.14)",
+                    color: COLORS.textMuted,
+                    textTransform: "none",
+                    fontSize: "12.5px",
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      bgcolor: "#F4F5F1",
+                      color: "var(--forest, #2F5B3E)",
+                      borderColor: "var(--forest, #2F5B3E)",
+                    },
+                  }}
+                >
+                  Đặt lại
+                </Button>
+              </Box>
 
-              {/* Quick Pills Row synchronized with Theme Primary */}
-              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", pt: 0.5 }}>
+              {/* Quick Pills Row */}
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1.2,
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  pt: 1.5,
+                  borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+                }}
+              >
                 <Chip
                   label={`Tất cả (${total})`}
                   onClick={() => setQuickPill("all")}
                   sx={{
                     fontWeight: 700,
-                    height: 26,
-                    fontSize: "11.5px",
-                    borderRadius: "6px",
-                    bgcolor: quickPill === "all" ? "var(--matcha)" : "transparent",
+                    height: 30,
+                    px: 0.5,
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    transition: "all 0.2s ease",
+                    bgcolor: quickPill === "all" ? "var(--forest, #2F5B3E)" : "#F4F5F1",
                     color: quickPill === "all" ? "#fff" : COLORS.text,
-                    borderColor: quickPill === "all" ? "var(--matcha)" : COLORS.border,
+                    border: `1px solid ${quickPill === "all" ? "var(--forest, #2F5B3E)" : "rgba(0,0,0,0.08)"}`,
+                    boxShadow: quickPill === "all" ? "0 2px 8px rgba(47, 91, 62, 0.25)" : "none",
+                    "&:hover": { opacity: 0.9, transform: "translateY(-1px)" },
                   }}
                 />
                 <Chip
                   label={`⏳ Chờ xử lý (${summaryMetrics.pending})`}
                   onClick={() => setQuickPill("pending")}
-                  variant={quickPill === "pending" ? "filled" : "outlined"}
-                  color={quickPill === "pending" ? "warning" : "default"}
-                  sx={{ fontWeight: 600, height: 26, fontSize: "11.5px", borderRadius: "6px" }}
+                  sx={{
+                    fontWeight: 650,
+                    height: 30,
+                    px: 0.5,
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    transition: "all 0.2s ease",
+                    bgcolor: quickPill === "pending" ? "#D97706" : "#FFFBEB",
+                    color: quickPill === "pending" ? "#fff" : "#B45309",
+                    border: `1px solid ${quickPill === "pending" ? "#D97706" : "#FDE68A"}`,
+                    boxShadow: quickPill === "pending" ? "0 2px 8px rgba(217, 119, 6, 0.25)" : "none",
+                    "&:hover": { opacity: 0.9, transform: "translateY(-1px)" },
+                  }}
                 />
                 <Chip
                   label={`⭐ Được ưu tiên (${summaryMetrics.preferred})`}
                   onClick={() => setQuickPill("preferred")}
                   sx={{
-                    fontWeight: 700,
-                    height: 26,
-                    fontSize: "11.5px",
-                    borderRadius: "6px",
-                    bgcolor: quickPill === "preferred" ? "#eab308" : "transparent",
-                    color: quickPill === "preferred" ? "#fff" : "#a16207",
-                    borderColor: "#eab308",
+                    fontWeight: 650,
+                    height: 30,
+                    px: 0.5,
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    transition: "all 0.2s ease",
+                    bgcolor: quickPill === "preferred" ? "#CA8A04" : "#FEFCE8",
+                    color: quickPill === "preferred" ? "#fff" : "#A16207",
+                    border: `1px solid ${quickPill === "preferred" ? "#CA8A04" : "#FEF08A"}`,
+                    boxShadow: quickPill === "preferred" ? "0 2px 8px rgba(202, 138, 4, 0.25)" : "none",
+                    "&:hover": { opacity: 0.9, transform: "translateY(-1px)" },
                   }}
                 />
                 <Chip
                   label={`🔴 Risk cao (${summaryMetrics.highRisk})`}
                   onClick={() => setQuickPill("highRisk")}
-                  color={quickPill === "highRisk" ? "error" : "default"}
-                  variant={quickPill === "highRisk" ? "filled" : "outlined"}
-                  sx={{ fontWeight: 600, height: 26, fontSize: "11.5px", borderRadius: "6px" }}
+                  sx={{
+                    fontWeight: 650,
+                    height: 30,
+                    px: 0.5,
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    transition: "all 0.2s ease",
+                    bgcolor: quickPill === "highRisk" ? "#DC2626" : "#FEF2F2",
+                    color: quickPill === "highRisk" ? "#fff" : "#DC2626",
+                    border: `1px solid ${quickPill === "highRisk" ? "#DC2626" : "#FCA5A5"}`,
+                    boxShadow: quickPill === "highRisk" ? "0 2px 8px rgba(220, 38, 38, 0.25)" : "none",
+                    "&:hover": { opacity: 0.9, transform: "translateY(-1px)" },
+                  }}
                 />
                 <Chip
                   label={`✓ Đã xác nhận (${summaryMetrics.confirmed})`}
                   onClick={() => setQuickPill("confirmed")}
-                  color={quickPill === "confirmed" ? "success" : "default"}
-                  variant={quickPill === "confirmed" ? "filled" : "outlined"}
-                  sx={{ fontWeight: 600, height: 26, fontSize: "11.5px", borderRadius: "6px" }}
+                  sx={{
+                    fontWeight: 650,
+                    height: 30,
+                    px: 0.5,
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    transition: "all 0.2s ease",
+                    bgcolor: quickPill === "confirmed" ? "#15803D" : "#F0FDF4",
+                    color: quickPill === "confirmed" ? "#fff" : "#15803D",
+                    border: `1px solid ${quickPill === "confirmed" ? "#15803D" : "#86EFAC"}`,
+                    boxShadow: quickPill === "confirmed" ? "0 2px 8px rgba(21, 128, 61, 0.25)" : "none",
+                    "&:hover": { opacity: 0.9, transform: "translateY(-1px)" },
+                  }}
                 />
               </Box>
             </CardContent>
           </Card>
 
-          {/* Main Content Layout: Table (Left) + Side Panel (Right) */}
-          <Grid container spacing={2.5}>
-            {/* Table Container Column */}
-            <Grid item xs={12} lg={selectedBooking ? 8 : 12} sx={{ transition: "all 0.35s var(--ease-smooth)" }}>
+          {/* ── 3. BOOKING WORKSPACE (Bounded 2-Panel Flexible Layout) ──────────
+              Flexbox container with alignItems: "stretch" guarantees Equal Height!
+              When Detail opens: Table compresses left inside bounded 1500px workspace.
+              Page width NEVER increases. Left edge of Table matches Left edge of Filter Card 100%!
+             ═══════════════════════════════════════════════════════════════════ */}
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              gap: selectedBooking ? { xs: 2, md: 3 } : 0,
+              alignItems: "stretch", // Equal Height Alignment for both Left and Right Panels
+              flexDirection: { xs: "column", lg: "row" },
+              transition: "all 0.35s var(--ease-smooth)",
+            }}
+          >
+            {/* Left Panel: Booking List Panel (Compresses left when detail open, 100% full width when closed) */}
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0, // Prevents flex item overflow!
+                transition: "all 0.35s var(--ease-smooth)",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <Card
                 sx={{
+                  width: "100%",
+                  height: "100%", // Stretches top to bottom matching right panel
                   borderRadius: 2.5,
                   border: `1px solid ${COLORS.border}`,
                   bgcolor: COLORS.card,
                   boxShadow: COLORS.shadowSm,
                   overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxSizing: "border-box",
                 }}
               >
                 {loading ? (
-                  <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
+                  <Box sx={{ display: "flex", justifyContent: "center", py: 10, flexGrow: 1 }}>
                     <CircularProgress sx={{ color: "var(--matcha)" }} />
                   </Box>
                 ) : filteredList.length === 0 ? (
-                  <Box sx={{ py: 8, textAlign: "center" }}>
+                  <Box sx={{ py: 8, textAlign: "center", flexGrow: 1 }}>
                     <Typography variant="body2" sx={{ color: COLORS.textMuted, fontWeight: 500 }}>
                       Không tìm thấy lịch đặt bàn nào phù hợp.
                     </Typography>
                   </Box>
                 ) : (
                   <>
-                    <TableContainer>
-                      <Table sx={{ minWidth: 700 }}>
+                    <TableContainer sx={{ width: "100%", flexGrow: 1 }}>
+                      <Table sx={{ width: "100%", tableLayout: "auto" }}>
                         <TableHead sx={{ bgcolor: "var(--bg-alt)" }}>
                           <TableRow>
-                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.5, fontSize: "12px" }}>
                               BOOKING & GIỜ
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.5, fontSize: "12px" }}>
                               KHÁCH HÀNG
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.5, fontSize: "12px" }}>
                               LỊCH & BÀN
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.5, fontSize: "12px" }}>
                               ĐÁNH GIÁ (PRIORITY & RISK)
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px" }}>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.5, fontSize: "12px" }}>
                               TRẠNG THÁI
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.2, fontSize: "12px", width: 180, textAlign: "right" }}>
+                            <TableCell sx={{ fontWeight: 700, color: COLORS.forest, py: 1.5, fontSize: "12px", textAlign: "right" }}>
                               THAO TÁC
                             </TableCell>
                           </TableRow>
@@ -825,14 +954,15 @@ export default function ManageBookingsPage() {
                                 onClick={() => setSelectedBooking(booking)}
                                 sx={{
                                   cursor: "pointer",
+                                  height: 68,
                                   transition: "background 0.15s var(--ease-smooth)",
                                   opacity: isHistorical ? 0.65 : 1,
-                                  bgcolor: isSelected ? "rgba(107, 143, 62, 0.08)" : isHistorical ? "transparent" : "transparent",
+                                  bgcolor: isSelected ? "rgba(107, 143, 62, 0.08)" : "transparent",
                                   borderLeft: isHighRisk ? "4px solid #ef4444" : isPending ? "4px solid #f97316" : booking.bookingPriority === "Preferred" ? "4px solid #eab308" : "4px solid transparent",
                                 }}
                               >
                                 {/* 1. BOOKING & GIỜ */}
-                                <TableCell sx={{ py: 1 }}>
+                                <TableCell sx={{ py: 1.2 }}>
                                   <Typography sx={{ fontWeight: 700, color: booking.bookingPriority === "Preferred" ? "#d97706" : COLORS.text, fontSize: "13px", lineHeight: 1.2 }}>
                                     {booking.bookingPriority === "Preferred" && "⭐ "}
                                     {booking.reservation_code}
@@ -843,7 +973,7 @@ export default function ManageBookingsPage() {
                                 </TableCell>
 
                                 {/* 2. KHÁCH HÀNG */}
-                                <TableCell sx={{ py: 1 }}>
+                                <TableCell sx={{ py: 1.2 }}>
                                   <Typography sx={{ fontWeight: 600, fontSize: "13px", color: COLORS.text }}>
                                     {booking.guest_name}
                                   </Typography>
@@ -856,12 +986,15 @@ export default function ManageBookingsPage() {
                                 </TableCell>
 
                                 {/* 3. LỊCH & BÀN */}
-                                <TableCell sx={{ py: 1 }}>
+                                <TableCell sx={{ py: 1.2 }}>
                                   <Typography sx={{ fontWeight: 700, fontSize: "13px", color: "#c2410c" }}>
                                     {booking.booking_time}
                                   </Typography>
                                   <Typography sx={{ fontSize: "11.5px", color: COLORS.text, fontWeight: 500 }}>
-                                    Bàn {booking.table?.name || "Corner 1"}
+                                    {(() => {
+                                      const rawName = booking.table?.name || booking.seatingAreaArea || booking.tableName || "Khu vực";
+                                      return rawName.toLowerCase().startsWith("bàn") ? rawName : `Bàn ${rawName}`;
+                                    })()}
                                   </Typography>
                                   <Typography sx={{ fontSize: "10.5px", color: COLORS.textMuted }}>
                                     {booking.num_of_people} người
@@ -869,7 +1002,7 @@ export default function ManageBookingsPage() {
                                 </TableCell>
 
                                 {/* 4. ĐÁNH GIÁ (PRIORITY & RISK DUAL LINE) */}
-                                <TableCell sx={{ py: 1 }}>
+                                <TableCell sx={{ py: 1.2 }}>
                                   <Box sx={{ display: "flex", flexDirection: "column", gap: 0.3, alignItems: "flex-start" }}>
                                     {getPriorityBadge(booking)}
                                     {getRiskBadge(booking)}
@@ -877,12 +1010,12 @@ export default function ManageBookingsPage() {
                                 </TableCell>
 
                                 {/* 5. TRẠNG THÁI */}
-                                <TableCell sx={{ py: 1 }}>
-                                  {getStatusBadge(booking.status, booking.reviewStatus)}
+                                <TableCell sx={{ py: 1.2 }}>
+                                  {getStatusBadge(booking.status, booking.reviewStatus, booking.confirmedBy || booking.confirmed_by)}
                                 </TableCell>
 
-                                {/* 6. THAO TÁC */}
-                                <TableCell sx={{ py: 1, textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
+                                {/* 6. THAO TÁC (ACTION HIERARCHY) */}
+                                <TableCell sx={{ py: 1.2, textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
                                   <Box sx={{ display: "flex", gap: 0.6, justifyContent: "flex-end", alignItems: "center" }}>
                                     {String(booking.status || "").toLowerCase() === "reserved" && (
                                       <>
@@ -1030,39 +1163,51 @@ export default function ManageBookingsPage() {
                   </>
                 )}
               </Card>
-            </Grid>
+            </Box>
 
-            {/* Right Side Panel (Side Panel matching user's exact mockup with smooth slide out animation) */}
+            {/* Right Panel: Detail Panel (Appears on right, exact same height as left panel!) */}
             <AnimatePresence>
               {selectedBooking && (
-                <Grid item xs={12} lg={4}>
-                  <motion.div
-                    initial={{ opacity: 0, x: 40, scale: 0.96 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: 40, scale: 0.96 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                <Box
+                  component={motion.div}
+                  initial={{ opacity: 0, width: 0, transform: "scaleX(0.95)" }}
+                  animate={{ opacity: 1, width: 400, transform: "scaleX(1)" }}
+                  exit={{ opacity: 0, width: 0, transform: "scaleX(0.95)" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                  sx={{
+                    width: { xs: "100%", lg: 400 },
+                    flexShrink: 0,
+                    boxSizing: "border-box",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Card
+                    sx={{
+                      width: "100%",
+                      height: "100%", // Equal height with left table panel!
+                      borderRadius: 2.5,
+                      border: `1px solid ${COLORS.border}`,
+                      boxShadow: COLORS.shadowSm,
+                      bgcolor: COLORS.card,
+                      p: 2.5,
+                      display: "flex",
+                      flexDirection: "column",
+                      boxSizing: "border-box",
+                    }}
                   >
-                    <Card
-                      sx={{
-                        borderRadius: 2.5,
-                        border: `1px solid ${COLORS.border}`,
-                        boxShadow: COLORS.shadowSm,
-                        bgcolor: COLORS.card,
-                        p: 2.5,
-                        position: "sticky",
-                        top: 20,
-                      }}
-                    >
-                      {/* Header */}
-                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, pb: 1, borderBottom: `1px solid ${COLORS.border}` }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: COLORS.text, fontSize: "15px" }}>
-                          Chi tiết đặt bàn
-                        </Typography>
-                        <IconButton onClick={() => setSelectedBooking(null)} size="small">
-                          <CloseIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
+                    {/* Drawer Header (Fixed Top) */}
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, pb: 1, borderBottom: `1px solid ${COLORS.border}` }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700, color: COLORS.text, fontSize: "15px" }}>
+                        Chi tiết đặt bàn
+                      </Typography>
+                      <IconButton onClick={() => setSelectedBooking(null)} size="small">
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
 
+                    {/* Scrollable Body Content (Flex Grow) */}
+                    <Box sx={{ overflowY: "auto", flexGrow: 1, pr: 0.5, mb: 1.5 }}>
                       {/* Reservation Code & Date */}
                       <Box sx={{ mb: 2 }}>
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -1070,7 +1215,7 @@ export default function ManageBookingsPage() {
                             {selectedBooking.reservation_code} <ContentCopyIcon sx={{ fontSize: 14, color: COLORS.textMuted, cursor: "pointer" }} />
                           </Typography>
 
-                          {getStatusBadge(selectedBooking.status, selectedBooking.reviewStatus)}
+                          {getStatusBadge(selectedBooking.status, selectedBooking.reviewStatus, selectedBooking.confirmedBy || selectedBooking.confirmed_by)}
                         </Box>
                         <Typography variant="caption" sx={{ color: COLORS.textMuted, display: "block", mt: 0.5, fontSize: "12px" }}>
                           📅 {selectedBooking.booking_date} • {selectedBooking.booking_time}
@@ -1078,7 +1223,7 @@ export default function ManageBookingsPage() {
                       </Box>
 
                       {/* Section 1 — ĐÁNH GIÁ BOOKING */}
-                      <Box sx={{ mb: 2.5 }}>
+                      <Box sx={{ mb: 2.5, p: 1.5, borderRadius: "10px", bgcolor: COLORS.alt }}>
                         <Typography variant="caption" sx={{ fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", display: "block", mb: 0.8, fontSize: "11px" }}>
                           ĐÁNH GIÁ BOOKING
                         </Typography>
@@ -1148,55 +1293,19 @@ export default function ManageBookingsPage() {
                           </Typography>
                         </Box>
                       </Box>
+                    </Box>
 
-                      {/* Action Buttons Footer */}
-                      <Box sx={{ pt: 1.5, borderTop: `1px solid ${COLORS.border}`, display: "flex", gap: 1, alignItems: "center" }}>
-                        {String(selectedBooking.status || "").toLowerCase() === "reserved" && (
-                          <>
-                            <Button
-                              fullWidth
-                              variant="contained"
-                              onClick={() => handleAction(adminConfirmBooking, selectedBooking.id)}
-                              sx={{
-                                bgcolor: "var(--matcha)",
-                                "&:hover": { bgcolor: "var(--matcha-dark)" },
-                                borderRadius: "8px",
-                                fontWeight: 700,
-                                fontSize: "12.5px",
-                                textTransform: "none",
-                                py: 0.8,
-                              }}
-                            >
-                              ✓ Xác nhận
-                            </Button>
-                            <Button
-                              fullWidth
-                              variant="outlined"
-                              onClick={() => handleAction(adminRejectBooking, selectedBooking.id)}
-                              sx={{
-                                color: "#d32f2f",
-                                borderColor: "#d32f2f",
-                                "&:hover": { borderColor: "#b71c1c", bgcolor: "rgba(211, 47, 47, 0.04)" },
-                                borderRadius: "8px",
-                                fontSize: "12.5px",
-                                textTransform: "none",
-                                py: 0.8,
-                              }}
-                            >
-                              Từ chối
-                            </Button>
-                          </>
-                        )}
-
-                        {String(selectedBooking.status || "").toLowerCase() === "confirmed" && (
+                    {/* Sticky Action Footer (Fixed Bottom) */}
+                    <Box sx={{ pt: 1.5, borderTop: `1px solid ${COLORS.border}`, display: "flex", gap: 1, alignItems: "center" }}>
+                      {String(selectedBooking.status || "").toLowerCase() === "reserved" && (
+                        <>
                           <Button
                             fullWidth
-                            variant="outlined"
-                            onClick={() => setCheckInModal(selectedBooking)}
+                            variant="contained"
+                            onClick={() => handleAction(adminConfirmBooking, selectedBooking.id)}
                             sx={{
-                              color: "var(--matcha)",
-                              borderColor: "var(--matcha)",
-                              "&:hover": { borderColor: "var(--matcha-dark)", bgcolor: "rgba(107, 143, 62, 0.08)" },
+                              bgcolor: "var(--matcha)",
+                              "&:hover": { bgcolor: "var(--matcha-dark)" },
                               borderRadius: "8px",
                               fontWeight: 700,
                               fontSize: "12.5px",
@@ -1204,20 +1313,56 @@ export default function ManageBookingsPage() {
                               py: 0.8,
                             }}
                           >
-                            Check In
+                            ✓ Xác nhận
                           </Button>
-                        )}
+                          <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={() => handleAction(adminRejectBooking, selectedBooking.id)}
+                            sx={{
+                              color: "#d32f2f",
+                              borderColor: "#d32f2f",
+                              "&:hover": { borderColor: "#b71c1c", bgcolor: "rgba(211, 47, 47, 0.04)" },
+                              borderRadius: "8px",
+                              fontSize: "12.5px",
+                              textTransform: "none",
+                              py: 0.8,
+                            }}
+                          >
+                            Từ chối
+                          </Button>
+                        </>
+                      )}
 
-                        <IconButton onClick={(e) => openActionMenu(e, selectedBooking)}>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </Box>
-                    </Card>
-                  </motion.div>
-                </Grid>
+                      {String(selectedBooking.status || "").toLowerCase() === "confirmed" && (
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          onClick={() => setCheckInModal(selectedBooking)}
+                          sx={{
+                            color: "var(--matcha)",
+                            borderColor: "var(--matcha)",
+                            "&:hover": { borderColor: "var(--matcha-dark)", bgcolor: "rgba(107, 143, 62, 0.08)" },
+                            borderRadius: "8px",
+                            fontWeight: 700,
+                            fontSize: "12.5px",
+                            textTransform: "none",
+                            py: 0.8,
+                          }}
+                        >
+                          Check In
+                        </Button>
+                      )}
+
+                      <IconButton onClick={(e) => openActionMenu(e, selectedBooking)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </Box>
+                  </Card>
+                </Box>
               )}
             </AnimatePresence>
-          </Grid>
+          </Box>
         </Box>
       </Box>
 
@@ -1226,11 +1371,13 @@ export default function ManageBookingsPage() {
         anchorEl={actionMenuAnchor}
         open={Boolean(actionMenuAnchor)}
         onClose={closeActionMenu}
-        PaperProps={{
-          sx: {
-            borderRadius: "10px",
-            minWidth: 160,
-            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "10px",
+              minWidth: 160,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+            },
           },
         }}
       >
@@ -1243,7 +1390,7 @@ export default function ManageBookingsPage() {
           <ListItemIcon>
             <VisibilityIcon fontSize="small" color="primary" />
           </ListItemIcon>
-          <ListItemText primary="Xem chi tiết" primaryTypographyProps={{ fontSize: "12.5px" }} />
+          <ListItemText primary={<span style={{ fontSize: "12.5px" }}>Xem chi tiết</span>} />
         </MenuItem>
 
         {activeMenuBooking && String(activeMenuBooking.status).toLowerCase() === "reserved" && (
@@ -1252,13 +1399,13 @@ export default function ManageBookingsPage() {
               <ListItemIcon>
                 <CheckIcon fontSize="small" color="success" />
               </ListItemIcon>
-              <ListItemText primary="Xác nhận đặt bàn" primaryTypographyProps={{ fontSize: "12.5px", fontWeight: 600, color: "#16a34a" }} />
+              <ListItemText primary={<span style={{ fontSize: "12.5px", fontWeight: 600, color: "#16a34a" }}>Xác nhận đặt bàn</span>} />
             </MenuItem>
             <MenuItem onClick={() => handleAction(adminRejectBooking, activeMenuBooking.id)}>
               <ListItemIcon>
                 <CancelIcon fontSize="small" color="error" />
               </ListItemIcon>
-              <ListItemText primary="Từ chối đặt bàn" primaryTypographyProps={{ fontSize: "12.5px", color: "#dc2626" }} />
+              <ListItemText primary={<span style={{ fontSize: "12.5px", color: "#dc2626" }}>Từ chối đặt bàn</span>} />
             </MenuItem>
           </>
         )}
@@ -1274,13 +1421,13 @@ export default function ManageBookingsPage() {
               <ListItemIcon>
                 <HowToRegIcon fontSize="small" color="secondary" />
               </ListItemIcon>
-              <ListItemText primary="Check In" primaryTypographyProps={{ fontSize: "12.5px", fontWeight: 600 }} />
+              <ListItemText primary={<span style={{ fontSize: "12.5px", fontWeight: 600 }}>Check In</span>} />
             </MenuItem>
             <MenuItem onClick={() => handleAction(adminUpdateBookingStatus, activeMenuBooking.id, { status: "Cancelled" })}>
               <ListItemIcon>
                 <CancelIcon fontSize="small" color="error" />
               </ListItemIcon>
-              <ListItemText primary="Hủy lịch đặt" primaryTypographyProps={{ fontSize: "12.5px", color: "#dc2626" }} />
+              <ListItemText primary={<span style={{ fontSize: "12.5px", color: "#dc2626" }}>Hủy lịch đặt</span>} />
             </MenuItem>
           </>
         )}
@@ -1290,7 +1437,7 @@ export default function ManageBookingsPage() {
             <ListItemIcon>
               <DoneAllIcon fontSize="small" color="info" />
             </ListItemIcon>
-            <ListItemText primary="Hoàn thành đơn" primaryTypographyProps={{ fontSize: "12.5px", fontWeight: 600 }} />
+            <ListItemText primary={<span style={{ fontSize: "12.5px", fontWeight: 600 }}>Hoàn thành đơn</span>} />
           </MenuItem>
         )}
       </Menu>
