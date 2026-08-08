@@ -24,22 +24,24 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import WarningIcon from "@mui/icons-material/Warning";
-import StarIcon from "@mui/icons-material/Star";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CheckIcon from "@mui/icons-material/Check";
-import CancelIcon from "@mui/icons-material/Cancel";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import FilterListIcon from "@mui/icons-material/FilterList";
+import {
+  X as CloseIcon,
+  Search as SearchIcon,
+  CheckCircle as CheckCircleIcon,
+  AlertTriangle as WarningIcon,
+  Star as StarIcon,
+  Clock as AccessTimeIcon,
+  MoreVertical as MoreVertIcon,
+  Calendar as CalendarTodayIcon,
+  Eye as VisibilityIcon,
+  Check as CheckIcon,
+  XCircle as CancelIcon,
+  UserCheck as HowToRegIcon,
+  CheckCheck as DoneAllIcon,
+  Copy as ContentCopyIcon,
+  RotateCcw as RestartAltIcon,
+  Filter as FilterListIcon,
+} from "lucide-react";
 
 import { useAuth } from "../../context/useAuthContext.js";
 import { adminGetBookings, adminUpdateBookingStatus, adminConfirmBooking, adminRejectBooking, adminCheckInBooking } from "../../services/apiClient.js";

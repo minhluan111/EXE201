@@ -44,13 +44,17 @@ export function TenantProvider({ children }) {
           const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse");
           const isMonQuanChat = rawName.toLowerCase().includes("quảng") || rawName.toLowerCase().includes("monquanchat");
           const isHoaTeaRoom = rawName.toLowerCase().includes("hoa") || rawName.toLowerCase().includes("hoà") || rawName.toLowerCase().includes("hòa");
+          const isMonari = rawName.toLowerCase().includes("monari") || String(rawData.domain || "").toLowerCase().includes("monari");
           
           localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
           localStorage.setItem("tenant_is_samhouse", isSamHouse ? "true" : "false");
           localStorage.setItem("tenant_is_monquanchat", isMonQuanChat ? "true" : "false");
           localStorage.setItem("tenant_is_hoatearoom", isHoaTeaRoom ? "true" : "false");
+          localStorage.setItem("tenant_is_monari", isMonari ? "true" : "false");
           
-          if (isComTam) {
+          if (isMonari) {
+            document.documentElement.setAttribute('data-tenant', 'monari');
+          } else if (isComTam) {
             document.documentElement.setAttribute('data-tenant', 'comtam');
           } else if (isSamHouse) {
             document.documentElement.setAttribute('data-tenant', 'samhouse');
@@ -66,6 +70,9 @@ export function TenantProvider({ children }) {
           if (isMatcha) {
             normalizedData.name = "yakishime";
             normalizedData.address = "57 Nguyễn Cư Trinh, Cần Thơ";
+          } else if (isMonari) {
+            normalizedData.name = "MONARI";
+            normalizedData.address = "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam";
           } else if (isMonQuanChat && !normalizedData.address) {
             normalizedData.address = "201 QL1K, Đông Hòa, Dĩ An, Bình Dương";
           } else if (isHoaTeaRoom && !normalizedData.address) {
@@ -77,7 +84,7 @@ export function TenantProvider({ children }) {
           // Set dynamic title and favicon
           const name = isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime");
           document.title = name;
-          const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")));
+          const logo = normalizedData.logo || (isMonari ? "/assets/monari/decor/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg"))));
           normalizedData.logo = logo;
           const favicon = document.querySelector("link[rel*='icon']");
           if (favicon) {
@@ -90,21 +97,22 @@ export function TenantProvider({ children }) {
         const tenantQuery = urlParams.get("tenant") || "";
         const host = (tenantQuery + " " + window.location.hostname + " " + (import.meta.env.VITE_TENANT_DOMAIN || "")).toLowerCase();
         
+        const isMonari = host.includes("monari");
         const isComTam = host.includes("comtam");
         const isSamHouse = host.includes("samhouse") || host.includes("sam house") || host.includes("sam");
         const isMonQuanChat = host.includes("quang") || host.includes("monquanchat");
         const isHoaTeaRoom = host.includes("hoa") || host.includes("hoà") || host.includes("hòa");
         
         const fallbackTenant = {
-          id: isComTam ? "0af4c82f-e6fb-4711-805f-9413e216536c" : (isSamHouse ? "a03d87a2-72d4-48c3-8fc4-a04f2234f0d8" : (isMonQuanChat ? "147f2752-1116-4a07-ae77-f17c283bcf53" : (isHoaTeaRoom ? "6f9c9e88-3482-45e0-b6a3-2f801bfb7f8c" : "11111111-0000-0000-0000-000000000001"))),
-          name: isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime"))),
-          tenantName: isComTam ? "comtam" : (isSamHouse ? "samhouse" : (isMonQuanChat ? "monquanchat" : (isHoaTeaRoom ? "hoatearoom" : "matcha"))),
-          logo: isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg"))),
-          address: isComTam ? "57 Nguyễn Cư Trinh, Cần Thơ" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Cần Thơ"))),
-          hotline: isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173"))),
-          email: isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local"))),
-          openHours: isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00"))),
-          themeColor: isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F")))
+          id: isMonari ? "9523724e-1e6f-428f-a355-4394fcef1b9f" : (isComTam ? "0af4c82f-e6fb-4711-805f-9413e216536c" : (isSamHouse ? "a03d87a2-72d4-48c3-8fc4-a04f2234f0d8" : (isMonQuanChat ? "147f2752-1116-4a07-ae77-f17c283bcf53" : (isHoaTeaRoom ? "6f9c9e88-3482-45e0-b6a3-2f801bfb7f8c" : "11111111-0000-0000-0000-000000000001")))),
+          name: isMonari ? "MONARI" : (isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime")))),
+          tenantName: isMonari ? "monari" : (isComTam ? "comtam" : (isSamHouse ? "samhouse" : (isMonQuanChat ? "monquanchat" : (isHoaTeaRoom ? "hoatearoom" : "matcha")))),
+          logo: isMonari ? "/assets/monari/decor/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")))),
+          address: isMonari ? "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam" : (isComTam ? "57 Nguyễn Cư Trinh, Cần Thơ" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Cần Thơ")))),
+          hotline: isMonari ? "0908 123 456" : (isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173")))),
+          email: isMonari ? "contact@monari.vn" : (isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local")))),
+          openHours: isMonari ? "07:30 – 22:30" : (isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00")))),
+          themeColor: isMonari ? "#C86D51" : (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F"))))
         };
         setTenant(fallbackTenant);
       } finally {
@@ -120,13 +128,14 @@ export function TenantProvider({ children }) {
   useEffect(() => {
     if (!tenant) return;
     const rawName = tenant.name || tenant.TenantName || "";
+    const isMonari = rawName.toLowerCase().includes("monari") || String(tenant.tenantName).toLowerCase().includes("monari");
     const isComTam = rawName.toLowerCase().includes("cơm tấm") || String(tenant.tenantName).toLowerCase().includes("comtam");
     const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse") || String(tenant.tenantName).toLowerCase().includes("samhouse");
     const isMonQuanChat = rawName.toLowerCase().includes("quảng") || rawName.toLowerCase().includes("monquanchat") || String(tenant.tenantName).toLowerCase().includes("monquanchat");
     const isHoaTeaRoom = rawName.toLowerCase().includes("hoa") || rawName.toLowerCase().includes("hoà") || rawName.toLowerCase().includes("hòa") || String(tenant.tenantName).toLowerCase().includes("hoatearoom");
     const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha") || String(tenant.tenantName).toLowerCase().includes("matcha");
 
-    const themeColor = tenant.themeColor || tenant.ThemeColor || (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isHoaTeaRoom ? "#1E4620" : null)));
+    const themeColor = tenant.themeColor || tenant.ThemeColor || (isMonari ? "#C86D51" : (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isHoaTeaRoom ? "#1E4620" : null))));
     if (themeColor && !isMatcha) {
       const root = document.documentElement;
       const hsl = hexToHsl(themeColor);

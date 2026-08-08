@@ -268,12 +268,25 @@ function mapMenuItem(item, avgRating = 0) {
     name = "Workshop vẽ ly (Giá nước + 5.000₫)";
   }
 
+  let images = Array.isArray(item.images) ? [...item.images] : [];
+  if (name.toLowerCase().includes("trung thu") && images.length <= 1) {
+    images = [
+      "/assets/monari/menu/set_banh_trung_thu.jpg",
+      "/assets/monari/menu/set_banh_trung_thu_1.jpg",
+      "/assets/monari/menu/set_banh_trung_thu_2.jpg",
+    ];
+  }
+  if (images.length === 0 && imageUrl) {
+    images = [imageUrl];
+  }
+
   return {
     id: item.id,
     name,
     category,
     image_url: imageUrl,
     imageUrl,
+    images,
     price,
     description: item.description || "",
     tag: (String(name).toLowerCase().includes("tôm thịt") || String(name).toLowerCase().includes("ba chỉ") || String(name).toLowerCase().includes("cao lầu")) ? "signature" : mapMenuTag(item.tag),
@@ -458,7 +471,8 @@ async function getTablesWithAreas() {
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
-  const isYakishime = TENANT_DOMAIN.toLowerCase().includes("yakishime") || TENANT_DOMAIN.toLowerCase().includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom);
+  const isMonari = TENANT_DOMAIN.toLowerCase().includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
+  const isYakishime = TENANT_DOMAIN.toLowerCase().includes("yakishime") || TENANT_DOMAIN.toLowerCase().includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom && !isMonari);
 
   const tables = [];
   activeAreas.forEach((area) => {
@@ -486,7 +500,9 @@ async function getTablesWithAreas() {
       const col = (i - 1) % 3;
 
       let displayName = `Bàn ${area.area} ${i}`;
-      if (isMonQuanChat) {
+      if (isMonari) {
+        displayName = count === 1 ? tableTypeText : `${tableTypeText} (${i})`;
+      } else if (isMonQuanChat) {
         const numMatch = tableTypeText.match(/^Bàn\s+(\d+)/i);
         if (numMatch) {
           displayName = `Bàn ${numMatch[1]}`;
@@ -511,7 +527,7 @@ async function getTablesWithAreas() {
         table_type: pureTableType,
         coordinate_x: 10 + col * 25,
         coordinate_y: 10 + row * 25,
-        shape: max_seats === 4 ? "quad" : "pair",
+        shape: max_seats >= 8 ? "large" : (max_seats === 4 ? "quad" : "pair"),
         imageType: area.tableType || area.table_type,
         previewImage: area.previewImage ?? area.preview_image,
         seatingAreaId: area.id,
@@ -1420,6 +1436,62 @@ function getMockMenuItems() {
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  const isMonari = TENANT_DOMAIN.toLowerCase().includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
+
+  if (isMonari) {
+    return [
+      {
+        id: "mn1",
+        name: "Set Bánh Trung Thu Cao Cấp (4 bánh)",
+        price: 552000,
+        category: "Combo",
+        imageUrl: "/assets/monari/menu/set_banh_trung_thu.jpg",
+        images: [
+          "/assets/monari/menu/set_banh_trung_thu.jpg",
+          "/assets/monari/menu/set_banh_trung_thu_1.jpg",
+          "/assets/monari/menu/set_banh_trung_thu_2.jpg"
+        ],
+        description: "Set bánh thủ công cao cấp gồm 4 bánh (2 nhân ngọt tinh tuyển, 2 nhân mặn đậm đà) trong hộp quà sang trọng.",
+        tag: "best_seller"
+      },
+      {
+        id: "mn2",
+        name: "Coco Matcha Tươi Mát",
+        price: 55000,
+        category: "Drink",
+        imageUrl: "/assets/monari/menu/coco_matcha.jpg",
+        description: "Sự kết hợp hoàn hảo giữa bột matcha nguyên chất cao cấp và nước dừa xiêm tươi ngọt mát thanh lành.",
+        tag: "trending"
+      },
+      {
+        id: "mn3",
+        name: "Nước Dừa Quế Hoa",
+        price: 49000,
+        category: "Drink",
+        imageUrl: "/assets/monari/menu/nuoc_dua_que_hoa.jpg",
+        description: "Nước dừa tươi thanh khiết ướp cánh hoa quế ngạt ngào, mang lại cảm giác thanh mát thư thái tuyệt đối.",
+        tag: "signature"
+      },
+      {
+        id: "mn4",
+        name: "Trà Lựu Đỏ Ngọc Trai",
+        price: 48000,
+        category: "Drink",
+        imageUrl: "/assets/monari/menu/tra_luu_do.jpg",
+        description: "Trà lựu đỏ thơm nồng nàn vị trái cây tươi chín mọng kết hợp trân châu ngọc trai giòn sần sật.",
+        tag: "best_seller"
+      },
+      {
+        id: "mn5",
+        name: "Trà Ổi Hồng Ngọc Trai",
+        price: 48000,
+        category: "Drink",
+        imageUrl: "/assets/monari/menu/tra_oi_hong.jpg",
+        description: "Hương thơm ngọt ngào quyến rũ từ ổi hồng nhiệt đới hòa quyện lớp trà thanh nhẹ cùng hạt ngọc trai tươi.",
+        tag: "trending"
+      }
+    ];
+  }
 
   if (isComTam) {
     return [

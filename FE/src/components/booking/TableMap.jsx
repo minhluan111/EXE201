@@ -82,6 +82,31 @@ const hoaTeaRoomTableImages = {
   "4-Seat Outdoor": "/assets/hoatearoom/tables/n2_7.jpg",
 };
 
+const monariTableImages = {
+  // 2-person tables – 4 distinct photos
+  "Bàn 2 người (1)": "/assets/monari/tables/ban_2_nguoi_1.jpg",
+  "Bàn 2 người (2)": "/assets/monari/tables/ban_2_nguoi_2.jpg",
+  "Bàn 2 người (3)": "/assets/monari/tables/ban_2_nguoi_3.jpg",
+  "Bàn 2 người (4)": "/assets/monari/tables/ban_2_nguoi_4.jpg",
+  "Bàn 2 người": "/assets/monari/tables/ban_2_nguoi_1.jpg",
+  // 4-person tables – 3 distinct photos
+  "Bàn 4 người (1)": "/assets/monari/tables/ban_4_nguoi_1.jpg",
+  "Bàn 4 người (2)": "/assets/monari/tables/ban_4_nguoi_2.jpg",
+  "Bàn 4 người (3)": "/assets/monari/tables/ban_4_nguoi_3.jpg",
+  "Bàn 4 người": "/assets/monari/tables/ban_4_nguoi_1.jpg",
+  // 8-person table – 1 distinct photo
+  "Bàn 8 người": "/assets/monari/tables/ban_8_nguoi.jpg",
+  "Bàn 8-10 người": "/assets/monari/tables/ban_8_nguoi.jpg",
+  // generic fallbacks by type
+  "2-Seat Corner": "/assets/monari/tables/ban_2_nguoi_1.jpg",
+  "2-Seat Window": "/assets/monari/tables/ban_2_nguoi_2.jpg",
+  "2-Seat Bar": "/assets/monari/tables/ban_2_nguoi_3.jpg",
+  "4-Seat Indoor": "/assets/monari/tables/ban_4_nguoi_1.jpg",
+  "4-Seat Tatami": "/assets/monari/tables/ban_4_nguoi_2.jpg",
+  "4-Seat Outdoor": "/assets/monari/tables/ban_4_nguoi_3.jpg",
+  "8-Seat": "/assets/monari/tables/ban_8_nguoi.jpg",
+};
+
 const yakiTableImages = {
   "Bàn N2 - 2 người (Trong nhà, ổ điện, quạt)": "/assets/yakishime/tables/n2.jpg",
   "Bàn N2.1 - 2 người (Cửa sổ, ổ điện)": "/assets/yakishime/tables/n2_1.jpg",
@@ -114,6 +139,7 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
 
   return (
     <>
@@ -127,8 +153,8 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
-          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : (isHoaTeaRoom ? hoaTeaRoomTableImages : yakiTableImages)));
-          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : (isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" : "/assets/yakishime/tables/n2.jpg")));
+          const imageList = isMonari ? monariTableImages : (isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : (isHoaTeaRoom ? hoaTeaRoomTableImages : yakiTableImages))));
+          const defaultImage = isMonari ? "/assets/monari/tables/ban_2_nguoi.jpg" : (isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : (isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" : "/assets/yakishime/tables/n2.jpg"))));
 
           const image =
             table.previewImage ||

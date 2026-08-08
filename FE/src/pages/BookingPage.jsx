@@ -167,6 +167,7 @@ export default function BookingPage() {
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const { selected, setSelected } = useBookingContext();
 
   const selectedRef = useRef(selected);
@@ -256,9 +257,18 @@ export default function BookingPage() {
             return;
           }
 
-          const suitableTables = res.data.filter(
-            (table) => table.max_seats >= numPeople
-          );
+          const suitableTables = res.data.filter((table) => {
+            if (isMonari) {
+              if (numPeople <= 2) {
+                return table.max_seats === 2;
+              }
+              if (numPeople <= 4) {
+                return table.max_seats === 4;
+              }
+              return table.max_seats === 8;
+            }
+            return table.max_seats >= numPeople;
+          });
 
           setFloorTables(suitableTables);
 
@@ -684,16 +694,15 @@ export default function BookingPage() {
                     Số người
                   </h2>
                 </div>
-                <div style={{ display: "flex", gap: 10 }}>
-                  {[1, 2, 3, 4].map((n) => (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(64px, 1fr))", gap: 10 }}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                     <motion.button
                       key={n}
                       whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.92 }}
                       onClick={() => setNumPeople(n)}
                       style={{
-                        flex: 1,
-                        padding: "9px 0",
+                        padding: "10px 0",
                         borderRadius: 14,
                         border: "1.5px solid",
                         borderColor:
@@ -702,14 +711,14 @@ export default function BookingPage() {
                           numPeople === n
                             ? "linear-gradient(135deg,var(--matcha),var(--forest))"
                             : "var(--bg-alt)",
-                        color: numPeople === n ? "#fff" : "var(--text-muted)",
-                        fontSize: 20,
+                        color: numPeople === n ? "#fff" : "var(--text)",
+                        fontSize: 18,
                         fontWeight: 700,
                         cursor: "pointer",
                         transition: "all 0.2s",
                       }}
                     >
-                      {n}
+                      {n} {n === 8 ? "+" : ""}
                     </motion.button>
                   ))}
                 </div>
@@ -718,9 +727,22 @@ export default function BookingPage() {
                     color: "var(--text-muted)",
                     fontSize: 13,
                     marginTop: 14,
+                    lineHeight: 1.5,
                   }}
                 >
-                  {isMonQuanChat ? "→ Bàn phù hợp cho nhóm từ 4-6 người" : (numPeople <= 2 ? "→ Bàn đôi (2 ghế)" : (numPeople <= 4 ? "→ Bàn nhóm (4 ghế)" : "→ Bàn nhóm (6-10 ghế)"))}
+                  {isMonari
+                    ? (numPeople <= 2
+                        ? "→ Hiển thị 4 bàn 2 người (Ban công & Cửa sổ view phố)"
+                        : numPeople <= 4
+                          ? "→ Hiển thị 3 bàn 4 người (Khu trung tâm ấm cúng)"
+                          : "→ Hiển thị bàn 8 người (Phòng tiệc & Họp mặt nhóm)")
+                    : isMonQuanChat
+                      ? "→ Bàn phù hợp cho nhóm từ 4-6 người"
+                      : (numPeople <= 2
+                          ? "→ Bàn đôi (2 ghế)"
+                          : (numPeople <= 4
+                              ? "→ Bàn nhóm (4 ghế)"
+                              : "→ Bàn nhóm (6-10 ghế)"))}
                 </p>
               </div>
             </motion.div>

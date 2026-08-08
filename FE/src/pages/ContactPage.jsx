@@ -8,8 +8,9 @@ import { useAuth } from "../context/useAuthContext.js";
 import { useTenant } from "@/context/TenantContext";
 
 export default function ContactPage() {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
   const { tenant } = useTenant();
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
@@ -215,7 +216,17 @@ export default function ContactPage() {
                 </div>
                 <iframe
                   title="map"
-                  src={info.mapEmbedUrl}
+                  src={isMonari 
+                    ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    : (isComTam
+                        ? "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                        : (isSamHouse 
+                            ? "https://maps.google.com/maps?q=Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                            : (isMonQuanChat
+                                ? "https://maps.google.com/maps?q=201+QL1K,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                                : (isHoaTeaRoom 
+                                    ? "https://maps.google.com/maps?q=18/2+Đường+số+4,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                                    : (info.mapEmbedUrl || "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed")))))}
                   style={{
                     width: "100%",
                     height: 320,

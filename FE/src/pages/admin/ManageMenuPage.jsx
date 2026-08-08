@@ -78,6 +78,12 @@ const HOA_TEA_ROOM_CATEGORIES = [
   { value: "Experiences",   label: "Trải nghiệm" },
 ];
 
+const MONARI_CATEGORIES = [
+  { value: "Combo",   label: "Bánh Trung Thu & Quà Tặng" },
+  { value: "Drink",   label: "Trà & Thức Uống" },
+  { value: "Dessert", label: "Bánh Ngọt" },
+];
+
 const TAGS = [
   { value: "BestSeller", label: "Bán chạy (Best Seller)" },
   { value: "Trending", label: "Món xu hướng (Trending)" },
@@ -99,11 +105,11 @@ const uploadImageToImgBB = async (file) => {
     "https://api.imgbb.com/1/upload?key=0407d749b1703d2a6b06b9d2988625e3",
     { method: "POST", body: formDataImg }
   );
-  const uploadJson = await uploadRes.json();
-  if (!uploadJson.success) {
-    throw new Error(uploadJson.error?.message || "Lỗi không xác định từ ImgBB");
+  const uploadData = await uploadRes.json();
+  if (uploadData.success) {
+    return uploadData.data.url;
   }
-  return uploadJson.data.url;
+  throw new Error(uploadData.error?.message || "Upload ảnh lên ImgBB thất bại.");
 };
 
 export default function ManageMenuPage() {
@@ -112,12 +118,13 @@ export default function ManageMenuPage() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   
-  const tenantCategories = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES));
+  const tenantCategories = isMonari ? MONARI_CATEGORIES : ((isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES)));
 
   const availableCategoryValues = useMemo(() => {
     const vals = new Set(list.map(item => item.category));

@@ -19,6 +19,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { tenant } = useTenant();
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
@@ -102,7 +103,7 @@ export default function Navbar() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                 color: "var(--matcha)",
-                textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom) ? "none" : "lowercase",
+                textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom || isMonari) ? "none" : "lowercase",
               }}
             >
               {tenant?.name || "yakishime"}

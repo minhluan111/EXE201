@@ -330,17 +330,69 @@ const HOA_TEA_ROOM_PHILOSOPHIES = [
   }
 ];
 
+const MONARI_TESTIMONIALS = [
+  { name: "Lê Phương Thảo", role: "Khách hàng thân thiết", rating: 5, text: "Set bánh trung thu của Monari vỏ bánh mềm thơm, nhân ngọt thanh vừa vặn không hề gắt. Hộp quà tặng cực kỳ sang trọng và chỉn chu!" },
+  { name: "Trần Minh Quang", role: "Kiến trúc sư", rating: 5, text: "Không gian quán ấm cúng, view ban công tầng 2 ngắm phố rất chill. Coco Matcha và Nước dừa quế hoa ở đây uống cực kỳ ấn tượng." },
+  { name: "Nguyễn Hoàng My", role: "Content Creator", rating: 5, text: "Góc nào trong quán chụp ảnh cũng đẹp lung linh. Trà ổi hồng và trà lựu đỏ trân châu giòn sần sật, nhân viên lại vô cùng lịch thiệp." },
+  { name: "Phạm Đăng Khoa", role: "Khách quen cuối tuần", rating: 5, text: "Bàn 4 người sofa rất êm ái, thích hợp ngồi đọc sách hoặc họp nhóm làm việc. Rất yêu thích phong cách ấm áp tinh tế của Monari!" }
+];
+
+const MONARI_GALLERY = [
+  { url: "/assets/monari/decor/space_main.jpg", h: 280, label: "Quầy hoa quả Monari" },
+  { url: "/assets/monari/decor/space_1.jpg", h: 230, label: "Quầy trái cây nhập khẩu cao cấp" },
+  { url: "/assets/monari/decor/space_2.jpg", h: 270, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/space_3.jpg", h: 230, label: "Không gian decor" },
+  { url: "/assets/monari/decor/space_decor.jpg", h: 260, label: "Ổ điện phục vụ khách" },
+  { url: "/assets/monari/decor/space_view_1.jpg", h: 280, label: "Không gian decor" },
+  { url: "/assets/monari/decor/space_view_2.jpg", h: 240, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/space_view_3.jpg", h: 270, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/space_view_4.jpg", h: 240, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/img_4188.jpg", h: 260, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4189.jpg", h: 280, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4190.jpg", h: 240, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4191.jpg", h: 260, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4192.jpg", h: 280, label: "Góc menu quán" },
+];
+
+const MONARI_PHILOSOPHIES = [
+  {
+    kanji: "Bánh",
+    romaji: "BÁNH",
+    title: "Bánh Ngọt Thủ Công",
+    desc: "Nguyên liệu cao cấp hảo hạng, từng chiếc bánh trung thu và bánh ngọt đều được nhào nặn thủ công tỉ mỉ, trọn vẹn hương vị."
+  },
+  {
+    kanji: "Trà",
+    romaji: "TRÀ",
+    title: "Trà & Thảo Mộc",
+    desc: "Trà lựu đỏ, trà ổi hồng và nước dừa quế hoa tự nhiên tươi mới, ngọt thanh bổ dưỡng, đánh thức mọi giác quan."
+  },
+  {
+    kanji: "Ấm",
+    romaji: "ẤM",
+    title: "Không Gian Ấm Áp",
+    desc: "Không gian trang nhã, ánh sáng ấm cúng cùng sofa êm dịu, là chốn dừng chân hoàn hảo để hẹn hò, làm việc và sum họp."
+  },
+  {
+    kanji: "Tâm",
+    romaji: "TÂM",
+    title: "Phục Vụ Tận Tâm",
+    desc: "Đón tiếp quý khách bằng sự chân thành, chu đáo và mến khách trong từng nụ cười và mỗi đĩa bánh, tách trà trao tay."
+  }
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
   const { tenant } = useTenant();
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
-  const currentPhilosophies = isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : PHILOSOPHIES)));
+  const currentPhilosophies = isMonari ? MONARI_PHILOSOPHIES : (isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : PHILOSOPHIES))));
   const [products,  setProducts]  = useState([]);
   const [loading,   setLoading]   = useState(true);
-  const [reviewsList, setReviewsList] = useState(isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : TESTIMONIALS))));
+  const [reviewsList, setReviewsList] = useState(isMonari ? MONARI_TESTIMONIALS : (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : TESTIMONIALS)))));
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
 
@@ -382,7 +434,7 @@ export default function HomePage() {
         
         const enrichFallback = () => {
           if (loadedProducts.length > 0) {
-            const enriched = (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : TESTIMONIALS))).map(t => {
+            const enriched = (isMonari ? MONARI_TESTIMONIALS : (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : TESTIMONIALS))))).map(t => {
               const product = loadedProducts.find(p => 
                 t.text.toLowerCase().includes(p.name.toLowerCase())
               ) || loadedProducts[0];
@@ -468,7 +520,7 @@ export default function HomePage() {
     navigate("/booking", { state: { guests: quickGuests, date: targetDate } });
   };
 
-  const currentGallery = isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : GALLERY)));
+  const currentGallery = isMonari ? MONARI_GALLERY : (isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : GALLERY))));
   const duplicatedGallery = [...currentGallery, ...currentGallery];
 
   return (
@@ -486,12 +538,11 @@ export default function HomePage() {
         }}
       >
         {/* Parallax BG */}
-        {/* Parallax BG */}
         <motion.div
           style={{
             position: "absolute", inset: "-20%",
             y: heroY,
-            backgroundImage: isComTam ? "url('/assets/comtamno/hero.jpg')" : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('/assets/images/hero_img.jpg')"))),
+            backgroundImage: isMonari ? "url('/assets/monari/decor/hero_bg.jpg')" : (isComTam ? "url('/assets/comtamno/hero.jpg')" : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('/assets/images/hero_img.jpg')")))),
             backgroundSize: "cover", backgroundPosition: "center",
           }}
         />
@@ -499,31 +550,35 @@ export default function HomePage() {
         {/* Overlays */}
         <div style={{
           position: "absolute", inset: 0,
-          background: isComTam
-            ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(100,45,10,0.75) 50%, rgba(30,15,5,0.8) 100%)"
-            : (isSamHouse 
-                ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(80,40,15,0.75) 50%, rgba(20,10,5,0.8) 100%)"
-                : (isMonQuanChat
-                    ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(90,20,20,0.75) 50%, rgba(30,10,10,0.8) 100%)"
-                    : (isHoaTeaRoom
-                        ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(30,70,40,0.75) 50%, rgba(6,18,12,0.8) 100%)"
-                        : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)")))
+          background: isMonari
+            ? "linear-gradient(135deg, rgba(35,15,10,0.85) 0%, rgba(95,40,25,0.75) 50%, rgba(35,15,10,0.8) 100%)"
+            : (isComTam
+              ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(100,45,10,0.75) 50%, rgba(30,15,5,0.8) 100%)"
+              : (isSamHouse 
+                  ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(80,40,15,0.75) 50%, rgba(20,10,5,0.8) 100%)"
+                  : (isMonQuanChat
+                      ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(90,20,20,0.75) 50%, rgba(30,10,10,0.8) 100%)"
+                      : (isHoaTeaRoom
+                          ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(30,70,40,0.75) 50%, rgba(6,18,12,0.8) 100%)"
+                          : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)"))))
         }} />
         <div style={{
           position: "absolute", inset: 0,
-          background: isComTam
-            ? "radial-gradient(ellipse at center bottom, rgba(224,123,57,0.15) 0%, transparent 70%)"
-            : (isSamHouse
-                ? "radial-gradient(ellipse at center bottom, rgba(139,69,19,0.15) 0%, transparent 70%)"
-                : (isMonQuanChat
-                    ? "radial-gradient(ellipse at center bottom, rgba(139,26,26,0.15) 0%, transparent 70%)"
-                    : (isHoaTeaRoom
-                        ? "radial-gradient(ellipse at center bottom, rgba(116,195,142,0.15) 0%, transparent 70%)"
-                        : "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)")))
+          background: isMonari
+            ? "radial-gradient(ellipse at center bottom, rgba(200,109,81,0.18) 0%, transparent 70%)"
+            : (isComTam
+              ? "radial-gradient(ellipse at center bottom, rgba(224,123,57,0.15) 0%, transparent 70%)"
+              : (isSamHouse
+                  ? "radial-gradient(ellipse at center bottom, rgba(139,69,19,0.15) 0%, transparent 70%)"
+                  : (isMonQuanChat
+                      ? "radial-gradient(ellipse at center bottom, rgba(139,26,26,0.15) 0%, transparent 70%)"
+                      : (isHoaTeaRoom
+                          ? "radial-gradient(ellipse at center bottom, rgba(116,195,142,0.15) 0%, transparent 70%)"
+                          : "radial-gradient(ellipse at center bottom, rgba(107,143,62,0.15) 0%, transparent 70%)"))))
         }} />
 
         {/* Falling Leaves Background Layer */}
-        {!isComTam && !isSamHouse && !isMonQuanChat && (
+        {!isComTam && !isSamHouse && !isMonQuanChat && !isMonari && (
           <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 1 }}>
             {[...Array(8)].map((_, i) => {
               const delay = i * 2.8;
@@ -561,12 +616,12 @@ export default function HomePage() {
               <span style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "6px 18px", borderRadius: 50,
-                border: isComTam ? "1px solid rgba(224,123,57,0.4)" : (isSamHouse ? "1px solid rgba(139,69,19,0.4)" : (isMonQuanChat ? "1px solid rgba(139,26,26,0.4)" : (isHoaTeaRoom ? "1px solid rgba(46,111,64,0.4)" : "1px solid rgba(141,175,90,0.4)"))),
-                background: isComTam ? "rgba(224,123,57,0.12)" : (isSamHouse ? "rgba(139,69,19,0.12)" : (isMonQuanChat ? "rgba(139,26,26,0.12)" : (isHoaTeaRoom ? "rgba(46,111,64,0.12)" : "rgba(141,175,90,0.12)"))),
-                color: isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#9AB3A2" : "rgba(200,230,160,0.9)"))), fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
+                border: isMonari ? "1px solid rgba(200,109,81,0.4)" : (isComTam ? "1px solid rgba(224,123,57,0.4)" : (isSamHouse ? "1px solid rgba(139,69,19,0.4)" : (isMonQuanChat ? "1px solid rgba(139,26,26,0.4)" : (isHoaTeaRoom ? "1px solid rgba(46,111,64,0.4)" : "1px solid rgba(141,175,90,0.4)")))),
+                background: isMonari ? "rgba(200,109,81,0.12)" : (isComTam ? "rgba(224,123,57,0.12)" : (isSamHouse ? "rgba(139,69,19,0.12)" : (isMonQuanChat ? "rgba(139,26,26,0.12)" : (isHoaTeaRoom ? "rgba(46,111,64,0.12)" : "rgba(141,175,90,0.12)")))),
+                color: isMonari ? "#E8927C" : (isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#9AB3A2" : "rgba(200,230,160,0.9)")))), fontSize: 13, fontWeight: 500, letterSpacing: "0.1em",
               }}>
-                {isSamHouse ? <Coffee size={13} /> : (isMonQuanChat ? <Utensils size={13} /> : <Leaf size={13} />)}
-                {isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : (isSamHouse ? "Cà Phê · Trà Sữa · Không Gian" : (isMonQuanChat ? "Món Quảng · Hương Vị · Miền Trung" : (isHoaTeaRoom ? "Hòa Tea Room · Trà Sữa · Vẽ Ly" : "Matcha · Zen · Cao cấp")))}
+                {isMonari ? <Sparkles size={13} /> : (isSamHouse ? <Coffee size={13} /> : (isMonQuanChat ? <Utensils size={13} /> : <Leaf size={13} />))}
+                {isMonari ? "MONARI · Bánh Ngọt Thủ Công & Trà Thơm" : (isComTam ? "Cơm Tấm · Truyền Thống · Đậm Đà" : (isSamHouse ? "Cà Phê · Trà Sữa · Không Gian" : (isMonQuanChat ? "Món Quảng · Hương Vị · Miền Trung" : (isHoaTeaRoom ? "Hòa Tea Room · Trà Sữa · Vẽ Ly" : "Matcha · Zen · Cao cấp"))))}
               </span>
             </motion.div>
 
@@ -580,7 +635,12 @@ export default function HomePage() {
               color: "#fff", margin: "0 0 16px",
               lineHeight: 1.0, letterSpacing: "-0.03em",
             }}>
-              {isComTam ? (
+              {isMonari ? (
+                <>
+                  MONARI<br />
+                  <span style={{ color: "var(--matcha)", fontStyle: "italic" }}>Bánh Ngọt Thủ Công & Trà Thơm</span>
+                </>
+              ) : isComTam ? (
                 <>
                   Cơm Tấm Ngọ<br />
                   <span style={{ color: "var(--matcha)", fontStyle: "italic" }}>Đậm Đà Vị Quê Hương</span>
@@ -613,15 +673,17 @@ export default function HomePage() {
               fontSize: "clamp(16px, 2.5vw, 20px)", color: "rgba(255,255,255,0.75)",
               maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7,
             }}>
-              {isComTam 
-                ? "Cơm sườn bì chả gia truyền · Sườn nướng mật ong than hồng thơm ngọt · Canh rong biển thanh mát tại Đông Hòa"
-                : (isSamHouse 
-                    ? "Cà phê muối béo ngậy · Trà sữa Olong đậm đà · Không gian học tập, làm việc yên tĩnh lý tưởng tại Đông Hòa" 
-                    : (isMonQuanChat
-                        ? "Mỳ Quảng thơm ngon · Bánh tráng cuốn thịt heo ba chỉ đậm vị · Cao lầu Hội An chuẩn vị tại Đông Hòa"
-                        : (isHoaTeaRoom
-                            ? "Matcha dừa xiêm mát lạnh · Trà sữa lài Mia thơm ngát · Trải nghiệm tô vẽ ly gốm thư giãn tại Cần Thơ"
-                            : "Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống · Không gian thiền định tại Cần Thơ")))}
+              {isMonari
+                ? "Set bánh trung thu thủ công cao cấp · Coco Matcha tươi mát · Nước dừa quế hoa thanh ngọt & không gian ấm cúng tại Đông Hòa"
+                : (isComTam 
+                  ? "Cơm sườn bì chả gia truyền · Sườn nướng mật ong than hồng thơm ngọt · Canh rong biển thanh mát tại Đông Hòa"
+                  : (isSamHouse 
+                      ? "Cà phê muối béo ngậy · Trà sữa Olong đậm đà · Không gian học tập, làm việc yên tĩnh lý tưởng tại Đông Hòa" 
+                      : (isMonQuanChat
+                          ? "Mỳ Quảng thơm ngon · Bánh tráng cuốn thịt heo ba chỉ đậm vị · Cao lầu Hội An chuẩn vị tại Đông Hòa"
+                          : (isHoaTeaRoom
+                              ? "Matcha dừa xiêm mát lạnh · Trà sữa lài Mia thơm ngát · Trải nghiệm tô vẽ ly gốm thư giãn tại Cần Thơ"
+                              : "Matcha ceremonial grade từ Uji · Trà đạo Chado chính thống · Không gian thiền định tại Cần Thơ"))))}
             </motion.p>
 
             {/* CTAs removed since they exist in the navbar */}
@@ -632,8 +694,8 @@ export default function HomePage() {
               flexWrap: "wrap",
             }}>
               {[
-                { icon: MapPin, text: tenant?.address || (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Cần Thơ"))) },
-                { icon: Clock, text: `${tenant?.openHours || tenant?.openingHours || (isMonQuanChat ? "10:00 – 22:00" : (isSamHouse ? "07:30 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 – 22:00")))} mỗi ngày` },
+                { icon: MapPin, text: tenant?.address || (isMonari ? "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam" : (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Cần Thơ")))) },
+                { icon: Clock, text: `${tenant?.openHours || tenant?.openingHours || (isMonari ? "07:30 – 22:30" : (isMonQuanChat ? "10:00 – 22:00" : (isSamHouse ? "07:30 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 – 22:00"))))} mỗi ngày` },
                 { icon: Star,  text: "4.9 ⭐ (200+ đánh giá)" },
               ].map((p, i) => (
                 <div key={i} style={{
@@ -676,7 +738,7 @@ export default function HomePage() {
           >
             <motion.div variants={fadeUp} style={{ textAlign: "center", marginBottom: 64 }}>
               <span style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                {isComTam ? "Triết lý ẩm thực" : (isSamHouse ? "Triết lý thức uống" : (isMonQuanChat ? "Triết lý ẩm thực" : (isHoaTeaRoom ? "Triết lý không gian" : "Triết lý Trà đạo Chado")))}
+                {isMonari ? "Triết lý phục vụ" : (isComTam ? "Triết lý ẩm thực" : (isSamHouse ? "Triết lý thức uống" : (isMonQuanChat ? "Triết lý ẩm thực" : (isHoaTeaRoom ? "Triết lý không gian" : "Triết lý Trà đạo Chado"))))}
               </span>
               <h2 style={{
                 fontFamily: "'Cormorant Garamond', serif",
@@ -684,7 +746,7 @@ export default function HomePage() {
                 fontWeight: 700, color: "var(--text)", margin: "12px 0 0",
                 lineHeight: 1.1
               }}>
-                {isComTam ? "Tinh hoa trong từng đĩa cơm" : (isSamHouse ? "Đậm đà trong từng tách cà phê" : (isMonQuanChat ? "Tinh hoa ẩm thực Quảng Nam" : (isHoaTeaRoom ? "Nghệ thuật thưởng trà chiều" : "Nghệ thuật trong từng tách trà")))}
+                {isMonari ? "Nghệ thuật bánh ngọt & trà thơm" : (isComTam ? "Tinh hoa trong từng đĩa cơm" : (isSamHouse ? "Đậm đà trong từng tách cà phê" : (isMonQuanChat ? "Tinh hoa ẩm thực Quảng Nam" : (isHoaTeaRoom ? "Nghệ thuật thưởng trà chiều" : "Nghệ thuật trong từng tách trà"))))}
               </h2>
               <div style={{ width: 60, height: 2, background: "var(--matcha)", margin: "20px auto 0" }} />
             </motion.div>
@@ -712,12 +774,12 @@ export default function HomePage() {
                   {/* Calligraphy Kanji Watermark */}
                   <span style={{
                     position: "absolute", 
-                    top: (isComTam || isSamHouse || isMonQuanChat) ? 10 : -20, 
-                    right: (isComTam || isSamHouse || isMonQuanChat) ? 10 : -10,
+                    top: (isComTam || isSamHouse || isMonQuanChat || isMonari) ? 10 : -20, 
+                    right: (isComTam || isSamHouse || isMonQuanChat || isMonari) ? 10 : -10,
                     fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: (isComTam || isSamHouse || isMonQuanChat) ? 90 : 160, 
+                    fontSize: (isComTam || isSamHouse || isMonQuanChat || isMonari) ? 90 : 160, 
                     fontWeight: 800,
-                    color: isComTam ? "rgba(224, 123, 57, 0.04)" : (isSamHouse ? "rgba(139, 69, 19, 0.04)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.04)" : "rgba(107, 143, 62, 0.04)")),
+                    color: isMonari ? "rgba(200, 109, 81, 0.04)" : (isComTam ? "rgba(224, 123, 57, 0.04)" : (isSamHouse ? "rgba(139, 69, 19, 0.04)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.04)" : "rgba(107, 143, 62, 0.04)"))),
                     lineHeight: 1, pointerEvents: "none", userSelect: "none"
                   }}>
                     {p.kanji}
@@ -727,7 +789,7 @@ export default function HomePage() {
                     {/* Romaji pill */}
                     <span style={{
                       display: "inline-block", padding: "3px 10px", borderRadius: 50,
-                      background: isComTam ? "rgba(224,123,57,0.08)" : (isSamHouse ? "rgba(139,69,19,0.08)" : (isMonQuanChat ? "rgba(139,26,26,0.08)" : "rgba(107,143,62,0.08)")),
+                      background: isMonari ? "rgba(200,109,81,0.08)" : (isComTam ? "rgba(224,123,57,0.08)" : (isSamHouse ? "rgba(139,69,19,0.08)" : (isMonQuanChat ? "rgba(139,26,26,0.08)" : "rgba(107,143,62,0.08)"))),
                       color: "var(--matcha)",
                       fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 18
                     }}>
@@ -757,7 +819,7 @@ export default function HomePage() {
                     display: "flex", alignItems: "center", gap: 6,
                     fontSize: 13, fontWeight: 700, color: "var(--matcha)"
                   }}>
-                    {isComTam ? "Hương vị Cơm Tấm Ngọ" : (isSamHouse ? "Hương vị Sam Houses" : (isMonQuanChat ? "Hương vị Món Quảng Chất" : "Tinh thần Zen-Matcha"))}
+                    {isMonari ? "Hương vị Tiệm Bánh Monari" : (isComTam ? "Hương vị Cơm Tấm Ngọ" : (isSamHouse ? "Hương vị Sam Houses" : (isMonQuanChat ? "Hương vị Món Quảng Chất" : "Tinh thần Zen-Matcha")))}
                   </div>
                 </motion.div>
               ))}
@@ -781,7 +843,7 @@ export default function HomePage() {
                   Được yêu thích nhất
                 </span>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-                  {(isComTam || isMonQuanChat) ? "Món Ăn Đặc Trưng" : "Món Nước Đặc Trưng"}
+                  {(isComTam || isMonQuanChat) ? "Món Ăn Đặc Trưng" : (isMonari ? "Bánh Ngọt & Thức Uống Đặc Trưng" : "Món Nước Đặc Trưng")}
                 </h2>
               </div>
               <motion.button
@@ -837,7 +899,7 @@ export default function HomePage() {
               Không gian quán
             </span>
             <h2 className="sumie-fade" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-              {isComTam ? "Không gian ẩm cúng" : (isSamHouse ? "Góc nhỏ lung linh" : (isMonQuanChat ? "Không gian mộc mạc" : "Zen trong từng góc nhỏ"))}
+              {isMonari ? "Không gian tinh tế Monari" : (isComTam ? "Không gian ấm cúng" : (isSamHouse ? "Góc nhỏ lung linh" : (isMonQuanChat ? "Không gian mộc mạc" : (isHoaTeaRoom ? "Không gian thư thái" : "Zen trong từng góc nhỏ"))))}
             </h2>
           </motion.div>
         </div>
@@ -903,7 +965,7 @@ export default function HomePage() {
                 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.05em" }}>{g.label}</span>
                   <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>
-                    {isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : (isSamHouse ? "Không gian Sam Houses" : (isMonQuanChat ? "Không gian Món Quảng Chất" : (isHoaTeaRoom ? "Không gian Hòa Tea Room" : "Không gian Yakishime")))}
+                    {isMonari ? "Không gian MONARI" : (isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : (isSamHouse ? "Không gian Sam Houses" : (isMonQuanChat ? "Không gian Món Quảng Chất" : (isHoaTeaRoom ? "Không gian Hòa Tea Room" : "Không gian Yakishime"))))}
                   </span>
                 </div>
               </motion.div>

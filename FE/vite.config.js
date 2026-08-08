@@ -18,6 +18,7 @@ export default defineConfig({
         samhouse: path.resolve(__dirname, 'samhouse.html'),
         monquanchat: path.resolve(__dirname, 'monquanchat.html'),
         hoatearoom: path.resolve(__dirname, 'hoatearoom.html'),
+        monari: path.resolve(__dirname, 'monari.html'),
       },
     },
   },

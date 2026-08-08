@@ -88,6 +88,27 @@ html.dark[data-tenant="samhouse"] {
   --glass-border: rgba(139, 69, 19, 0.20);
 }
 
+html.dark[data-tenant="monari"] {
+  /* Warm rose-gold / terracotta dark theme for MONARI – không phải matcha xanh */
+  --matcha:       #D4845A; /* Warm terracotta/rose-gold accent */
+  --matcha-light: #E8A07A; /* Lighter warm highlight */
+  --matcha-dark:  #B8643A; /* Darker terracotta */
+  --forest:       #C0704A; /* Deep warm amber */
+  --forest-dark:  #A0502A;
+
+  --bg:           #130C09; /* Very deep warm near-black */
+  --bg-card:      #1E1410; /* Rich dark warm brown */
+  --bg-alt:       #271A14; /* Warm dark input background */
+  --cream:        #33201A;
+  --text:         #F8F0EB; /* Warm off-white */
+  --text-muted:   #C4A898; /* Warm muted rose-grey */
+  --text-light:   #90746A;
+  --border:       rgba(200, 109, 81, 0.18);
+
+  --glass-bg:     rgba(19, 12, 9, 0.85);
+  --glass-border: rgba(200, 109, 81, 0.22);
+}
+
 html[data-tenant="hoatearoom"] {
   --matcha:       #1E4620;
   --matcha-light: #2E6F40;
