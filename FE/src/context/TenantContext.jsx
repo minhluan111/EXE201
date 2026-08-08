@@ -82,13 +82,14 @@ export function TenantProvider({ children }) {
           setTenant(normalizedData);
           
           // Set dynamic title and favicon
-          const name = isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime");
+          const name = isMonari ? "MONARI" : (isMatcha ? "Yakishime" : (normalizedData.name || "MONARI"));
           document.title = name;
-          const logo = normalizedData.logo || (isMonari ? "/assets/monari/decor/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg"))));
+          const logo = (isMonari ? "/assets/monari/decor/logo.png" : (normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")))));
           normalizedData.logo = logo;
           const favicon = document.querySelector("link[rel*='icon']");
           if (favicon) {
             favicon.href = logo;
+            if (isMonari) favicon.type = "image/png";
           }
 
       } catch (err) {
