@@ -151,7 +151,7 @@ function ReviewItem({ review }) {
                   letterSpacing: "0.02em",
                 }}
               >
-                {isComTam ? "🌾 Phản hồi từ Cơm Tấm Ngọ" : (isSamHouse ? "☕ Phản hồi từ Sam Houses" : (isMonQuanChat ? "🍲 Phản hồi từ Món Quảng Chất" : (isHoaTeaRoom ? "🍃 Phản hồi từ Hòa Tea Room" : "🍵 Phản hồi từ Yakishime Manager")))}
+                {isComTam ? "🌾 Phản hồi từ Cơm Tấm Ngọ" : (isSamHouse ? "☕ Phản hồi từ Sam Houses" : (isMonQuanChat ? "🍲 Phản hồi từ Món Quảng Chất" : (isHoaTeaRoom ? "🍃 Phản hồi từ Hòa Tea Room" : (isEmCoffee ? "☕ Phản hồi từ Em Coffee" : (isTaoTao ? "☕ Phản hồi từ Táo Tào" : (isHanHuyen ? "🍃 Phản hồi từ Quán Nước Hàn Huyên" : (isCochin ? "🌿 Phản hồi từ Cochin Café" : "🍵 Phản hồi từ Yakishime Manager")))))))}
               </span>
             </div>
             <p

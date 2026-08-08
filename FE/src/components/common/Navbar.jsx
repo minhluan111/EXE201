@@ -23,6 +23,9 @@ export default function Navbar() {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee");
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao");
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.tenantName?.toLowerCase().includes("hanhuyen") || String(tenant?.domain).toLowerCase().includes("hanhuyen");
   const [scrolled, setScrolled]       = useState(false);
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -102,10 +105,10 @@ export default function Navbar() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                 color: "var(--matcha)",
-                textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom) ? "none" : "lowercase",
+                textTransform: "none",
               }}
             >
-              {tenant?.name || "yakishime"}
+              {tenant?.name || "Yakishime"}
             </span>
           </RouterLink>
 
@@ -344,9 +347,9 @@ export default function Navbar() {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                   color: "var(--matcha)",
-                  textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom) ? "none" : "lowercase",
+                  textTransform: "none",
                 }}>
-                  {tenant?.name || "yakishime"}
+                  {tenant?.name || "Yakishime"}
                 </span>
               </div>
 

@@ -5,7 +5,8 @@ const tenants = [
   { name: 'comtam', title: 'Cơm Tấm Ngọ', icon: '/assets/comtamno/logo.jpg', isPng: false },
   { name: 'samhouse', title: 'Sam Houses', icon: '/assets/samhouse/decor/logo.png', isPng: true },
   { name: 'monquanchat', title: 'Món Quảng Chất', icon: '/assets/monquanchat/decor/logo.png', isPng: true },
-  { name: 'hoatearoom', title: 'Hòa Tea Room', icon: '/assets/hoatearoom/decor/logo.png', isPng: true }
+  { name: 'hoatearoom', title: 'Hòa Tea Room', icon: '/assets/hoatearoom/decor/logo.png', isPng: true },
+  { name: 'emcoffee', title: 'Em Coffee', icon: '/assets/emcoffee/logo.jpg', isPng: false }
 ];
 
 tenants.forEach(t => {

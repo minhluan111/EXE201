@@ -29,10 +29,14 @@ export default function BookingConfirmPage() {
   const location = useLocation();
   const { user, token } = useAuth();
   const { tenant } = useTenant();
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse") || localStorage.getItem("tenant_is_samhouse") === "true";
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee") || localStorage.getItem("tenant_is_emcoffee") === "true";
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin") || String(tenant?.tenantName).toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
   const { selected: contextSelected, clear } = useBookingContext();
 
   // Scroll to top on mount
@@ -247,7 +251,7 @@ export default function BookingConfirmPage() {
                 lineHeight: 1.6,
               }}
             >
-              {isComTam ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : (isSamHouse ? "Vui lòng xem lại thông tin đặt chỗ và điền các ghi chú" : (isMonQuanChat ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : (isHoaTeaRoom ? "Vui lòng xem lại thông tin đặt bàn trà và điền các ghi chú" : "Vui lòng xem lại thông tin chi tiết phòng trà và điền các ghi chú")))}
+              {isComTam ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : (isSamHouse || isEmCoffee ? "Vui lòng xem lại thông tin đặt chỗ và điền các ghi chú" : (isMonQuanChat ? "Vui lòng xem lại thông tin đặt bàn và điền các ghi chú" : (isHoaTeaRoom ? "Vui lòng xem lại thông tin đặt bàn trà và điền các ghi chú" : "Vui lòng xem lại thông tin chi tiết phòng trà và điền các ghi chú")))}
               đặc biệt để chúng tôi chuẩn bị đón tiếp quý khách một cách hoàn
               hảo nhất.
             </p>
@@ -359,7 +363,7 @@ export default function BookingConfirmPage() {
                   <Coffee size={16} />
                 </div>
                 <div>
-                  <span className="detail-label">BÀN TRÀ</span>
+                  <span className="detail-label">{isComTam || isMonQuanChat ? "BÀN ĂN" : (isCochin || isEmCoffee || isSamHouse || isTaoTao ? "BÀN CÀ PHÊ" : "BÀN TRÀ")}</span>
                   <span
                     className="detail-value"
                     style={{ color: "var(--forest)", fontWeight: 700 }}
@@ -374,45 +378,21 @@ export default function BookingConfirmPage() {
                   <Users size={16} />
                 </div>
                 <div>
-                  <span className="detail-label">SỐ KHÁCH</span>
-                  <span className="detail-value">{num_of_people} Người</span>
+                  <span className="detail-label">SỐ LƯỢNG KHÁCH</span>
+                  <span className="detail-value">{num_of_people} người</span>
                 </div>
               </div>
 
               <div className="detail-item full-width">
                 <div className="detail-icon">
-                  <Calendar size={16} />
+                  <Clock size={16} />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <span className="detail-label">THỜI GIAN HẸN TRÀ</span>
-                  <span
-                    className="detail-value"
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <span>{booking_date}</span>
-                    <span
-                      style={{
-                        color: "var(--text-light)",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      |
-                    </span>
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                        color: "var(--matcha)",
-                      }}
-                    >
-                      <Clock size={14} />
-                      {booking_time}
+                <div>
+                  <span className="detail-label">THỜI GIAN ĐẶT CHỖ</span>
+                  <span className="detail-value">
+                    {booking_time} ·{" "}
+                    <span style={{ color: "var(--matcha)", fontWeight: 700 }}>
+                      {formattedDate}
                     </span>
                   </span>
                 </div>
@@ -439,7 +419,7 @@ export default function BookingConfirmPage() {
                 }}
               >
                 <MessageSquare size={16} style={{ color: "var(--matcha)" }} />
-                {isComTam ? "Ghi chú đặc biệt cho Nhà Hàng" : (isSamHouse ? "Ghi chú đặc biệt cho Quán" : (isMonQuanChat ? "Ghi chú đặc biệt cho Quán" : (isHoaTeaRoom ? "Ghi chú đặc biệt cho Trà Quán" : "Ghi chú đặc biệt cho Phòng Trà")))}
+                {isComTam ? "Ghi chú đặc biệt cho Nhà Hàng" : (isSamHouse || isEmCoffee || isTaoTao || isCochin || isHanHuyen ? "Ghi chú đặc biệt cho Quán" : (isHoaTeaRoom ? "Ghi chú đặc biệt cho Trà Quán" : "Ghi chú đặc biệt cho Phòng Trà"))}
               </label>
               <textarea
                 rows={4}

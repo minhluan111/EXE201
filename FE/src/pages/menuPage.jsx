@@ -42,6 +42,34 @@ const HOA_TEA_ROOM_CATEGORIES = [
   { key: "Experiences",   label: "Trải nghiệm",       emoji: "🎨" },
 ];
 
+const EM_COFFEE_CATEGORIES = [
+  { key: "all",        label: "Tất cả",          emoji: "☕" },
+  { key: "Combo",      label: "Combo ưu đãi",    emoji: "🎁" },
+  { key: "Coffee",     label: "Cà phê & Cacao",  emoji: "☕" },
+  { key: "FruitTea",   label: "Trà hoa quả",     emoji: "🍓" },
+];
+
+const TAO_TAO_CATEGORIES = [
+  { key: "all",        label: "Tất cả",          emoji: "☕" },
+  { key: "Combo",      label: "Combo ưu đãi",    emoji: "🎁" },
+  { key: "Coffee",     label: "Cà phê",          emoji: "☕" },
+  { key: "Tea",        label: "Trà",             emoji: "🍵" },
+  { key: "Snack",      label: "Ăn vặt",          emoji: "🍰" },
+];
+
+const HAN_HUYEN_CATEGORIES = [
+  { key: "all",        label: "Tất cả" },
+  { key: "Coffee",     label: "Cà phê" },
+  { key: "Tea",        label: "Trà" },
+];
+
+const COCHIN_CATEGORIES = [
+  { key: "all",        label: "Tất cả" },
+  { key: "Coffee",     label: "Cà phê & Sô cô la" },
+  { key: "MilkTea",    label: "Trà sữa" },
+  { key: "Tea",        label: "Trà trái cây & Trà hoa" },
+];
+
 const TAGS = [
   { key: "all",        label: "Tất cả" },
   { key: "best_seller",label: "Bán chạy nhất" },
@@ -79,7 +107,11 @@ export default function MenuPage() {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
-  const CATEGORIES = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES));
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee");
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao");
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin") || String(tenant?.tenantName).toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
+  const CATEGORIES = (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : (isEmCoffee ? EM_COFFEE_CATEGORIES : (isTaoTao ? TAO_TAO_CATEGORIES : (isHanHuyen ? HAN_HUYEN_CATEGORIES : (isCochin ? COCHIN_CATEGORIES : MATCHA_CATEGORIES))))));
 
   const [q, setQ]               = useState("");
   const [category, setCategory] = useState("all");
@@ -140,7 +172,7 @@ export default function MenuPage() {
           position: "absolute", inset: 0,
           backgroundImage: isComTam 
             ? "url('/assets/comtamno/hero.jpg')" 
-            : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')")),
+            : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : (isEmCoffee ? "url('/assets/emcoffee/decor/hero.jpg')" : (isTaoTao ? "url('/assets/taotao/decor/hero.jpg')" : (isHanHuyen ? "url('/assets/hanhuyen/Ảnh bìa.jpg')" : (isCochin ? "url('/assets/cochin/Ảnh bìa.jpg')" : "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')"))))))),
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "brightness(0.35)",
         }} />
@@ -148,7 +180,7 @@ export default function MenuPage() {
           position: "absolute", inset: 0,
           background: isComTam 
             ? "linear-gradient(to bottom, rgba(40,30,25,0.6), rgba(40,30,25,0.9))" 
-            : (isSamHouse ? "linear-gradient(to bottom, rgba(30,20,15,0.6), rgba(30,20,15,0.9))" : (isMonQuanChat ? "linear-gradient(to bottom, rgba(43,10,10,0.6), rgba(43,10,10,0.9))" : "linear-gradient(to bottom, rgba(15,31,18,0.6), rgba(15,31,18,0.9))"))
+            : (isSamHouse ? "linear-gradient(to bottom, rgba(30,20,15,0.6), rgba(30,20,15,0.9))" : (isMonQuanChat ? "linear-gradient(to bottom, rgba(43,10,10,0.6), rgba(43,10,10,0.9))" : (isHoaTeaRoom ? "linear-gradient(to bottom, rgba(16,38,24,0.6), rgba(16,38,24,0.9))" : (isEmCoffee ? "linear-gradient(to bottom, rgba(40,25,18,0.6), rgba(40,25,18,0.9))" : (isTaoTao ? "linear-gradient(to bottom, rgba(50,15,15,0.6), rgba(50,15,15,0.9))" : (isHanHuyen ? "linear-gradient(to bottom, rgba(46,67,52,0.6), rgba(46,67,52,0.9))" : (isCochin ? "linear-gradient(to bottom, rgba(20,45,35,0.6), rgba(15,35,25,0.9))" : "linear-gradient(to bottom, rgba(15,31,18,0.6), rgba(15,31,18,0.9))")))))))
         }} />
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "100px 24px 80px" }}>
@@ -163,7 +195,7 @@ export default function MenuPage() {
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, maxWidth: 540, lineHeight: 1.7 }}>
               {isComTam 
                 ? "Từng đĩa cơm sườn, bát bún thịt nướng được tẩm ướp đậm đà — sườn nướng than hồng mật ong thơm ngon trọn vị."
-                : (isSamHouse ? "Khám phá hương vị cà phê rang xay nguyên chất đậm vị, cùng các loại trà sữa và trà trái cây thơm mát đặc biệt." : (isMonQuanChat ? "Thưởng thức mỳ Quảng tôm thịt đậm đà, Cao lầu Hội An chuẩn vị và bánh tráng cuốn thịt heo ba chỉ ngọt thơm chuẩn vị xứ Quảng." : "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết, hương vị tinh tế theo triết lý Zen."))}
+                : (isSamHouse ? "Khám phá hương vị cà phê rang xay nguyên chất đậm vị, cùng các loại trà sữa và trà trái cây thơm mát đặc biệt." : (isMonQuanChat ? "Thưởng thức mỳ Quảng tôm thịt đậm đà, Cao lầu Hội An chuẩn vị và bánh tráng cuốn thịt heo ba chỉ ngọt thơm chuẩn vị xứ Quảng." : (isHoaTeaRoom ? "Thưởng trà hoa thanh khiết, trải nghiệm nghệ thuật trà đạo Việt trong không gian thiền định yên bình." : (isEmCoffee ? "Tận hưởng ly cà phê nguyên chất cùng những loại trà thanh mát trong không gian nhẹ nhàng, bình yên." : (isTaoTao ? "Thưởng thức cà phê nguyên chất, không gian đậm chất vintage và retro với tone đỏ trầm ấm cúng." : (isHanHuyen ? "Không gian lưu giữ những câu chuyện và thưởng thức thức uống thanh mát." : (isCochin ? "Thưởng thức từng tách Latte nghệ thuật, Sô cô la đậm đà, Trà sữa thơm béo và Trà trái cây thanh mát trong không gian nhà kính ngập tràn ánh sáng." : "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết, hương vị tinh tế theo triết lý Zen.")))))))}
             </p>
           </motion.div>
         </div>
@@ -200,7 +232,6 @@ export default function MenuPage() {
                   display: "flex", alignItems: "center", gap: 6,
                 }}
               >
-                <span style={{ fontSize: 14 }}>{cat.emoji}</span>
                 {cat.label}
               </motion.button>
             ))}

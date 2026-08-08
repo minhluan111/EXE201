@@ -20,6 +20,8 @@ export default function FloatingChatBubble() {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee");
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -338,7 +340,7 @@ export default function FloatingChatBubble() {
                     <MessageSquare size={16} />
                     {isManager 
                       ? (activeFeedbackId ? "Trả lời: " + activeFeedback?.user?.full_name : "Quản lý Hội Thoại") 
-                      : `${tenant?.name || "Yakishime"} Support ${isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵")))}`}
+                      : `${tenant?.name || (isCochin ? "Cochin Café" : "Yakishime")} Support ${isComTam ? "🌾" : (isSamHouse || isEmCoffee || isTaoTao || isCochin ? "☕" : (isMonQuanChat ? "🍜" : (isHoaTeaRoom || isHanHuyen ? "🍃" : "🍵")))}`}
                   </h3>
                   <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#10B981" }} />
@@ -359,7 +361,7 @@ export default function FloatingChatBubble() {
               {!token ? (
                 /* ── NOT LOGGED IN VIEW ── */
                 <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32, textAlign: "center" }}>
-                  <p style={{ fontSize: 44, margin: "0 0 12px" }}>🍵</p>
+                  <p style={{ fontSize: 44, margin: "0 0 12px" }}>{isComTam ? "🌾" : (isSamHouse || isEmCoffee || isTaoTao || isCochin ? "☕" : (isMonQuanChat ? "🍜" : (isHoaTeaRoom || isHanHuyen ? "🍃" : "🍵")))}</p>
                   <h4 style={{ fontSize: 15, fontWeight: 700, margin: "0 0 8px", color: "var(--text)" }}>Xin chào quý khách!</h4>
                   <p style={{ fontSize: 13, color: "var(--text-light)", lineHeight: 1.5, margin: "0 0 20px" }}>
                     Vui lòng đăng nhập tài khoản thành viên để kích hoạt tính năng chat hỗ trợ trực tuyến với nhà hàng.
@@ -578,7 +580,7 @@ export default function FloatingChatBubble() {
                             return (
                               <div key={idx} style={{ alignSelf: "flex-start", maxWidth: "85%", display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: 4 }}>
                                 <span style={{ fontSize: 10, color: "var(--matcha)", fontWeight: 700, marginBottom: 2 }}>
-                                  {isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵")))} {tenant?.name || "Yakishime"} Manager
+                                  {isComTam ? "🌾" : (isSamHouse || isEmCoffee || isTaoTao || isCochin ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom || isHanHuyen ? "🍃" : "🍵")))} {tenant?.name || (isCochin ? "Cochin Café" : "Quán")} Manager
                                 </span>
                                 <div style={{
                                   background: "rgba(255, 255, 255, 0.04)",

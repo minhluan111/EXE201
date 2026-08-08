@@ -9,15 +9,21 @@ import { useTenant } from "@/context/TenantContext";
 
 function translateCategory(cat) {
   const map = {
-    Drink: "Trà đạo / Đồ uống",
+    Drink: "Đồ uống",
     MainCourse: "Món chính",
-    Dessert: "Tráng miệng / Wagashi",
+    Dessert: "Tráng miệng",
     Snack: "Ăn nhẹ",
     Traditional: "Truyền thống",
     Latte: "Latte",
     Hojicha: "Hojicha",
     Desserts: "Tráng miệng",
-    Food: "Món ăn"
+    Food: "Món ăn",
+    Coffee: "Cà phê & Cacao",
+    FruitTea: "Trà hoa quả",
+    MilkTea: "Trà sữa",
+    MatchaSpecial: "Matcha Đặc Sản",
+    MatchaClassic: "Matcha Truyền Thống",
+    Experiences: "Trải nghiệm"
   };
   return map[cat] || cat;
 }
@@ -52,10 +58,13 @@ function InteractiveRating({ value, onChange }) {
 // ── Review Item component ──────────────────────────────────────────────────
 function ReviewItem({ review }) {
   const { tenant } = useTenant();
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse") || localStorage.getItem("tenant_is_samhouse") === "true";
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee") || localStorage.getItem("tenant_is_emcoffee") === "true";
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
   const initials = review.user?.full_name?.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() ?? "?";
   const date = new Date(review.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
 

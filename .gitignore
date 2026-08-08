@@ -12,4 +12,11 @@ dist/
 build/
 .env
 .env.*
-!.env.example
+# IDE / Temp
+.vs/
+.vscode/
+*.bak
+*.user
+scratch/
+patch.js
+*-20260808T*

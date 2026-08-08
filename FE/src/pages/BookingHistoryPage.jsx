@@ -68,10 +68,14 @@ function generateTimeSlots(intervals) {
 export default function BookingHistoryPage() {
   const { tenant } = useTenant();
   const { token, user } = useAuth();
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse") || localStorage.getItem("tenant_is_samhouse") === "true";
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee") || localStorage.getItem("tenant_is_emcoffee") === "true";
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin") || String(tenant?.tenantName).toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
@@ -409,7 +413,15 @@ export default function BookingHistoryPage() {
                         ? "Theo dõi trạng thái các cuộc hẹn đặt bàn và lịch sử trải nghiệm của quý khách tại Món Quảng Chất."
                         : (isHoaTeaRoom
                             ? "Theo dõi trạng thái các cuộc hẹn đặt bàn thưởng trà và lịch sử trải nghiệm của quý khách tại Hòa Tea Room."
-                            : "Theo dõi trạng thái các cuộc hẹn trà đạo và lịch sử trải nghiệm của quý khách tại Yakishime Matcha.")))}
+                            : (isEmCoffee
+                                ? "Theo dõi trạng thái các cuộc hẹn đặt chỗ học tập, làm việc và thưởng thức cà phê tại Em Coffee."
+                                : (isTaoTao
+                                    ? "Theo dõi trạng thái các cuộc hẹn đặt chỗ và thưởng thức kem muối tại Táo Tào cà phê."
+                                    : (isHanHuyen
+                                        ? "Theo dõi trạng thái các cuộc hẹn đặt bàn và lịch sử trải nghiệm của quý khách tại Quán Nước Hàn Huyên."
+                                        : (isCochin
+                                            ? "Theo dõi trạng thái các cuộc hẹn đặt bàn và lịch sử trải nghiệm không gian nhà kính của quý khách tại Cochin Café."
+                                            : "Theo dõi trạng thái các cuộc hẹn trà đạo và lịch sử trải nghiệm của quý khách tại Yakishime Matcha.")))))))}
             </p>
           </motion.div>
         </div>

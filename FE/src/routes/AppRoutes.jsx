@@ -123,7 +123,7 @@ export default function AppRoutes() {
       <Route
         path="/admin/settings"
         element={
-          <ProtectedRoute roleRequired="manager">
+          <ProtectedRoute roleRequired="admin_or_manager">
             <AdminManageSettingsPage />
           </ProtectedRoute>
         }

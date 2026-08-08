@@ -61,28 +61,40 @@ public class TenantResolverMiddleware
             return;
         }
 
-        var domain = domainValues.First()!.Trim().ToLowerInvariant();
+        var rawDomain = domainValues.First()!.Trim().ToLowerInvariant();
+        var cleanDomain = rawDomain.Replace("https://", "").Replace("http://", "").Split(':')[0].Trim();
+        var prefix = cleanDomain.Split('.')[0];
 
         // Thử lấy từ cache trước — tránh DB round-trip cho mỗi request
-        var cacheKey = $"tenant:{domain}";
+        var cacheKey = $"tenant:{cleanDomain}";
         if (!_cache.TryGetValue(cacheKey, out (Guid Id, string Domain) cached))
         {
-            // Tra cứu tenant — bypass query filter vì chưa có TenantId context
-            // Dùng projection (.Select) để chỉ lấy các field cần thiết thay vì toàn bộ Tenant entity
+            // Tra cứu tenant — hỗ trợ cả tên ngắn (emcoffee), localhost và full domain (emcoffee.localhost, emcoffee.vercel.app)
             var tenant = await db.Tenants
                 .IgnoreQueryFilters()
                 .AsNoTracking()
-                .Where(t => t.Domain == domain && t.Active)
+                .Where(t => (t.Domain == cleanDomain 
+                          || t.Domain == rawDomain 
+                          || t.Domain == prefix 
+                          || t.Domain.StartsWith(prefix + ".") 
+                          || (prefix == "comtam" && t.Domain.Contains("comtam"))
+                          || (prefix == "samhouse" && t.Domain.Contains("samhouse"))
+                          || (prefix == "monquanchat" && t.Domain.Contains("monquan"))
+                          || (prefix == "hoatearoom" && t.Domain.Contains("hoa"))
+                          || (prefix == "emcoffee" && t.Domain.Contains("emcoffee"))
+                          || (prefix.Contains("taotao") && t.Domain.Contains("taotao"))
+                          || (prefix == "matcha" && t.Domain.Contains("yaki")))
+                          && t.Active)
                 .Select(t => new { t.Id, t.Domain, t.Name })
                 .FirstOrDefaultAsync();
 
             if (tenant is null)
             {
-                _logger.LogWarning("Tenant không tồn tại hoặc đã bị vô hiệu hóa: {Domain}", domain);
+                _logger.LogWarning("Tenant không tồn tại hoặc đã bị vô hiệu hóa: {Domain}", rawDomain);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(
-                    $"{{\"error\":\"Tenant '{domain}' không tồn tại hoặc đã bị vô hiệu hóa.\"}}");
+                    $"{{\"error\":\"Tenant '{rawDomain}' không tồn tại hoặc đã bị vô hiệu hóa.\"}}");
                 return;
             }
 

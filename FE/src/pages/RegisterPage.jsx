@@ -69,6 +69,10 @@ export default function RegisterPage() {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee");
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao");
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin") || String(tenant?.tenantName).toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
 
   const [form, setForm] = useState({ full_name: "", email: "", phone: "", password: "", confirm: "" });
   const [showPw, setShowPw]   = useState(false);
@@ -82,43 +86,42 @@ export default function RegisterPage() {
   const validate = () => {
     const e = {};
     if (!form.full_name.trim()) e.full_name = "Vui lòng nhập họ tên.";
-    if (!form.email.includes("@")) e.email = "Email không hợp lệ.";
-    if (!/^0\d{9}$/.test(form.phone)) e.phone = "Số điện thoại không hợp lệ (VD: 0909123456).";
-    if (form.password.length < 8) {
-      e.password = "Mật khẩu phải chứa ít nhất 8 ký tự.";
-    } else if (!/[A-Z]/.test(form.password)) {
-      e.password = "Mật khẩu phải chứa ít nhất một chữ cái viết hoa (A-Z).";
-    } else if (!/[a-z]/.test(form.password)) {
-      e.password = "Mật khẩu phải chứa ít nhất một chữ cái viết thường (a-z).";
-    } else if (!/[0-9]/.test(form.password)) {
-      e.password = "Mật khẩu phải chứa ít nhất một chữ số (0-9).";
-    } else if (!/[^A-Za-z0-9]/.test(form.password)) {
-      e.password = "Mật khẩu phải chứa ít nhất một ký tự đặc biệt (VD: @, #, $,...).";
-    }
-    if (form.password !== form.confirm) e.confirm = "Mật khẩu không khớp.";
+    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = "Email không hợp lệ.";
+    if (form.phone && !/^[0-9]{10,11}$/.test(form.phone.replace(/\s/g, ""))) e.phone = "Số điện thoại không hợp lệ.";
+    if (!form.password || form.password.length < 6) e.password = "Mật khẩu tối thiểu 6 ký tự.";
+    if (form.password !== form.confirm) e.confirm = "Mật khẩu xác nhận không khớp.";
     return e;
   };
 
-  const handleSubmit = async (ev) => {
-    ev.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); setShake(true); setTimeout(() => setShake(false), 500); return; }
     setErrors({}); setGlobalErr(""); setLoading(true);
 
-    const res = await register({ full_name: form.full_name, email: form.email, phone: form.phone, password: form.password });
+    const res = await register({
+      full_name: form.full_name,
+      email: form.email,
+      phone: form.phone || undefined,
+      password: form.password,
+    });
     setLoading(false);
-    if (res.ok) navigate("/");
-    else { setGlobalErr(res.message); setShake(true); setTimeout(() => setShake(false), 500); }
+    if (res.ok) {
+      navigate("/");
+    } else {
+      setGlobalErr(res.message);
+      setShake(true); setTimeout(() => setShake(false), 500);
+    }
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "100vh" }} className="auth-grid">
-      {/* Left image */}
+    <div className="auth-grid" style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+      {/* Left panel */}
       <div style={{
         position: "relative", overflow: "hidden",
         backgroundImage: isComTam 
           ? "url('/assets/comtamno/hero.jpg')" 
-          : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=900&q=85')"))),
+          : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : (isEmCoffee ? "url('/assets/emcoffee/decor/hero.jpg')" : (isTaoTao ? "url('/assets/taotao/decor/hero.jpg')" : (isHanHuyen ? "url('/assets/hanhuyen/Ảnh bìa.jpg')" : (isCochin ? "url('/assets/cochin/Ảnh bìa.jpg')" : "url('/assets/images/auth-bg.jpg')"))))))),
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
         <div style={{ 
@@ -132,7 +135,15 @@ export default function RegisterPage() {
                     ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(139,26,26,0.75) 100%)"
                     : (isHoaTeaRoom
                         ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(46,111,64,0.75) 100%)"
-                        : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 100%)")))
+                        : (isEmCoffee
+                            ? "linear-gradient(135deg, rgba(20,12,8,0.85) 0%, rgba(139,90,43,0.75) 100%)"
+                            : (isTaoTao
+                                ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(155,46,34,0.75) 100%)"
+                                : (isHanHuyen
+                                    ? "linear-gradient(135deg, rgba(25,40,30,0.85) 0%, rgba(97,130,105,0.75) 100%)"
+                                    : (isCochin
+                                      ? "linear-gradient(135deg, rgba(15,35,25,0.85) 0%, rgba(42,89,68,0.75) 100%)"
+                                      : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 100%)")))))))
         }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: "auto" }}>
@@ -144,22 +155,30 @@ export default function RegisterPage() {
                       ? <span style={{ fontSize: 24 }}>🍲</span>
                       : (isHoaTeaRoom
                           ? <span style={{ fontSize: 24 }}>🍃</span>
-                          : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />)))
+                          : (isEmCoffee
+                              ? <Coffee size={24} style={{ color: "#D4A373" }} />
+                              : (isTaoTao
+                                  ? <Coffee size={24} style={{ color: "#D9534F" }} />
+                                  : (isHanHuyen
+                                      ? <Coffee size={24} style={{ color: "#7A9D83" }} />
+                                      : (isCochin
+                                        ? <Coffee size={24} style={{ color: "#A3DFB5" }} />
+                                        : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />)))))))
             }
             <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: "capitalize" }}>
-              {tenant?.name || "yakishime"}
+              {tenant?.name || (isHanHuyen ? "Quán Nước Hàn Huyên" : (isCochin ? "Cochin Café" : "yakishime"))}
             </span>
           </RouterLink>
           <div>
             {["Đặt bàn theo sơ đồ tương tác", "Xem lịch sử & hủy dễ dàng", "Viết đánh giá món ăn"].map((b) => (
               <div key={b} style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14 }}>
-                <CheckCircle size={16} style={{ color: isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#6CBF7A" : "rgba(175,215,120,0.9)"))), flexShrink: 0 }} />
+                <CheckCircle size={16} style={{ color: isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#6CBF7A" : (isEmCoffee ? "#D4A373" : (isTaoTao ? "#D9534F" : (isHanHuyen ? "#7A9D83" : (isCochin ? "#A3DFB5" : "rgba(175,215,120,0.9)"))))))), flexShrink: 0 }} />
                 <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 15 }}>{b}</span>
               </div>
             ))}
           </div>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4vw, 48px)", fontWeight: 700, color: "#fff", margin: "28px 0 14px", lineHeight: 1.15 }}>
-            Tham gia cộng đồng<br />{tenant?.name || "Yakishime"} hôm nay
+            Tham gia cộng đồng<br />{tenant?.name || (isHanHuyen ? "Quán Nước Hàn Huyên" : (isCochin ? "Cochin Café" : "Yakishime"))} hôm nay
           </h2>
         </div>
       </div>

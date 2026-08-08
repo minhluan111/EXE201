@@ -40,6 +40,16 @@
       ],
       "destination": "/hoatearoom.html"
     },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)emcoffee(.*)"
+        }
+      ],
+      "destination": "/emcoffee.html"
+    },
     { "source": "/(.*)", "destination": "/yakishime.html" }
   ]
 }

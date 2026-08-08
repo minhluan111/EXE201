@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   build: {
+    emptyOutDir: false,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
@@ -18,6 +19,9 @@ export default defineConfig({
         samhouse: path.resolve(__dirname, 'samhouse.html'),
         monquanchat: path.resolve(__dirname, 'monquanchat.html'),
         hoatearoom: path.resolve(__dirname, 'hoatearoom.html'),
+        emcoffee: path.resolve(__dirname, 'emcoffee.html'),
+        taotao: path.resolve(__dirname, 'taotao.html'),
+        taotaocafe: path.resolve(__dirname, 'taotaocafe.html'),
       },
     },
   },

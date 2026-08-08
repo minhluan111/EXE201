@@ -100,6 +100,80 @@ const yakiTableImages = {
   "4-Seat Outdoor": "/assets/yakishime/tables/n2_7.jpg",
 };
 
+const emCoffeeTableImages = {
+  "Bàn 1 người (Trong nhà, có ổ điện)": "/assets/emcoffee/tables/ban_1_nguoi.jpg",
+  "Bàn 2 người (Trong nhà, cạnh cửa sổ 1)": "/assets/emcoffee/tables/ban_2_nguoi_cua_so.webp",
+  "Bàn 2 người (Trong nhà, cạnh cửa sổ 2)": "/assets/emcoffee/tables/ban_2_nguoi_cua_so_2.webp",
+  "Bàn 2 người (Trong nhà, có ổ điện)": "/assets/emcoffee/tables/ban_2_nguoi_o_dien.jpg",
+  "Bàn 2 người (Trong nhà, trong góc bên phải)": "/assets/emcoffee/tables/ban_2_nguoi_goc_phai.png",
+  "Bàn 2 người (Trong nhà, trong góc bên trái)": "/assets/emcoffee/tables/ban_2_nguoi_goc_trai.png",
+  "Bàn 2 người (Trong nhà)": "/assets/emcoffee/tables/ban_2_nguoi_trong_nha.webp",
+  "Bàn 4 người (Trong nhà, không gian riêng tư)": "/assets/emcoffee/tables/ban_4_nguoi_rieng_tu.jpg",
+  "Bàn 4 người (Trong nhà, trong góc riêng tư, có ổ điện)": "/assets/emcoffee/tables/ban_4_nguoi_goc_o_dien.webp",
+  "Bàn 6 người (Trong nhà, có ổ điện, ngồi nằm)": "/assets/emcoffee/tables/ban_6_nguoi_o_dien.webp",
+  "Bàn 6 người (Trong nhà, rộng, lớn thích hợp đi nhóm, làm bài)": "/assets/emcoffee/tables/ban_6_nguoi_lon_lam_viec.jpg",
+  "2-Seat Corner": "/assets/emcoffee/tables/ban_2_nguoi_goc_phai.png",
+  "2-Seat Window": "/assets/emcoffee/tables/ban_2_nguoi_cua_so.webp",
+  "2-Seat Bar": "/assets/emcoffee/tables/ban_1_nguoi.jpg",
+  "4-Seat Indoor": "/assets/emcoffee/tables/ban_4_nguoi_rieng_tu.jpg",
+  "4-Seat Tatami": "/assets/emcoffee/tables/ban_4_nguoi_goc_o_dien.webp",
+  "4-Seat Outdoor": "/assets/emcoffee/tables/ban_6_nguoi_lon_lam_viec.jpg",
+};
+
+const taoTaoTableImages = {
+  "2-Seat Window": "/assets/taotao/tables/ban_2_nguoi_trong_nha_cua_so.jpg",
+  "2-Seat Corner": "/assets/taotao/tables/ban_2_nguoi_trong_nha_goc.jpg",
+  "4-Seat Indoor": "/assets/taotao/tables/ban_4_nguoi_trong_nha.jpg",
+  "4-Seat Outdoor": "/assets/taotao/tables/ban_4_nguoi_ngoai_troi_tan_cay.jpg",
+};
+
+const hanHuyenTableImages = {
+  "Bàn 2 người (Ngoài trời)": "/assets/hanhuyen/tables/outdoor_table_2.jpg",
+  "Bàn 2 người (Ngoài trời, góc check in)": "/assets/hanhuyen/tables/outdoor_checkin_2.jpg",
+  "Bàn 2 người (Trong nhà, ghế sofa)": "/assets/hanhuyen/tables/indoor_sofa_2.jpg",
+  "Bàn 2 người (Trong nhà, ngồi nệm, có ổ điện)": "/assets/hanhuyen/tables/indoor_nem_socket_2.jpg",
+  "Bàn 2 người (Trong nhà, đối diện cửa sổ)": "/assets/hanhuyen/tables/indoor_window_2.jpg",
+  "Bàn 4 người (Trong nhà)": "/assets/hanhuyen/tables/indoor_table_4.jpg",
+  "Bàn 4 người (Trong nhà)(1)": "/assets/hanhuyen/tables/indoor_table_4_1.jpg",
+  "Bàn 4 người (Trong nhà)(2)": "/assets/hanhuyen/tables/indoor_table_4_2.jpg",
+  "Bàn 4 người (Trong nhà)(3)": "/assets/hanhuyen/tables/indoor_table_4_3.jpg",
+  "2-Seat Corner": "/assets/hanhuyen/tables/indoor_nem_socket_2.jpg",
+  "2-Seat Window": "/assets/hanhuyen/tables/indoor_window_2.jpg",
+  "2-Seat Bar": "/assets/hanhuyen/tables/indoor_sofa_2.jpg",
+  "4-Seat Indoor": "/assets/hanhuyen/tables/indoor_table_4.jpg",
+  "4-Seat Tatami": "/assets/hanhuyen/tables/indoor_table_4_1.jpg",
+  "4-Seat Outdoor": "/assets/hanhuyen/tables/outdoor_table_2.jpg",
+};
+
+const cochinTableImages = {
+  "Tầng 1 (Ngoài trời)": "/assets/cochin/tables/outdoor_t1_2.jpg",
+  "Tầng 1 (Ngoài trời, có ổ điện)": "/assets/cochin/tables/outdoor_t1_socket_2.jpg",
+  "Tầng 1 (View cửa sổ & Quầy bar)": "/assets/cochin/tables/indoor_t1_window_bar_2.jpg",
+  "Tầng 2 (Có ổ điện)": "/assets/cochin/tables/indoor_t2_socket_2.jpg",
+  "Tầng 2 (Góc yên tĩnh, có ổ điện)": "/assets/cochin/tables/indoor_t2_socket_2_1.jpg",
+  "Tầng 2 (View cửa sổ, có ổ điện)": "/assets/cochin/tables/indoor_t2_window_2.jpg",
+  "Tầng 2 (Vị trí trung tâm)": "/assets/cochin/tables/indoor_t2_center_2.jpg",
+  "Tầng 2 (Bàn 3 người view cửa sổ)": "/assets/cochin/tables/indoor_t2_window_3.jpg",
+  "Tầng 1 (Bàn 4 người view cửa sổ)": "/assets/cochin/tables/indoor_t1_window_4.jpg",
+  "Tầng 1 (Bàn 6 người họp nhóm)": "/assets/cochin/tables/indoor_t1_bar_6.jpg",
+  "2-Seat (Ngoài trời, Tầng 1)": "/assets/cochin/tables/outdoor_t1_2.jpg",
+  "2-Seat (Ngoài trời, có ổ điện)": "/assets/cochin/tables/outdoor_t1_socket_2.jpg",
+  "2-Seat (Cửa sổ & Quầy bar, T1)": "/assets/cochin/tables/indoor_t1_window_bar_2.jpg",
+  "2-Seat (Tầng 2, có ổ điện)": "/assets/cochin/tables/indoor_t2_socket_2.jpg",
+  "2-Seat (Tầng 2, góc yên tĩnh)": "/assets/cochin/tables/indoor_t2_socket_2_1.jpg",
+  "2-Seat (Tầng 2, view cửa sổ)": "/assets/cochin/tables/indoor_t2_window_2.jpg",
+  "2-Seat (Tầng 2, trung tâm)": "/assets/cochin/tables/indoor_t2_center_2.jpg",
+  "3-Seat (Tầng 2, view cửa sổ)": "/assets/cochin/tables/indoor_t2_window_3.jpg",
+  "4-Seat (Tầng 1, view cửa sổ)": "/assets/cochin/tables/indoor_t1_window_4.jpg",
+  "6-Seat (Tầng 1, bàn lớn họp nhóm)": "/assets/cochin/tables/indoor_t1_bar_6.jpg",
+  "2-Seat Corner": "/assets/cochin/tables/indoor_t2_socket_2_1.jpg",
+  "2-Seat Window": "/assets/cochin/tables/indoor_t2_window_2.jpg",
+  "2-Seat Bar": "/assets/cochin/tables/indoor_t1_window_bar_2.jpg",
+  "4-Seat Indoor": "/assets/cochin/tables/indoor_t1_window_4.jpg",
+  "4-Seat Tatami": "/assets/cochin/tables/indoor_t2_center_2.jpg",
+  "4-Seat Outdoor": "/assets/cochin/tables/outdoor_t1_2.jpg",
+};
+
 const areaDescriptions = {
   "Window": "Bàn cạnh cửa sổ view đường phố, lãng mạn và yên tĩnh. Phù hợp cho 1–2 người.",
   "Corner": "Góc khuất riêng tư, ánh sáng ấm cúng. Phù hợp cho các buổi trò chuyện hai người.",
@@ -114,6 +188,10 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee");
+  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao");
+  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin") || String(tenant?.tenantName).toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
 
   return (
     <>
@@ -127,8 +205,8 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
-          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : (isHoaTeaRoom ? hoaTeaRoomTableImages : yakiTableImages)));
-          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : (isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" : "/assets/yakishime/tables/n2.jpg")));
+          const imageList = isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : (isHoaTeaRoom ? hoaTeaRoomTableImages : (isEmCoffee ? emCoffeeTableImages : (isTaoTao ? taoTaoTableImages : (isHanHuyen ? hanHuyenTableImages : (isCochin ? cochinTableImages : yakiTableImages)))))));
+          const defaultImage = isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : (isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" : (isEmCoffee ? "/assets/emcoffee/tables/ban_2_nguoi_cua_so.webp" : (isTaoTao ? "/assets/taotao/tables/ban_2_nguoi_ngoai_troi.jpg" : (isHanHuyen ? "/assets/hanhuyen/tables/indoor_table_4.jpg" : (isCochin ? "/assets/cochin/tables/outdoor_t1_2.jpg" : "/assets/yakishime/tables/n2.jpg")))))));
 
           const image =
             table.previewImage ||
