@@ -508,9 +508,62 @@ const COCHIN_PHILOSOPHIES = [
   }
 ];
 
+
+const MONARI_TESTIMONIALS = [
+  { name: "Lê Phương Thảo", role: "Khách hàng thân thiết", rating: 5, text: "Set bánh trung thu của Monari vỏ bánh mềm thơm, nhân ngọt thanh vừa vặn không hề gắt. Hộp quà tặng cực kỳ sang trọng và chỉn chu!" },
+  { name: "Trần Minh Quang", role: "Kiến trúc sư", rating: 5, text: "Không gian quán ấm cúng, view ban công tầng 2 ngắm phố rất chill. Coco Matcha và Nước dừa quế hoa ở đây uống cực kỳ ấn tượng." },
+  { name: "Nguyễn Hoàng My", role: "Content Creator", rating: 5, text: "Góc nào trong quán chụp ảnh cũng đẹp lung linh. Trà ổi hồng và trà lựu đỏ trân châu giòn sần sật, nhân viên lại vô cùng lịch thiệp." },
+  { name: "Phạm Đăng Khoa", role: "Khách quen cuối tuần", rating: 5, text: "Bàn 4 người sofa rất êm ái, thích hợp ngồi đọc sách hoặc họp nhóm làm việc. Rất yêu thích phong cách ấm áp tinh tế của Monari!" }
+];
+
+const MONARI_GALLERY = [
+  { url: "/assets/monari/decor/space_main.jpg", h: 280, label: "Quầy hoa quả Monari" },
+  { url: "/assets/monari/decor/space_1.jpg", h: 230, label: "Quầy trái cây nhập khẩu cao cấp" },
+  { url: "/assets/monari/decor/space_2.jpg", h: 270, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/space_3.jpg", h: 230, label: "Không gian decor" },
+  { url: "/assets/monari/decor/space_decor.jpg", h: 260, label: "Ổ điện phục vụ khách" },
+  { url: "/assets/monari/decor/space_view_1.jpg", h: 280, label: "Không gian decor" },
+  { url: "/assets/monari/decor/space_view_2.jpg", h: 240, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/space_view_3.jpg", h: 270, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/space_view_4.jpg", h: 240, label: "Quầy bánh kẹo" },
+  { url: "/assets/monari/decor/img_4188.jpg", h: 260, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4189.jpg", h: 280, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4190.jpg", h: 240, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4191.jpg", h: 260, label: "Góc menu quán" },
+  { url: "/assets/monari/decor/img_4192.jpg", h: 280, label: "Góc menu quán" },
+];
+
+const MONARI_PHILOSOPHIES = [
+  {
+    kanji: "Bánh",
+    romaji: "BÁNH",
+    title: "Bánh Ngọt Thủ Công",
+    desc: "Nguyên liệu cao cấp hảo hạng, từng chiếc bánh trung thu và bánh ngọt đều được nhào nặn thủ công tỉ mỉ, trọn vẹn hương vị."
+  },
+  {
+    kanji: "Trà",
+    romaji: "TRÀ",
+    title: "Trà & Thảo Mộc",
+    desc: "Trà lựu đỏ, trà ổi hồng và nước dừa quế hoa tự nhiên tươi mới, ngọt thanh bổ dưỡng, đánh thức mọi giác quan."
+  },
+  {
+    kanji: "Ấm",
+    romaji: "ẤM",
+    title: "Không Gian Ấm Áp",
+    desc: "Không gian trang nhã, ánh sáng ấm cúng cùng sofa êm dịu, là chốn dừng chân hoàn hảo để hẹn hò, làm việc và sum họp."
+  },
+  {
+    kanji: "Tâm",
+    romaji: "TÂM",
+    title: "Phục Vụ Tận Tâm",
+    desc: "Đón tiếp quý khách bằng sự chân thành, chu đáo và mến khách trong từng nụ cười và mỗi đĩa bánh, tách trà trao tay."
+  }
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
   const { tenant } = useTenant();
+  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
@@ -520,13 +573,13 @@ export default function HomePage() {
   const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || tenant?.tenantName?.toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
   const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
 
-  const currentPhilosophies = isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : (isEmCoffee ? EM_COFFEE_PHILOSOPHIES : (isTaoTao ? TAO_TAO_PHILOSOPHIES : (isHanHuyen ? HAN_HUYEN_PHILOSOPHIES : (isCochin ? COCHIN_PHILOSOPHIES : PHILOSOPHIES)))))));
+  const currentPhilosophies = isMonari ? MONARI_PHILOSOPHIES : (isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : (isEmCoffee ? EM_COFFEE_PHILOSOPHIES : (isTaoTao ? TAO_TAO_PHILOSOPHIES : (isHanHuyen ? HAN_HUYEN_PHILOSOPHIES : (isCochin ? COCHIN_PHILOSOPHIES : PHILOSOPHIES))))))));
   const [products,  setProducts]  = useState([]);
   const [loading,   setLoading]   = useState(true);
-  const [reviewsList, setReviewsList] = useState(isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : (isEmCoffee ? EM_COFFEE_TESTIMONIALS : (isTaoTao ? TAO_TAO_TESTIMONIALS : (isHanHuyen ? HAN_HUYEN_TESTIMONIALS : (isCochin ? COCHIN_TESTIMONIALS : TESTIMONIALS))))))));
+  const [reviewsList, setReviewsList] = useState(isMonari ? MONARI_TESTIMONIALS : (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : (isEmCoffee ? EM_COFFEE_TESTIMONIALS : (isTaoTao ? TAO_TAO_TESTIMONIALS : (isHanHuyen ? HAN_HUYEN_TESTIMONIALS : (isCochin ? COCHIN_TESTIMONIALS : TESTIMONIALS)))))))));
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const heroRef = useRef(null);
-  const currentGallery = isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : (isEmCoffee ? EM_COFFEE_GALLERY : (isTaoTao ? TAO_TAO_GALLERY : (isHanHuyen ? HAN_HUYEN_GALLERY : (isCochin ? COCHIN_GALLERY : GALLERY)))))));
+  const currentGallery = isMonari ? MONARI_GALLERY : (isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : (isEmCoffee ? EM_COFFEE_GALLERY : (isTaoTao ? TAO_TAO_GALLERY : (isHanHuyen ? HAN_HUYEN_GALLERY : (isCochin ? COCHIN_GALLERY : GALLERY))))))));
   const duplicatedGallery = [...currentGallery, ...currentGallery];
 
   // No Shoji door curtain animation
@@ -567,7 +620,7 @@ export default function HomePage() {
         
         const enrichFallback = () => {
           if (loadedProducts.length > 0) {
-            const fallbackList = isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : (isEmCoffee ? EM_COFFEE_TESTIMONIALS : (isTaoTao ? TAO_TAO_TESTIMONIALS : (isHanHuyen ? HAN_HUYEN_TESTIMONIALS : (isCochin ? COCHIN_TESTIMONIALS : TESTIMONIALS)))))));
+            const fallbackList = isMonari ? MONARI_TESTIMONIALS : (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : (isEmCoffee ? EM_COFFEE_TESTIMONIALS : (isTaoTao ? TAO_TAO_TESTIMONIALS : (isHanHuyen ? HAN_HUYEN_TESTIMONIALS : (isCochin ? COCHIN_TESTIMONIALS : TESTIMONIALS))))))));
             const enriched = fallbackList.map(t => {
               const product = loadedProducts.find(p => 
                 t.text.toLowerCase().includes(p.name.toLowerCase())
@@ -841,7 +894,7 @@ export default function HomePage() {
           >
             <motion.div variants={fadeUp} style={{ textAlign: "center", marginBottom: 64 }}>
               <span style={{ color: "var(--matcha)", fontSize: 13, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                {isComTam ? "Triết lý ẩm thực" : (isSamHouse ? "Triết lý thức uống" : (isMonQuanChat ? "Triết lý ẩm thực" : (isHoaTeaRoom ? "Triết lý không gian" : (isEmCoffee ? "Triết lý thức uống & không gian" : (isTaoTao ? "Triết lý & Giá trị cốt lõi · Táo Tào" : (isHanHuyen ? "Triết lý Quán Nước Hàn Huyên" : (isCochin ? "Triết lý không gian & thức uống" : "Triết lý Trà đạo Chado")))))))}
+                {isMonari ? "Triết lý phục vụ" : (isComTam ? "Triết lý ẩm thực" : (isSamHouse ? "Triết lý thức uống" : (isMonQuanChat ? "Triết lý ẩm thực" : (isHoaTeaRoom ? "Triết lý không gian" : (isEmCoffee ? "Triết lý thức uống & không gian" : (isTaoTao ? "Triết lý & Giá trị cốt lõi · Táo Tào" : (isHanHuyen ? "Triết lý Quán Nước Hàn Huyên" : (isCochin ? "Triết lý không gian & thức uống" : "Triết lý Trà đạo Chado"))))))))}
               </span>
               <h2 style={{
                 fontFamily: "'Cormorant Garamond', serif",
@@ -849,7 +902,7 @@ export default function HomePage() {
                 fontWeight: 700, color: "var(--text)", margin: "12px 0 0",
                 lineHeight: 1.1
               }}>
-                {isComTam ? "Tinh hoa trong từng đĩa cơm" : (isSamHouse ? "Đậm đà trong từng tách cà phê" : (isMonQuanChat ? "Tinh hoa ẩm thực Quảng Nam" : (isHoaTeaRoom ? "Nghệ thuật thưởng trà chiều" : (isEmCoffee ? "Ấm áp trong từng góc nhỏ" : (isTaoTao ? "Đặc Sắc Trong Từng Ly Kem Muối" : (isHanHuyen ? "Nơi lưu giữ những kỷ niệm bình yên" : (isCochin ? "Kiến trúc nhà kính & Thức uống nghệ thuật" : "Nghệ thuật trong từng tách trà")))))))}
+                {isMonari ? "Nghệ thuật bánh ngọt & trà thơm" : (isComTam ? "Tinh hoa trong từng đĩa cơm" : (isSamHouse ? "Đậm đà trong từng tách cà phê" : (isMonQuanChat ? "Tinh hoa ẩm thực Quảng Nam" : (isHoaTeaRoom ? "Nghệ thuật thưởng trà chiều" : (isEmCoffee ? "Ấm áp trong từng góc nhỏ" : (isTaoTao ? "Đặc Sắc Trong Từng Ly Kem Muối" : (isHanHuyen ? "Nơi lưu giữ những kỷ niệm bình yên" : (isCochin ? "Kiến trúc nhà kính & Thức uống nghệ thuật" : "Nghệ thuật trong từng tách trà"))))))))}
               </h2>
               <div style={{ width: 60, height: 2, background: "var(--matcha)", margin: "20px auto 0" }} />
             </motion.div>
@@ -946,7 +999,7 @@ export default function HomePage() {
                   Được yêu thích nhất
                 </span>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-                  {(isComTam || isMonQuanChat) ? "Món Ăn Đặc Trưng" : "Món Nước Đặc Trưng"}
+                  {(isComTam || isMonQuanChat) ? "Món Ăn Đặc Trưng" : (isMonari ? "Bánh Ngọt & Thức Uống Đặc Trưng" : "Món Nước Đặc Trưng")}
                 </h2>
               </div>
               <motion.button
@@ -1002,7 +1055,7 @@ export default function HomePage() {
               Không gian quán
             </span>
             <h2 className="sumie-fade" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "var(--text)", margin: "8px 0 0" }}>
-              {isComTam ? "Không gian ẩm cúng" : (isSamHouse ? "Góc nhỏ lung linh" : (isMonQuanChat ? "Không gian mộc mạc" : (isHoaTeaRoom ? "Không gian trà nhà Hòa" : (isEmCoffee ? "Góc nhỏ acoustic Em" : (isTaoTao ? "Sân vườn & Tán cây Xanh Mát" : (isHanHuyen ? "Chút bình yên giữa phố thị" : (isCochin ? "Không gian nhà kính Châu Âu" : "Zen trong từng góc nhỏ")))))))}
+              {isMonari ? "Không gian tinh tế Monari" : (isComTam ? "Không gian ẩm cúng" : (isSamHouse ? "Góc nhỏ lung linh" : (isMonQuanChat ? "Không gian mộc mạc" : (isHoaTeaRoom ? "Không gian trà nhà Hòa" : (isEmCoffee ? "Góc nhỏ acoustic Em" : (isTaoTao ? "Sân vườn & Tán cây Xanh Mát" : (isHanHuyen ? "Chút bình yên giữa phố thị" : (isCochin ? "Không gian nhà kính Châu Âu" : "Zen trong từng góc nhỏ"))))))))}
             </h2>
           </motion.div>
         </div>
@@ -1068,7 +1121,7 @@ export default function HomePage() {
                 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.05em" }}>{g.label}</span>
                   <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>
-                    {isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : (isSamHouse ? "Không gian Sam Houses" : (isMonQuanChat ? "Không gian Món Quảng Chất" : (isHoaTeaRoom ? "Không gian Hòa Tea Room" : (isEmCoffee ? "Không gian Em Coffee" : (isTaoTao ? "Không gian Táo Tào Cà Phê" : (isHanHuyen ? "Không gian Quán Nước Hàn Huyên" : (isCochin ? "Không gian Cochin Café" : "Không gian Yakishime")))))))}
+                    {isMonari ? "Không gian MONARI" : (isComTam ? `Không gian ${tenant?.name || "Cơm Tấm Ngọ"}` : (isSamHouse ? "Không gian Sam Houses" : (isMonQuanChat ? "Không gian Món Quảng Chất" : (isHoaTeaRoom ? "Không gian Hòa Tea Room" : (isEmCoffee ? "Không gian Em Coffee" : (isTaoTao ? "Không gian Táo Tào Cà Phê" : (isHanHuyen ? "Không gian Quán Nước Hàn Huyên" : (isCochin ? "Không gian Cochin Café" : "Không gian Yakishime"))))))))}
                   </span>
                 </div>
               </motion.div>

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Store, Check, ChevronUp } from "lucide-react";
 
 const ALL_SHOPS = [
+  { key: "monari", label: "MONARI", desc: "Bánh ngọt & Trà thơm", emoji: "🥮", color: "#C86D51" },
   { key: "taotao", label: "Táo Tào cà phê", desc: "Cà phê & Kem muối", emoji: "🍎", color: "#C86828" },
   { key: "emcoffee", label: "Em Coffee", desc: "Cà phê & Không gian", emoji: "☕", color: "#8B5A2B" },
   { key: "hoatearoom", label: "Hòa Tea Room", desc: "Trà sữa & Vẽ ly", emoji: "🍃", color: "#1E4620" },

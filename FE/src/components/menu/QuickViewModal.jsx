@@ -151,7 +151,7 @@ function ReviewItem({ review }) {
                   letterSpacing: "0.02em",
                 }}
               >
-                {isComTam ? "🌾 Phản hồi từ Cơm Tấm Ngọ" : (isSamHouse ? "☕ Phản hồi từ Sam Houses" : (isMonQuanChat ? "🍲 Phản hồi từ Món Quảng Chất" : (isHoaTeaRoom ? "🍃 Phản hồi từ Hòa Tea Room" : (isEmCoffee ? "☕ Phản hồi từ Em Coffee" : (isTaoTao ? "☕ Phản hồi từ Táo Tào" : (isHanHuyen ? "🍃 Phản hồi từ Quán Nước Hàn Huyên" : (isCochin ? "🌿 Phản hồi từ Cochin Café" : "🍵 Phản hồi từ Yakishime Manager")))))))}
+                {isComTam ? "🌾 Phản hồi từ Cơm Tấm Ngọ" : (isSamHouse ? "☕ Phản hồi từ Sam Houses" : (isMonQuanChat ? "🍲 Phản hồi từ Món Quảng Chất" : (isHoaTeaRoom ? "🍃 Phản hồi từ Hòa Tea Room" : "🍵 Phản hồi từ Yakishime Manager")))}
               </span>
             </div>
             <p
@@ -234,6 +234,18 @@ export default function QuickViewModal({ item, onClose }) {
     new: { label: "New", color: "#3B82F6" },
   };
   const badge = BADGE_MAP[item.tag];
+
+  const galleryImages = Array.isArray(item.images) && item.images.length > 0
+    ? item.images
+    : (item.name?.toLowerCase().includes("trung thu")
+      ? [
+          "/assets/monari/menu/set_banh_trung_thu.jpg",
+          "/assets/monari/menu/set_banh_trung_thu_1.jpg",
+          "/assets/monari/menu/set_banh_trung_thu_2.jpg"
+        ]
+      : [item.image_url || ""]);
+
+  const currentImage = galleryImages[imgIdx] || item.image_url || "";
 
   return (
     <AnimatePresence>
@@ -318,43 +330,147 @@ export default function QuickViewModal({ item, onClose }) {
                 }}
                 className="modal-grid"
               >
-                {/* Left – Image */}
-                <div style={{ position: "relative", minHeight: 400 }}>
-                  <img
-                    src={item.image_url}
-                    alt={item.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background:
-                        "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
-                    }}
-                  />
-
-                  {/* Badge */}
-                  {badge && (
+                {/* Left – Image & Gallery */}
+                <div style={{ position: "relative", minHeight: 400, display: "flex", flexDirection: "column", background: "var(--bg-card)" }}>
+                  <div style={{ position: "relative", flex: 1, minHeight: 320, overflow: "hidden" }}>
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={currentImage}
+                        src={currentImage}
+                        alt={item.name}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </AnimatePresence>
                     <div
                       style={{
                         position: "absolute",
-                        bottom: 20,
-                        left: 20,
-                        padding: "6px 16px",
-                        borderRadius: 50,
-                        background: "rgba(0,0,0,0.55)",
-                        backdropFilter: "blur(10px)",
-                        color: badge.color,
-                        fontSize: 13,
-                        fontWeight: 700,
+                        inset: 0,
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
+                        pointerEvents: "none",
                       }}
-                    >
-                      {badge.label}
+                    />
+
+                    {/* Navigation Arrows */}
+                    {galleryImages.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setImgIdx((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1))}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: 12,
+                            transform: "translateY(-50%)",
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            background: "rgba(0,0,0,0.55)",
+                            backdropFilter: "blur(6px)",
+                            border: "1px solid rgba(255,255,255,0.2)",
+                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            zIndex: 5,
+                          }}
+                        >
+                          <ChevronLeft size={20} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setImgIdx((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0))}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: 12,
+                            transform: "translateY(-50%)",
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            background: "rgba(0,0,0,0.55)",
+                            backdropFilter: "blur(6px)",
+                            border: "1px solid rgba(255,255,255,0.2)",
+                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            zIndex: 5,
+                          }}
+                        >
+                          <ChevronRight size={20} />
+                        </button>
+
+                        <div style={{
+                          position: "absolute", top: 14, left: 14,
+                          padding: "3px 10px", borderRadius: 50,
+                          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)",
+                          color: "#fff", fontSize: 11, fontWeight: 700, zIndex: 5
+                        }}>
+                          {imgIdx + 1} / {galleryImages.length}
+                        </div>
+                      </>
+                    )}
+
+                    {/* Badge */}
+                    {badge && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: 16,
+                          left: 16,
+                          padding: "5px 14px",
+                          borderRadius: 50,
+                          background: "rgba(0,0,0,0.55)",
+                          backdropFilter: "blur(10px)",
+                          color: badge.color,
+                          fontSize: 12,
+                          fontWeight: 700,
+                          zIndex: 5,
+                        }}
+                      >
+                        {badge.label}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Thumbnail Row */}
+                  {galleryImages.length > 1 && (
+                    <div style={{
+                      display: "flex",
+                      gap: 8,
+                      padding: "10px 14px",
+                      background: "var(--bg-alt)",
+                      borderTop: "1px solid var(--border)",
+                    }}>
+                      {galleryImages.map((u, i) => (
+                        <div
+                          key={i}
+                          onClick={() => setImgIdx(i)}
+                          style={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: 10,
+                            overflow: "hidden",
+                            cursor: "pointer",
+                            border: imgIdx === i ? "2px solid var(--matcha)" : "1px solid var(--border)",
+                            opacity: imgIdx === i ? 1 : 0.6,
+                            transition: "all 0.2s",
+                          }}
+                        >
+                          <img src={u} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>

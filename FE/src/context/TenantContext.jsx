@@ -41,6 +41,7 @@ export function TenantProvider({ children }) {
     const isTaoTao = key === "taotao" || rawName.toLowerCase().includes("táo") || rawName.toLowerCase().includes("taotao");
     const isHanHuyen = key === "hanhuyen" || rawName.toLowerCase().includes("hàn huyên") || rawName.toLowerCase().includes("hanhuyen");
     const isCochin = key === "cochin" || rawName.toLowerCase().includes("cochin");
+    const isMonari = key === "monari" || rawName.toLowerCase().includes("monari");
 
     localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
     localStorage.setItem("tenant_is_samhouse", isSamHouse ? "true" : "false");
@@ -50,9 +51,12 @@ export function TenantProvider({ children }) {
     localStorage.setItem("tenant_is_taotao", isTaoTao ? "true" : "false");
     localStorage.setItem("tenant_is_hanhuyen", isHanHuyen ? "true" : "false");
     localStorage.setItem("tenant_is_cochin", isCochin ? "true" : "false");
+    localStorage.setItem("tenant_is_monari", isMonari ? "true" : "false");
     localStorage.setItem("tenant_is_yakishime", isMatcha ? "true" : "false");
 
-    if (isComTam) {
+    if (isMonari) {
+      document.documentElement.setAttribute('data-tenant', 'monari');
+    } else if (isComTam) {
       document.documentElement.setAttribute('data-tenant', 'comtam');
     } else if (isSamHouse) {
       document.documentElement.setAttribute('data-tenant', 'samhouse');
@@ -76,6 +80,9 @@ export function TenantProvider({ children }) {
     if (isMatcha) {
       normalizedData.name = "Yakishime";
       normalizedData.address = "57 Nguyễn Cư Trinh, Cần Thơ";
+    } else if (isMonari) {
+      normalizedData.name = "MONARI";
+      normalizedData.address = "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam";
     } else if (isMonQuanChat && !normalizedData.address) {
       normalizedData.address = "201 QL1K, Đông Hòa, Dĩ An, Bình Dương";
     } else if (isHoaTeaRoom && !normalizedData.address) {
@@ -90,13 +97,14 @@ export function TenantProvider({ children }) {
       normalizedData.address = "58 Đ. D2A, khu đô thị Vinhomes Grand Park, Long Bình, TP. Thủ Đức, TP. Hồ Chí Minh";
     }
 
-    const name = isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime");
+    const name = isMonari ? "MONARI" : (isMatcha ? "Yakishime" : (normalizedData.name || "Yakishime"));
     document.title = name;
-    const logo = normalizedData.logo || (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : (isEmCoffee ? "/assets/emcoffee/logo.jpg" : (isTaoTao ? "/assets/taotao/logo.jpg" : (isHanHuyen ? "/assets/hanhuyen/Logo.jpg" : (isCochin ? "/assets/cochin/logo.jpg" : "/assets/images/logo.jpg"))))))));
+    const logo = normalizedData.logo || (isMonari ? "/assets/monari/decor/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : (isEmCoffee ? "/assets/emcoffee/logo.jpg" : (isTaoTao ? "/assets/taotao/logo.jpg" : (isHanHuyen ? "/assets/hanhuyen/Logo.jpg" : (isCochin ? "/assets/cochin/logo.jpg" : "/assets/images/logo.jpg")))))))));
     normalizedData.logo = logo;
     const favicon = document.querySelector("link[rel*='icon']");
     if (favicon) {
       favicon.href = logo;
+      if (isMonari) favicon.type = "image/png";
     }
 
     setTenant(normalizedData);
@@ -192,6 +200,17 @@ export function TenantProvider({ children }) {
         openHours: "07:00 – 22:00",
         themeColor: "#2A5944",
       },
+      monari: {
+        id: "9523724e-1e6f-428f-a355-4394fcef1b9f",
+        name: "MONARI",
+        tenantName: "monari",
+        logo: "/assets/monari/decor/logo.png",
+        address: "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam",
+        hotline: "0908 123 456",
+        email: "contact@monari.vn",
+        openHours: "07:30 – 22:30",
+        themeColor: "#C86D51",
+      },
       matcha: {
         id: "11111111-0000-0000-0000-000000000001",
         name: "Yakishime",
@@ -207,6 +226,7 @@ export function TenantProvider({ children }) {
 
     const normKey = String(key || "").toLowerCase();
     if (FALLBACKS[normKey]) return FALLBACKS[normKey];
+    if (normKey.includes("monari")) return FALLBACKS.monari;
     if (normKey.includes("tam")) return FALLBACKS.comtam;
     if (normKey.includes("sam")) return FALLBACKS.samhouse;
     if (normKey.includes("quang") || normKey.includes("quảng")) return FALLBACKS.monquanchat;
@@ -236,7 +256,8 @@ export function TenantProvider({ children }) {
         localStorage.setItem("dev_tenant_domain", targetKey);
       } else {
         const path = window.location.pathname.toLowerCase();
-        if (path.includes("taotao") || path.includes("taotaocafe")) targetKey = "taotao";
+        if (path.includes("monari")) targetKey = "monari";
+        else if (path.includes("taotao") || path.includes("taotaocafe")) targetKey = "taotao";
         else if (path.includes("emcoffee")) targetKey = "emcoffee";
         else if (path.includes("hoatearoom") || path.includes("hoatea")) targetKey = "hoatearoom";
         else if (path.includes("monquanchat") || path.includes("quang")) targetKey = "monquanchat";
@@ -275,6 +296,7 @@ export function TenantProvider({ children }) {
   useEffect(() => {
     if (!tenant) return;
     const rawName = tenant.name || tenant.TenantName || "";
+    const isMonari = rawName.toLowerCase().includes("monari") || String(tenant.tenantName).toLowerCase().includes("monari");
     const isComTam = rawName.toLowerCase().includes("cơm tấm") || String(tenant.tenantName).toLowerCase().includes("comtam");
     const isSamHouse = rawName.toLowerCase().includes("sam house") || rawName.toLowerCase().includes("samhouse") || String(tenant.tenantName).toLowerCase().includes("samhouse");
     const isMonQuanChat = rawName.toLowerCase().includes("quảng") || rawName.toLowerCase().includes("monquanchat") || String(tenant.tenantName).toLowerCase().includes("monquanchat");
@@ -284,7 +306,7 @@ export function TenantProvider({ children }) {
     const isHanHuyen = rawName.toLowerCase().includes("hàn huyên") || rawName.toLowerCase().includes("hanhuyen") || String(tenant.tenantName).toLowerCase().includes("hanhuyen");
     const isMatcha = rawName.toLowerCase().includes("yaki") || rawName.toLowerCase().includes("matcha") || String(tenant.tenantName).toLowerCase().includes("matcha");
 
-    const themeColor = tenant.themeColor || tenant.ThemeColor || (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : (isEmCoffee ? "#8B5A2B" : (isTaoTao ? "#9B2E22" : (isHanHuyen ? "#618269" : null)))))));
+    const themeColor = tenant.themeColor || tenant.ThemeColor || (isMonari ? "#C86D51" : (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : (isEmCoffee ? "#8B5A2B" : (isTaoTao ? "#9B2E22" : (isHanHuyen ? "#618269" : null))))))));
     if (themeColor && !isMatcha) {
       const root = document.documentElement;
       const hsl = hexToHsl(themeColor);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ChevronLeft, Star, Send, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, Star, Send, Sparkles } from "lucide-react";
 import { menuDetail, menuReviews, reviewCreate } from "../services/apiClient.js";
 import Loading from "../components/common/Loading.jsx";
 import { useAuth } from "../context/useAuthContext.js";
@@ -9,21 +9,15 @@ import { useTenant } from "@/context/TenantContext";
 
 function translateCategory(cat) {
   const map = {
-    Drink: "Đồ uống",
+    Drink: "Trà đạo / Đồ uống",
     MainCourse: "Món chính",
-    Dessert: "Tráng miệng",
+    Dessert: "Tráng miệng / Wagashi",
     Snack: "Ăn nhẹ",
     Traditional: "Truyền thống",
     Latte: "Latte",
     Hojicha: "Hojicha",
     Desserts: "Tráng miệng",
-    Food: "Món ăn",
-    Coffee: "Cà phê & Cacao",
-    FruitTea: "Trà hoa quả",
-    MilkTea: "Trà sữa",
-    MatchaSpecial: "Matcha Đặc Sản",
-    MatchaClassic: "Matcha Truyền Thống",
-    Experiences: "Trải nghiệm"
+    Food: "Món ăn"
   };
   return map[cat] || cat;
 }
@@ -58,13 +52,10 @@ function InteractiveRating({ value, onChange }) {
 // ── Review Item component ──────────────────────────────────────────────────
 function ReviewItem({ review }) {
   const { tenant } = useTenant();
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm") || localStorage.getItem("tenant_is_comtam") === "true";
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse") || localStorage.getItem("tenant_is_samhouse") === "true";
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa") || localStorage.getItem("tenant_is_hoatearoom") === "true";
-  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase() === "em" || tenant?.tenantName?.toLowerCase().includes("emcoffee") || localStorage.getItem("tenant_is_emcoffee") === "true";
-  const isTaoTao = tenant?.name?.toLowerCase().includes("táo") || tenant?.name?.toLowerCase().includes("taotao") || String(tenant?.tenantName).toLowerCase().includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
-  const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn") || tenant?.name?.toLowerCase().includes("hanhuyen") || String(tenant?.tenantName).toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
+  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
+  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
+  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   const initials = review.user?.full_name?.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() ?? "?";
   const date = new Date(review.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -136,6 +127,7 @@ export default function MenuDetailPage() {
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
 
   const load = async () => {
     const [a, b] = await Promise.all([menuDetail({ id }), menuReviews({ id })]);
@@ -215,7 +207,19 @@ export default function MenuDetailPage() {
     new:         { label: "✨ Mới",         color: "#3B82F6" },
   };
   const badge = BADGE_MAP[menu.tag];
-  const isCombo = menu.name.toLowerCase().includes("combo");
+  const isCombo = menu.name.toLowerCase().includes("combo") || menu.name.toLowerCase().includes("trung thu");
+
+  const galleryImages = Array.isArray(menu.images) && menu.images.length > 0
+    ? menu.images
+    : (menu.name?.toLowerCase().includes("trung thu")
+      ? [
+          "/assets/monari/menu/set_banh_trung_thu.jpg",
+          "/assets/monari/menu/set_banh_trung_thu_1.jpg",
+          "/assets/monari/menu/set_banh_trung_thu_2.jpg"
+        ]
+      : [menu.image_url || ""]);
+
+  const currentImage = galleryImages[activeImageIdx] || menu.image_url || "";
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
@@ -258,54 +262,185 @@ export default function MenuDetailPage() {
             marginBottom: 64,
             alignItems: "start"
           }}>
-            {/* Left – Image */}
+            {/* Left – Image & Gallery */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              style={{
-                position: "relative",
-                borderRadius: 24,
-                overflow: "hidden",
-                border: "1px solid var(--border)",
-                background: "var(--bg-card)",
-                boxShadow: "var(--shadow-md)"
-              }}
-              className="img-zoom-wrap"
+              style={{ display: "flex", flexDirection: "column", gap: 16 }}
             >
-              <img
-                src={menu.image_url || ""}
-                alt={menu.name}
+              <div
                 style={{
-                  width: "100%",
-                  height: "auto",
-                  maxHeight: 500,
-                  minHeight: 350,
-                  objectFit: "cover",
-                  display: "block"
+                  position: "relative",
+                  borderRadius: 24,
+                  overflow: "hidden",
+                  border: "1px solid var(--border)",
+                  background: "var(--bg-card)",
+                  boxShadow: "var(--shadow-md)"
                 }}
-              />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
-              
-              {isCombo ? (
+                className="img-zoom-wrap"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={currentImage}
+                    src={currentImage}
+                    alt={menu.name}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      maxHeight: 500,
+                      minHeight: 350,
+                      objectFit: "cover",
+                      display: "block"
+                    }}
+                  />
+                </AnimatePresence>
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)", pointerEvents: "none" }} />
+                
+                {/* Image Navigation Arrows */}
+                {galleryImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Ảnh trước"
+                      onClick={() => setActiveImageIdx((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1))}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: 14,
+                        transform: "translateY(-50%)",
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        background: "rgba(0,0,0,0.55)",
+                        backdropFilter: "blur(8px)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        zIndex: 10,
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--matcha)"; e.currentTarget.style.transform = "translateY(-50%) scale(1.1)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.55)"; e.currentTarget.style.transform = "translateY(-50%) scale(1)"; }}
+                    >
+                      <ChevronLeft size={22} />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Ảnh kế tiếp"
+                      onClick={() => setActiveImageIdx((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0))}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: 14,
+                        transform: "translateY(-50%)",
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        background: "rgba(0,0,0,0.55)",
+                        backdropFilter: "blur(8px)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        zIndex: 10,
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--matcha)"; e.currentTarget.style.transform = "translateY(-50%) scale(1.1)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.55)"; e.currentTarget.style.transform = "translateY(-50%) scale(1)"; }}
+                    >
+                      <ChevronRight size={22} />
+                    </button>
+
+                    {/* Image Counter Badge */}
+                    <div style={{
+                      position: "absolute", top: 18, right: 18,
+                      padding: "4px 12px", borderRadius: 50,
+                      background: "rgba(0,0,0,0.65)", backdropFilter: "blur(8px)",
+                      color: "#fff", fontSize: 12, fontWeight: 700,
+                      zIndex: 10, border: "1px solid rgba(255,255,255,0.15)"
+                    }}>
+                       {activeImageIdx + 1} / {galleryImages.length}
+                    </div>
+                  </>
+                )}
+
+                {isCombo ? (
+                  <div style={{
+                    position: "absolute", bottom: 20, left: 20,
+                    padding: "6px 16px", borderRadius: 50,
+                    background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
+                    color: "#FFD700", fontSize: 13, fontWeight: 700,
+                    boxShadow: "var(--shadow-sm)", zIndex: 10
+                  }}>
+                    🎁 Combo Ưu Đãi (Click để chuyển ảnh)
+                  </div>
+                ) : badge && (
+                  <div style={{
+                    position: "absolute", bottom: 20, left: 20,
+                    padding: "6px 16px", borderRadius: 50,
+                    background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
+                    color: badge.color, fontSize: 13, fontWeight: 700,
+                    boxShadow: "var(--shadow-sm)", zIndex: 10
+                  }}>
+                    {badge.label}
+                  </div>
+                )}
+              </div>
+
+              {/* Thumbnails Gallery */}
+              {galleryImages.length > 1 && (
                 <div style={{
-                  position: "absolute", bottom: 20, left: 20,
-                  padding: "6px 16px", borderRadius: 50,
-                  background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
-                  color: "#FFD700", fontSize: 13, fontWeight: 700,
-                  boxShadow: "var(--shadow-sm)"
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${galleryImages.length}, 1fr)`,
+                  gap: 12,
+                  marginTop: 4,
                 }}>
-                  🎁 Combo Ưu Đãi
-                </div>
-              ) : badge && (
-                <div style={{
-                  position: "absolute", bottom: 20, left: 20,
-                  padding: "6px 16px", borderRadius: 50,
-                  background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
-                  color: badge.color, fontSize: 13, fontWeight: 700,
-                  boxShadow: "var(--shadow-sm)"
-                }}>
-                  {badge.label}
+                  {galleryImages.map((imgUrl, idx) => (
+                    <motion.div
+                      key={idx}
+                      whileHover={{ scale: 1.04, y: -2 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => setActiveImageIdx(idx)}
+                      style={{
+                        position: "relative",
+                        height: 96,
+                        borderRadius: 16,
+                        overflow: "hidden",
+                        cursor: "pointer",
+                        border: activeImageIdx === idx ? "3px solid var(--matcha)" : "1.5px solid var(--border)",
+                        boxShadow: activeImageIdx === idx ? "0 6px 18px rgba(107,143,62,0.3)" : "none",
+                        transition: "all 0.25s ease",
+                        opacity: activeImageIdx === idx ? 1 : 0.7,
+                      }}
+                    >
+                      <img
+                        src={imgUrl}
+                        alt={`${menu.name} - ảnh ${idx + 1}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                      {activeImageIdx === idx && (
+                        <div style={{
+                          position: "absolute", inset: 0,
+                          background: "rgba(107,143,62,0.15)",
+                        }} />
+                      )}
+                    </motion.div>
+                  ))}
                 </div>
               )}
             </motion.div>

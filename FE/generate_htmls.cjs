@@ -6,7 +6,12 @@ const tenants = [
   { name: 'samhouse', title: 'Sam Houses', icon: '/assets/samhouse/decor/logo.png', isPng: true },
   { name: 'monquanchat', title: 'Món Quảng Chất', icon: '/assets/monquanchat/decor/logo.png', isPng: true },
   { name: 'hoatearoom', title: 'Hòa Tea Room', icon: '/assets/hoatearoom/decor/logo.png', isPng: true },
-  { name: 'emcoffee', title: 'Em Coffee', icon: '/assets/emcoffee/logo.jpg', isPng: false }
+  { name: 'emcoffee', title: 'Em Coffee', icon: '/assets/emcoffee/logo.jpg', isPng: false },
+  { name: 'monari', title: 'MONARI', icon: '/assets/monari/decor/logo.png', isPng: true },
+  { name: 'cochin', title: 'Cochin Café', icon: '/assets/cochin/logo.jpg', isPng: false },
+  { name: 'taotao', title: 'Táo Tào cà phê', icon: '/assets/taotao/logo.jpg', isPng: false },
+  { name: 'hanhuyen', title: 'Quán Nước Hàn Huyên', icon: '/assets/hanhuyen/Logo.jpg', isPng: false },
+  { name: 'yakishime', title: 'Yakishime', icon: '/assets/images/logo.jpg', isPng: false }
 ];
 
 tenants.forEach(t => {
