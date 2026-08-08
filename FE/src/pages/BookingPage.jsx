@@ -722,28 +722,6 @@ export default function BookingPage() {
                     </motion.button>
                   ))}
                 </div>
-                <p
-                  style={{
-                    color: "var(--text-muted)",
-                    fontSize: 13,
-                    marginTop: 14,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {isMonari
-                    ? (numPeople <= 2
-                        ? "→ Hiển thị 4 bàn 2 người (Ban công & Cửa sổ view phố)"
-                        : numPeople <= 4
-                          ? "→ Hiển thị 3 bàn 4 người (Khu trung tâm ấm cúng)"
-                          : "→ Hiển thị bàn 8 người (Phòng tiệc & Họp mặt nhóm)")
-                    : isMonQuanChat
-                      ? "→ Bàn phù hợp cho nhóm từ 4-6 người"
-                      : (numPeople <= 2
-                          ? "→ Bàn đôi (2 ghế)"
-                          : (numPeople <= 4
-                              ? "→ Bàn nhóm (4 ghế)"
-                              : "→ Bàn nhóm (6-10 ghế)"))}
-                </p>
               </div>
             </motion.div>
           ) : (
