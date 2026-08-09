@@ -61,6 +61,7 @@ export function TenantProvider({ children }) {
         const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || rawName.includes("tao tao") || rawDomain.includes("taotao");
         const isMonari = rawName.includes("monari") || rawDomain.includes("monari");
         const isComGa = rawName.includes("cơm gà") || rawName.includes("comga") || rawName.includes("ông bách") || rawName.includes("ong bach") || rawDomain.includes("comga");
+        const isTho = rawName.includes("thô") || rawName.includes("tho") || rawDomain.includes("tho");
         const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || rawDomain.includes("em");
         const isComTam = rawName.includes("cơm tấm") || rawDomain.includes("comtam");
         const isSamHouse = rawName.includes("sam house") || rawName.includes("samhouse") || rawDomain.includes("samhouse");
@@ -73,6 +74,7 @@ export function TenantProvider({ children }) {
         localStorage.setItem("tenant_is_taotao", isTaoTao ? "true" : "false");
         localStorage.setItem("tenant_is_monari", isMonari ? "true" : "false");
         localStorage.setItem("tenant_is_comga", isComGa ? "true" : "false");
+        localStorage.setItem("tenant_is_tho", isTho ? "true" : "false");
         localStorage.setItem("tenant_is_emcoffee", isEmCoffee ? "true" : "false");
         localStorage.setItem("tenant_is_comtam", isComTam ? "true" : "false");
         localStorage.setItem("tenant_is_samhouse", isSamHouse ? "true" : "false");
@@ -85,6 +87,7 @@ export function TenantProvider({ children }) {
         if (isTaoTao) activeKey = "taotao";
         else if (isMonari) activeKey = "monari";
         else if (isComGa) activeKey = "comga";
+        else if (isTho) activeKey = "thocoffee";
         else if (isEmCoffee) activeKey = "emcoffee";
         else if (isComTam) activeKey = "comtam";
         else if (isSamHouse) activeKey = "samhouse";
@@ -108,6 +111,10 @@ export function TenantProvider({ children }) {
           normalizedData.name = "Cơm Gà Ông Bách";
           normalizedData.logo = "/assets/comgaongbach/decor/logo.png";
           if (!normalizedData.address) normalizedData.address = "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam";
+        } else if (isTho) {
+          normalizedData.name = "THÔ'S ARTISAN COFFEE";
+          normalizedData.logo = "/assets/thocoffee/decor/logo.png";
+          if (!normalizedData.address) normalizedData.address = "254 Đặng Văn Bi, Thủ Đức, Hồ Chí Minh 70000, Vietnam";
         } else if (isEmCoffee) {
           normalizedData.name = "Em Coffee";
           normalizedData.logo = "/assets/emcoffee/logo.jpg";
@@ -165,7 +172,8 @@ export function TenantProvider({ children }) {
         const isTaoTao = host.includes("taotao") || host.includes("táo tào") || host.includes("tao");
         const isMonari = host.includes("monari");
         const isComGa = host.includes("comga") || host.includes("cơm gà") || host.includes("ông bách") || host.includes("ong bach");
-        const isEmCoffee = host.includes("emcoffee") || host.includes("em");
+        const isTho = host.includes("thocoffee") || host.includes("tho");
+        const isEmCoffee = !isTho && (host.includes("emcoffee") || host.includes("em"));
         const isComTam = host.includes("comtam");
         const isSamHouse = host.includes("samhouse") || host.includes("sam house") || host.includes("sam");
         const isMonQuanChat = host.includes("quang") || host.includes("monquanchat");
@@ -209,6 +217,18 @@ export function TenantProvider({ children }) {
             email: "contact@comgaongbach.com",
             openHours: "09:30 – 21:30",
             themeColor: "#D97706"
+          };
+        } else if (isTho) {
+          fallbackTenant = {
+            id: "7926e332-8c84-40c2-b557-bdf39cca7823",
+            name: "THÔ'S ARTISAN COFFEE",
+            tenantName: "thocoffee",
+            logo: "/assets/thocoffee/decor/logo.png",
+            address: "254 Đặng Văn Bi, Thủ Đức, Hồ Chí Minh 70000, Vietnam",
+            hotline: "0909 254 789",
+            email: "contact@thosartisancoffee.vn",
+            openHours: "07:00 – 22:00",
+            themeColor: "#5C3D2E"
           };
         } else if (isEmCoffee) {
           fallbackTenant = {
@@ -334,7 +354,8 @@ export function TenantProvider({ children }) {
 
     const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
     const isMonari = rawName.includes("monari") || tName.includes("monari");
-    const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+    const isTho = rawName.includes("thô") || rawName.includes("artisan") || tName.includes("thocoffee");
+    const isEmCoffee = !isTho && (rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em"));
     const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
     const isSamHouse = rawName.includes("sam house") || rawName.includes("samhouse") || tName.includes("samhouse");
     const isMonQuanChat = rawName.includes("quảng") || rawName.includes("monquanchat") || tName.includes("monquanchat");
@@ -346,6 +367,7 @@ export function TenantProvider({ children }) {
     const themeColor = tenant.themeColor || tenant.ThemeColor || (
       isTaoTao ? "#C86828" :
       isMonari ? "#C86D51" :
+      isTho ? "#5C3D2E" :
       isEmCoffee ? "#8B5A2B" :
       isComTam ? "#E07B39" :
       isSamHouse ? "#8B4513" :
@@ -361,14 +383,20 @@ export function TenantProvider({ children }) {
       if (hsl) {
         let [h, s, l] = hsl;
         if (isDark) {
-          l = 52;
-          s = 38;
+          if (isTho) {
+            h = 30; // warm amber golden honey
+            s = 48;
+            l = 59;
+          } else {
+            l = 52;
+            s = 38;
+          }
         }
         root.style.setProperty('--matcha', `hsl(${h}, ${s}%, ${l}%)`);
         root.style.setProperty('--matcha-light', `hsl(${h}, ${s}%, ${Math.min(l + 10, 95)}%)`);
         root.style.setProperty('--matcha-dark', `hsl(${h}, ${s}%, ${Math.max(l - 10, 10)}%)`);
-        root.style.setProperty('--forest', `hsl(${h}, ${Math.max(s - 15, 10)}%, ${isDark ? 60 : Math.max(l - 15, 10)}%)`);
-        root.style.setProperty('--forest-dark', `hsl(${h}, ${Math.max(s - 20, 10)}%, ${isDark ? 10 : Math.max(l - 25, 5)}%)`);
+        root.style.setProperty('--forest', `hsl(${h}, ${Math.max(s - 15, 10)}%, ${isDark ? (isTho ? 52 : 60) : Math.max(l - 15, 10)}%)`);
+        root.style.setProperty('--forest-dark', `hsl(${h}, ${Math.max(s - 20, 10)}%, ${isDark ? (isTho ? 12 : 10) : Math.max(l - 25, 5)}%)`);
       }
     } else if (isMatcha) {
       const root = document.documentElement;

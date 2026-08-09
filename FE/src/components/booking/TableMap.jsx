@@ -165,6 +165,24 @@ const cochinTableImages = {
   "6-Seat": "/assets/cochin/tables/indoor_t1_bar_6.jpg",
 };
 
+const thoTableImages = {
+  "Ghế Quầy Bar (1 người)": "/assets/thocoffee/decor/bar_counter.jpg",
+  "Bàn Đôi Giá Sách (2 người)": "/assets/thocoffee/decor/space_main.jpg",
+  "Bàn Đôi Tường Thô (2 người)": "/assets/thocoffee/decor/space_lounge.jpg",
+  "Bàn Đôi Cửa Sổ Nắng (2 người)": "/assets/thocoffee/decor/space_window.jpg",
+  "Bàn Nhóm Mộc (4 người)": "/assets/thocoffee/decor/space_interior_2.jpg",
+  "Bàn Vườn Cây Xanh (2 người)": "/assets/thocoffee/decor/space_garden.jpg",
+  "Bàn Vườn Nhóm (4 người)": "/assets/thocoffee/decor/space_upstairs.jpg",
+  "Bàn Ban Công View Phố (2 người)": "/assets/thocoffee/decor/space_balcony.jpg",
+  "Bàn Làm Việc Tầng Lửng (4 người)": "/assets/thocoffee/decor/space_interior_3.jpg",
+  "2-Seat Corner": "/assets/thocoffee/decor/space_lounge.jpg",
+  "2-Seat Window": "/assets/thocoffee/decor/space_window.jpg",
+  "2-Seat Bar": "/assets/thocoffee/decor/bar_counter.jpg",
+  "4-Seat Indoor": "/assets/thocoffee/decor/space_interior_2.jpg",
+  "4-Seat Tatami": "/assets/thocoffee/decor/space_interior_3.jpg",
+  "4-Seat Outdoor": "/assets/thocoffee/decor/space_upstairs.jpg",
+};
+
 const yakiTableImages = {
   "Bàn N2 - 2 người (Trong nhà, ổ điện, quạt)": "/assets/yakishime/tables/n2.jpg",
   "Bàn N2.1 - 2 người (Cửa sổ, ổ điện)": "/assets/yakishime/tables/n2_1.jpg",
@@ -199,7 +217,8 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
   const isMonari = rawName.includes("monari") || tName.includes("monari");
   const isComGa = rawName.includes("cơm gà") || rawName.includes("comga") || rawName.includes("ông bách") || rawName.includes("ong bach") || tName.includes("comga");
-  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isTho = rawName.includes("thô") || rawName.includes("artisan") || tName.includes("thocoffee");
+  const isEmCoffee = !isTho && (rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em"));
   const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
   const isCochin = rawName.includes("cochin") || tName.includes("cochin");
   const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
@@ -222,6 +241,7 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
           const imageList = isTaoTao ? taotaoTableImages :
             isMonari ? monariTableImages :
             isComGa ? comGaTableImages :
+            isTho ? thoTableImages :
             isEmCoffee ? emCoffeeTableImages :
             isHanHuyen ? hanHuyenTableImages :
             isCochin ? cochinTableImages :
@@ -234,6 +254,7 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
           const defaultImage = isTaoTao ? "/assets/taotao/tables/ban_4_nguoi_trong_nha.jpg" :
             isMonari ? "/assets/monari/tables/ban_2_nguoi_1.jpg" :
             isComGa ? "/assets/comgaongbach/tables/ban_1.jpg" :
+            isTho ? "/assets/thocoffee/decor/space_main.jpg" :
             isEmCoffee ? "/assets/emcoffee/tables/ban_4_nguoi_rieng_tu.jpg" :
             isHanHuyen ? "/assets/hanhuyen/tables/indoor_table_4.jpg" :
             isCochin ? "/assets/cochin/tables/indoor_t1_window_4.jpg" :

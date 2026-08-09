@@ -68,7 +68,8 @@ export default function RegisterPage() {
   const isTaoTao = tenant?.name?.toLowerCase().includes("taotao") || tenant?.name?.toLowerCase().includes("táo tào") || tenant?.tenantName?.toLowerCase().includes("taotao");
   const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComGa = tenant?.name?.toLowerCase().includes("cơm gà") || tenant?.name?.toLowerCase().includes("ông bách") || tenant?.tenantName?.toLowerCase().includes("comga");
-  const isEmCoffee = tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase().includes("em") || tenant?.tenantName?.toLowerCase().includes("emcoffee");
+  const isTho = tenant?.name?.toLowerCase().includes("thô") || tenant?.name?.toLowerCase().includes("artisan") || tenant?.tenantName?.toLowerCase().includes("thocoffee");
+  const isEmCoffee = !isTho && (tenant?.name?.toLowerCase().includes("em coffee") || tenant?.name?.toLowerCase().includes("em") || tenant?.tenantName?.toLowerCase().includes("emcoffee"));
   const isHanHuyen = tenant?.name?.toLowerCase().includes("hàn huyên") || tenant?.tenantName?.toLowerCase().includes("hanhuyen");
   const isCochin = tenant?.name?.toLowerCase().includes("cochin") || tenant?.tenantName?.toLowerCase().includes("cochin");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.name?.toLowerCase().includes("cơm tấm");
@@ -123,6 +124,7 @@ export default function RegisterPage() {
   const authBg = isTaoTao ? "url('/assets/taotao/decor/hero.jpg')" :
     isMonari ? "url('/assets/monari/decor/space_main.jpg')" :
     isComGa ? "url('/assets/comgaongbach/decor/space_main.jpg')" :
+    isTho ? "url('/assets/thocoffee/decor/hero.jpg')" :
     isEmCoffee ? "url('/assets/emcoffee/decor/hero.jpg')" :
     isHanHuyen ? "url('/assets/hanhuyen/Ảnh bìa.jpg')" :
     isCochin ? "url('/assets/cochin/Ảnh bìa.jpg')" :
@@ -135,6 +137,7 @@ export default function RegisterPage() {
   const authOverlay = isTaoTao ? "linear-gradient(135deg, rgba(40,15,10,0.85) 0%, rgba(180,70,30,0.75) 100%)" :
     isMonari ? "linear-gradient(135deg, rgba(35,15,10,0.85) 0%, rgba(95,40,25,0.75) 50%, rgba(35,15,10,0.8) 100%)" :
     isComGa ? "linear-gradient(135deg, rgba(35,15,5,0.85) 0%, rgba(180,83,9,0.75) 50%, rgba(35,15,5,0.8) 100%)" :
+    isTho ? "linear-gradient(135deg, rgba(20,10,5,0.88) 0%, rgba(92,61,46,0.78) 50%, rgba(20,10,5,0.85) 100%)" :
     isEmCoffee ? "linear-gradient(135deg, rgba(30,15,10,0.85) 0%, rgba(139,90,43,0.75) 100%)" :
     isHanHuyen ? "linear-gradient(135deg, rgba(20,30,22,0.85) 0%, rgba(97,130,105,0.75) 100%)" :
     isCochin ? "linear-gradient(135deg, rgba(15,35,25,0.85) 0%, rgba(42,89,68,0.75) 100%)" :
@@ -147,6 +150,7 @@ export default function RegisterPage() {
   const brandDisplayName = isTaoTao ? "Táo Tào Cà Phê" :
     isMonari ? "MONARI" :
     isComGa ? "Cơm Gà Ông Bách" :
+    isTho ? "THÔ'S ARTISAN" :
     isEmCoffee ? "Em Coffee" :
     isHanHuyen ? "Quán Nước Hàn Huyên" :
     isCochin ? "Cochin Café" :
@@ -174,6 +178,7 @@ export default function RegisterPage() {
             {isTaoTao ? <span style={{ fontSize: 24 }}>🍎</span> :
               isMonari ? <span style={{ fontSize: 24 }}>🥮</span> :
               isComGa ? <span style={{ fontSize: 24 }}>🍗</span> :
+              isTho ? <span style={{ fontSize: 24 }}>☕</span> :
               isEmCoffee ? <span style={{ fontSize: 24 }}>☕</span> :
               isHanHuyen ? <span style={{ fontSize: 24 }}>☕</span> :
               isCochin ? <span style={{ fontSize: 24 }}>🌿</span> :
@@ -191,7 +196,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: 24 }}>
               {["Đặt bàn theo sơ đồ tương tác", "Xem lịch sử & hủy dễ dàng", "Viết đánh giá món ăn & đồ uống"].map((b) => (
                 <div key={b} style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, justifyContent: "center" }}>
-                  <span style={{ color: isTaoTao ? "#FFA726" : (isMonari ? "#E8927C" : (isComGa ? "#F59E0B" : (isEmCoffee ? "#C89565" : (isCochin ? "#A3E635" : (isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#6CBF7A" : "rgba(175,215,120,0.9)")))))))), fontSize: 18 }}>✓</span>
+                  <span style={{ color: isTaoTao ? "#FFA726" : (isMonari ? "#E8927C" : (isComGa ? "#F59E0B" : (isTho ? "#C09B7B" : (isEmCoffee ? "#C89565" : (isCochin ? "#A3E635" : (isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#6CBF7A" : "rgba(175,215,120,0.9)"))))))))), fontSize: 18 }}>✓</span>
                   <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 15 }}>{b}</span>
                 </div>
               ))}
@@ -203,6 +208,7 @@ export default function RegisterPage() {
               {isTaoTao ? "Đăng ký thành viên để nhận ưu đãi và trải nghiệm dịch vụ chu đáo." :
                 isMonari ? "Đăng ký thành viên để nhận ưu đãi bánh trung thu & trà thủ công." :
                 isComGa ? "Đăng ký thành viên để nhận ưu đãi và đặt bàn nhanh chóng." :
+                isTho ? "Đăng ký thành viên để trải nghiệm cà phê thủ công nguyên bản và không gian mộc mạc." :
                 isCochin ? "Đăng ký thành viên để trải nghiệm không gian bistro tuyệt mỹ." :
                 "Tạo tài khoản để trải nghiệm đặt bàn và nhận nhiều ưu đãi đặc quyền."}
             </p>

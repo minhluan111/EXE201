@@ -169,6 +169,7 @@ export default function BookingPage() {
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
   const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
   const isComGa = tenant?.name?.toLowerCase().includes("cơm gà") || tenant?.name?.toLowerCase().includes("ông bách") || tenant?.tenantName?.toLowerCase().includes("comga");
+  const isTho = tenant?.name?.toLowerCase().includes("thô") || tenant?.name?.toLowerCase().includes("artisan") || tenant?.tenantName?.toLowerCase().includes("thocoffee");
   const { selected, setSelected } = useBookingContext();
 
   const selectedRef = useRef(selected);
@@ -189,12 +190,22 @@ export default function BookingPage() {
     () => location.state?.date || todayStr,
   );
   const [bookingTime, setBookingTime] = useState("");
-  const [numPeople, setNumPeople] = useState(() => location.state?.guests || 2);
+  const [numPeople, setNumPeople] = useState(() => {
+    const initG = location.state?.guests || 2;
+    return isTho && initG > 4 ? 4 : initG;
+  });
   const [floorTables, setFloorTables] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [legendOpen, setLegendOpen] = useState(false);
   const [showLegendHelp, setShowLegendHelp] = useState(false);
+
+  // If on Thô tenant, clamp numPeople to 4 since max table is 4
+  useEffect(() => {
+    if (isTho && numPeople > 4) {
+      setNumPeople(4);
+    }
+  }, [isTho, numPeople]);
 
   // Build time slots from tenant opening hours
   const tenantTimeSlots = useMemo(() => {
@@ -255,6 +266,15 @@ export default function BookingPage() {
           }
 
           const suitableTables = res.data.filter((table) => {
+            if (isTho) {
+              if (numPeople === 1) {
+                return table.max_seats === 1 || table.max_seats === 2;
+              }
+              if (numPeople === 2) {
+                return table.max_seats === 2;
+              }
+              return table.max_seats === 4;
+            }
             if (isMonari) {
               if (numPeople <= 2) {
                 return table.max_seats === 2;
@@ -701,7 +721,7 @@ export default function BookingPage() {
                   </h2>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(64px, 1fr))", gap: 10 }}>
-                  {(isComGa ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5, 6, 7, 8]).map((n) => (
+                  {(isTho ? [1, 2, 3, 4] : (isComGa ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5, 6, 7, 8])).map((n) => (
                     <motion.button
                       key={n}
                       whileHover={{ scale: 1.08 }}
@@ -724,7 +744,7 @@ export default function BookingPage() {
                         transition: "all 0.2s",
                       }}
                     >
-                      {n} {isComGa ? (n === 6 ? "+" : "") : (n === 8 ? "+" : "")}
+                      {n} {isTho ? "" : (isComGa ? (n === 6 ? "+" : "") : (n === 8 ? "+" : ""))}
                     </motion.button>
                   ))}
                 </div>

@@ -360,6 +360,42 @@ html.dark[data-tenant="cochin"] {
   --glass-bg:     rgba(15, 24, 19, 0.85);
   --glass-border: rgba(78, 138, 109, 0.22);
 }
+
+html[data-tenant="thocoffee"] {
+  --matcha:       #5C3D2E; /* Artisan Espresso Brown */
+  --matcha-light: #80553E; /* Warm Sandalwood / Amber */
+  --matcha-dark:  #3D271D; /* Deep Dark Roast */
+  --forest:       #4A2E20; /* Rustic Dark Oak */
+  --forest-dark:  #2C1810; /* Charcoal Espresso Bean */
+  --bg:           #FAF7F2; /* Warm Rice Paper / Linen Off-white */
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #F2ECE4; /* Soft Latte Foam */
+  --cream:        #E8DDD0; /* Warm Clay */
+  --text:         #231812; /* Dark Roast Text */
+  --text-muted:   #786355; /* Muted Warm Taupe */
+  --text-light:   #A89587; /* Soft Ash Brown */
+  --border:       rgba(92, 61, 46, 0.18);
+  --glass-bg:     rgba(250, 247, 242, 0.75);
+  --glass-border: rgba(92, 61, 46, 0.20);
+}
+
+html.dark[data-tenant="thocoffee"] {
+  --matcha:       #C89666; /* Warm golden hazelnut / honey caramel highlight */
+  --matcha-light: #E0B387; /* Bright golden cream highlight */
+  --matcha-dark:  #A47144; /* Darker warm caramel */
+  --forest:       #B88052; /* Amber roasted bronze */
+  --forest-dark:  #2A1810; /* Deep smoky espresso */
+  --bg:           #120E0C; /* Deep warm espresso black */
+  --bg-card:      #1A1411; /* Rich dark wood / roasted coffee card */
+  --bg-alt:       #241D18; /* Warm dark slate brown for inputs / buttons */
+  --cream:        #2F241E; /* Warm rustic charcoal timber */
+  --text:         #F7F2EC; /* Warm pearl white for maximum readability */
+  --text-muted:   #C2B0A3; /* Warm parchment taupe */
+  --text-light:   #8F7E72; /* Soft warm umber */
+  --border:       rgba(200, 150, 102, 0.18); /* Warm golden amber hairline border */
+  --glass-bg:     rgba(18, 14, 12, 0.85);
+  --glass-border: rgba(200, 150, 102, 0.22);
+}
 /* ─────────────────────────────────────────────
    BASE
 ───────────────────────────────────────────── */

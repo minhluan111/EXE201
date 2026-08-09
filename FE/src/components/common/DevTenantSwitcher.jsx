@@ -7,6 +7,7 @@ const ALL_SHOPS = [
   { key: "comga", label: "Cơm Gà Ông Bách", desc: "Cơm gà & Singapore", emoji: "🍗", color: "#D97706" },
   { key: "monari", label: "MONARI", desc: "Bánh ngọt & Trà thơm", emoji: "🥮", color: "#C86D51" },
   { key: "taotao", label: "Táo Tào cà phê", desc: "Cà phê & Kem muối", emoji: "🍎", color: "#C86828" },
+  { key: "thocoffee", label: "THÔ'S Artisan Coffee", desc: "Cà phê thủ công & Bakery", emoji: "☕", color: "#5C3D2E" },
   { key: "emcoffee", label: "Em Coffee", desc: "Cà phê & Không gian", emoji: "☕", color: "#8B5A2B" },
   { key: "hoatearoom", label: "Hòa Tea Room", desc: "Trà sữa & Vẽ ly", emoji: "🍃", color: "#1E4620" },
   { key: "monquanchat", label: "Món Quảng Chất", desc: "Đặc sản Miền Trung", emoji: "🍲", color: "#8B1A1A" },

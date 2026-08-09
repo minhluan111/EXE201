@@ -90,7 +90,8 @@ function mapMenuCategory(category, name = "") {
   const currentDomain = getTenantDomain().toLowerCase();
   const isTaoTao = currentDomain.includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
   const isComGa = currentDomain.includes("comga") || currentDomain.includes("comgaongbach") || currentDomain.includes("ongbach") || localStorage.getItem("tenant_is_comga") === "true";
-  const isEmCoffee = currentDomain.includes("emcoffee") || currentDomain.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true";
+  const isTho = currentDomain.includes("thocoffee") || currentDomain.includes("tho") || localStorage.getItem("tenant_is_tho") === "true";
+  const isEmCoffee = !isTho && (currentDomain.includes("emcoffee") || currentDomain.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true");
   const isHanHuyen = currentDomain.includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
   const isCochin = currentDomain.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
   const isMonari = currentDomain.includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
@@ -99,7 +100,17 @@ function mapMenuCategory(category, name = "") {
   const isMonQuanChat = currentDomain.includes("monquanchat") || currentDomain.includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = currentDomain.includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
 
+  if (isTho) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal === "5" || catVal.includes("combo") || lowerName.includes("combo")) return "Combo";
+    if (catVal === "1" || catVal.includes("coffee") || lowerName.includes("cà phê") || lowerName.includes("espresso") || lowerName.includes("cold brew") || lowerName.includes("cappuccino") || lowerName.includes("mocha") || lowerName.includes("einspanner") || lowerName.includes("soda") || lowerName.includes("chocolate") || lowerName.includes("latte") || lowerName.includes("matcha") || lowerName.includes("pina")) return "Coffee";
+    if (catVal === "3" || catVal.includes("fruittea") || lowerName.includes("kombucha") || lowerName.includes("mulberry") || lowerName.includes("trà trái") || lowerName.includes("ấm trà") || lowerName.includes("trà ổi")) return "FruitTea";
+    if (catVal === "4" || catVal.includes("bakery") || catVal.includes("snack") || lowerName.includes("bánh") || lowerName.includes("scone") || lowerName.includes("waffle") || lowerName.includes("croissant") || lowerName.includes("pain au")) return "Bakery";
+    return "Coffee";
+  }
+
   if (isComGa) {
+
     const catVal = String(category || "").trim().toLowerCase();
     if (catVal.includes("combo") || lowerName.includes("combo")) return "Combo";
     if (catVal.includes("drink") || catVal.includes("nước") || catVal.includes("trà") || lowerName.includes("sâm") || lowerName.includes("nước") || lowerName.includes("trà")) return "Drink";
@@ -525,12 +536,13 @@ async function getTablesWithAreas() {
   const currentDomain = getTenantDomain().toLowerCase();
   const isTaoTao = currentDomain.includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
   const isComGa = currentDomain.includes("comga") || currentDomain.includes("comgaongbach") || localStorage.getItem("tenant_is_comga") === "true";
+  const isTho = currentDomain.includes("thocoffee") || currentDomain.includes("tho") || localStorage.getItem("tenant_is_tho") === "true";
   const isComTam = currentDomain.includes("comtam") || currentDomain.includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = currentDomain.includes("samhouse") || currentDomain.includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = currentDomain.includes("monquanchat") || currentDomain.includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = currentDomain.includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   const isMonari = currentDomain.includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
-  const isYakishime = currentDomain.includes("yakishime") || currentDomain.includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isTaoTao && !isComGa && !isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom && !isMonari);
+  const isYakishime = currentDomain.includes("yakishime") || currentDomain.includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isTaoTao && !isComGa && !isTho && !isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom && !isMonari);
 
   const tables = [];
   activeAreas.forEach((area) => {
@@ -558,7 +570,7 @@ async function getTablesWithAreas() {
       const col = (i - 1) % 3;
 
       let displayName = `Bàn ${area.area} ${i}`;
-      if (isMonari || isComGa) {
+      if (isMonari || isComGa || isTho) {
         displayName = count === 1 ? tableTypeText : `${tableTypeText} (${i})`;
       } else if (isMonQuanChat) {
         const numMatch = tableTypeText.match(/^Bàn\s+(\d+)/i);
@@ -585,7 +597,7 @@ async function getTablesWithAreas() {
         table_type: pureTableType,
         coordinate_x: 10 + col * 25,
         coordinate_y: 10 + row * 25,
-        shape: max_seats >= 8 ? "large" : (max_seats >= 4 ? "quad" : "pair"),
+        shape: max_seats >= 8 ? "large" : (max_seats >= 4 ? "quad" : (max_seats === 1 ? "single" : "pair")),
         imageType: area.tableType || area.table_type,
         previewImage: area.previewImage ?? area.preview_image,
         seatingAreaId: area.id,
@@ -1528,6 +1540,29 @@ function getMockMenuItems() {
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   const isMonari = TENANT_DOMAIN.toLowerCase().includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
   const isComGa = TENANT_DOMAIN.toLowerCase().includes("comga") || TENANT_DOMAIN.toLowerCase().includes("comgaongbach") || localStorage.getItem("tenant_is_comga") === "true";
+  const isTho = TENANT_DOMAIN.toLowerCase().includes("thocoffee") || TENANT_DOMAIN.toLowerCase().includes("tho") || localStorage.getItem("tenant_is_tho") === "true";
+
+  if (isTho) {
+    return [
+      { id: "tho1", name: "Combo Sáng Cà Phê & Bánh", price: 75000, category: "Combo", imageUrl: "/assets/thocoffee/dishes/combo_sang.jpg", description: "Một ly espresso đậm đà hoặc cold brew mát lạnh kết hợp cùng croissant bơ nướng vàng giòn — khởi đầu ngày mới hoàn hảo.", tag: "best_seller" },
+      { id: "tho2", name: "Espresso Đá", price: 45000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/espresso_da.jpg", description: "Shot espresso chuẩn Ý pha qua phin gốc, rót trên đá viên trong vắt — đậm đà, thơm ngát và đầy năng lượng.", tag: "best_seller" },
+      { id: "tho3", name: "Cappuccino Sữa Hạt", price: 65000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/cappuccino.jpg", description: "Espresso mạnh quyện cùng lớp sữa hạt macadamia đánh bọt mịn màng — nhẹ nhàng, béo ngậy và tròn vị.", tag: "trending" },
+      { id: "tho4", name: "Cold Brew Tắc & Húng Quế", price: 65000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/cold_brew_tac.jpg", description: "Cold brew ủ 20 giờ từ hạt Arabica đặc biệt, kết hợp với chanh tắc và lá húng quế tươi — mát lạnh, chua thanh, tỉnh táo.", tag: "signature" },
+      { id: "tho5", name: "Einspänner (Cà Phê Kem)", price: 70000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/einspanner.jpg", description: "Espresso nóng phủ whipping cream lạnh đánh bông mịn theo phong cách Vienna cổ điển — tương phản nhiệt độ thú vị.", tag: "new" },
+      { id: "tho6", name: "Pina Cold Brew", price: 75000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/pina_cold_brew.jpg", description: "Cold brew ủ lạnh hoà quyện dứa nhiệt đới, dừa tươi và muối hồng — ngọt thanh, béo nhẹ và đầy sắc màu mùa hè.", tag: "trending" },
+      { id: "tho7", name: "Matcha Latte Oat", price: 65000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/matcha_latte.jpg", description: "Matcha ceremonial grade Nhật Bản xay nhuyễn, pha cùng sữa yến mạch đánh bọt — vị đắng nhẹ và ngọt béo hài hoà.", tag: "trending" },
+      { id: "tho8", name: "Cà Phê Trứng Nóng", price: 55000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/ca_phe_trung.jpg", description: "Espresso truyền thống Việt Nam phủ kem trứng đánh bông mịn — đậm đà, béo ngậy theo công thức thủ công bí truyền.", tag: "signature" },
+      { id: "tho9", name: "Hot Mocha Thủ Công", price: 65000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/hot_mocha.jpg", description: "Espresso đậm kết hợp socola Belge đặc sản và sữa nóng đánh bọt mịn — sánh ngậy, ấm lòng trong những ngày mát trời.", tag: "normal" },
+      { id: "tho10", name: "Soda Việt Quất", price: 60000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/soda_viet_quat.jpg", description: "Soda lạnh với syrup việt quất tươi tự làm, tẻ chua ngọt dễ chịu — màu tím ngà nổi bật, hoàn hảo cho ngày nắng.", tag: "new" },
+      { id: "tho11", name: "Mulberry Kombucha", price: 75000, category: "FruitTea", imageUrl: "/assets/thocoffee/dishes/mulberry_kombucha.jpg", description: "Kombucha lên men tự nhiên với dâu tằm tươi — chua thanh, nhẹ bọt, giàu probiotics và đặc biệt tốt cho sức khoẻ.", tag: "signature" },
+      { id: "tho12", name: "Trà Trái Cây Nhiệt Đới", price: 65000, category: "FruitTea", imageUrl: "/assets/thocoffee/dishes/tra_trai_cay_nhiet_doi.jpg", description: "Pha chế từ trà trắng thượng hạng với xoài, chanh dây và dứa tươi — rực rỡ màu sắc nhiệt đới và tươi mát.", tag: "trending" },
+      { id: "tho13", name: "Matcha Strawberry Lemonade", price: 70000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/matcha_strawberry.jpg", description: "Matcha cấp độ ceremonial kết hợp dâu tây tươi và chanh vắt — cân bằng giữa vị chát nhẹ và chua ngọt thanh mát.", tag: "new" },
+      { id: "tho14", name: "Cà Phê Kem Muối", price: 60000, category: "Coffee", imageUrl: "/assets/thocoffee/dishes/ca_phe_kem_muoi.jpg", description: "Cà phê phin Việt đá lạnh phủ kem muối sánh béo — đắng đậm, mặn nhẹ, ngọt thanh hòa quyện trong từng ngụm.", tag: "best_seller" },
+      { id: "tho15", name: "Croissant Bơ Nướng", price: 45000, category: "Bakery", imageUrl: "/assets/thocoffee/dishes/croissant_pastries.jpg", description: "Croissant ngàn lớp nướng tươi mỗi sáng với bơ Pháp cao cấp — giòn rụm bên ngoài, mềm xốp bên trong và thơm ngất ngây.", tag: "best_seller" },
+      { id: "tho16", name: "Scone Cranberry & Hạt", price: 55000, category: "Bakery", imageUrl: "/assets/thocoffee/dishes/scones.jpg", description: "Scone nướng giòn với cranberry khô, hạt óc chó và sữa tươi — nhẹ bơ, hơi ngọt và cặp đôi hoàn hảo bên tách trà.", tag: "trending" },
+      { id: "tho17", name: "Waffle Nhân Caramel", price: 65000, category: "Bakery", imageUrl: "/assets/thocoffee/dishes/waffle.jpg", description: "Waffle nướng giòn ô vuông vàng óng, rưới caramel thủ công và kem tươi — ăn kèm dâu tươi đỏ mọng thơm ngon.", tag: "signature" },
+    ];
+  }
 
   if (isComGa) {
     return [

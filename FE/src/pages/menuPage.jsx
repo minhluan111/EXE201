@@ -85,6 +85,14 @@ const COM_GA_CATEGORIES = [
   { key: "Drink",      label: "Nước uống",    emoji: "🥤" },
 ];
 
+const THO_CATEGORIES = [
+  { key: "all",       label: "Tất cả",                    emoji: "" },
+  { key: "Combo",     label: "Combo Sáng & Signature",    emoji: "" },
+  { key: "Coffee",    label: "Cà Phê",            emoji: "" },
+  { key: "FruitTea",  label: "Trà Trái Cây & Kombucha",   emoji: "" },
+  { key: "Bakery",    label: "Bánh Nướng",       emoji: "" },
+];
+
 const TAGS = [
   { key: "all",        label: "Tất cả" },
   { key: "best_seller",label: "Bán chạy nhất" },
@@ -120,7 +128,8 @@ export default function MenuPage() {
   const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
   const isMonari = rawName.includes("monari") || tName.includes("monari");
   const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
-  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isTho = rawName.includes("thô") || rawName.includes("artisan") || tName.includes("thocoffee");
+  const isEmCoffee = !isTho && (rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em"));
   const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
   const isCochin = rawName.includes("cochin") || tName.includes("cochin");
   const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
@@ -131,6 +140,7 @@ export default function MenuPage() {
   const CATEGORIES = isTaoTao ? TAOTAO_CATEGORIES :
     isMonari ? MONARI_CATEGORIES :
     isComGa ? COM_GA_CATEGORIES :
+    isTho ? THO_CATEGORIES :
     isEmCoffee ? EM_COFFEE_CATEGORIES :
     isHanHuyen ? HAN_HUYEN_CATEGORIES :
     isCochin ? COCHIN_CATEGORIES :
@@ -188,6 +198,7 @@ export default function MenuPage() {
   const heroBg = isTaoTao ? "url('/assets/taotao/decor/hero.jpg')" :
     isMonari ? "url('/assets/monari/decor/space_main.jpg')" :
     isComGa ? "url('/assets/comgaongbach/decor/space_main.jpg')" :
+    isTho ? "url('/assets/thocoffee/decor/hero.jpg')" :
     isEmCoffee ? "url('/assets/emcoffee/decor/hero.jpg')" :
     isHanHuyen ? "url('/assets/hanhuyen/Ảnh bìa.jpg')" :
     isCochin ? "url('/assets/cochin/Ảnh bìa.jpg')" :
@@ -200,6 +211,7 @@ export default function MenuPage() {
   const menuDesc = isTaoTao ? "Cà phê Robusta thơm đậm kết hợp kem muối sánh ngậy béo mặn, cùng các loại trà phô mai béo dẻo và chanh leo dừa non thanh mát." :
     isMonari ? "Từng chiếc bánh trung thu và ly trà được chế biến thủ công tỉ mỉ — nguyên liệu hảo hạng, hương vị ngọt thanh và trọn vẹn." :
     isComGa ? "Thưởng thức cơm gà luộc da vàng giòn ngọt thịt, gà quay gia truyền đậm đà, trứng ngâm tương lòng đào béo ngậy cùng nước sâm bí đao thanh mát." :
+    isTho ? "Không gian Wabi-Sabi mộc mạc — nhấm thức uống thủ công nguyên bản, tủ bánh nướng tươi và nồng nàn những hương vị được trưng cất từ thiên nhiên." :
     isEmCoffee ? "Thưởng thức Phindi hạnh nhân béo bùi, Trà vải atiso đỏ thanh nhiệt và các món cà phê rang mộc nguyên chất tinh tế." :
     isHanHuyen ? "Những ly Phê xỉu ba tầng ngọt béo, Phê đá đậm vị và trà đào xanh nhài mang đậm dư vị hoài niệm bình yên." :
     isCochin ? "Hương vị trà sữa ô long rang khói đặc trưng, Caffe Latte chuẩn Ý và các thức uống trà hoa nhiệt đới tao nhã." :

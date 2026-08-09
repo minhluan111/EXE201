@@ -261,7 +261,173 @@ namespace dbquery
                 }
 
                 // ==========================================
-                // 3. SETUP ACCOUNTS FOR ALL TENANTS
+                // 3. THÔ'S ARTISAN COFFEE TENANT
+                // ==========================================
+                Guid thoTenantId = Guid.Empty;
+                using (var cmd = new NpgsqlCommand("SELECT id FROM tenants WHERE domain LIKE '%tho%' OR name ILIKE '%thô%'", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        thoTenantId = reader.GetGuid(0);
+                        Console.WriteLine($"Found existing Thô's Artisan Coffee Tenant: {thoTenantId}");
+                    }
+                }
+
+                if (thoTenantId == Guid.Empty)
+                {
+                    thoTenantId = Guid.NewGuid();
+                    Console.WriteLine($"Creating new Thô's Artisan Coffee Tenant: {thoTenantId}");
+                    using (var cmd = new NpgsqlCommand("INSERT INTO tenants (id, name, domain, logo, theme_color, active, created_at) VALUES (@id, @name, @domain, @logo, @theme_color, true, NOW())", conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", thoTenantId);
+                        cmd.Parameters.AddWithValue("name", "THÔ'S ARTISAN COFFEE");
+                        cmd.Parameters.AddWithValue("domain", "thocoffee.localhost");
+                        cmd.Parameters.AddWithValue("logo", "/assets/thocoffee/decor/logo.png");
+                        cmd.Parameters.AddWithValue("theme_color", "#5C3D2E");
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                else
+                {
+                    using (var cmd = new NpgsqlCommand("UPDATE tenants SET name = @name, logo = @logo, theme_color = @theme_color, domain = @domain, active = true WHERE id = @id", conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", thoTenantId);
+                        cmd.Parameters.AddWithValue("name", "THÔ'S ARTISAN COFFEE");
+                        cmd.Parameters.AddWithValue("domain", "thocoffee.localhost");
+                        cmd.Parameters.AddWithValue("logo", "/assets/thocoffee/decor/logo.png");
+                        cmd.Parameters.AddWithValue("theme_color", "#5C3D2E");
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Upsert Thô's Artisan Coffee RestaurantInfo
+                Console.WriteLine("Upserting Thô's Artisan Coffee RestaurantInfo...");
+                using (var cmd = new NpgsqlCommand("DELETE FROM \"RestaurantInfo\" WHERE \"TenantId\" = @tenantId", conn))
+                {
+                    cmd.Parameters.AddWithValue("tenantId", thoTenantId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                using (var cmd = new NpgsqlCommand(@"
+                    INSERT INTO ""RestaurantInfo"" (
+                        ""Id"", ""TenantId"", ""Address"", ""Phone"", ""OpeningHours"", ""MapUrl"",
+                        ""NoShowAfterMinutes"", ""CancelBeforeMinutes"", ""BookingLeadMinutes"",
+                        ""ConfirmationDeadlineMinutes"", ""HighRiskThresholdMinutes"",
+                        ""MediumRiskThresholdMinutes"", ""LowRiskThresholdMinutes"",
+                        ""AutoConfirmThresholdMinutes"", ""OpeningTime"", ""ClosingTime"", ""UpdatedAt""
+                    ) VALUES (
+                        @id, @tenantId, @address, @phone, @openingHours, @mapUrl,
+                        15, 30, 15, 30, 60, 120, 180, 180, '07:00:00'::time, '22:00:00'::time, NOW()
+                    )", conn))
+                {
+                    cmd.Parameters.AddWithValue("id", Guid.NewGuid());
+                    cmd.Parameters.AddWithValue("tenantId", thoTenantId);
+                    cmd.Parameters.AddWithValue("address", "254 Đặng Văn Bi, Thủ Đức, Hồ Chí Minh 70000, Vietnam");
+                    cmd.Parameters.AddWithValue("phone", "0909 254 789");
+                    cmd.Parameters.AddWithValue("openingHours", "07:00 – 22:00");
+                    cmd.Parameters.AddWithValue("mapUrl", "https://maps.google.com/maps?q=254+Đặng+Văn+Bi,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed");
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Upsert Thô's Artisan Coffee Seating Areas
+                Console.WriteLine("Upserting Thô's Artisan Coffee Seating Areas...");
+                using (var cmd = new NpgsqlCommand("DELETE FROM seating_areas WHERE \"TenantId\" = @tenantId", conn))
+                {
+                    cmd.Parameters.AddWithValue("tenantId", thoTenantId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                var thoAreas = new[]
+                {
+                    new { TableType = "Ghế Quầy Bar (1 người)", Total = 4, Res = 4, Desc = "Ghế bar cao thưởng thức barista pha chế cà phê thủ công & cold brew trực tiếp", Area = "Quầy Bar", Img = "/assets/thocoffee/decor/bar_counter.jpg" },
+                    new { TableType = "Bàn Đôi Giá Sách (2 người)", Total = 2, Res = 2, Desc = "Bàn gỗ tròn ấm áp cạnh giá sách và tường vôi mộc phong cách Wabi-Sabi", Area = "Khu Trong Nhà", Img = "/assets/thocoffee/decor/space_main.jpg" },
+                    new { TableType = "Bàn Đôi Tường Thô (2 người)", Total = 2, Res = 2, Desc = "Bàn đôi dưới vệt nắng tường đất thô mộc mạc và tĩnh lặng", Area = "Khu Trong Nhà", Img = "/assets/thocoffee/decor/space_lounge.jpg" },
+                    new { TableType = "Bàn Đôi Cửa Sổ Nắng (2 người)", Total = 2, Res = 2, Desc = "Góc bàn 2 người cạnh cửa sổ kính lớn đón ánh sáng tự nhiên", Area = "Khu Trong Nhà", Img = "/assets/thocoffee/decor/space_window.jpg" },
+                    new { TableType = "Bàn Nhóm Mộc (4 người)", Total = 2, Res = 2, Desc = "Bàn gỗ nhóm 4 người rộng rãi bên ban can gỗ, phù hợp họp nhóm & trò chuyện", Area = "Khu Trong Nhà", Img = "/assets/thocoffee/decor/space_interior_2.jpg" },
+                    new { TableType = "Bàn Vườn Cây Xanh (2 người)", Total = 2, Res = 2, Desc = "Bàn 2 người dưới bóng cây xanh mát rượi và không khí trong lành", Area = "Khu Sân Vườn", Img = "/assets/thocoffee/decor/space_garden.jpg" },
+                    new { TableType = "Bàn Vườn Nhóm (4 người)", Total = 2, Res = 2, Desc = "Bàn 4 người khu vườn nhiệt đới thoáng mát, thoải mái sum họp", Area = "Khu Sân Vườn", Img = "/assets/thocoffee/decor/space_upstairs.jpg" },
+                    new { TableType = "Bàn Ban Công View Phố (2 người)", Total = 2, Res = 2, Desc = "Bàn 2 người ban công thoáng gió nhìn ngắm đường phố Đặng Văn Bi", Area = "Tầng Lửng & Ban Công", Img = "/assets/thocoffee/decor/space_balcony.jpg" },
+                    new { TableType = "Bàn Làm Việc Tầng Lửng (4 người)", Total = 2, Res = 2, Desc = "Bàn dài 4 người tầng lửng yên tĩnh, trang bị ổ điện tiện cho laptop & đọc sách", Area = "Tầng Lửng & Ban Công", Img = "/assets/thocoffee/decor/space_interior_3.jpg" },
+                };
+
+                foreach (var a in thoAreas)
+                {
+                    using (var cmd = new NpgsqlCommand(@"
+                        INSERT INTO seating_areas (
+                            id, ""TenantId"", table_type, area, total_tables, reservable_tables, preview_image, description, is_active
+                        ) VALUES (
+                            @id, @tenantId, @tableType, @area, @total, @res, @img, @desc, true
+                        )", conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", Guid.NewGuid());
+                        cmd.Parameters.AddWithValue("tenantId", thoTenantId);
+                        cmd.Parameters.AddWithValue("tableType", a.TableType);
+                        cmd.Parameters.AddWithValue("area", a.Area);
+                        cmd.Parameters.AddWithValue("total", a.Total);
+                        cmd.Parameters.AddWithValue("res", a.Res);
+                        cmd.Parameters.AddWithValue("img", (object)a.Img ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("desc", a.Desc);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Upsert Thô's Artisan Coffee Menu Items
+                Console.WriteLine("Upserting Thô's Artisan Coffee Menu Items...");
+                using (var cmd = new NpgsqlCommand("DELETE FROM \"MenuItems\" WHERE \"TenantId\" = @tenantId", conn))
+                {
+                    cmd.Parameters.AddWithValue("tenantId", thoTenantId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                var thoMenuItems = new[]
+                {
+                    new { Name = "Combo Sáng Năng Lượng", Category = 5, Price = 62000m, Tag = 2, Sales = 490, Img = "/assets/thocoffee/dishes/combo_sang.jpg", Desc = "01 Thô sữa hoặc Thô đá đậm đà kết hợp cùng 01 bánh nướng nóng giòn bất kỳ cho buổi sáng tràn đầy cảm hứng." },
+                    new { Name = "Mulberry Kombucha", Category = 3, Price = 55000m, Tag = 3, Sales = 320, Img = "/assets/thocoffee/dishes/mulberry_kombucha.jpg", Desc = "Trà lên men Kombucha thủ công kết hợp dâu tằm tươi mọng nước, hồng trà và chanh vàng thanh nhiệt." },
+                    new { Name = "Pina Cold Brew", Category = 1, Price = 58000m, Tag = 2, Sales = 410, Img = "/assets/thocoffee/dishes/pina_cold_brew.jpg", Desc = "Cà phê Arabica ủ lạnh 16 tiếng kết hợp nước ép dứa tươi nhiệt đới và lát dứa sấy thơm nồng nàn." },
+                    new { Name = "Matcha Dâu Tây Phân Tầng", Category = 1, Price = 55000m, Tag = 3, Sales = 360, Img = "/assets/thocoffee/dishes/matcha_strawberry.jpg", Desc = "Lớp mứt dâu tây tươi sánh mịn, sữa tươi thanh trùng và lớp matcha Nhật Bản nguyên bản thơm ngát." },
+                    new { Name = "Cà Phê Trứng Nướng Thô", Category = 1, Price = 48000m, Tag = 2, Sales = 530, Img = "/assets/thocoffee/dishes/ca_phe_trung.jpg", Desc = "Cà phê Robusta mộc đậm vị phủ lớp kem trứng đánh bông khè lửa vàng xém béo ngậy thơm lừng kèm thìa gỗ." },
+                    new { Name = "Cà Phê Kem Muối Thô", Category = 1, Price = 45000m, Tag = 3, Sales = 480, Img = "/assets/thocoffee/dishes/ca_phe_kem_muoi.jpg", Desc = "Cà phê phin truyền thống phối hợp lớp kem sữa muối béo mặn sánh mịn đặc trưng của quán Thô." },
+                    new { Name = "Einspanner Artisan Cacao", Category = 1, Price = 52000m, Tag = 1, Sales = 210, Img = "/assets/thocoffee/dishes/einspanner.jpg", Desc = "Cà phê đen nguyên chất phong cách Vienna phủ lớp kem tươi bồng bềnh và bột cacao đắng nhẹ tinh tế." },
+                    new { Name = "Cappuccino Gốm Thủ Công", Category = 1, Price = 48000m, Tag = 1, Sales = 340, Img = "/assets/thocoffee/dishes/cappuccino.jpg", Desc = "Espresso đậm đà hòa quyện lớp bọt sữa mịn màng vẽ hình trái tim phục vụ trong ly gốm mộc nung thủ công." },
+                    new { Name = "Hot Mocha Nghệ Thuật", Category = 1, Price = 52000m, Tag = 1, Sales = 270, Img = "/assets/thocoffee/dishes/hot_mocha.jpg", Desc = "Sự kết hợp giữa espresso hảo hạng, sốt sô-cô-la Bỉ nguyên chất và sữa tươi nóng kèm bánh hạt cà phê xinh xắn." },
+                    new { Name = "Cold Brew Tắc Thanh Mát", Category = 1, Price = 48000m, Tag = 4, Sales = 190, Img = "/assets/thocoffee/dishes/cold_brew_tac.jpg", Desc = "Cà phê ủ lạnh kết hợp nước tắc tươi tạo nên hương vị chua nhẹ thanh mát bừng tỉnh mọi giác quan." },
+                    new { Name = "Ấm Trà Trái Cây Nhiệt Đới", Category = 3, Price = 58000m, Tag = 2, Sales = 420, Img = "/assets/thocoffee/dishes/tra_trai_cay_nhiet_doi.jpg", Desc = "Bình trà thủy tinh cán gỗ ấm áp pha từ trà đen, xoài cát, chanh leo và đào tươi mọng nước." },
+                    new { Name = "Trà Ổi Hồng Thảo Mộc Cúc", Category = 3, Price = 48000m, Tag = 3, Sales = 310, Img = "/assets/thocoffee/dishes/tra_oi_hong.jpg", Desc = "Trà hoa cúc thanh tịnh quyện cùng nước ép ổi hồng thanh ngọt và thảo mộc rosemary thư thái." },
+                    new { Name = "Matcha Latte Thô's", Category = 1, Price = 48000m, Tag = 1, Sales = 260, Img = "/assets/thocoffee/dishes/matcha_latte.jpg", Desc = "Bột trà xanh Uji Kyoto nhập khẩu đánh nhuyễn cùng sữa tươi béo thơm dịu mát." },
+                    new { Name = "Soda Việt Quất Rosemary", Category = 1, Price = 45000m, Tag = 1, Sales = 200, Img = "/assets/thocoffee/dishes/soda_viet_quat.jpg", Desc = "Soda sủi bọt mát lạnh kết hợp mứt việt quất tự làm và nhánh lá hương thảo tươi thơm nồng." },
+                    new { Name = "Chocolate Cookie Freeze", Category = 1, Price = 55000m, Tag = 3, Sales = 380, Img = "/assets/thocoffee/dishes/chocolate_freeze.jpg", Desc = "Thức uống đá xay sô-cô-la béo đậm đà phủ kem tươi và vụn bánh quy oreo giòn tan." },
+                    new { Name = "English Scones Kèm Mứt & Bơ Kem", Category = 4, Price = 42000m, Tag = 2, Sales = 450, Img = "/assets/thocoffee/dishes/scones.jpg", Desc = "Cặp bánh scone nướng vàng ươm thơm bơ theo phong cách quý tộc Anh kèm mứt dâu rừng và kem bơ clotted." },
+                    new { Name = "Bánh Waffle Bơ Vani Nướng", Category = 4, Price = 32000m, Tag = 2, Sales = 510, Img = "/assets/thocoffee/dishes/waffle.jpg", Desc = "Bánh tổ ong waffle nướng nóng hổi giòn rụm bên ngoài, mềm xốp bên trong đượm hương bơ vani." },
+                    new { Name = "Bánh Croissant Bơ Pháp", Category = 4, Price = 35000m, Tag = 1, Sales = 290, Img = "/assets/thocoffee/dishes/croissant_pastries.jpg", Desc = "Bánh sừng bò ngàn lớp chuẩn kỹ thuật Pháp với lớp vỏ giòn rụm thơm lừng mùi bơ cao cấp." },
+                    new { Name = "Pain Au Chocolat", Category = 4, Price = 38000m, Tag = 3, Sales = 330, Img = "/assets/thocoffee/dishes/croissant_pastries.jpg", Desc = "Bánh ngàn lớp cuộn nhân sô-cô-la đen đậm vị tan chảy khi hâm nóng." },
+                    new { Name = "Pain Au Raisin", Category = 4, Price = 38000m, Tag = 1, Sales = 220, Img = "/assets/thocoffee/dishes/croissant_pastries.jpg", Desc = "Bánh xoắn ốc Đan Mạch nhân kem custard vani và nho khô ngâm rượu thơm dịu." }
+                };
+
+                foreach (var m in thoMenuItems)
+                {
+                    using (var cmd = new NpgsqlCommand(@"
+                        INSERT INTO ""MenuItems"" (
+                            ""Id"", ""TenantId"", ""Name"", ""Category"", ""Price"", ""Description"", ""Tag"", ""SalesCount"", ""ImageUrl"", ""IsActive"", ""CreatedAt""
+                        ) VALUES (
+                            @id, @tenantId, @name, @cat, @price, @desc, @tag, @sales, @img, true, NOW()
+                        )", conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", Guid.NewGuid());
+                        cmd.Parameters.AddWithValue("tenantId", thoTenantId);
+                        cmd.Parameters.AddWithValue("name", m.Name);
+                        cmd.Parameters.AddWithValue("cat", m.Category);
+                        cmd.Parameters.AddWithValue("price", m.Price);
+                        cmd.Parameters.AddWithValue("desc", m.Desc);
+                        cmd.Parameters.AddWithValue("tag", m.Tag);
+                        cmd.Parameters.AddWithValue("sales", m.Sales);
+                        cmd.Parameters.AddWithValue("img", (object)m.Img ?? DBNull.Value);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // ==========================================
+                // 4. SETUP ACCOUNTS FOR ALL TENANTS
                 // ==========================================
                 Console.WriteLine("\n=== Setting up Accounts (Admin, Staff, Manager) ===");
                 
@@ -282,7 +448,12 @@ namespace dbquery
                     // Cơm Gà Ông Bách accounts
                     new { Email = "admin@comgaongbach.com", Pass = "Admin@123", Role = 1, Name = "Cơm Gà Ông Bách Admin", TenantId = comGaTenantId },
                     new { Email = "staff@comgaongbach.com", Pass = "Staff@123", Role = 2, Name = "Cơm Gà Ông Bách Staff", TenantId = comGaTenantId },
-                    new { Email = "manager@comgaongbach.com", Pass = "Manager@123", Role = 3, Name = "Cơm Gà Ông Bách Manager", TenantId = comGaTenantId }
+                    new { Email = "manager@comgaongbach.com", Pass = "Manager@123", Role = 3, Name = "Cơm Gà Ông Bách Manager", TenantId = comGaTenantId },
+
+                    // Thô's Artisan Coffee accounts
+                    new { Email = "admin@thosartisancoffee.vn", Pass = "Admin@123", Role = 1, Name = "Thô's Artisan Coffee Admin", TenantId = thoTenantId },
+                    new { Email = "staff@thosartisancoffee.vn", Pass = "Staff@123", Role = 2, Name = "Thô's Artisan Coffee Staff", TenantId = thoTenantId },
+                    new { Email = "manager@thosartisancoffee.vn", Pass = "Manager@123", Role = 3, Name = "Thô's Artisan Coffee Manager", TenantId = thoTenantId }
                 };
 
                 foreach (var acc in accountsToSetup)

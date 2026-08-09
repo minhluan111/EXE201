@@ -34,7 +34,8 @@ export default function Footer() {
   const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
   const isMonari = rawName.includes("monari") || tName.includes("monari");
   const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
-  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isTho = rawName.includes("thô") || rawName.includes("artisan") || tName.includes("thocoffee");
+  const isEmCoffee = !isTho && (rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em"));
   const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
   const isCochin = rawName.includes("cochin") || tName.includes("cochin");
   const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
@@ -49,6 +50,8 @@ export default function Footer() {
     ? "Tiệm trà và bánh ngọt thủ công với set bánh trung thu cao cấp, coco matcha tươi mát, nước dừa quế hoa và không gian ấm cúng thư thái tại Đông Hòa, Hồ Chí Minh."
     : isComGa
     ? "Quán cơm gà gia truyền trứ danh với cơm gà luộc da vàng giòn ngọt thịt, gà quay xém cạnh thơm lừng, thịt xá xíu đậm đà và nước sâm bí đao thanh mát tại 146 Đường GS1, Đông Hòa, TP. Dĩ An."
+    : isTho
+    ? "Không gian cà phê phong cách Wabi-Sabi mộc mạc, phục vụ cà phê thủ công, bánh sừng bò bơ Pháp, English Scones nướng nóng và các dòng Cold Brew thanh mát tại 254 Đặng Văn Bi, Thủ Đức, Hồ Chí Minh."
     : isEmCoffee
     ? "Không gian làm việc xanh mát, thưởng thức các dòng cà phê rang mộc nguyên chất, phindi hạnh nhân thơm bùi và trà thảo mộc tươi ngon tại Thủ Đức, Hồ Chí Minh."
     : isHanHuyen
@@ -66,15 +69,16 @@ export default function Footer() {
     : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định.";
 
   const infoItems = [
-    { icon: MapPin, text: tenant?.address || (isTaoTao ? "102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ, Vietnam" : "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam") },
-    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || (isTaoTao ? "07:00 – 22:30" : "09:30 – 21:30")}\nMỗi ngày trong tuần` },
-    { icon: Phone,  text: tenant?.hotline || (isTaoTao ? "0901 234 567" : "0938 123 789") },
-    { icon: Mail,   text: tenant?.email || (isTaoTao ? "contact@taotaocafe.vn" : "contact@restaurant.com") },
+    { icon: MapPin, text: tenant?.address || (isTho ? "254 Đặng Văn Bi, Thủ Đức, Hồ Chí Minh 70000, Vietnam" : (isTaoTao ? "102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ, Vietnam" : "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam")) },
+    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || (isTho ? "07:00 – 22:00" : (isTaoTao ? "07:00 – 22:30" : "09:30 – 21:30"))}\nMỗi ngày trong tuần` },
+    { icon: Phone,  text: tenant?.hotline || (isTho ? "0908 765 432" : (isTaoTao ? "0901 234 567" : "0938 123 789")) },
+    { icon: Mail,   text: tenant?.email || (isTho ? "contact@thosartisancoffee.vn" : (isTaoTao ? "contact@taotaocafe.vn" : "contact@restaurant.com")) },
   ];
 
   const watermarkEmoji = isTaoTao ? "🍎" :
     isMonari ? "🥮" :
     isComGa ? "雞" :
+    isTho ? "☕" :
     isEmCoffee ? "☕" :
     isHanHuyen ? "☕" :
     isCochin ? "🌿" :

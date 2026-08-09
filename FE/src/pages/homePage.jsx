@@ -282,6 +282,35 @@ const HOA_TEA_ROOM_GALLERY = [
   { url: "/assets/hoatearoom/decor/decor_4.jpg", h: 220, label: "Góc thưởng trà tĩnh lặng" },
 ];
 
+const THO_TESTIMONIALS = [
+  { name: "Lê Quốc Bảo", role: "Kiến trúc sư", rating: 5, text: "Không gian Wabi-Sabi mộc mạc và ấm cúng đến từng chi tiết. Cà phê kem muối sánh béo mặn nhẹ cực kỳ vừa vặn, ngồi vẽ phác thảo cả buổi chiều rất thư thái." },
+  { name: "Nguyễn Thùy Trang", role: "Food & Lifestyle Blogger", rating: 5, text: "Mulberry Kombucha và Pina Cold Brew ở Thô's thực sự xuất sắc! Vị chua thanh tự nhiên, dâu tằm tươi mọng nước. Bánh Croissant nướng bơ Pháp giòn rụm thơm nức." },
+  { name: "Trần Hoàng Nam", role: "Lập trình viên", rating: 5, text: "Bàn làm việc tầng lửng và ban công view phố Đặng Văn Bi rất yên tĩnh, nhiều ổ cắm điện. Cà phê trứng nướng khè lửa thơm lừng béo ngậy không hề tanh." },
+  { name: "Đặng Mai Anh", role: "Nhiếp ảnh gia", rating: 5, text: "Ánh sáng tự nhiên chiếu qua từng vệt tường vôi thô cực kỳ nghệ thuật. Tách Cappuccino gốm mộc thủ công tạo cảm giác rất trân quý và ấm lòng." },
+];
+
+const THO_GALLERY = [
+  { url: "/assets/thocoffee/decor/hero.jpg", h: 280, label: "Không gian quán" },
+  { url: "/assets/thocoffee/decor/space_main.jpg", h: 240, label: "Bàn gỗ & kệ sách hoài niệm" },
+  { url: "/assets/thocoffee/decor/space_interior_2.jpg", h: 280, label: "Góc bàn đôi đón nắng chiều" },
+  { url: "/assets/thocoffee/decor/space_interior_3.jpg", h: 230, label: "Bàn làm việc tầng lửng yên tĩnh" },
+  { url: "/assets/thocoffee/decor/space_lounge.jpg", h: 270, label: "Tường vôi thô & vệt nắng tự nhiên" },
+  { url: "/assets/thocoffee/decor/space_window.jpg", h: 250, label: "Không gian chỗ ngồi" },
+  { url: "/assets/thocoffee/decor/space_balcony.jpg", h: 290, label: "Không gian chỗ ngồi " },
+  { url: "/assets/thocoffee/decor/space_garden.jpg", h: 240, label: "Chỗ ngồi có cây xanh" },
+  { url: "/assets/thocoffee/decor/space_counter.jpg", h: 260, label: "Không gian chỗ ngồi" },
+  { url: "/assets/thocoffee/decor/bar_counter.jpg", h: 240, label: "Quầy Bar & Tháp Cold Brew" },
+  { url: "/assets/thocoffee/decor/space_upstairs.jpg", h: 280, label: "Không gian lounge thư thái" },
+  { url: "/assets/thocoffee/decor/space_staircase.jpg", h: 250, label: "Không gian chỗ ngồi" },
+];
+
+const THO_PHILOSOPHIES = [
+  { kanji: "Mộc", romaji: "MỘC", title: "Vẻ Đẹp Nguyên Bản", desc: "Tôn vinh chất liệu tự nhiên — gỗ thô, tường vôi và ánh nắng dịu nhẹ tạo nên không gian Wabi-Sabi an yên, tĩnh tại." },
+  { kanji: "Thủ", romaji: "THỦ", title: "Pha Chế Thủ Công", desc: "Từng giọt cà phê ủ lạnh, ly espresso hay tách trà hoa quả đều được nghệ nhân pha chế tỉ mỉ, trọn vẹn hương vị tinh túy." },
+  { kanji: "Tươi", romaji: "TƯƠI", title: "Bánh Nướng Mỗi Ngày", desc: "Croissant bơ Pháp ngàn lớp, English Scones và Waffle vàng giòn được nướng nóng hổi tại chỗ mỗi sáng sớm." },
+  { kanji: "Tâm", romaji: "TÂM", title: "Phục Vụ Chân Thành", desc: "Đón tiếp bạn như người thân ghé chơi nhà — nụ cười mộc mạc, sự ân cần và không gian thoải mái không gượng ép." },
+];
+
 // ── Philosophies ─────────────────────────────────────────────────────────
 const YAKISHIME_PHILOSOPHIES = [
   { kanji: "和", romaji: "WA", title: "Hài Hòa", desc: "Cân bằng âm dương giữa con người và thiên nhiên. Trà ngon chắt lọc tinh hoa cỏ cây, hòa quyện tâm hồn thanh tịnh." },
@@ -369,18 +398,19 @@ export default function HomePage() {
   const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
   const isMonari = rawName.includes("monari") || tName.includes("monari");
   const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
-  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isTho = rawName.includes("thô") || rawName.includes("artisan") || tName.includes("thocoffee");
+  const isEmCoffee = !isTho && (rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em"));
   const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
   const isCochin = rawName.includes("cochin") || tName.includes("cochin");
   const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
   const isSamHouse = rawName.includes("sam house") || tName.includes("samhouse");
   const isMonQuanChat = rawName.includes("quảng") || tName.includes("monquanchat");
   const isHoaTeaRoom = rawName.includes("hoa") || rawName.includes("hoà") || rawName.includes("hòa") || tName.includes("hoatearoom");
-  const isMatcha = rawName.includes("yaki") || rawName.includes("matcha") || tName.includes("matcha") || (!isTaoTao && !isMonari && !isComGa && !isEmCoffee && !isHanHuyen && !isCochin && !isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom);
+  const isMatcha = rawName.includes("yaki") || rawName.includes("matcha") || tName.includes("matcha") || (!isTaoTao && !isMonari && !isComGa && !isTho && !isEmCoffee && !isHanHuyen && !isCochin && !isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom);
 
-  const currentPhilosophies = isTaoTao ? TAOTAO_PHILOSOPHIES : (isMonari ? MONARI_PHILOSOPHIES : (isComGa ? COM_GA_PHILOSOPHIES : (isEmCoffee ? EM_COFFEE_PHILOSOPHIES : (isHanHuyen ? HAN_HUYEN_PHILOSOPHIES : (isCochin ? COCHIN_PHILOSOPHIES : (isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : YAKISHIME_PHILOSOPHIES)))))))));
-  const currentGallery = isTaoTao ? TAOTAO_GALLERY : (isMonari ? MONARI_GALLERY : (isComGa ? COM_GA_GALLERY : (isEmCoffee ? EM_COFFEE_GALLERY : (isHanHuyen ? HAN_HUYEN_GALLERY : (isCochin ? COCHIN_GALLERY : (isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : YAKISHIME_GALLERY)))))))));
-  const defaultReviews = isTaoTao ? TAOTAO_TESTIMONIALS : (isMonari ? MONARI_TESTIMONIALS : (isComGa ? COM_GA_TESTIMONIALS : (isEmCoffee ? EM_COFFEE_TESTIMONIALS : (isHanHuyen ? HAN_HUYEN_TESTIMONIALS : (isCochin ? COCHIN_TESTIMONIALS : (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : YAKISHIME_TESTIMONIALS)))))))));
+  const currentPhilosophies = isTaoTao ? TAOTAO_PHILOSOPHIES : (isMonari ? MONARI_PHILOSOPHIES : (isComGa ? COM_GA_PHILOSOPHIES : (isTho ? THO_PHILOSOPHIES : (isEmCoffee ? EM_COFFEE_PHILOSOPHIES : (isHanHuyen ? HAN_HUYEN_PHILOSOPHIES : (isCochin ? COCHIN_PHILOSOPHIES : (isComTam ? COM_TAM_PHILOSOPHIES : (isSamHouse ? SAM_HOUSE_PHILOSOPHIES : (isMonQuanChat ? MON_QUAN_CHAT_PHILOSOPHIES : (isHoaTeaRoom ? HOA_TEA_ROOM_PHILOSOPHIES : YAKISHIME_PHILOSOPHIES))))))))));
+  const currentGallery = isTaoTao ? TAOTAO_GALLERY : (isMonari ? MONARI_GALLERY : (isComGa ? COM_GA_GALLERY : (isTho ? THO_GALLERY : (isEmCoffee ? EM_COFFEE_GALLERY : (isHanHuyen ? HAN_HUYEN_GALLERY : (isCochin ? COCHIN_GALLERY : (isComTam ? COM_TAM_GALLERY : (isSamHouse ? SAM_HOUSE_GALLERY : (isMonQuanChat ? MON_QUAN_CHAT_GALLERY : (isHoaTeaRoom ? HOA_TEA_ROOM_GALLERY : YAKISHIME_GALLERY))))))))));
+  const defaultReviews = isTaoTao ? TAOTAO_TESTIMONIALS : (isMonari ? MONARI_TESTIMONIALS : (isComGa ? COM_GA_TESTIMONIALS : (isTho ? THO_TESTIMONIALS : (isEmCoffee ? EM_COFFEE_TESTIMONIALS : (isHanHuyen ? HAN_HUYEN_TESTIMONIALS : (isCochin ? COCHIN_TESTIMONIALS : (isComTam ? COM_TAM_TESTIMONIALS : (isSamHouse ? SAM_HOUSE_TESTIMONIALS : (isMonQuanChat ? MON_QUAN_CHAT_TESTIMONIALS : (isHoaTeaRoom ? HOA_TEA_ROOM_TESTIMONIALS : YAKISHIME_TESTIMONIALS))))))))));
 
   const [products,  setProducts]  = useState([]);
   const [loading,   setLoading]   = useState(true);
@@ -514,6 +544,7 @@ export default function HomePage() {
   const heroBg = isTaoTao ? "url('/assets/taotao/decor/hero.jpg')" :
     isMonari ? "url('/assets/monari/decor/hero_bg.jpg')" :
     isComGa ? "url('/assets/comgaongbach/decor/space_main.jpg')" :
+    isTho ? "url('/assets/thocoffee/decor/hero.jpg')" :
     isEmCoffee ? "url('/assets/emcoffee/decor/hero.jpg')" :
     isHanHuyen ? "url('/assets/hanhuyen/Ảnh bìa.jpg')" :
     isCochin ? "url('/assets/cochin/Ảnh bìa.jpg')" :
@@ -556,21 +587,23 @@ export default function HomePage() {
               ? "linear-gradient(135deg, rgba(35,15,10,0.85) 0%, rgba(95,40,25,0.75) 50%, rgba(35,15,10,0.8) 100%)"
               : (isComGa
                 ? "linear-gradient(135deg, rgba(35,15,5,0.85) 0%, rgba(120,53,15,0.75) 50%, rgba(35,15,5,0.8) 100%)"
-                : (isEmCoffee
-                  ? "linear-gradient(135deg, rgba(25,18,12,0.85) 0%, rgba(85,55,30,0.75) 50%, rgba(25,18,12,0.8) 100%)"
-                  : (isHanHuyen
-                    ? "linear-gradient(135deg, rgba(20,26,22,0.85) 0%, rgba(65,90,72,0.75) 50%, rgba(20,26,22,0.8) 100%)"
-                    : (isCochin
-                      ? "linear-gradient(135deg, rgba(15,28,20,0.85) 0%, rgba(42,89,68,0.75) 50%, rgba(15,28,20,0.8) 100%)"
-                      : (isComTam
-                        ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(100,45,10,0.75) 50%, rgba(30,15,5,0.8) 100%)"
-                        : (isSamHouse 
-                            ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(80,40,15,0.75) 50%, rgba(20,10,5,0.8) 100%)"
-                            : (isMonQuanChat
-                                ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(90,20,20,0.75) 50%, rgba(30,10,10,0.8) 100%)"
-                                : (isHoaTeaRoom
-                                    ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(30,70,40,0.75) 50%, rgba(6,18,12,0.8) 100%)"
-                                    : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)")))))))))
+                : (isTho
+                  ? "linear-gradient(135deg, rgba(20,10,5,0.88) 0%, rgba(92,61,46,0.78) 50%, rgba(20,10,5,0.85) 100%)"
+                  : (isEmCoffee
+                    ? "linear-gradient(135deg, rgba(25,18,12,0.85) 0%, rgba(85,55,30,0.75) 50%, rgba(25,18,12,0.8) 100%)"
+                    : (isHanHuyen
+                      ? "linear-gradient(135deg, rgba(20,26,22,0.85) 0%, rgba(65,90,72,0.75) 50%, rgba(20,26,22,0.8) 100%)"
+                      : (isCochin
+                        ? "linear-gradient(135deg, rgba(15,28,20,0.85) 0%, rgba(42,89,68,0.75) 50%, rgba(15,28,20,0.8) 100%)"
+                        : (isComTam
+                          ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(100,45,10,0.75) 50%, rgba(30,15,5,0.8) 100%)"
+                          : (isSamHouse 
+                              ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(80,40,15,0.75) 50%, rgba(20,10,5,0.8) 100%)"
+                              : (isMonQuanChat
+                                  ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(90,20,20,0.75) 50%, rgba(30,10,10,0.8) 100%)"
+                                  : (isHoaTeaRoom
+                                      ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(30,70,40,0.75) 50%, rgba(6,18,12,0.8) 100%)"
+                                      : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 50%, rgba(15,31,18,0.8) 100%)"))))))))))
         }} />
 
         <div style={{
@@ -598,10 +631,11 @@ export default function HomePage() {
                 background: "rgba(255, 255, 255, 0.08)",
                 color: "#ffffff", fontSize: 13, fontWeight: 600, letterSpacing: "0.08em",
               }}>
-                {isTaoTao ? "🍎" : (isMonari ? "🥮" : (isComGa ? "" : (isEmCoffee ? "☕" : (isHanHuyen ? "☕" : (isCochin ? "🌿" : (isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵")))))))))}
+                {isTaoTao ? "🍎" : (isMonari ? "🥮" : (isComGa ? "🍗" : (isTho ? "☕" : (isEmCoffee ? "☕" : (isHanHuyen ? "☕" : (isCochin ? "🌿" : (isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵"))))))))))}
                 {isTaoTao ? "Táo Tào cà phê · Cà Phê Muối & Trà Kem Phô Mai" :
                  isMonari ? "MONARI · Bánh Ngọt Thủ Công & Trà Thơm" :
                  isComGa ? "Cơm Gà Ông Bách · Cơm Gà Luộc & Gà Quay Gia Truyền" :
+                 isTho ? "THÔ'S Artisan Coffee · Cà Phê Thủ Công & Bánh Nướng" :
                  isEmCoffee ? "Em Coffee · Cà Phê Rang Mộc & Không Gian Xanh" :
                  isHanHuyen ? "Quán Nước Hàn Huyên · Hoài Niệm & Bình Yên" :
                  isCochin ? "Cochin Café · Nhà Kính Bistro & Trà Hoa Nhiệt Đới" :
@@ -637,6 +671,11 @@ export default function HomePage() {
                 <>
                   Cơm Gà Ông Bách<br />
                   <span style={{ color: "var(--matcha-light)", fontStyle: "italic" }}>Hương Vị Gia Truyền Đậm Đà</span>
+                </>
+              ) : isTho ? (
+                <>
+                  THÔ'S Artisan Coffee<br />
+                  <span style={{ color: "var(--matcha-light)", fontStyle: "italic" }}>Cà Phê Thủ Công & Không Gian Mộc Mạc</span>
                 </>
               ) : isEmCoffee ? (
                 <>
@@ -692,6 +731,8 @@ export default function HomePage() {
                 ? "Set bánh trung thu thủ công cao cấp · Coco Matcha tươi mát · Nước dừa quế hoa thanh ngọt & không gian sofa sang trọng"
                 : isComGa
                 ? "Cơm gà luộc da vàng giòn ngọt thịt · Cơm gà quay xém cạnh thơm lừng · Sốt xá xíu đậm đà & nước sâm bí đao thanh mát"
+                : isTho
+                ? "Cold Brew tắc thanh mát · Cà phê kem muối béo ngậy · Mulberry Kombucha chua ngọt & Bánh sừng bò nướng bơ Pháp thơm lừng"
                 : isEmCoffee
                 ? "Phindi hạnh nhân béo ngậy · Trà vải atiso đỏ mát lạnh · Không gian làm việc xanh mát tràn ngập cảm hứng"
                 : isHanHuyen
@@ -764,6 +805,7 @@ export default function HomePage() {
                 {isTaoTao ? "Triết lý Táo Tào" :
                  isMonari ? "Triết lý Monari" :
                  isComGa ? "Triết lý ẩm thực" :
+                 isTho ? "Triết lý Thô's Artisan" :
                  isEmCoffee ? "Triết lý Em Coffee" :
                  isHanHuyen ? "Triết lý Hàn Huyên" :
                  isCochin ? "Triết lý Cochin" :
@@ -782,6 +824,7 @@ export default function HomePage() {
                 {isTaoTao ? "Tinh tế trong từng tách cà phê & ly trà" :
                  isMonari ? "Nghệ thuật bánh ngọt & trà thơm" :
                  isComGa ? "Tinh hoa trong từng đĩa cơm gà" :
+                 isTho ? "Mộc mạc nguyên bản & cà phê thủ công" :
                  isEmCoffee ? "Cà phê rang mộc & nguồn cảm hứng xanh" :
                  isHanHuyen ? "Khoảnh khắc bình yên & chuyện trò tâm tình" :
                  isCochin ? "Bistro nhà kính & hương vị thảo mộc tao nhã" :
@@ -1303,6 +1346,7 @@ export default function HomePage() {
                   {isTaoTao ? "Không gian ấm cúng" :
                    isMonari ? "Góc hẹn sang trọng" :
                    isComGa ? "Bữa ăn gia đình trọn vị" :
+                   isTho ? "Không gian mộc mạc Wabi-Sabi" :
                    isEmCoffee ? "Không gian làm việc lý tưởng" :
                    isHanHuyen ? "Góc nhỏ hàn huyên" :
                    isCochin ? "Bistro nhà kính thoáng đãng" :
@@ -1359,7 +1403,7 @@ export default function HomePage() {
                       Số lượng khách
                     </span>
                     <div style={{ display: "flex", gap: 8 }}>
-                      {[2, 3, 4].map((num) => {
+                      {(isTho ? [1, 2, 3, 4] : [2, 3, 4]).map((num) => {
                         const isSel = quickGuests === num;
                         return (
                           <button

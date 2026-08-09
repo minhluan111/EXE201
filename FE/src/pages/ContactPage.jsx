@@ -16,7 +16,8 @@ export default function ContactPage() {
   const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
   const isMonari = rawName.includes("monari") || tName.includes("monari");
   const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
-  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isTho = rawName.includes("thô") || rawName.includes("artisan") || tName.includes("thocoffee");
+  const isEmCoffee = !isTho && (rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em"));
   const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
   const isCochin = rawName.includes("cochin") || tName.includes("cochin");
   const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
@@ -66,6 +67,8 @@ export default function ContactPage() {
     ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
     : isComGa
     ? "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isTho
+    ? "https://maps.google.com/maps?q=254+Đặng+Văn+Bi,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
     : isEmCoffee
     ? "https://maps.google.com/maps?q=27+Võ+Văn+Ngân,+Linh+Chiểu,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
     : isHanHuyen

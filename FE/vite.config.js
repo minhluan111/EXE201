@@ -27,6 +27,7 @@ export default defineConfig({
         taotao: path.resolve(__dirname, 'taotao.html'),
         comga: path.resolve(__dirname, 'comga.html'),
         comgaongbach: path.resolve(__dirname, 'comgaongbach.html'),
+        thocoffee: path.resolve(__dirname, 'tho.html'),
       },
     },
   },
