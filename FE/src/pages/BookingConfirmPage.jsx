@@ -51,6 +51,24 @@ export default function BookingConfirmPage() {
   const table = state.selected || contextSelected || {};
   const tableId = table?.id || "";
 
+  const formattedDate = (() => {
+    if (!booking_date) return "";
+    const parts = booking_date.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      const d = new Date(Number(year), Number(month) - 1, Number(day));
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleDateString("vi-VN", {
+          weekday: "long",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+      }
+    }
+    return booking_date;
+  })();
+
   const [note, setNote] = useState("");
   const [receiverName, setReceiverName] = useState(user?.full_name || "");
   const [receiverPhone, setReceiverPhone] = useState(user?.phone || "");
