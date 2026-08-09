@@ -1,6 +1,8 @@
 # Build artifacts
 **/bin/
 **/obj/
+.artifacts/
+**/.artifacts/
 
 # Runtime
 **/logs/

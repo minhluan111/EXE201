@@ -2,7 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy project files first for layer caching
+# Copy Directory.Build.props and project files first for layer caching
+COPY Directory.Build.props ./
 COPY src/CafeReservation.Domain/CafeReservation.Domain.csproj           src/CafeReservation.Domain/
 COPY src/CafeReservation.Application/CafeReservation.Application.csproj src/CafeReservation.Application/
 COPY src/CafeReservation.Infrastructure/CafeReservation.Infrastructure.csproj src/CafeReservation.Infrastructure/
