@@ -631,7 +631,7 @@ export default function HomePage() {
                 background: "rgba(255, 255, 255, 0.08)",
                 color: "#ffffff", fontSize: 13, fontWeight: 600, letterSpacing: "0.08em",
               }}>
-                {isTaoTao ? "🍎" : (isMonari ? "🥮" : (isComGa ? "🍗" : (isTho ? "☕" : (isEmCoffee ? "☕" : (isHanHuyen ? "☕" : (isCochin ? "🌿" : (isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵"))))))))))}
+                {isTaoTao ? "🍎" : (isMonari ? "🥮" : (isComGa ? "🍗" : (isTho ? "" : (isEmCoffee ? "☕" : (isHanHuyen ? "☕" : (isCochin ? "🌿" : (isComTam ? "🌾" : (isSamHouse ? "☕" : (isMonQuanChat ? "🍲" : (isHoaTeaRoom ? "🍃" : "🍵"))))))))))}
                 {isTaoTao ? "Táo Tào cà phê · Cà Phê Muối & Trà Kem Phô Mai" :
                  isMonari ? "MONARI · Bánh Ngọt Thủ Công & Trà Thơm" :
                  isComGa ? "Cơm Gà Ông Bách · Cơm Gà Luộc & Gà Quay Gia Truyền" :

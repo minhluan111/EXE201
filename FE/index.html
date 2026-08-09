@@ -12,20 +12,26 @@
         const storedIsSamHouse = localStorage.getItem("tenant_is_samhouse") === "true";
         const storedIsMonQuanChat = localStorage.getItem("tenant_is_monquanchat") === "true";
         const storedIsHoaTeaRoom = localStorage.getItem("tenant_is_hoatearoom") === "true";
+        const storedIsTho = localStorage.getItem("tenant_is_tho") === "true";
 
-        const isTaoTao = host.includes("taotao") || host.includes("táo tào") || localStorage.getItem("tenant_is_taotao") === "true";
-        const isMonari = host.includes("monari") || storedIsMonari;
-        const isComGa = host.includes("comga") || host.includes("ông bách") || host.includes("ong bach") || storedIsComGa;
-        const isEmCoffee = host.includes("emcoffee") || host.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true";
-        const isHanHuyen = host.includes("hanhuyen") || host.includes("hàn huyên") || localStorage.getItem("tenant_is_hanhuyen") === "true";
-        const isCochin = host.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
-        const isComTam = host.includes("comtam") || storedIsComTam;
-        const isSamHouse = host.includes("samhouse") || storedIsSamHouse;
-        const isMonQuanChat = host.includes("quang") || host.includes("monquanchat") || storedIsMonQuanChat;
-        const isHoaTeaRoom = host.includes("hoa") || host.includes("hoatearoom") || storedIsHoaTeaRoom;
+        const isTho = host.includes("thocoffee") || host.includes("tho") || host.includes("thô") || host.includes("artisan") || storedIsTho;
+        const isTaoTao = !isTho && (host.includes("taotao") || host.includes("táo tào") || localStorage.getItem("tenant_is_taotao") === "true");
+        const isMonari = !isTho && (host.includes("monari") || storedIsMonari);
+        const isComGa = !isTho && (host.includes("comga") || host.includes("ông bách") || host.includes("ong bach") || storedIsComGa);
+        const isEmCoffee = !isTho && (host.includes("emcoffee") || host.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true");
+        const isHanHuyen = !isTho && (host.includes("hanhuyen") || host.includes("hàn huyên") || localStorage.getItem("tenant_is_hanhuyen") === "true");
+        const isCochin = !isTho && (host.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true");
+        const isComTam = !isTho && (host.includes("comtam") || storedIsComTam);
+        const isSamHouse = !isTho && (host.includes("samhouse") || storedIsSamHouse);
+        const isMonQuanChat = !isTho && (host.includes("quang") || host.includes("monquanchat") || storedIsMonQuanChat);
+        const isHoaTeaRoom = !isTho && (host.includes("hoa") || host.includes("hoatearoom") || storedIsHoaTeaRoom);
 
         const fav = document.getElementById("favicon-link");
-        if (isTaoTao) {
+        if (isTho) {
+          document.title = "THÔ'S ARTISAN COFFEE";
+          document.documentElement.setAttribute('data-tenant', 'thocoffee');
+          if (fav) { fav.href = "/assets/thocoffee/decor/logo.png"; fav.type = "image/png"; }
+        } else if (isTaoTao) {
           document.title = "Táo Tào cà phê";
           document.documentElement.setAttribute('data-tenant', 'taotao');
           if (fav) { fav.href = "/assets/taotao/logo.jpg"; fav.type = "image/jpeg"; }
