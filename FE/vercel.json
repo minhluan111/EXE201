@@ -5,6 +5,76 @@
       "has": [
         {
           "type": "host",
+          "value": "(.*)(thocoffee|tho)(.*)"
+        }
+      ],
+      "destination": "/tho.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(taotao|taotaocafe)(.*)"
+        }
+      ],
+      "destination": "/taotao.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)monari(.*)"
+        }
+      ],
+      "destination": "/monari.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(comga|ongbach)(.*)"
+        }
+      ],
+      "destination": "/comga.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)emcoffee(.*)"
+        }
+      ],
+      "destination": "/emcoffee.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)hanhuyen(.*)"
+        }
+      ],
+      "destination": "/hanhuyen.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)cochin(.*)"
+        }
+      ],
+      "destination": "/cochin.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
           "value": "(.*)comtam(.*)"
         }
       ],
@@ -42,14 +112,7 @@
     },
     {
       "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*)emcoffee(.*)"
-        }
-      ],
-      "destination": "/emcoffee.html"
-    },
-    { "source": "/(.*)", "destination": "/yakishime.html" }
+      "destination": "/index.html"
+    }
   ]
 }
