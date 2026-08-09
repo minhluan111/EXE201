@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Store, Check, ChevronUp } from "lucide-react";
 
 const ALL_SHOPS = [
+  { key: "comga", label: "Cơm Gà Ông Bách", desc: "Cơm gà & Singapore", emoji: "🍗", color: "#D97706" },
   { key: "monari", label: "MONARI", desc: "Bánh ngọt & Trà thơm", emoji: "🥮", color: "#C86D51" },
   { key: "taotao", label: "Táo Tào cà phê", desc: "Cà phê & Kem muối", emoji: "🍎", color: "#C86828" },
   { key: "emcoffee", label: "Em Coffee", desc: "Cà phê & Không gian", emoji: "☕", color: "#8B5A2B" },
@@ -19,7 +20,8 @@ const ALL_SHOPS = [
 export default function DevTenantSwitcher() {
   const isLocal = import.meta.env.DEV && typeof window !== "undefined" && (
     window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1"
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname.endsWith(".localhost")
   );
 
   const { tenant, switchTenant } = useTenant();
@@ -29,9 +31,12 @@ export default function DevTenantSwitcher() {
 
   const currentName = tenant?.name || "";
   const currentKey = ALL_SHOPS.find(s => 
-    currentName.toLowerCase().includes(s.label.toLowerCase()) || 
-    (tenant?.tenantName && tenant.tenantName.toLowerCase().includes(s.key))
-  )?.key || (currentName.toLowerCase().includes("em") ? "emcoffee" : "matcha");
+    (tenant?.tenantName && (tenant.tenantName.toLowerCase() === s.key || tenant.tenantName.toLowerCase().includes(s.key))) ||
+    currentName.toLowerCase().includes(s.label.toLowerCase()) ||
+    (s.key === "comga" && (currentName.toLowerCase().includes("cơm gà") || currentName.toLowerCase().includes("ongbach") || currentName.toLowerCase().includes("ông bách"))) ||
+    (s.key === "taotao" && (currentName.toLowerCase().includes("táo tào") || currentName.toLowerCase().includes("taotao"))) ||
+    (s.key === "monari" && currentName.toLowerCase().includes("monari"))
+  )?.key || "comga";
 
   const currentShop = ALL_SHOPS.find(s => s.key === currentKey) || ALL_SHOPS[0];
 
@@ -76,7 +81,7 @@ export default function DevTenantSwitcher() {
               <span style={{ fontSize: 10, color: "#10B981" }}>● Live</span>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: "60vh", overflowY: "auto" }}>
               {ALL_SHOPS.map((shop) => {
                 const isSelected = currentKey === shop.key;
                 return (

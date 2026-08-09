@@ -87,11 +87,59 @@ function mapMenuCategory(category, name = "") {
     return "Combo";
   }
 
-  const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_comtam") === "true";
-  const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
-  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
-  const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
-  
+  const currentDomain = getTenantDomain().toLowerCase();
+  const isTaoTao = currentDomain.includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
+  const isComGa = currentDomain.includes("comga") || currentDomain.includes("comgaongbach") || currentDomain.includes("ongbach") || localStorage.getItem("tenant_is_comga") === "true";
+  const isEmCoffee = currentDomain.includes("emcoffee") || currentDomain.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true";
+  const isHanHuyen = currentDomain.includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = currentDomain.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
+  const isMonari = currentDomain.includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
+  const isComTam = currentDomain.includes("comtam") || currentDomain.includes("comtamno") || currentDomain.includes("monquanchat") || currentDomain.includes("monquangchat") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isSamHouse = currentDomain.includes("samhouse") || currentDomain.includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
+  const isMonQuanChat = currentDomain.includes("monquanchat") || currentDomain.includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = currentDomain.includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+
+  if (isComGa) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal.includes("combo") || lowerName.includes("combo")) return "Combo";
+    if (catVal.includes("drink") || catVal.includes("nước") || catVal.includes("trà") || lowerName.includes("sâm") || lowerName.includes("nước") || lowerName.includes("trà")) return "Drink";
+    return "MainCourse";
+  }
+
+  if (isMonari) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal.includes("combo") || lowerName.includes("trung thu")) return "Combo";
+    if (catVal.includes("drink") || catVal.includes("trà") || lowerName.includes("matcha") || lowerName.includes("nước dừa") || lowerName.includes("trà")) return "Drink";
+    if (catVal.includes("dessert") || catVal.includes("cake") || lowerName.includes("bánh")) return "Dessert";
+    return "Drink";
+  }
+
+  if (isTaoTao) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal === "1" || catVal.includes("traditional") || catVal.includes("drink") || catVal.includes("coffee")) return "Traditional";
+    if (catVal === "2" || catVal.includes("latte") || catVal.includes("milktea")) return "Latte";
+    if (catVal === "3" || catVal.includes("dessert") || catVal.includes("cake")) return "Desserts";
+    if (catVal === "4" || catVal.includes("food") || catVal.includes("snack")) return "Food";
+    return "Traditional";
+  }
+
+  if (isEmCoffee || isHanHuyen) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal.includes("coffee") || lowerName.includes("phê") || lowerName.includes("phin") || lowerName.includes("cà phê")) return "Coffee";
+    if (catVal.includes("fruit") || lowerName.includes("trà đào") || lowerName.includes("trà vải")) return "FruitTea";
+    if (catVal.includes("latte") || catVal.includes("milktea") || lowerName.includes("matcha") || lowerName.includes("cacao")) return "Latte";
+    return "Coffee";
+  }
+
+  if (isCochin) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal.includes("milktea") || lowerName.includes("trà sữa")) return "MilkTea";
+    if (catVal.includes("coffee") || lowerName.includes("latte") || lowerName.includes("cà phê")) return "Coffee";
+    if (catVal.includes("fruit") || lowerName.includes("trà ổi") || lowerName.includes("trà thanh long") || lowerName.includes("trà vải")) return "FruitTea";
+    if (catVal.includes("drink") || lowerName.includes("sô-cô-la")) return "Drink";
+    return "FruitTea";
+  }
+
   if (isComTam) {
     const catVal = String(category || "").trim().toLowerCase();
     if (catVal === "1" || catVal.includes("drink")) return "Drink";
@@ -414,7 +462,7 @@ async function requestJson(path, options = {}) {
 
   const headers = {
     Accept: "application/json",
-    "X-Tenant": TENANT_DOMAIN,
+    "X-Tenant": getTenantDomain(),
     ...(options.body ? { "Content-Type": "application/json" } : {}),
     ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
     ...(options.headers || {}),
@@ -467,18 +515,21 @@ async function getTablesWithAreas() {
   const seatingAreas = await getSeatingAreas();
   const activeAreas = seatingAreas.filter((area) => area.isActive || area.is_active);
 
-  const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
-  const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
-  const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
-  const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
-  const isMonari = TENANT_DOMAIN.toLowerCase().includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
-  const isYakishime = TENANT_DOMAIN.toLowerCase().includes("yakishime") || TENANT_DOMAIN.toLowerCase().includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom && !isMonari);
+  const currentDomain = getTenantDomain().toLowerCase();
+  const isTaoTao = currentDomain.includes("taotao") || localStorage.getItem("tenant_is_taotao") === "true";
+  const isComGa = currentDomain.includes("comga") || currentDomain.includes("comgaongbach") || localStorage.getItem("tenant_is_comga") === "true";
+  const isComTam = currentDomain.includes("comtam") || currentDomain.includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
+  const isSamHouse = currentDomain.includes("samhouse") || currentDomain.includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
+  const isMonQuanChat = currentDomain.includes("monquanchat") || currentDomain.includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
+  const isHoaTeaRoom = currentDomain.includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
+  const isMonari = currentDomain.includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
+  const isYakishime = currentDomain.includes("yakishime") || currentDomain.includes("yaki") || localStorage.getItem("tenant_is_yakishime") === "true" || (!isTaoTao && !isComGa && !isComTam && !isSamHouse && !isMonQuanChat && !isHoaTeaRoom && !isMonari);
 
   const tables = [];
   activeAreas.forEach((area) => {
     const tableTypeText = String(area.tableType || area.table_type || "");
     const matchSeat = tableTypeText.match(/(\d+)-Seat/i);
-    const matchNguoi = tableTypeText.match(/(\d+)\s*người/i);
+    const matchNguoi = tableTypeText.match(/(\d+)\s*(?:người|khách)/i);
     const matchDigits = tableTypeText.match(/(\d+)/);
 
     let max_seats = 2;
@@ -500,7 +551,7 @@ async function getTablesWithAreas() {
       const col = (i - 1) % 3;
 
       let displayName = `Bàn ${area.area} ${i}`;
-      if (isMonari) {
+      if (isMonari || isComGa) {
         displayName = count === 1 ? tableTypeText : `${tableTypeText} (${i})`;
       } else if (isMonQuanChat) {
         const numMatch = tableTypeText.match(/^Bàn\s+(\d+)/i);
@@ -527,7 +578,7 @@ async function getTablesWithAreas() {
         table_type: pureTableType,
         coordinate_x: 10 + col * 25,
         coordinate_y: 10 + row * 25,
-        shape: max_seats >= 8 ? "large" : (max_seats === 4 ? "quad" : "pair"),
+        shape: max_seats >= 8 ? "large" : (max_seats >= 4 ? "quad" : "pair"),
         imageType: area.tableType || area.table_type,
         previewImage: area.previewImage ?? area.preview_image,
         seatingAreaId: area.id,
@@ -941,6 +992,8 @@ export async function bookingCheckStatus({
   };
 }
 
+export const getTableStatus = bookingCheckStatus;
+
 export async function bookingCreate({
   token,
   seatingAreaId,
@@ -1126,34 +1179,39 @@ export async function authResetPassword({ token, newPassword, confirmPassword })
 export async function restaurantInfoGet() {
   const result = await requestJson(`/api/public/restaurant-info?_t=${Date.now()}`);
   
+  const isComGa = TENANT_DOMAIN.toLowerCase().includes("comga") || TENANT_DOMAIN.toLowerCase().includes("ongbach") || localStorage.getItem("tenant_is_comga") === "true";
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || TENANT_DOMAIN.toLowerCase().includes("hoatea") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   
-  const defaultMapUrl = isComTam
-    ? "https://maps.google.com/maps?q=C%C6%A1m%20T%E1%BA%A5m%20Ng%E1%BB%8D%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"
-    : ((isSamHouse || isMonQuanChat)
-        ? "https://maps.google.com/maps?q=%C4%90%C6%B0%E1%BB%9Dng%20GS1%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
-        : (isHoaTeaRoom
-            ? "https://maps.google.com/maps?q=18/2%20%C4%90%C6%B0%E1%BB%9Dng%20s%E1%BB%91%204%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
-            : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"));
+  const defaultMapUrl = isComGa
+    ? "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : (isComTam
+      ? "https://maps.google.com/maps?q=C%C6%A1m%20T%E1%BA%A5m%20Ng%E1%BB%8D%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"
+      : ((isSamHouse || isMonQuanChat)
+          ? "https://maps.google.com/maps?q=%C4%90%C6%B0%E1%BB%9Dng%20GS1%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
+          : (isHoaTeaRoom
+              ? "https://maps.google.com/maps?q=18/2%20%C4%90%C6%B0%E1%BB%9Dng%20s%E1%BB%91%204%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
+              : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed")));
 
   if (!result.ok || !result.data) {
     console.warn("Using offline mock data fallback for restaurantInfoGet");
     return {
       ok: true,
       data: {
-        name: isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime"))),
-        address: isComTam 
-          ? "106 Đường GS1, Khu Phố Đông Hòa, Dĩ An, Bình Dương" 
-          : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ"))),
-        hotline: isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173"))),
-        email: isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local"))),
-        openHours: isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00"))),
+        name: isComGa ? "Cơm Gà Ông Bách" : (isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime")))),
+        address: isComGa
+          ? "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam"
+          : (isComTam 
+            ? "106 Đường GS1, Khu Phố Đông Hòa, Dĩ An, Bình Dương" 
+            : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ")))),
+        hotline: isComGa ? "0938 123 789" : (isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173")))),
+        email: isComGa ? "contact@comgaongbach.com" : (isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local")))),
+        openHours: isComGa ? "09:30 – 21:30" : (isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00")))),
         mapEmbedUrl: defaultMapUrl,
-        themeColor: isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F"))),
-        logo: isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")))
+        themeColor: isComGa ? "#D97706" : (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F")))),
+        logo: isComGa ? "/assets/comgaongbach/decor/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg"))))
       }
     };
   }
@@ -1437,6 +1495,75 @@ function getMockMenuItems() {
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   const isMonari = TENANT_DOMAIN.toLowerCase().includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
+  const isComGa = TENANT_DOMAIN.toLowerCase().includes("comga") || TENANT_DOMAIN.toLowerCase().includes("comgaongbach") || localStorage.getItem("tenant_is_comga") === "true";
+
+  if (isComGa) {
+    return [
+      {
+        id: "cg1",
+        name: "Combo Cơm Gà Luộc & Cơm Gà Quay",
+        price: 115000,
+        category: "Combo",
+        imageUrl: "/assets/comgaongbach/menu/combo_ga_luoc_ga_quay.jpg",
+        description: "Sự kết hợp hoàn hảo giữa cơm gà luộc da vàng giòn ngọt thịt và cơm gà quay xém cạnh thơm lừng đậm đà cho 2 người.",
+        tag: "best_seller"
+      },
+      {
+        id: "cg2",
+        name: "Combo Cơm Gà Luộc & Cơm Xá Xíu",
+        price: 109000,
+        category: "Combo",
+        imageUrl: "/assets/comgaongbach/menu/combo_ga_luoc_xa_xiu.jpg",
+        description: "Bộ đôi cơm gà luộc ngọt thịt cùng thịt xá xíu mật ong đỏ au, thơm lừng vị sốt gia truyền trứ danh.",
+        tag: "trending"
+      },
+      {
+        id: "cg3",
+        name: "Cơm Gà Luộc & Xá Xíu",
+        price: 65000,
+        category: "MainCourse",
+        imageUrl: "/assets/comgaongbach/menu/com_ga_luoc_xa_xiu.jpg",
+        description: "Đĩa cơm vàng ươm hạt dẻo thơm ăn kèm thịt gà thả vườn luộc mềm mọng và xá xíu sốt đậm đà.",
+        tag: "best_seller"
+      },
+      {
+        id: "cg4",
+        name: "Cơm Gà Luộc Thượng Hạng",
+        price: 55000,
+        category: "MainCourse",
+        imageUrl: "/assets/comgaongbach/menu/com_ga_luoc.jpg",
+        description: "Thịt gà ta thả vườn luộc chuẩn độ chín tới, da vàng giòn sần sật, thịt ngọt béo ngậy chấm mắm gừng gia truyền.",
+        tag: "best_seller"
+      },
+      {
+        id: "cg5",
+        name: "Cơm Gà Quay Giòn Rụm",
+        price: 58000,
+        category: "MainCourse",
+        imageUrl: "/assets/comgaongbach/menu/com_ga_quay.jpg",
+        description: "Gà ướp thảo mộc quay xém da vàng rộm, dậy mùi tiêu hồi quế, thịt mềm mọng ngập tràn nước sốt thơm ngon.",
+        tag: "trending"
+      },
+      {
+        id: "cg6",
+        name: "Trứng Ngâm Tương Lòng Đào",
+        price: 12000,
+        category: "MainCourse",
+        imageUrl: "/assets/comgaongbach/menu/trung_ngam_tuong.jpg",
+        description: "Trứng gà ta luộc lòng đào béo ngậy, ướp trong sốt tương gia truyền thơm dịu ngọt mặn hài hòa ăn kèm cơm.",
+        tag: "normal"
+      },
+      {
+        id: "cg7",
+        name: "Nước Sâm Bí Đao Hạt Chia",
+        price: 18000,
+        category: "Drink",
+        imageUrl: "/assets/comgaongbach/menu/sam_bi_dao.jpg",
+        description: "Nấu từ bí đao tươi, lá dứa, la hán quả và hạt chia bổ dưỡng, thanh nhiệt giải khát trọn vẹn vị ngọt thanh mát.",
+        tag: "new"
+      }
+    ];
+  }
 
   if (isMonari) {
     return [
@@ -1490,6 +1617,88 @@ function getMockMenuItems() {
         description: "Hương thơm ngọt ngào quyến rũ từ ổi hồng nhiệt đới hòa quyện lớp trà thanh nhẹ cùng hạt ngọc trai tươi.",
         tag: "trending"
       }
+    ];
+  }
+
+  if (isTaoTao) {
+    return [
+      {
+        id: "tt1",
+        name: "Cà phê kem muối",
+        price: 35000,
+        category: "Traditional",
+        imageUrl: "/assets/taotao/dishes/ca_phe_kem_muoi.jpg",
+        description: "Cà phê Robusta thơm đậm kết hợp lớp kem muối sánh ngậy béo mặn đặc trưng quán Táo Tào.",
+        tag: "signature"
+      },
+      {
+        id: "tt2",
+        name: "Trà sữa Ô Long phô mai",
+        price: 42000,
+        category: "Latte",
+        imageUrl: "/assets/taotao/dishes/tra_sua_olong_pho_mai.jpg",
+        description: "Trà ô long đậm vị kết hợp phô mai tươi béo ngậy thơm lừng khó cưỡng.",
+        tag: "best_seller"
+      },
+      {
+        id: "tt3",
+        name: "Hồng trà phô mai",
+        price: 38000,
+        category: "Latte",
+        imageUrl: "/assets/taotao/dishes/hong_tra_pho_mai.jpg",
+        description: "Hồng trà thanh ngọt dịu mát quyện cùng lớp kem phô mai béo mịn màng.",
+        tag: "trending"
+      },
+      {
+        id: "tt4",
+        name: "Chanh leo dừa non",
+        price: 39000,
+        category: "Traditional",
+        imageUrl: "/assets/taotao/dishes/chanh_leo_dua_non.jpg",
+        description: "Vị chua ngọt thanh mát giải nhiệt từ chanh leo kết hợp cùi dừa non tươi giòn sần sật.",
+        tag: "signature"
+      },
+      {
+        id: "tt5",
+        name: "Matcha nhài Macchiato",
+        price: 45000,
+        category: "Latte",
+        imageUrl: "/assets/taotao/dishes/matcha_nhai_machiato.jpg",
+        description: "Matcha Nhật Bản thơm ngát hương hoa nhài thanh tao kết hợp kem Macchiato bồng bềnh béo dịu.",
+        tag: "best_seller"
+      }
+    ];
+  }
+
+  if (isEmCoffee) {
+    return [
+      { id: "em1", name: "Phindi Hạnh Nhân", price: 45000, category: "Coffee", imageUrl: "/assets/emcoffee/dishes/phindi_hanh_nhan.jpg", description: "Cà phê phin êm dịu kết hợp sốt hạnh nhân béo ngậy thơm nức và sữa tươi thanh trùng.", tag: "signature" },
+      { id: "em2", name: "Cacao Caramel Béo Ngậy", price: 42000, category: "Latte", imageUrl: "/assets/emcoffee/dishes/cacao_caramel.jpg", description: "Cacao nguyên chất đậm đà hòa cùng sốt caramel thơm lừng ngọt ngào.", tag: "best_seller" },
+      { id: "em3", name: "Trà Vải Atiso Đỏ", price: 45000, category: "FruitTea", imageUrl: "/assets/emcoffee/dishes/tra_vai_atiso.jpg", description: "Vị chua thanh mát lành từ hoa atiso đỏ quyện cùng trái vải ngọt mọng nước.", tag: "trending" },
+      { id: "em4", name: "Trà Đào Xanh Nhài", price: 39000, category: "FruitTea", imageUrl: "/assets/emcoffee/dishes/tra_dau_xanh_nhai.jpg", description: "Hương hoa nhài thơm ngát hòa quyện nước cốt đào tươi cùng miếng đào giòn dai.", tag: "best_seller" },
+      { id: "em5", name: "Matcha Latte Nguyên Bản", price: 45000, category: "Latte", imageUrl: "/assets/emcoffee/dishes/matcha_latte.jpg", description: "Bột matcha trà xanh thượng hạng kết hợp sữa tươi thanh trùng mềm mượt dịu dàng.", tag: "normal" }
+    ];
+  }
+
+  if (isHanHuyen) {
+    return [
+      { id: "hh1", name: "Phê Xỉu Đặc Biệt", price: 35000, category: "Coffee", imageUrl: "/assets/hanhuyen/dishes/phe_xiu.jpg", description: "Bạc xỉu ba tầng đậm đà, sữa đặc thơm béo kết hợp lớp bọt cà phê sánh mịn quyến rũ.", tag: "signature" },
+      { id: "hh2", name: "Phê Đá Đậm Vị", price: 29000, category: "Coffee", imageUrl: "/assets/hanhuyen/dishes/phe_da.jpg", description: "Cà phê Robusta rang mộc truyền thống đậm đà, đánh thức mọi giác quan ngày mới.", tag: "best_seller" },
+      { id: "hh3", name: "Phindi Hạnh Nhân", price: 45000, category: "Coffee", imageUrl: "/assets/hanhuyen/dishes/phindi_hanh_nhan.jpg", description: "Cà phê phin thơm lừng kết hợp kem sữa hạnh nhân béo ngậy thơm ngon tuyệt hảo.", tag: "trending" },
+      { id: "hh4", name: "Trà Đào Xanh Nhài", price: 39000, category: "FruitTea", imageUrl: "/assets/hanhuyen/dishes/tra_dao_xanh_nhai.jpg", description: "Trà xanh ướp hương hoa nhài tự nhiên kết hợp đào ngâm thanh ngọt mát lạnh.", tag: "best_seller" },
+      { id: "hh5", name: "Trà Vải Nhiệt Đới", price: 45000, category: "FruitTea", imageUrl: "/assets/hanhuyen/dishes/tra_vai.jpg", description: "Trà thanh khiết hòa cùng trái vải mọng nước, thức uống giải nhiệt lý tưởng.", tag: "normal" }
+    ];
+  }
+
+  if (isCochin) {
+    return [
+      { id: "cc1", name: "Trà Sữa Ô Long Rang", price: 45000, category: "MilkTea", imageUrl: "/assets/cochin/dishes/tra_sua_olong_rang.jpg", description: "Lá trà ô long sấy rang đậm hương khói thảo mộc hòa quyện sữa béo thơm nồng nàn.", tag: "signature" },
+      { id: "cc2", name: "Caffe Latte", price: 48000, category: "Coffee", imageUrl: "/assets/cochin/dishes/latte.jpg", description: "Espresso chuẩn vị Ý kết hợp lớp bọt sữa tươi mềm mượt như nhung.", tag: "best_seller" },
+      { id: "cc3", name: "Trà Ổi Hồng Nhiệt Đới", price: 42000, category: "FruitTea", imageUrl: "/assets/cochin/dishes/tra_oi_hong.jpg", description: "Hương ổi hồng dịu dàng ngọt ngào kết hợp trà hoa thanh nhã giải nhiệt ngày hè.", tag: "trending" },
+      { id: "cc4", name: "Trà Thanh Long Đỏ", price: 45000, category: "FruitTea", imageUrl: "/assets/cochin/dishes/tra_thanh_long_do.jpg", description: "Sắc đỏ rực rỡ từ thanh long ruột đỏ tự nhiên hòa cùng vị trà chua ngọt sảng khoái.", tag: "signature" },
+      { id: "cc5", name: "Trà Vải Hoa Hồng", price: 45000, category: "FruitTea", imageUrl: "/assets/cochin/dishes/tra_vai_hoa_hong.jpg", description: "Hương hoa hồng quý phái quyện cùng vị ngọt lịm mọng nước của trái vải tươi.", tag: "best_seller" },
+      { id: "cc6", name: "Hồng Trà Sữa Cochin", price: 42000, category: "MilkTea", imageUrl: "/assets/cochin/dishes/hong_tra_sua.jpg", description: "Hồng trà Ceylon thượng hạng kết hợp sữa tươi thanh ngọt đậm đà khó phai.", tag: "normal" },
+      { id: "cc7", name: "Sô-cô-la Đá Xay", price: 48000, category: "Drink", imageUrl: "/assets/cochin/dishes/so_co_la.jpg", description: "Sô-cô-la nguyên chất béo thơm hòa quyện kem tươi sánh ngậy mát lạnh.", tag: "normal" }
     ];
   }
 

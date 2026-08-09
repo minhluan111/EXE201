@@ -9,14 +9,15 @@ import { useTenant } from "@/context/TenantContext";
 
 function translateCategory(cat) {
   const map = {
-    Drink: "Trà đạo / Đồ uống",
-    MainCourse: "Món chính",
-    Dessert: "Tráng miệng / Wagashi",
-    Snack: "Ăn nhẹ",
+    Combo: "Combo ưu đãi",
+    MainCourse: "Món ăn",
+    Drink: "Đồ uống",
+    Dessert: "Tráng miệng",
+    Desserts: "Tráng miệng",
+    Snack: "Món ăn kèm",
     Traditional: "Truyền thống",
     Latte: "Latte",
     Hojicha: "Hojicha",
-    Desserts: "Tráng miệng",
     Food: "Món ăn"
   };
   return map[cat] || cat;

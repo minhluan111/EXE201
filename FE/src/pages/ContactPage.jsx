@@ -10,11 +10,19 @@ import { useTenant } from "@/context/TenantContext";
 export default function ContactPage() {
   const { user, token } = useAuth();
   const { tenant } = useTenant();
-  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const rawName = String(tenant?.name || "").toLowerCase();
+  const tName = String(tenant?.tenantName || "").toLowerCase();
+
+  const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
+  const isMonari = rawName.includes("monari") || tName.includes("monari");
+  const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
+  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
+  const isCochin = rawName.includes("cochin") || tName.includes("cochin");
+  const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
+  const isSamHouse = rawName.includes("sam house") || tName.includes("samhouse");
+  const isMonQuanChat = rawName.includes("quảng") || tName.includes("monquanchat");
+  const isHoaTeaRoom = rawName.includes("hoa") || rawName.includes("hoà") || rawName.includes("hòa") || tName.includes("hoatearoom");
   const [info, setInfo] = useState(null);
 
   const [title, setTitle] = useState("");
@@ -28,7 +36,7 @@ export default function ContactPage() {
       const res = await restaurantInfoGet();
       if (res.ok) setInfo(res.data);
     })();
-  }, []);
+  }, [tenant]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -51,6 +59,28 @@ export default function ContactPage() {
     // Notify the floating chat bubble to update in real-time
     window.dispatchEvent(new Event("feedback-submitted"));
   };
+
+  const mapUrl = isTaoTao
+    ? "https://maps.google.com/maps?q=32A+Thống+Nhất,+Phường+10,+Gò+Vấp,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isMonari
+    ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isComGa
+    ? "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isEmCoffee
+    ? "https://maps.google.com/maps?q=27+Võ+Văn+Ngân,+Linh+Chiểu,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isHanHuyen
+    ? "https://maps.google.com/maps?q=45+Hàn+Huyên,+Bến+Nghé,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isCochin
+    ? "https://maps.google.com/maps?q=12+Đặng+Dung,+Tân+Định,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isComTam
+    ? "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isSamHouse
+    ? "https://maps.google.com/maps?q=Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isMonQuanChat
+    ? "https://maps.google.com/maps?q=201+QL1K,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : isHoaTeaRoom
+    ? "https://maps.google.com/maps?q=18/2+Đường+số+4,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : (info?.mapEmbedUrl || "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed");
 
   if (!info) {
     return (
@@ -139,11 +169,11 @@ export default function ContactPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                   <div>
                     <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", margin: "0 0 8px" }}>
-                      {info.name}
+                      {tenant?.name || info.name}
                     </h3>
                     <p style={{ color: "var(--text-muted)", fontSize: 15, margin: 0, display: "flex", alignItems: "center", gap: 8 }}>
                       <MapPin size={16} style={{ color: "var(--matcha)", flexShrink: 0 }} />
-                      {info.address}
+                      {tenant?.address || info.address}
                     </p>
                   </div>
 
@@ -151,7 +181,7 @@ export default function ContactPage() {
                     <div>
                       <span style={{ fontSize: 12, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Hotline liên hệ</span>
                       <a
-                        href={`tel:${info.hotline}`}
+                        href={`tel:${tenant?.hotline || info.hotline}`}
                         style={{
                           display: "flex", alignItems: "center", gap: 8,
                           color: "var(--matcha)", fontWeight: 600, fontSize: 16,
@@ -161,14 +191,14 @@ export default function ContactPage() {
                         onMouseLeave={(e) => e.currentTarget.style.color = "var(--matcha)"}
                       >
                         <Phone size={16} />
-                        {info.hotline}
+                        {tenant?.hotline || info.hotline}
                       </a>
                     </div>
 
                     <div>
                       <span style={{ fontSize: 12, color: "var(--text-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Thư điện tử</span>
                       <a
-                        href={`mailto:${info.email}`}
+                        href={`mailto:${tenant?.email || info.email}`}
                         style={{
                           display: "flex", alignItems: "center", gap: 8,
                           color: "var(--matcha)", fontWeight: 600, fontSize: 16,
@@ -178,7 +208,7 @@ export default function ContactPage() {
                         onMouseLeave={(e) => e.currentTarget.style.color = "var(--matcha)"}
                       >
                         <Mail size={16} />
-                        {info.email}
+                        {tenant?.email || info.email}
                       </a>
                     </div>
 
@@ -189,7 +219,7 @@ export default function ContactPage() {
                         color: "var(--text)", fontWeight: 600, fontSize: 15, marginTop: 4
                       }}>
                         <Clock size={16} style={{ color: "var(--matcha)" }} />
-                        {info.openHours}
+                        {tenant?.openHours || info.openHours}
                       </div>
                     </div>
                   </div>
@@ -216,17 +246,7 @@ export default function ContactPage() {
                 </div>
                 <iframe
                   title="map"
-                  src={isMonari 
-                    ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                    : (isComTam
-                        ? "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                        : (isSamHouse 
-                            ? "https://maps.google.com/maps?q=Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                            : (isMonQuanChat
-                                ? "https://maps.google.com/maps?q=201+QL1K,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                                : (isHoaTeaRoom 
-                                    ? "https://maps.google.com/maps?q=18/2+Đường+số+4,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                                    : (info.mapEmbedUrl || "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed")))))}
+                  src={mapUrl}
                   style={{
                     width: "100%",
                     height: 320,

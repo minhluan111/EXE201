@@ -10,6 +10,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: true,
+    port: 5173,
+    allowedHosts: true,
+  },
   build: {
     rollupOptions: {
       input: {
@@ -19,6 +24,9 @@ export default defineConfig({
         monquanchat: path.resolve(__dirname, 'monquanchat.html'),
         hoatearoom: path.resolve(__dirname, 'hoatearoom.html'),
         monari: path.resolve(__dirname, 'monari.html'),
+        taotao: path.resolve(__dirname, 'taotao.html'),
+        comga: path.resolve(__dirname, 'comga.html'),
+        comgaongbach: path.resolve(__dirname, 'comgaongbach.html'),
       },
     },
   },

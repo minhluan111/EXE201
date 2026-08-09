@@ -28,245 +28,185 @@ const SOCIALS = [
 export default function Footer() {
   const { user } = useAuth();
   const { tenant } = useTenant();
-  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
+  const rawName = String(tenant?.name || "").toLowerCase();
+  const tName = String(tenant?.tenantName || "").toLowerCase();
 
-  const brandName = isMonari ? "MONARI" : (tenant?.name || "Yakishime");
-  const brandDesc = isMonari
+  const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
+  const isMonari = rawName.includes("monari") || tName.includes("monari");
+  const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
+  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
+  const isCochin = rawName.includes("cochin") || tName.includes("cochin");
+  const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
+  const isSamHouse = rawName.includes("sam house") || tName.includes("samhouse");
+  const isMonQuanChat = rawName.includes("quảng") || tName.includes("monquanchat");
+  const isHoaTeaRoom = rawName.includes("hoa") || rawName.includes("hoà") || rawName.includes("hòa") || tName.includes("hoatearoom");
+
+  const brandName = tenant?.name || "Quán";
+  const brandDesc = isTaoTao
+    ? "Tiệm cà phê ấm cúng mang đến hương vị cà phê kem muối béo ngậy đặc trưng, trà phô mai sánh mịn và các món trà trái cây tươi ngọt lành tại Gò Vấp, Hồ Chí Minh."
+    : isMonari
     ? "Tiệm trà và bánh ngọt thủ công với set bánh trung thu cao cấp, coco matcha tươi mát, nước dừa quế hoa và không gian ấm cúng thư thái tại Đông Hòa, Hồ Chí Minh."
-    : (isComTam
-      ? "Quán cơm tấm gia truyền với hương vị đậm đà, sườn nướng mật ong béo ngậy và các món bún thịt nướng truyền thống ngon miệng."
-      : (isSamHouse 
-          ? "Không gian học tập, làm việc yên tĩnh và hiện đại. Thưởng thức hương vị cà phê rang xay nguyên chất đậm đà, trà sữa và trà trái cây ngọt mát."
-          : (isMonQuanChat
-              ? "Quán ăn món Quảng gia truyền với hương vị đậm đà, mộc mạc chuẩn vị miền Trung: Mỳ Quảng, Cao lầu, Bánh xèo, Bánh tráng cuốn thịt heo."
-              : (isHoaTeaRoom
-                  ? "Không gian thưởng trà thanh tịnh, trà bắp ASA thơm ngon béo ngậy cùng các trải nghiệm tô vẽ ly gốm đầy thú vị."
-                  : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định."))));
-
-  const textGreenLight = isMonari ? "rgba(244, 160, 140, 0.9)" : (isComTam ? "rgba(244, 164, 96, 0.9)" : (isSamHouse ? "rgba(186, 175, 168, 0.9)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.9)" : (isHoaTeaRoom ? "rgba(108, 191, 122, 0.9)" : "rgba(175, 215, 120, 0.9)"))));
-  const borderGreen = isMonari ? "rgba(200, 109, 81, 0.12)" : (isComTam ? "rgba(224, 123, 57, 0.12)" : (isSamHouse ? "rgba(139, 69, 19, 0.12)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.12)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.12)" : "rgba(141, 175, 90, 0.12)"))));
-  const bgGlow1 = isMonari ? "rgba(200, 109, 81, 0.06)" : (isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.06)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.06)" : "rgba(141, 175, 90, 0.06)"))));
-  const bgGlow2 = isMonari ? "rgba(200, 109, 81, 0.04)" : (isComTam ? "rgba(224, 123, 57, 0.04)" : (isSamHouse ? "rgba(139, 69, 19, 0.04)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.04)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.04)" : "rgba(107, 143, 62, 0.04)"))));
-  const calligraphyColor = isMonari ? "rgba(200, 109, 81, 0.022)" : (isComTam ? "rgba(224, 123, 57, 0.022)" : (isSamHouse ? "rgba(139, 69, 19, 0.022)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.022)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.022)" : "rgba(141, 175, 90, 0.022)"))));
-  const borderSocial = isMonari ? "rgba(200, 109, 81, 0.15)" : (isComTam ? "rgba(224, 123, 57, 0.15)" : (isSamHouse ? "rgba(139, 69, 19, 0.15)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.15)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.15)" : "rgba(141, 175, 90, 0.15)"))));
-  const bgSocialHover = isMonari ? "rgba(200, 109, 81, 0.18)" : (isComTam ? "rgba(224, 123, 57, 0.18)" : (isSamHouse ? "rgba(139, 69, 19, 0.18)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.18)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.18)" : "rgba(141, 175, 90, 0.18)"))));
-  const textSocialHover = isMonari ? "rgba(244, 160, 140, 0.95)" : (isComTam ? "rgba(244, 164, 96, 0.95)" : (isSamHouse ? "rgba(186, 175, 168, 0.95)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.95)" : (isHoaTeaRoom ? "rgba(108, 191, 122, 0.95)" : "rgba(175, 215, 120, 0.95)"))));
-  const borderSocialHover = isMonari ? "rgba(200, 109, 81, 0.4)" : (isComTam ? "rgba(244, 164, 96, 0.4)" : (isSamHouse ? "rgba(139, 69, 19, 0.4)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.4)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.4)" : "rgba(175, 215, 120, 0.4)"))));
-  const textLinkHover = isMonari ? "rgba(244, 160, 140, 0.95)" : (isComTam ? "rgba(244, 164, 96, 0.95)" : (isSamHouse ? "rgba(139, 69, 19, 0.95)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.95)" : (isHoaTeaRoom ? "rgba(108, 191, 122, 0.95)" : "rgba(175, 215, 120, 0.95)"))));
-  const bgIconCircle = isMonari ? "rgba(200, 109, 81, 0.06)" : (isComTam ? "rgba(224, 123, 57, 0.06)" : (isSamHouse ? "rgba(139, 69, 19, 0.06)" : (isMonQuanChat ? "rgba(139, 26, 26, 0.06)" : (isHoaTeaRoom ? "rgba(46, 111, 64, 0.06)" : "rgba(141, 175, 90, 0.06)"))));
-  const textIconCircle = isMonari ? "rgba(244, 160, 140, 0.85)" : (isComTam ? "rgba(244, 164, 96, 0.85)" : (isSamHouse ? "rgba(186, 175, 168, 0.85)" : (isMonQuanChat ? "rgba(224, 150, 150, 0.85)" : (isHoaTeaRoom ? "rgba(108, 191, 122, 0.85)" : "rgba(175, 215, 120, 0.85)"))));
+    : isComGa
+    ? "Quán cơm gà gia truyền trứ danh với cơm gà luộc da vàng giòn ngọt thịt, gà quay xém cạnh thơm lừng, thịt xá xíu đậm đà và nước sâm bí đao thanh mát tại 146 Đường GS1, Đông Hòa, TP. Dĩ An."
+    : isEmCoffee
+    ? "Không gian làm việc xanh mát, thưởng thức các dòng cà phê rang mộc nguyên chất, phindi hạnh nhân thơm bùi và trà thảo mộc tươi ngon tại Thủ Đức, Hồ Chí Minh."
+    : isHanHuyen
+    ? "Chốn dừng chân bình yên hoài niệm giữa lòng phố thị, nơi thưởng thức những ly Phê xỉu, Phê đá và trà đào xanh nhài thanh khiết tại Quận 1, Hồ Chí Minh."
+    : isCochin
+    ? "Bistro nhà kính châu Âu xanh mát, không gian tao nhã phục vụ trà sữa ô long rang, Caffe Latte chuẩn Ý và trà hoa nhiệt đới tại Quận 1, Hồ Chí Minh."
+    : isComTam
+    ? "Quán cơm tấm gia truyền với hương vị đậm đà, sườn nướng mật ong béo ngậy và các món bún thịt nướng truyền thống ngon miệng."
+    : isSamHouse 
+    ? "Không gian học tập, làm việc yên tĩnh và hiện đại. Thưởng thức hương vị cà phê rang xay nguyên chất đậm đà, trà sữa và trà trái cây ngọt mát."
+    : isMonQuanChat
+    ? "Quán ăn món Quảng gia truyền với hương vị đậm đà, mộc mạc chuẩn vị miền Trung: Mỳ Quảng, Cao lầu, Bánh xèo, Bánh tráng cuốn thịt heo."
+    : isHoaTeaRoom
+    ? "Không gian thưởng trà thanh tịnh, trà bắp ASA thơm ngon béo ngậy cùng các trải nghiệm tô vẽ ly gốm đầy thú vị."
+    : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định.";
 
   const infoItems = [
-    { icon: MapPin, text: tenant?.address || (isMonari ? "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam" : (isMonQuanChat ? "201 QL1K, Đông Hòa, Dĩ An, Bình Dương" : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh,\nNinh Kiều, Cần Thơ")))) },
-    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || (isMonari ? "07:30 – 22:30" : (isMonQuanChat ? "10:00 – 22:00" : (isSamHouse ? "07:30 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 – 22:00"))))}\nMỗi ngày trong tuần` },
-    { icon: Phone,  text: tenant?.hotline || (isMonari ? "0908 123 456" : (isMonQuanChat ? "0907 888 999" : (isSamHouse ? "0762 801 234" : (isHoaTeaRoom ? "0356 789 012" : "0945781173")))) },
-    { icon: Mail,   text: tenant?.email || (isMonari ? "contact@monari.vn" : (isMonQuanChat ? "monquanchat@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakishime.vn")))) },
+    { icon: MapPin, text: tenant?.address || "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam" },
+    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || "09:30 – 21:30"}\nMỗi ngày trong tuần` },
+    { icon: Phone,  text: tenant?.hotline || "0938 123 789" },
+    { icon: Mail,   text: tenant?.email || "contact@comgaongbach.com" },
   ];
+
+  const watermarkEmoji = isTaoTao ? "🍎" :
+    isMonari ? "🥮" :
+    isComGa ? "雞" :
+    isEmCoffee ? "☕" :
+    isHanHuyen ? "☕" :
+    isCochin ? "🌿" :
+    isComTam ? "🌾" :
+    isSamHouse ? "☕" :
+    isMonQuanChat ? "🍲" :
+    isHoaTeaRoom ? "🍃" :
+    "茶";
 
   return (
     <footer style={{
-      background: isMonari
-        ? "linear-gradient(to bottom, #230F0A, #140805)"
-        : (isComTam
-          ? "linear-gradient(to bottom, #1E0F05, #140A03)"
-          : (isSamHouse 
-              ? "linear-gradient(to bottom, #1C110C, #110B08)" 
-              : (isMonQuanChat
-                  ? "linear-gradient(to bottom, #2B0A0A, #190505)"
-                  : "linear-gradient(to bottom, #0F1F12, #0A140C)"))),
+      background: "linear-gradient(to bottom, #16161a, #0d0d10)",
       color: "rgba(240, 237, 228, 0.7)",
       position: "relative", 
       overflow: "hidden",
-      borderTop: `1px solid ${borderGreen}`
+      borderTop: "1px solid var(--border)"
     }}>
-      {/* Decorative blurry Zen rings */}
-      <div style={{ position: "absolute", top: -100, right: -100, width: 350, height: 350, borderRadius: "50%", background: bgGlow1, filter: "blur(80px)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: -80, left: -80, width: 300, height: 300, borderRadius: "50%", background: bgGlow2, filter: "blur(70px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -100, right: -100, width: 350, height: 350, borderRadius: "50%", background: "rgba(255,255,255,0.03)", filter: "blur(80px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: -80, left: -80, width: 300, height: 300, borderRadius: "50%", background: "rgba(255,255,255,0.02)", filter: "blur(70px)", pointerEvents: "none" }} />
 
-      {/* Decorative Brand Watermark */}
       <span style={{
         position: "absolute", bottom: -30, right: 30,
         fontFamily: "'Cormorant Garamond', serif",
-        fontSize: 240, fontWeight: 800,
-        color: calligraphyColor,
+        fontSize: 220, fontWeight: 800,
+        color: "rgba(255,255,255,0.02)",
         lineHeight: 1, pointerEvents: "none", userSelect: "none"
       }}>
-        {isMonari ? "🥮" : (isComTam ? "飯" : (isSamHouse ? "☕" : (isMonQuanChat ? "食" : (isHoaTeaRoom ? "和" : "茶"))))}
+        {watermarkEmoji}
       </span>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 24px 40px", position: "relative", zIndex: 1 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1.5fr", gap: 48, marginBottom: 64 }} className="footer-grid">
-          
-          {/* Column 1 – Brand Details */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 48, marginBottom: 64 }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-              {isMonari
-                ? <span style={{ fontSize: 24 }}>🥮</span>
-                : (isComTam 
-                  ? <span style={{ fontSize: 24 }}>🌾</span>
-                  : (isMonQuanChat
-                      ? <span style={{ fontSize: 24 }}>🍲</span>
-                      : (isHoaTeaRoom
-                          ? <Leaf size={24} style={{ color: textGreenLight, flexShrink: 0 }} />
-                          : <Leaf size={24} style={{ color: textGreenLight, flexShrink: 0 }} />)))
-              }
-              <span style={{ 
-                fontFamily: "'Cormorant Garamond', serif", 
-                fontSize: 30, fontWeight: 700, color: "#fff",
-                letterSpacing: "0.02em", textTransform: isMonari ? "uppercase" : "capitalize"
-              }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+              <img
+                src={tenant?.logo || "/assets/images/logo.jpg"}
+                alt="Logo"
+                style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover" }}
+                onError={(e) => { e.target.style.display = "none"; }}
+              />
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff" }}>
                 {brandName}
               </span>
             </div>
-            
-            <p style={{ fontSize: 14.5, lineHeight: 1.8, maxWidth: 280, color: "rgba(240, 237, 228, 0.65)", marginBottom: 28 }}>
+            <p style={{ fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.6)", marginBottom: 24 }}>
               {brandDesc}
             </p>
-            
-            {/* Social Icons */}
-            <div style={{ display: "flex", gap: 12 }}>
-              {SOCIALS.map(({ icon: Icon, label, href }) => (
-                <motion.a
-                  key={label}
-                  href={href}
-                  whileHover={{ y: -4, scale: 1.08 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label={label}
+            <div style={{ display: "flex", gap: 10 }}>
+              {SOCIALS.map((s, i) => (
+                <a
+                  key={i}
+                  href={s.href}
+                  aria-label={s.label}
                   style={{
-                    width: 40, height: 40, borderRadius: 12,
-                    background: "rgba(255,255,255,0.04)",
-                    border: `1px solid ${borderSocial}`,
+                    width: 36, height: 36, borderRadius: "50%",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "rgba(240, 237, 228, 0.7)", transition: "all 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => { 
-                    e.currentTarget.style.background = bgSocialHover; 
-                    e.currentTarget.style.color = textSocialHover; 
-                    e.currentTarget.style.borderColor = borderSocialHover;
-                  }}
-                  onMouseLeave={(e) => { 
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)"; 
-                    e.currentTarget.style.color = "rgba(240, 237, 228, 0.7)"; 
-                    e.currentTarget.style.borderColor = borderSocial;
+                    color: "#fff", transition: "all 0.2s"
                   }}
                 >
-                  <Icon size={16} />
-                </motion.a>
+                  <s.icon size={16} />
+                </a>
               ))}
             </div>
           </div>
 
-          {/* Columns 2 & 3 – Navigation Links */}
-          {Object.entries(LINKS).map(([heading, links]) => (
-            <div key={heading}>
-              <h4 style={{ 
-                color: textGreenLight, 
-                fontSize: 13, fontWeight: 700, 
-                letterSpacing: "0.15em", textTransform: "uppercase", 
-                marginBottom: 24, borderBottom: `1px solid ${borderGreen}`,
-                paddingBottom: 8
-              }}>
-                {heading}
-              </h4>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                {links.map((l) => (
-                  <li key={l.to} style={{ marginBottom: 14 }}>
-                    <RouterLink
-                      to={l.to}
-                      style={{ 
-                        color: "rgba(240, 237, 228, 0.6)", 
-                        textDecoration: "none", fontSize: 14.5, 
-                        display: "inline-flex", alignItems: "center", gap: 6,
-                        transition: "all 0.25s ease" 
-                      }}
-                      onMouseEnter={(e) => { 
-                        e.currentTarget.style.color = textLinkHover;
-                        e.currentTarget.style.transform = "translateX(4px)";
-                      }}
-                      onMouseLeave={(e) => { 
-                        e.currentTarget.style.color = "rgba(240, 237, 228, 0.6)"; 
-                        e.currentTarget.style.transform = "translateX(0)";
-                      }}
-                    >
-                      <ArrowRight size={12} style={{ opacity: 0.6 }} />
-                      {l.label}
-                    </RouterLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {/* Column 4 – Shop Information */}
           <div>
-            <h4 style={{ 
-              color: textGreenLight, 
-              fontSize: 13, fontWeight: 700, 
-              letterSpacing: "0.15em", textTransform: "uppercase", 
-              marginBottom: 24, borderBottom: `1px solid ${borderGreen}`,
-              paddingBottom: 8
-            }}>
-              Thông Tin Liên Hệ
+            <h4 style={{ fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#fff", marginBottom: 20 }}>
+              Khám phá
             </h4>
-            {infoItems.map(({ icon: Icon, text }, idx) => (
-              <div key={idx} style={{ display: "flex", gap: 12, marginBottom: 18, alignItems: "flex-start" }}>
-                <div style={{
-                  width: 28, height: 28, borderRadius: 8,
-                  background: bgIconCircle,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: textIconCircle, flexShrink: 0, marginTop: 2
-                }}>
-                  <Icon size={14} />
-                </div>
-                <span style={{ fontSize: 13.5, lineHeight: 1.7, color: "rgba(240, 237, 228, 0.65)", whiteSpace: "pre-line" }}>
-                  {text}
-                </span>
-              </div>
-            ))}
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+              {LINKS["Khám phá"].map((l, i) => (
+                <li key={i}>
+                  <RouterLink to={l.to} style={{ color: "rgba(255,255,255,0.65)", textDecoration: "none", fontSize: 14, transition: "color 0.2s" }}>
+                    {l.label}
+                  </RouterLink>
+                </li>
+              ))}
+            </ul>
           </div>
 
+          <div>
+            <h4 style={{ fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#fff", marginBottom: 20 }}>
+              Tài khoản
+            </h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+              {LINKS["Tài khoản"].map((l, i) => (
+                <li key={i}>
+                  <RouterLink to={l.to} style={{ color: "rgba(255,255,255,0.65)", textDecoration: "none", fontSize: 14, transition: "color 0.2s" }}>
+                    {l.label}
+                  </RouterLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 style={{ fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#fff", marginBottom: 20 }}>
+              Liên hệ
+            </h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {infoItems.map((item, i) => (
+                <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 13.5, color: "rgba(255,255,255,0.7)" }}>
+                  <item.icon size={16} style={{ color: "var(--matcha)", flexShrink: 0, marginTop: 2 }} />
+                  <span style={{ whiteSpace: "pre-line", lineHeight: 1.5 }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Bottom copyright bar */}
         <div style={{
-          borderTop: `1px solid ${borderGreen}`,
+          borderTop: "1px solid rgba(255,255,255,0.08)",
           paddingTop: 28,
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          flexWrap: "wrap", gap: 16,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 16,
+          fontSize: 13,
+          color: "rgba(255,255,255,0.4)"
         }}>
-          <span style={{ fontSize: 13, color: "rgba(240, 237, 228, 0.4)" }}>
-            © 2026 {brandName}. Mọi quyền được bảo lưu.
-          </span>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            {isMonari
-              ? <span style={{ fontSize: 14 }}>🥮</span>
-              : (isComTam 
-                ? <span style={{ fontSize: 14 }}>🌾</span>
-                : (isSamHouse 
-                    ? <Coffee size={14} style={{ color: "rgba(186,175,168,0.5)" }} />
-                    : (isMonQuanChat
-                        ? <span style={{ fontSize: 14 }}>🍲</span>
-                        : <Leaf size={14} style={{ color: "rgba(175,215,120,0.5)" }} />)))
-            }
-            <span style={{ fontSize: 12, color: "rgba(240, 237, 228, 0.4)", fontFamily: "Inter, sans-serif" }}>
-              {isMonari ? "Crafted with Passion & Warmth in Hồ Chí Minh 🥮" : (isComTam ? "Hương vị đậm đà chuẩn cơm mẹ nấu 🌾" : (isSamHouse ? "Crafted with Passion & Coffee in Dĩ An ☕" : (isMonQuanChat ? "Hương vị ẩm thực miền Trung đậm chất 🍲" : (isHoaTeaRoom ? "Không gian thưởng trà & vẽ ly tại Bình Dương 🎨" : "Crafted with Zen & Love in Cần Thơ 🍵"))))}
-            </span>
+          <div>
+            © {new Date().getFullYear()} {brandName}. Tất cả các quyền được bảo lưu.
+          </div>
+          <div style={{ display: "flex", gap: 20 }}>
+            <span>Chính sách bảo mật</span>
+            <span>Điều khoản sử dụng</span>
           </div>
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 36px !important; }
-        }
-        @media (max-width: 520px) {
-          .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
-        }
-      `}</style>
     </footer>
   );
 }

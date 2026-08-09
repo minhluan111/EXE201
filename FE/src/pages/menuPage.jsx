@@ -2,35 +2,64 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
-import { menuList } from "../services/mockApi.js";
+import { menuList } from "../services/apiClient.js";
 import MenuCard from "../components/menu/MenuCard.jsx";
 import QuickViewModal from "../components/menu/QuickViewModal.jsx";
 import { useTenant } from "@/context/TenantContext";
 
 const MATCHA_CATEGORIES = [
-  { key: "all",        label: "Tất cả",      },
-  { key: "Combo",      label: "Combo ưu đãi",},
-  { key: "Traditional",label: "Truyền thống",  },
-  { key: "Latte",      label: "Latte",        },
-  { key: "Hojicha",    label: "Hojicha",     },
-  { key: "Desserts",   label: "Tráng miệng",     },
-  { key: "Food",       label: "Món ăn",       },
+  { key: "all",        label: "Tất cả",      emoji: "🍵" },
+  { key: "Combo",      label: "Combo ưu đãi", emoji: "🎁" },
+  { key: "Traditional",label: "Truyền thống", emoji: "🍵" },
+  { key: "Latte",      label: "Latte",        emoji: "🥛" },
+  { key: "Hojicha",    label: "Hojicha",      emoji: "🍂" },
+  { key: "Desserts",   label: "Tráng miệng",  emoji: "🍰" },
+  { key: "Food",       label: "Món ăn",       emoji: "🍡" },
+];
+
+const TAOTAO_CATEGORIES = [
+  { key: "all",        label: "Tất cả",               emoji: "🍎" },
+  { key: "Traditional",label: "Cà Phê & Kem Muối",    emoji: "☕" },
+  { key: "Latte",      label: "Trà Sữa & Kem Phô Mai", emoji: "🧀" },
+  { key: "Desserts",   label: "Tráng Miệng",          emoji: "🍰" },
+];
+
+const EM_COFFEE_CATEGORIES = [
+  { key: "all",        label: "Tất cả",              emoji: "☕" },
+  { key: "Coffee",     label: "Cà Phê Phin & Phindi", emoji: "☕" },
+  { key: "FruitTea",   label: "Trà Hoa & Trái Cây",   emoji: "🍃" },
+  { key: "Latte",      label: "Cacao & Sữa Tươi",     emoji: "🥛" },
+];
+
+const HAN_HUYEN_CATEGORIES = [
+  { key: "all",        label: "Tất cả",          emoji: "☕" },
+  { key: "Coffee",     label: "Phê Truyền Thống", emoji: "☕" },
+  { key: "FruitTea",   label: "Trà Thanh Mát",    emoji: "🍃" },
+  { key: "Latte",      label: "Đặc Biệt",        emoji: "✨" },
+];
+
+const COCHIN_CATEGORIES = [
+  { key: "all",        label: "Tất cả",             emoji: "🌿" },
+  { key: "MilkTea",    label: "Trà Sữa Ô Long",     emoji: "🧋" },
+  { key: "Coffee",     label: "Cà Phê & Latte",     emoji: "☕" },
+  { key: "FruitTea",   label: "Trà Hoa Nhiệt Đới",  emoji: "🍹" },
+  { key: "Drink",      label: "Thức Uống Khác",     emoji: "🍫" },
 ];
 
 const COM_TAM_CATEGORIES = [
-  { key: "all",        label: "Tất cả",      },
-  { key: "Combo",      label: "Combo ưu đãi",},
-  { key: "MainCourse", label: "Món chính",    },
-  { key: "Drink",      label: "Đồ uống",      },
+  { key: "all",        label: "Tất cả",      emoji: "🌾" },
+  { key: "Combo",      label: "Combo ưu đãi", emoji: "🎁" },
+  { key: "MainCourse", label: "Món chính",    emoji: "🍚" },
+  { key: "Drink",      label: "Đồ uống",      emoji: "🥤" },
 ];
 
 const SAM_HOUSE_CATEGORIES = [
-  { key: "all",        label: "Tất cả",      },
-  { key: "Combo",      label: "Combo ưu đãi",},
-  { key: "Coffee",     label: "Cà phê",      },
-  { key: "MilkTea",    label: "Trà sữa",     },
-  { key: "FruitTea",   label: "Trà trái cây",},
-  { key: "Other",      label: "Khác",        },
+  { key: "all",        label: "Tất cả",       emoji: "☕" },
+  { key: "Combo",      label: "Combo ưu đãi", emoji: "🎁" },
+  { key: "Coffee",     label: "Cà phê",       emoji: "☕" },
+  { key: "MilkTea",    label: "Trà sữa",      emoji: "🧋" },
+  { key: "FruitTea",   label: "Trà trái cây", emoji: "🍹" },
+  { key: "Other",      label: "Khác",         emoji: "✨" },
 ];
 
 const HOA_TEA_ROOM_CATEGORIES = [
@@ -43,10 +72,17 @@ const HOA_TEA_ROOM_CATEGORIES = [
 ];
 
 const MONARI_CATEGORIES = [
-  { key: "all",        label: "Tất cả",            emoji: "🍵" },
-  { key: "Combo",      label: "Bánh Trung Thu & Quà Tặng", emoji: "🥮" },
-  { key: "Drink",      label: "Trà & Thức Uống",   emoji: "🥥" },
-  { key: "Dessert",    label: "Bánh Ngọt",          emoji: "🍰" },
+  { key: "all",        label: "Tất cả",                  emoji: "🥮" },
+  { key: "Combo",      label: "Bánh Trung Thu & Quà Tặng", emoji: "🎁" },
+  { key: "Drink",      label: "Trà & Thức Uống",         emoji: "🥥" },
+  { key: "Dessert",    label: "Bánh Ngọt",                emoji: "🍰" },
+];
+
+const COM_GA_CATEGORIES = [
+  { key: "all",        label: "Tất cả",      emoji: "🍗" },
+  { key: "Combo",      label: "Combo ưu đãi", emoji: "🎁" },
+  { key: "MainCourse", label: "Món ăn",       emoji: "🍚" },
+  { key: "Drink",      label: "Nước uống",    emoji: "🥤" },
 ];
 
 const TAGS = [
@@ -56,7 +92,6 @@ const TAGS = [
   { key: "new",        label: "Món mới" },
 ];
 
-// ── Skeleton grid ────────────────────────────────────────────────────────────
 function SkeletonGrid() {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 }}>
@@ -75,19 +110,34 @@ function SkeletonGrid() {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// MAIN
-// ═══════════════════════════════════════════════════════════════════════════
 export default function MenuPage() {
   const navigate = useNavigate();
   const tabBarRef = useRef(null);
   const { tenant } = useTenant();
-  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
-  const CATEGORIES = isMonari ? MONARI_CATEGORIES : ((isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES)));
+  const rawName = String(tenant?.name || "").toLowerCase();
+  const tName = String(tenant?.tenantName || "").toLowerCase();
+
+  const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
+  const isMonari = rawName.includes("monari") || tName.includes("monari");
+  const isComGa = rawName.includes("cơm gà") || rawName.includes("ông bách") || tName.includes("comga");
+  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
+  const isCochin = rawName.includes("cochin") || tName.includes("cochin");
+  const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
+  const isSamHouse = rawName.includes("sam house") || tName.includes("samhouse");
+  const isMonQuanChat = rawName.includes("quảng") || tName.includes("monquanchat");
+  const isHoaTeaRoom = rawName.includes("hoa") || rawName.includes("hoà") || rawName.includes("hòa") || tName.includes("hoatearoom");
+
+  const CATEGORIES = isTaoTao ? TAOTAO_CATEGORIES :
+    isMonari ? MONARI_CATEGORIES :
+    isComGa ? COM_GA_CATEGORIES :
+    isEmCoffee ? EM_COFFEE_CATEGORIES :
+    isHanHuyen ? HAN_HUYEN_CATEGORIES :
+    isCochin ? COCHIN_CATEGORIES :
+    (isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES :
+    isSamHouse ? SAM_HOUSE_CATEGORIES :
+    isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES :
+    MATCHA_CATEGORIES;
 
   const [q, setQ]               = useState("");
   const [category, setCategory] = useState("all");
@@ -98,29 +148,34 @@ export default function MenuPage() {
   const [tabSticky, setTabSticky]         = useState(false);
   const [availableCategoryKeys, setAvailableCategoryKeys] = useState([]);
 
-  // Fetch
   useEffect(() => {
     setLoading(true);
-    menuList({ q, category, tag }).then((res) => {
-      if (res.ok) {
-        setItems(res.data);
-        if (category === "all" && !q && tag === "all") {
-          const keys = Array.from(new Set(res.data.map((item) => item.category)));
-          setAvailableCategoryKeys(keys);
+    menuList({ q, category, tag })
+      .then((res) => {
+        if (res && res.ok) {
+          setItems(res.data || []);
+          if (category === "all" && !q && tag === "all") {
+            const keys = Array.from(new Set((res.data || []).map((item) => item.category)));
+            setAvailableCategoryKeys(keys);
+          }
+        } else {
+          setItems([]);
         }
-      } else {
+      })
+      .catch((err) => {
+        console.error("Failed to load menu list:", err);
         setItems([]);
-      }
-      setLoading(false);
-    });
-  }, [q, category, tag]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [q, category, tag, tenant]);
 
   const visibleCategories = useMemo(() => {
     if (availableCategoryKeys.length === 0) return CATEGORIES;
     return CATEGORIES.filter((cat) => cat.key === "all" || cat.key === "Combo" || availableCategoryKeys.includes(cat.key) || availableCategoryKeys.includes(cat.key + "s"));
   }, [CATEGORIES, availableCategoryKeys]);
 
-  // Sticky tabs detection
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setTabSticky(!entry.isIntersecting),
@@ -130,12 +185,32 @@ export default function MenuPage() {
     return () => observer.disconnect();
   }, []);
 
-  const hasFilters = q || category !== "all" || tag !== "all";
-  const clearFilters = () => { setQ(""); setCategory("all"); setTag("all"); };
+  const heroBg = isTaoTao ? "url('/assets/taotao/decor/hero.jpg')" :
+    isMonari ? "url('/assets/monari/decor/space_main.jpg')" :
+    isComGa ? "url('/assets/comgaongbach/decor/space_main.jpg')" :
+    isEmCoffee ? "url('/assets/emcoffee/decor/hero.jpg')" :
+    isHanHuyen ? "url('/assets/hanhuyen/Ảnh bìa.jpg')" :
+    isCochin ? "url('/assets/cochin/Ảnh bìa.jpg')" :
+    isComTam ? "url('/assets/comtamno/hero.jpg')" :
+    isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" :
+    isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" :
+    isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" :
+    "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')";
+
+  const menuDesc = isTaoTao ? "Cà phê Robusta thơm đậm kết hợp kem muối sánh ngậy béo mặn, cùng các loại trà phô mai béo dẻo và chanh leo dừa non thanh mát." :
+    isMonari ? "Từng chiếc bánh trung thu và ly trà được chế biến thủ công tỉ mỉ — nguyên liệu hảo hạng, hương vị ngọt thanh và trọn vẹn." :
+    isComGa ? "Thưởng thức cơm gà luộc da vàng giòn ngọt thịt, gà quay gia truyền đậm đà, trứng ngâm tương lòng đào béo ngậy cùng nước sâm bí đao thanh mát." :
+    isEmCoffee ? "Thưởng thức Phindi hạnh nhân béo bùi, Trà vải atiso đỏ thanh nhiệt và các món cà phê rang mộc nguyên chất tinh tế." :
+    isHanHuyen ? "Những ly Phê xỉu ba tầng ngọt béo, Phê đá đậm vị và trà đào xanh nhài mang đậm dư vị hoài niệm bình yên." :
+    isCochin ? "Hương vị trà sữa ô long rang khói đặc trưng, Caffe Latte chuẩn Ý và các thức uống trà hoa nhiệt đới tao nhã." :
+    isComTam ? "Từng đĩa cơm sườn, bát bún thịt nướng được tẩm ướp đậm đà — sườn nướng than hồng mật ong thơm ngon trọn vị." :
+    isSamHouse ? "Khám phá hương vị cà phê rang xay nguyên chất đậm vị, cùng các loại trà sữa và trà xoài Macchiato thơm mát đặc biệt." :
+    isMonQuanChat ? "Thưởng thức mỳ Quảng tôm thịt đậm đà, Cao lầu Hội An chuẩn vị và bánh tráng cuốn thịt heo ba chỉ ngọt thơm chuẩn vị xứ Quảng." :
+    isHoaTeaRoom ? "Thưởng thức các hương vị trà sữa lài Mia thơm ngát, matcha dừa xiêm béo ngậy và trải nghiệm vẽ ly gốm thư giãn." :
+    "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết từ Uji, hương vị tinh tế theo triết lý Zen.";
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
-      {/* Quick View Modal */}
       <AnimatePresence>
         {quickViewItem && (
           <QuickViewModal item={quickViewItem} onClose={() => setQuickViewItem(null)} />
@@ -146,21 +221,13 @@ export default function MenuPage() {
       <section style={{ position: "relative", overflow: "hidden" }}>
         <div style={{
           position: "absolute", inset: 0,
-          backgroundImage: isMonari
-            ? "url('/assets/monari/decor/space_main.jpg')"
-            : (isComTam 
-              ? "url('/assets/comtamno/hero.jpg')" 
-              : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=1400&q=80')")))),
+          backgroundImage: heroBg,
           backgroundSize: "cover", backgroundPosition: "center",
           filter: "brightness(0.35)",
         }} />
         <div style={{
           position: "absolute", inset: 0,
-          background: isMonari
-            ? "linear-gradient(to bottom, rgba(40,15,10,0.6), rgba(40,15,10,0.9))"
-            : (isComTam 
-              ? "linear-gradient(to bottom, rgba(40,30,25,0.6), rgba(40,30,25,0.9))" 
-              : (isSamHouse ? "linear-gradient(to bottom, rgba(30,20,15,0.6), rgba(30,20,15,0.9))" : (isMonQuanChat ? "linear-gradient(to bottom, rgba(43,10,10,0.6), rgba(43,10,10,0.9))" : "linear-gradient(to bottom, rgba(15,31,18,0.6), rgba(15,31,18,0.9))")))
+          background: "linear-gradient(to bottom, rgba(15,15,20,0.6), rgba(15,15,20,0.9))"
         }} />
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "100px 24px 80px" }}>
@@ -172,12 +239,8 @@ export default function MenuPage() {
             }}>
               Thực Đơn
             </h1>
-            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, maxWidth: 540, lineHeight: 1.7 }}>
-              {isMonari
-                ? "Từng chiếc bánh trung thu và ly trà được chế biến thủ công tỉ mỉ — nguyên liệu hảo hạng, hương vị ngọt thanh và trọn vẹn."
-                : (isComTam 
-                  ? "Từng đĩa cơm sườn, bát bún thịt nướng được tẩm ướp đậm đà — sườn nướng than hồng mật ong thơm ngon trọn vị."
-                  : (isSamHouse ? "Khám phá hương vị cà phê rang xay nguyên chất đậm vị, cùng các loại trà sữa và trà trái cây thơm mát đặc biệt." : (isMonQuanChat ? "Thưởng thức mỳ Quảng tôm thịt đậm đà, Cao lầu Hội An chuẩn vị và bánh tráng cuốn thịt heo ba chỉ ngọt thơm chuẩn vị xứ Quảng." : (isHoaTeaRoom ? "Thưởng thức các hương vị trà sữa lài Mia thơm ngát, matcha dừa xiêm béo ngậy và trải nghiệm vẽ ly gốm thư giãn." : "Từng món được chọn lọc cẩn thận — nguyên liệu thuần khiết, hương vị tinh tế theo triết lý Zen."))))}
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 18, maxWidth: 600, lineHeight: 1.7 }}>
+              {menuDesc}
             </p>
           </motion.div>
         </div>
@@ -194,7 +257,7 @@ export default function MenuPage() {
         transition: "all 0.3s ease",
       }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-          <div style={{ display: "flex", gap: 4, overflowX: "auto", padding: "12px 0", scrollbarWidth: "none" }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "12px 0", scrollbarWidth: "none" }}>
             {visibleCategories.map((cat) => (
               <motion.button
                 key={cat.key}
@@ -209,7 +272,7 @@ export default function MenuPage() {
                     ? "linear-gradient(135deg, var(--matcha), var(--forest))"
                     : "var(--bg-alt)",
                   color: category === cat.key ? "#fff" : "var(--text-muted)",
-                  boxShadow: category === cat.key ? "0 4px 16px rgba(107,143,62,0.35)" : "none",
+                  boxShadow: category === cat.key ? "0 4px 16px rgba(0,0,0,0.2)" : "none",
                   transition: "all 0.2s ease",
                   display: "flex", alignItems: "center", gap: 6,
                 }}
@@ -224,10 +287,7 @@ export default function MenuPage() {
 
       {/* ── MAIN CONTENT ─────────────────────────────────────── */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "36px 24px 80px" }}>
-
-        {/* Search + Tag filters */}
         <div style={{ display: "flex", gap: 12, marginBottom: 28, flexWrap: "wrap", alignItems: "center" }}>
-          {/* Search input */}
           <div style={{ position: "relative", flex: "1 1 260px", minWidth: 220 }}>
             <Search size={16} style={{
               position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)",
@@ -249,106 +309,48 @@ export default function MenuPage() {
               onFocus={(e) => { e.target.style.borderColor = "var(--matcha)"; }}
               onBlur={(e) => { e.target.style.borderColor = "var(--border)"; }}
             />
-            {q && (
-              <button onClick={() => setQ("")} style={{
-                position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
-                background: "transparent", border: "none", cursor: "pointer",
-                color: "var(--text-muted)", display: "flex",
-              }}>
-                <X size={14} />
-              </button>
-            )}
           </div>
 
-          {/* Tag filter */}
-          <div style={{ display: "flex", gap: 6 }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto" }}>
             {TAGS.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setTag(t.key)}
                 style={{
-                  padding: "10px 18px", borderRadius: 50, fontSize: 13,
-                  fontWeight: 600, border: "1px solid",
+                  padding: "8px 16px", borderRadius: 50,
+                  border: "1px solid",
                   borderColor: tag === t.key ? "var(--matcha)" : "var(--border)",
-                  background: tag === t.key ? "rgba(107,143,62,0.1)" : "transparent",
-                  color: tag === t.key ? "var(--matcha)" : "var(--text-muted)",
-                  cursor: "pointer", transition: "all 0.2s",
-                  whiteSpace: "nowrap",
+                  background: tag === t.key ? "var(--matcha)" : "transparent",
+                  color: tag === t.key ? "#fff" : "var(--text-muted)",
+                  fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  transition: "all 0.2s",
                 }}
               >
                 {t.label}
               </button>
             ))}
           </div>
-
-          {/* Clear */}
-          {hasFilters && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              onClick={clearFilters}
-              style={{
-                padding: "10px 18px", borderRadius: 50, fontSize: 13,
-                fontWeight: 600, border: "1px solid rgba(239,68,68,0.3)",
-                background: "rgba(239,68,68,0.06)", color: "#EF4444",
-                cursor: "pointer", display: "flex", alignItems: "center", gap: 5,
-              }}
-            >
-              <X size={13} /> Xóa bộ lọc
-            </motion.button>
-          )}
         </div>
 
-        {/* Item count */}
-        {!loading && (
-          <p style={{ color: "var(--text-muted)", fontSize: 14, marginBottom: 24 }}>
-            <span style={{ fontWeight: 700, color: "var(--matcha)" }}>{items.length}</span> món được tìm thấy
-          </p>
-        )}
-
-        {/* Grid */}
         {loading ? (
           <SkeletonGrid />
         ) : items.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            style={{ textAlign: "center", padding: "96px 0" }}
-          >
-            <div style={{ fontSize: 64, marginBottom: 20 }}>🍵</div>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 700, color: "var(--text)", marginBottom: 12 }}>
-              Không tìm thấy món nào
-            </h3>
-            <p style={{ color: "var(--text-muted)", marginBottom: 28, fontSize: 16 }}>
-              Thử điều chỉnh bộ lọc hoặc tìm kiếm khác.
-            </p>
-            <button
-              onClick={clearFilters}
-              style={{
-                padding: "12px 28px", borderRadius: 50,
-                background: "linear-gradient(135deg, var(--matcha), var(--forest))",
-                color: "#fff", border: "none", cursor: "pointer",
-                fontSize: 15, fontWeight: 700,
-              }}
-            >
-              Xem tất cả món
-            </button>
-          </motion.div>
+          <div style={{ textAlign: "center", padding: "80px 24px", color: "var(--text-muted)" }}>
+            <p style={{ fontSize: 44, margin: "0 0 12px" }}>☕</p>
+            <p style={{ fontSize: 18, fontWeight: 600, color: "var(--text)", margin: "0 0 6px" }}>Không tìm thấy món phù hợp</p>
+            <p style={{ fontSize: 14, margin: 0 }}>Vui lòng thử từ khóa khác hoặc chọn danh mục khác.</p>
+          </div>
         ) : (
-          <motion.div
-            key={category + tag + q}
-            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
-            initial="hidden" animate="show"
-            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 }}
-          >
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 }}>
             {items.map((item) => (
               <MenuCard
                 key={item.id}
                 item={item}
-                onQuickView={(item) => setQuickViewItem(item)}
+                onQuickView={() => setQuickViewItem(item)}
                 onClick={() => navigate(`/menu/${item.id}`)}
               />
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

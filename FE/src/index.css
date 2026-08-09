@@ -109,6 +109,42 @@ html.dark[data-tenant="monari"] {
   --glass-border: rgba(200, 109, 81, 0.22);
 }
 
+html[data-tenant="comga"] {
+  --matcha:       #D97706; /* Golden warm amber */
+  --matcha-light: #F59E0B; /* Bright golden yellow */
+  --matcha-dark:  #B45309; /* Deep amber */
+  --forest:       #C2410C; /* Roasted orange-brown */
+  --forest-dark:  #9A3412;
+  --bg:           #FFFDF7;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #FEF3C7;
+  --cream:        #FDE68A;
+  --text:         #1C140E;
+  --text-muted:   #785438;
+  --text-light:   #A88060;
+  --border:       rgba(217, 119, 6, 0.20);
+  --glass-bg:     rgba(255, 253, 247, 0.75);
+  --glass-border: rgba(217, 119, 6, 0.22);
+}
+
+html.dark[data-tenant="comga"] {
+  --matcha:       #F59E0B;
+  --matcha-light: #FBBF24;
+  --matcha-dark:  #D97706;
+  --forest:       #EA580C;
+  --forest-dark:  #9A3412;
+  --bg:           #140E0A;
+  --bg-card:      #1F1610;
+  --bg-alt:       #291E16;
+  --cream:        #38281E;
+  --text:         #FBF7F0;
+  --text-muted:   #C4B0A0;
+  --text-light:   #948070;
+  --border:       rgba(245, 158, 11, 0.20);
+  --glass-bg:     rgba(20, 14, 10, 0.85);
+  --glass-border: rgba(245, 158, 11, 0.22);
+}
+
 html[data-tenant="hoatearoom"] {
   --matcha:       #1E4620;
   --matcha-light: #2E6F40;
@@ -328,6 +364,21 @@ html.dark[data-tenant="cochin"] {
    BASE
 ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
+
+/* Disable native password reveal button in Edge/Chrome/IE to prevent duplicate eye buttons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  height: 0;
+  width: 0;
+  margin: 0;
+}
 
 html {
   scroll-behavior: smooth;

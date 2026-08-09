@@ -107,6 +107,64 @@ const monariTableImages = {
   "8-Seat": "/assets/monari/tables/ban_8_nguoi.jpg",
 };
 
+const comGaTableImages = {
+  "Bàn 1 (3 người)": "/assets/comgaongbach/tables/ban_1.jpg",
+  "Bàn 2 (5 người)": "/assets/comgaongbach/tables/ban_2.jpg",
+  "Bàn 3 (4 người)": "/assets/comgaongbach/tables/ban_3.jpg",
+  "Bàn 4 (4 người)": "/assets/comgaongbach/tables/ban_4.jpg",
+  "Bàn 5 (4 người)": "/assets/comgaongbach/tables/ban_5.jpg",
+  "Bàn 1": "/assets/comgaongbach/tables/ban_1.jpg",
+  "Bàn 2": "/assets/comgaongbach/tables/ban_2.jpg",
+  "Bàn 3": "/assets/comgaongbach/tables/ban_3.jpg",
+  "Bàn 4": "/assets/comgaongbach/tables/ban_4.jpg",
+  "Bàn 5": "/assets/comgaongbach/tables/ban_5.jpg",
+  "2-Seat Corner": "/assets/comgaongbach/tables/ban_1.jpg",
+  "2-Seat Window": "/assets/comgaongbach/tables/ban_1.jpg",
+  "2-Seat Bar": "/assets/comgaongbach/tables/ban_1.jpg",
+  "4-Seat Indoor": "/assets/comgaongbach/tables/ban_3.jpg",
+  "4-Seat Tatami": "/assets/comgaongbach/tables/ban_4.jpg",
+  "4-Seat Outdoor": "/assets/comgaongbach/tables/ban_5.jpg",
+};
+
+const taotaoTableImages = {
+  "2-Seat Corner": "/assets/taotao/tables/ban_2_nguoi_trong_nha_goc.jpg",
+  "2-Seat Window": "/assets/taotao/tables/ban_2_nguoi_trong_nha_cua_so.jpg",
+  "2-Seat Bar": "/assets/taotao/tables/ban_2_nguoi_ngoai_troi_chill.jpg",
+  "4-Seat Indoor": "/assets/taotao/tables/ban_4_nguoi_trong_nha.jpg",
+  "4-Seat Tatami": "/assets/taotao/tables/ban_4_nguoi_ngoai_troi_tan_cay.jpg",
+  "4-Seat Outdoor": "/assets/taotao/tables/ban_2_nguoi_ngoai_troi.jpg",
+  "8-Seat": "/assets/taotao/tables/ban_8_nguoi_trong_nha_lon.jpg",
+};
+
+const emCoffeeTableImages = {
+  "2-Seat Corner": "/assets/emcoffee/tables/ban_2_nguoi_goc_phai.png",
+  "2-Seat Window": "/assets/emcoffee/tables/ban_2_nguoi_cua_so.webp",
+  "2-Seat Bar": "/assets/emcoffee/tables/ban_2_nguoi_o_dien.jpg",
+  "4-Seat Indoor": "/assets/emcoffee/tables/ban_4_nguoi_rieng_tu.jpg",
+  "4-Seat Tatami": "/assets/emcoffee/tables/ban_4_nguoi_goc_o_dien.webp",
+  "4-Seat Outdoor": "/assets/emcoffee/tables/ban_2_nguoi_trong_nha.webp",
+  "6-Seat": "/assets/emcoffee/tables/ban_6_nguoi_lon_lam_viec.jpg",
+};
+
+const hanHuyenTableImages = {
+  "2-Seat Corner": "/assets/hanhuyen/tables/indoor_nem_socket_2.jpg",
+  "2-Seat Window": "/assets/hanhuyen/tables/indoor_window_2.jpg",
+  "2-Seat Bar": "/assets/hanhuyen/tables/indoor_sofa_2.jpg",
+  "4-Seat Indoor": "/assets/hanhuyen/tables/indoor_table_4.jpg",
+  "4-Seat Tatami": "/assets/hanhuyen/tables/indoor_table_4_1.jpg",
+  "4-Seat Outdoor": "/assets/hanhuyen/tables/outdoor_table_2.jpg",
+};
+
+const cochinTableImages = {
+  "2-Seat Corner": "/assets/cochin/tables/indoor_t2_socket_2.jpg",
+  "2-Seat Window": "/assets/cochin/tables/indoor_t2_window_2.jpg",
+  "2-Seat Bar": "/assets/cochin/tables/indoor_t1_window_bar_2.jpg",
+  "4-Seat Indoor": "/assets/cochin/tables/indoor_t1_window_4.jpg",
+  "4-Seat Tatami": "/assets/cochin/tables/indoor_t2_center_2.jpg",
+  "4-Seat Outdoor": "/assets/cochin/tables/outdoor_t1_2.jpg",
+  "6-Seat": "/assets/cochin/tables/indoor_t1_bar_6.jpg",
+};
+
 const yakiTableImages = {
   "Bàn N2 - 2 người (Trong nhà, ổ điện, quạt)": "/assets/yakishime/tables/n2.jpg",
   "Bàn N2.1 - 2 người (Cửa sổ, ổ điện)": "/assets/yakishime/tables/n2_1.jpg",
@@ -135,11 +193,19 @@ const areaDescriptions = {
 export default function TableMap({ tables, selected, onSelect, canSelect }) {
   const [zoomedImage, setZoomedImage] = useState(null);
   const { tenant } = useTenant();
-  const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
-  const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
-  const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
-  const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
-  const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
+  const rawName = String(tenant?.name || "").toLowerCase();
+  const tName = String(tenant?.tenantName || "").toLowerCase();
+
+  const isTaoTao = rawName.includes("taotao") || rawName.includes("táo tào") || tName.includes("taotao");
+  const isMonari = rawName.includes("monari") || tName.includes("monari");
+  const isComGa = rawName.includes("cơm gà") || rawName.includes("comga") || rawName.includes("ông bách") || rawName.includes("ong bach") || tName.includes("comga");
+  const isEmCoffee = rawName.includes("em coffee") || rawName.includes("em") || tName.includes("em");
+  const isHanHuyen = rawName.includes("hàn huyên") || tName.includes("hanhuyen");
+  const isCochin = rawName.includes("cochin") || tName.includes("cochin");
+  const isComTam = rawName.includes("cơm tấm") || tName.includes("comtam");
+  const isSamHouse = rawName.includes("sam house") || tName.includes("samhouse");
+  const isMonQuanChat = rawName.includes("quảng") || tName.includes("monquanchat");
+  const isHoaTeaRoom = rawName.includes("hoa") || rawName.includes("hoà") || rawName.includes("hòa") || tName.includes("hoatearoom");
 
   return (
     <>
@@ -153,8 +219,29 @@ export default function TableMap({ tables, selected, onSelect, canSelect }) {
         {tables.map((table) => {
           const selectable = canSelect(table);
 
-          const imageList = isMonari ? monariTableImages : (isComTam ? comTamTableImages : (isSamHouse ? samHouseTableImages : (isMonQuanChat ? monQuanChatTableImages : (isHoaTeaRoom ? hoaTeaRoomTableImages : yakiTableImages))));
-          const defaultImage = isMonari ? "/assets/monari/tables/ban_2_nguoi.jpg" : (isComTam ? "/assets/comtamno/n2_2.jpg" : (isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" : (isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" : (isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" : "/assets/yakishime/tables/n2.jpg"))));
+          const imageList = isTaoTao ? taotaoTableImages :
+            isMonari ? monariTableImages :
+            isComGa ? comGaTableImages :
+            isEmCoffee ? emCoffeeTableImages :
+            isHanHuyen ? hanHuyenTableImages :
+            isCochin ? cochinTableImages :
+            isComTam ? comTamTableImages :
+            isSamHouse ? samHouseTableImages :
+            isMonQuanChat ? monQuanChatTableImages :
+            isHoaTeaRoom ? hoaTeaRoomTableImages :
+            yakiTableImages;
+
+          const defaultImage = isTaoTao ? "/assets/taotao/tables/ban_4_nguoi_trong_nha.jpg" :
+            isMonari ? "/assets/monari/tables/ban_2_nguoi_1.jpg" :
+            isComGa ? "/assets/comgaongbach/tables/ban_1.jpg" :
+            isEmCoffee ? "/assets/emcoffee/tables/ban_4_nguoi_rieng_tu.jpg" :
+            isHanHuyen ? "/assets/hanhuyen/tables/indoor_table_4.jpg" :
+            isCochin ? "/assets/cochin/tables/indoor_t1_window_4.jpg" :
+            isComTam ? "/assets/comtamno/n2_2.jpg" :
+            isSamHouse ? "/assets/samhouse/tables/t2_2.jpg" :
+            isMonQuanChat ? "/assets/monquanchat/tables/ban_3.jpg" :
+            isHoaTeaRoom ? "/assets/hoatearoom/tables/n2_3.jpg" :
+            "/assets/yakishime/tables/n2.jpg";
 
           const image =
             table.previewImage ||

@@ -66,6 +66,7 @@ export default function RegisterPage() {
   const { register } = useAuth();
   const { tenant } = useTenant();
   const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
+  const isComGa = tenant?.name?.toLowerCase().includes("cơm gà") || tenant?.name?.toLowerCase().includes("ông bách") || tenant?.tenantName?.toLowerCase().includes("comga");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
@@ -122,9 +123,11 @@ export default function RegisterPage() {
         position: "relative", overflow: "hidden",
         backgroundImage: isMonari
           ? "url('/assets/monari/decor/space_main.jpg')"
-          : (isComTam 
-            ? "url('/assets/comtamno/hero.jpg')" 
-            : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=900&q=85')")))),
+          : (isComGa
+            ? "url('/assets/comgaongbach/decor/space_main.jpg')"
+            : (isComTam 
+              ? "url('/assets/comtamno/hero.jpg')" 
+              : (isSamHouse ? "url('/assets/samhouse/decor/hero_bg.jpg')" : (isMonQuanChat ? "url('/assets/monquanchat/decor/hero_bg.jpg')" : (isHoaTeaRoom ? "url('/assets/hoatearoom/decor/hero_bg.jpg')" : "url('https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=900&q=85')"))))),
         backgroundSize: "cover", backgroundPosition: "center",
       }}>
         <div style={{ 
@@ -132,39 +135,43 @@ export default function RegisterPage() {
           inset: 0, 
           background: isMonari
             ? "linear-gradient(135deg, rgba(35,15,10,0.85) 0%, rgba(95,40,25,0.75) 50%, rgba(35,15,10,0.8) 100%)"
-            : (isComTam 
-              ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(224,123,57,0.75) 100%)" 
-              : (isSamHouse 
-                  ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(139,69,19,0.75) 100%)" 
-                  : (isMonQuanChat
-                      ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(139,26,26,0.75) 100%)"
-                      : (isHoaTeaRoom
-                          ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(46,111,64,0.75) 100%)"
-                          : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 100%)"))))
+            : (isComGa
+              ? "linear-gradient(135deg, rgba(35,15,5,0.85) 0%, rgba(180,83,9,0.75) 50%, rgba(35,15,5,0.8) 100%)"
+              : (isComTam 
+                ? "linear-gradient(135deg, rgba(30,15,5,0.85) 0%, rgba(224,123,57,0.75) 100%)" 
+                : (isSamHouse 
+                    ? "linear-gradient(135deg, rgba(20,10,5,0.85) 0%, rgba(139,69,19,0.75) 100%)" 
+                    : (isMonQuanChat
+                        ? "linear-gradient(135deg, rgba(30,10,10,0.85) 0%, rgba(139,26,26,0.75) 100%)"
+                        : (isHoaTeaRoom
+                            ? "linear-gradient(135deg, rgba(6,18,12,0.85) 0%, rgba(46,111,64,0.75) 100%)"
+                            : "linear-gradient(135deg, rgba(15,31,18,0.85) 0%, rgba(47,91,62,0.75) 100%)")))))
         }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "48px" }}>
           <RouterLink to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", position: "absolute", top: 40, left: 48 }}>
             {isMonari
               ? <span style={{ fontSize: 24 }}>🥮</span>
-              : (isComTam 
-                ? <span style={{ fontSize: 24 }}>🌾</span> 
-                : (isSamHouse 
-                    ? <Coffee size={24} style={{ color: "#BAAFA8" }} />
-                    : (isMonQuanChat
-                        ? <span style={{ fontSize: 24 }}>🍲</span>
-                        : (isHoaTeaRoom
-                            ? <span style={{ fontSize: 24 }}>🍃</span>
-                            : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />))))
+              : (isComGa
+                ? <span style={{ fontSize: 24 }}>🍗</span>
+                : (isComTam 
+                  ? <span style={{ fontSize: 24 }}>🌾</span> 
+                  : (isSamHouse 
+                      ? <Coffee size={24} style={{ color: "#BAAFA8" }} />
+                      : (isMonQuanChat
+                          ? <span style={{ fontSize: 24 }}>🍲</span>
+                          : (isHoaTeaRoom
+                              ? <span style={{ fontSize: 24 }}>🍃</span>
+                              : <Leaf size={24} style={{ color: "rgba(175,215,120,0.9)" }} />)))))
             }
             <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: "#fff", textTransform: isMonari ? "uppercase" : "capitalize" }}>
-              {isMonari ? "MONARI" : (tenant?.name || "yakishime")}
+              {isMonari ? "MONARI" : (isComGa ? "Cơm Gà Ông Bách" : (tenant?.name || "yakishime"))}
             </span>
           </RouterLink>
           <div style={{ textAlign: "center" }}>
             <div style={{ marginBottom: 24 }}>
               {["Đặt bàn theo sơ đồ tương tác", "Xem lịch sử & hủy dễ dàng", "Viết đánh giá món ăn & đồ uống"].map((b) => (
                 <div key={b} style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, justifyContent: "center" }}>
-                  <span style={{ color: isMonari ? "#E8927C" : (isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#6CBF7A" : "rgba(175,215,120,0.9)")))), fontSize: 18 }}>✓</span>
+                  <span style={{ color: isMonari ? "#E8927C" : (isComGa ? "#F59E0B" : (isComTam ? "#E07B39" : (isSamHouse ? "#BAAFA8" : (isMonQuanChat ? "#E57373" : (isHoaTeaRoom ? "#6CBF7A" : "rgba(175,215,120,0.9)"))))), fontSize: 18 }}>✓</span>
                   <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 15 }}>{b}</span>
                 </div>
               ))}

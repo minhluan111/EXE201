@@ -20,6 +20,7 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const { tenant } = useTenant();
   const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
+  const isComGa = tenant?.name?.toLowerCase().includes("cơm gà") || tenant?.name?.toLowerCase().includes("ông bách") || tenant?.tenantName?.toLowerCase().includes("comga");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
@@ -103,10 +104,10 @@ export default function Navbar() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em",
                 color: "var(--matcha)",
-                textTransform: (isComTam || isSamHouse || isMonQuanChat || isHoaTeaRoom || isMonari) ? "none" : "lowercase",
+                textTransform: "none",
               }}
             >
-              {tenant?.name || "yakishime"}
+              {tenant?.name || "Cơm Gà Ông Bách"}
             </span>
           </RouterLink>
 

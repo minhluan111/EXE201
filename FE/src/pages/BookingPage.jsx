@@ -12,7 +12,7 @@ import {
   Lock,
   Check,
 } from "lucide-react";
-import { bookingCheckStatus, tablesList } from "../services/apiClient.js";
+import { bookingCheckStatus, getTableStatus, tablesList } from "../services/apiClient.js";
 import { useBookingContext } from "../context/useBookingContext.js";
 import { useTenant } from "@/context/TenantContext";
 import TableMap from "../components/booking/TableMap.jsx";
@@ -168,6 +168,7 @@ export default function BookingPage() {
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat");
   const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
+  const isComGa = tenant?.name?.toLowerCase().includes("cơm gà") || tenant?.name?.toLowerCase().includes("ông bách") || tenant?.tenantName?.toLowerCase().includes("comga");
   const { selected, setSelected } = useBookingContext();
 
   const selectedRef = useRef(selected);
@@ -198,35 +199,35 @@ export default function BookingPage() {
   // Build time slots from tenant opening hours
   const tenantTimeSlots = useMemo(() => {
     const openHours = tenant?.openHours || tenant?.openingHours;
-    const intervals = parseOpeningHours(openHours);
-    return generateTimeSlots(intervals);
+    if (openHours) {
+      const match = openHours.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/);
+      if (match) {
+        return generateTimeSlots(match[1], match[2], 30);
+      }
+    }
+    return DEFAULT_TIME_SLOTS;
   }, [tenant]);
 
+  // Filter out time slots that are in the past for today's booking
   const filteredTimeSlots = useMemo(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
     const todayStrLocal = `${year}-${month}-${day}`;
 
-    const isToday = bookingDate === todayStrLocal;
-
-    if (!isToday) {
-      return tenantTimeSlots;
+    if (bookingDate === todayStrLocal) {
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const leadTime = tenant?.bookingLeadMinutes ?? 15;
+      return tenantTimeSlots.filter((slot) => {
+        const [hours, minutes] = slot.split(":").map(Number);
+        const slotMinutes = hours * 60 + minutes;
+        return slotMinutes >= currentMinutes + leadTime;
+      });
     }
 
-    return tenantTimeSlots.filter((slot) => {
-      const [hours, minutes] = slot.split(":").map(Number);
-      const slotDate = new Date(today);
-      slotDate.setHours(hours, minutes, 0, 0);
-
-      const timeDiffMs = slotDate.getTime() - today.getTime();
-      const timeDiffMinutes = timeDiffMs / (1000 * 60);
-      const leadTime = tenant?.bookingLeadMinutes ?? 15;
-
-      return timeDiffMinutes >= leadTime; // Must be at least leadTime minutes in the future
-    });
-  }, [bookingDate, tenantTimeSlots, tenant?.bookingLeadMinutes]);
+    return tenantTimeSlots;
+  }, [bookingDate, tenantTimeSlots, tenant]);
 
   // Reset bookingTime if it is no longer valid for the selected date
   useEffect(() => {
@@ -235,17 +236,13 @@ export default function BookingPage() {
     }
   }, [bookingDate, filteredTimeSlots, bookingTime]);
 
-  // Fetch table status when date/time changes and step is 1
+  // Fetch real-time table status from API
   useEffect(() => {
     if (step !== 1 || !bookingDate || !bookingTime) return;
 
     let isMounted = true;
-
-    setLoading(true);
-    setSelected(null);
-
     const fetchStatus = () => {
-      bookingCheckStatus({
+      getTableStatus({
         booking_date: bookingDate,
         booking_time: bookingTime,
         guestCount: numPeople,
@@ -266,6 +263,15 @@ export default function BookingPage() {
                 return table.max_seats === 4;
               }
               return table.max_seats === 8;
+            }
+            if (isComGa) {
+              if (numPeople <= 3) {
+                return table.max_seats === 3;
+              }
+              if (numPeople === 4) {
+                return table.max_seats === 4;
+              }
+              return table.max_seats === 5;
             }
             return table.max_seats >= numPeople;
           });
@@ -695,7 +701,7 @@ export default function BookingPage() {
                   </h2>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(64px, 1fr))", gap: 10 }}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                  {(isComGa ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5, 6, 7, 8]).map((n) => (
                     <motion.button
                       key={n}
                       whileHover={{ scale: 1.08 }}
@@ -718,7 +724,7 @@ export default function BookingPage() {
                         transition: "all 0.2s",
                       }}
                     >
-                      {n} {n === 8 ? "+" : ""}
+                      {n} {isComGa ? (n === 6 ? "+" : "") : (n === 8 ? "+" : "")}
                     </motion.button>
                   ))}
                 </div>

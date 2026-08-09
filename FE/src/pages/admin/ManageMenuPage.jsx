@@ -84,6 +84,13 @@ const MONARI_CATEGORIES = [
   { value: "Dessert", label: "Bánh Ngọt" },
 ];
 
+const COM_GA_CATEGORIES = [
+  { value: "Combo",      label: "Combo ưu đãi" },
+  { value: "MainCourse", label: "Món chính" },
+  { value: "Snack",      label: "Ăn kèm" },
+  { value: "Drink",      label: "Đồ uống" },
+];
+
 const TAGS = [
   { value: "BestSeller", label: "Bán chạy (Best Seller)" },
   { value: "Trending", label: "Món xu hướng (Trending)" },
@@ -119,12 +126,13 @@ export default function ManageMenuPage() {
   const [loading, setLoading] = useState(true);
 
   const isMonari = tenant?.name?.toLowerCase().includes("monari") || tenant?.tenantName?.toLowerCase().includes("monari");
+  const isComGa = tenant?.name?.toLowerCase().includes("cơm gà") || tenant?.name?.toLowerCase().includes("ông bách") || tenant?.tenantName?.toLowerCase().includes("comga");
   const isComTam = tenant?.name?.toLowerCase().includes("cơm tấm") || tenant?.tenantName?.toLowerCase().includes("cơm tấm");
   const isSamHouse = tenant?.name?.toLowerCase().includes("sam house") || tenant?.tenantName?.toLowerCase().includes("samhouse");
   const isMonQuanChat = tenant?.name?.toLowerCase().includes("quảng") || tenant?.tenantName?.toLowerCase().includes("monquanchat") || tenant?.tenantName?.toLowerCase().includes("monquangchat");
   const isHoaTeaRoom = tenant?.name?.toLowerCase().includes("hoa") || tenant?.name?.toLowerCase().includes("hoà") || tenant?.name?.toLowerCase().includes("hòa") || tenant?.tenantName?.toLowerCase().includes("hoa");
   
-  const tenantCategories = isMonari ? MONARI_CATEGORIES : ((isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES)));
+  const tenantCategories = isMonari ? MONARI_CATEGORIES : (isComGa ? COM_GA_CATEGORIES : ((isComTam || isMonQuanChat) ? COM_TAM_CATEGORIES : (isSamHouse ? SAM_HOUSE_CATEGORIES : (isHoaTeaRoom ? HOA_TEA_ROOM_CATEGORIES : MATCHA_CATEGORIES))));
 
   const availableCategoryValues = useMemo(() => {
     const vals = new Set(list.map(item => item.category));
