@@ -26,6 +26,24 @@ const hexToHsl = (hex) => {
   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 };
 
+function applyFaviconAndTitle(logoUrl, title) {
+  if (title) document.title = title;
+  if (!logoUrl) return;
+  try {
+    const existingLinks = document.querySelectorAll("link[rel*='icon']");
+    existingLinks.forEach((el) => el.remove());
+
+    const newLink = document.createElement("link");
+    newLink.id = "favicon-link";
+    newLink.rel = "icon";
+    newLink.type = logoUrl.endsWith(".png") ? "image/png" : "image/jpeg";
+    newLink.href = logoUrl;
+    document.head.appendChild(newLink);
+  } catch (e) {
+    console.error("Failed to update favicon:", e);
+  }
+}
+
 export function TenantProvider({ children }) {
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -150,18 +168,7 @@ export function TenantProvider({ children }) {
         }
 
         setTenant(normalizedData);
-        document.title = normalizedData.name;
-
-        let favicon = document.querySelector("link[rel*='icon']");
-        if (!favicon) {
-          favicon = document.createElement("link");
-          favicon.rel = "icon";
-          document.head.appendChild(favicon);
-        }
-        if (normalizedData.logo) {
-          favicon.href = normalizedData.logo;
-          favicon.type = normalizedData.logo.endsWith(".png") ? "image/png" : "image/jpeg";
-        }
+        applyFaviconAndTitle(normalizedData.logo, normalizedData.name);
 
       } catch (err) {
         console.error("Failed to load tenant info, using offline fallback:", err);
@@ -330,13 +337,8 @@ export function TenantProvider({ children }) {
 
         const activeKey = fallbackTenant.tenantName;
         document.documentElement.setAttribute('data-tenant', activeKey);
-        document.title = fallbackTenant.name;
-        const favicon = document.querySelector("link[rel*='icon']");
-        if (favicon && fallbackTenant.logo) {
-          favicon.href = fallbackTenant.logo;
-        }
-
         setTenant(fallbackTenant);
+        applyFaviconAndTitle(fallbackTenant.logo, fallbackTenant.name);
       } finally {
         setLoading(false);
       }
@@ -349,6 +351,7 @@ export function TenantProvider({ children }) {
 
   useEffect(() => {
     if (!tenant) return;
+    applyFaviconAndTitle(tenant.logo, tenant.name);
     const rawName = String(tenant.name || tenant.TenantName || "").toLowerCase();
     const tName = String(tenant.tenantName || "").toLowerCase();
 
