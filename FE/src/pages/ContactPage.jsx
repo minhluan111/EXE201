@@ -61,7 +61,7 @@ export default function ContactPage() {
   };
 
   const mapUrl = isTaoTao
-    ? "https://maps.google.com/maps?q=32A+Thống+Nhất,+Phường+10,+Gò+Vấp,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    ? "https://maps.google.com/maps?q=102/16+Đường+Lê+Lai,+Ninh+Kiều,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
     : isMonari
     ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
     : isComGa

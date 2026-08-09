@@ -116,18 +116,25 @@ function mapMenuCategory(category, name = "") {
 
   if (isTaoTao) {
     const catVal = String(category || "").trim().toLowerCase();
-    if (catVal === "1" || catVal.includes("traditional") || catVal.includes("drink") || catVal.includes("coffee")) return "Traditional";
-    if (catVal === "2" || catVal.includes("latte") || catVal.includes("milktea")) return "Latte";
-    if (catVal === "3" || catVal.includes("dessert") || catVal.includes("cake")) return "Desserts";
-    if (catVal === "4" || catVal.includes("food") || catVal.includes("snack")) return "Food";
-    return "Traditional";
+    if (catVal === "1" || catVal.includes("coffee") || catVal.includes("muối") || lowerName.includes("cà phê")) return "Coffee";
+    if (catVal === "2" || catVal.includes("milktea") || catVal.includes("latte") || lowerName.includes("trà sữa") || lowerName.includes("hồng trà") || lowerName.includes("matcha") || lowerName.includes("phô mai") || lowerName.includes("macchiato")) return "MilkTea";
+    if (catVal === "3" || catVal.includes("fruit") || lowerName.includes("chanh") || lowerName.includes("dừa")) return "FruitTea";
+    return "Coffee";
   }
 
-  if (isEmCoffee || isHanHuyen) {
+  if (isEmCoffee) {
     const catVal = String(category || "").trim().toLowerCase();
-    if (catVal.includes("coffee") || lowerName.includes("phê") || lowerName.includes("phin") || lowerName.includes("cà phê")) return "Coffee";
-    if (catVal.includes("fruit") || lowerName.includes("trà đào") || lowerName.includes("trà vải")) return "FruitTea";
-    if (catVal.includes("latte") || catVal.includes("milktea") || lowerName.includes("matcha") || lowerName.includes("cacao")) return "Latte";
+    if (catVal === "1" || catVal.includes("coffee") || lowerName.includes("phin") || lowerName.includes("phindi") || lowerName.includes("cà phê")) return "Coffee";
+    if (catVal === "2" || catVal.includes("fruit") || lowerName.includes("trà vải") || lowerName.includes("trà đào") || lowerName.includes("atiso") || lowerName.includes("dâu")) return "FruitTea";
+    if (catVal === "3" || catVal.includes("latte") || catVal.includes("cacao") || lowerName.includes("cacao") || lowerName.includes("matcha")) return "Latte";
+    return "Coffee";
+  }
+
+  if (isHanHuyen) {
+    const catVal = String(category || "").trim().toLowerCase();
+    if (catVal === "1" || catVal.includes("coffee") || lowerName.includes("phê") || lowerName.includes("phin") || lowerName.includes("cà phê")) return "Coffee";
+    if (catVal === "2" || catVal.includes("fruit") || lowerName.includes("trà đào") || lowerName.includes("trà vải") || lowerName.includes("thanh mát")) return "FruitTea";
+    if (catVal === "3" || catVal.includes("latte") || catVal.includes("milktea") || lowerName.includes("đặc biệt")) return "Latte";
     return "Coffee";
   }
 
@@ -1179,39 +1186,64 @@ export async function authResetPassword({ token, newPassword, confirmPassword })
 export async function restaurantInfoGet() {
   const result = await requestJson(`/api/public/restaurant-info?_t=${Date.now()}`);
   
+  const isTaoTao = TENANT_DOMAIN.toLowerCase().includes("taotao") || TENANT_DOMAIN.toLowerCase().includes("táo tào") || localStorage.getItem("tenant_is_taotao") === "true";
+  const isMonari = TENANT_DOMAIN.toLowerCase().includes("monari") || localStorage.getItem("tenant_is_monari") === "true";
   const isComGa = TENANT_DOMAIN.toLowerCase().includes("comga") || TENANT_DOMAIN.toLowerCase().includes("ongbach") || localStorage.getItem("tenant_is_comga") === "true";
+  const isEmCoffee = TENANT_DOMAIN.toLowerCase().includes("emcoffee") || TENANT_DOMAIN.toLowerCase().includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true";
+  const isHanHuyen = TENANT_DOMAIN.toLowerCase().includes("hanhuyen") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+  const isCochin = TENANT_DOMAIN.toLowerCase().includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
   const isComTam = TENANT_DOMAIN.toLowerCase().includes("comtam") || TENANT_DOMAIN.toLowerCase().includes("comtamno") || localStorage.getItem("tenant_is_comtam") === "true";
   const isSamHouse = TENANT_DOMAIN.toLowerCase().includes("samhouse") || TENANT_DOMAIN.toLowerCase().includes("samhouses") || localStorage.getItem("tenant_is_samhouse") === "true";
   const isMonQuanChat = TENANT_DOMAIN.toLowerCase().includes("monquanchat") || TENANT_DOMAIN.toLowerCase().includes("monquangchat") || localStorage.getItem("tenant_is_monquanchat") === "true";
   const isHoaTeaRoom = TENANT_DOMAIN.toLowerCase().includes("hoatearoom") || TENANT_DOMAIN.toLowerCase().includes("hoatea") || localStorage.getItem("tenant_is_hoatearoom") === "true";
   
-  const defaultMapUrl = isComGa
-    ? "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : (isComTam
-      ? "https://maps.google.com/maps?q=C%C6%A1m%20T%E1%BA%A5m%20Ng%E1%BB%8D%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"
-      : ((isSamHouse || isMonQuanChat)
-          ? "https://maps.google.com/maps?q=%C4%90%C6%B0%E1%BB%9Dng%20GS1%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
-          : (isHoaTeaRoom
-              ? "https://maps.google.com/maps?q=18/2%20%C4%90%C6%B0%E1%BB%9Dng%20s%E1%BB%91%204%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
-              : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed")));
+  const defaultMapUrl = isTaoTao
+    ? "https://maps.google.com/maps?q=102/16+Đường+Lê+Lai,+Ninh+Kiều,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
+    : (isMonari
+      ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+      : (isComGa
+        ? "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
+        : (isEmCoffee
+          ? "https://maps.google.com/maps?q=27+Võ+Văn+Ngân,+Linh+Chiểu,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          : (isHanHuyen
+            ? "https://maps.google.com/maps?q=45+Hàn+Huyên,+Bến+Nghé,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            : (isCochin
+              ? "https://maps.google.com/maps?q=12+Đặng+Dung,+Tân+Định,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              : (isComTam
+                ? "https://maps.google.com/maps?q=C%C6%A1m%20T%E1%BA%A5m%20Ng%E1%BB%8D%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                : ((isSamHouse || isMonQuanChat)
+                    ? "https://maps.google.com/maps?q=%C4%90%C6%B0%E1%BB%9Dng%20GS1%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                    : (isHoaTeaRoom
+                        ? "https://maps.google.com/maps?q=18/2%20%C4%90%C6%B0%E1%BB%9Dng%20s%E1%BB%91%204%20%C4%90%C3%B4ng%20H%C3%B2a%20D%C4%A9%20An%20B%C3%ACnh%20D%C6%B0%C6%A1ng&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                        : "https://maps.google.com/maps?q=Yakishime%20C%E1%BA%A7n%20Th%C6%A1&t=&z=17&ie=UTF8&iwloc=&output=embed"))))))));
 
   if (!result.ok || !result.data) {
     console.warn("Using offline mock data fallback for restaurantInfoGet");
     return {
       ok: true,
       data: {
-        name: isComGa ? "Cơm Gà Ông Bách" : (isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime")))),
-        address: isComGa
-          ? "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam"
-          : (isComTam 
-            ? "106 Đường GS1, Khu Phố Đông Hòa, Dĩ An, Bình Dương" 
-            : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ")))),
-        hotline: isComGa ? "0938 123 789" : (isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173")))),
-        email: isComGa ? "contact@comgaongbach.com" : (isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local")))),
-        openHours: isComGa ? "09:30 – 21:30" : (isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00")))),
+        name: isTaoTao ? "Táo Tào cà phê" : (isMonari ? "MONARI" : (isComGa ? "Cơm Gà Ông Bách" : (isEmCoffee ? "Em Coffee" : (isHanHuyen ? "Quán Nước Hàn Huyên" : (isCochin ? "Cochin Café" : (isComTam ? "Cơm Tấm Ngọ" : (isSamHouse ? "Cafe Sam Houses" : (isMonQuanChat ? "Món Quảng Chất" : (isHoaTeaRoom ? "Hòa Tea Room" : "Yakishime"))))))))),
+        address: isTaoTao
+          ? "102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ, Vietnam"
+          : (isMonari
+            ? "250 Trần Hưng Đạo, Đông Hòa, Hồ Chí Minh, Vietnam"
+            : (isComGa
+              ? "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam"
+              : (isEmCoffee
+                ? "27 Võ Văn Ngân, Linh Chiểu, Thủ Đức, TP.HCM"
+                : (isHanHuyen
+                  ? "45/3 Hàn Huyên, Bến Nghé, Quận 1, TP.HCM"
+                  : (isCochin
+                    ? "12 Đặng Dung, Tân Định, Quận 1, TP.HCM"
+                    : (isComTam 
+                      ? "106 Đường GS1, Khu Phố Đông Hòa, Dĩ An, Bình Dương" 
+                      : (isSamHouse ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isMonQuanChat ? "Đường GS1, Đông Hòa, Dĩ An, Bình Dương" : (isHoaTeaRoom ? "18/2 Đường số 4, Đông Hòa, Dĩ An, Bình Dương" : "57 Nguyễn Cư Trinh, Thới Bình, Ninh Kiều, Cần Thơ"))))))))),
+        hotline: isTaoTao ? "0901 234 567" : (isMonari ? "0908 123 456" : (isComGa ? "0938 123 789" : (isEmCoffee ? "0909 333 444" : (isHanHuyen ? "0912 555 666" : (isCochin ? "0934 777 888" : (isComTam ? "0338353868" : (isSamHouse ? "0762 801 234" : (isMonQuanChat ? "0907 888 999" : (isHoaTeaRoom ? "0356 789 012" : "0945781173"))))))))),
+        email: isTaoTao ? "contact@taotaocafe.vn" : (isMonari ? "contact@monari.vn" : (isComGa ? "contact@comgaongbach.com" : (isEmCoffee ? "contact@emcoffee.vn" : (isHanHuyen ? "contact@hanhuyen.vn" : (isCochin ? "contact@cochin.vn" : (isComTam ? "comtamno@gmail.com" : (isSamHouse ? "cafesamhouse@gmail.com" : (isMonQuanChat ? "monquanchat@gmail.com" : (isHoaTeaRoom ? "contact@hoatearoom.vn" : "hello@yakicafe.local"))))))))),
+        openHours: isTaoTao ? "07:00 – 22:30" : (isMonari ? "07:30 – 22:30" : (isComGa ? "09:30 – 21:30" : (isEmCoffee ? "07:00 – 22:00" : (isHanHuyen ? "06:30 – 22:00" : (isCochin ? "07:30 – 22:30" : (isComTam ? "07:00 – 14:00" : (isSamHouse ? "07:30 – 22:00" : (isMonQuanChat ? "10:00 – 22:00" : (isHoaTeaRoom ? "08:30 – 22:00" : "08:00 - 22:00"))))))))),
         mapEmbedUrl: defaultMapUrl,
-        themeColor: isComGa ? "#D97706" : (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F")))),
-        logo: isComGa ? "/assets/comgaongbach/decor/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg"))))
+        themeColor: isTaoTao ? "#C86828" : (isMonari ? "#C86D51" : (isComGa ? "#D97706" : (isEmCoffee ? "#8B5A2B" : (isHanHuyen ? "#618269" : (isCochin ? "#2A5944" : (isComTam ? "#E07B39" : (isSamHouse ? "#8B4513" : (isMonQuanChat ? "#8B1A1A" : (isHoaTeaRoom ? "#1E4620" : "#2D6A4F"))))))))),
+        logo: isTaoTao ? "/assets/taotao/logo.jpg" : (isMonari ? "/assets/monari/decor/logo.png" : (isComGa ? "/assets/comgaongbach/decor/logo.png" : (isEmCoffee ? "/assets/emcoffee/logo.jpg" : (isHanHuyen ? "/assets/hanhuyen/Logo.jpg" : (isCochin ? "/assets/cochin/logo.png" : (isComTam ? "/assets/comtamno/logo.jpg" : (isSamHouse ? "/assets/samhouse/decor/logo.png" : (isMonQuanChat ? "/assets/monquanchat/decor/logo.png" : (isHoaTeaRoom ? "/assets/hoatearoom/decor/logo.png" : "/assets/images/logo.jpg")))))))))
       }
     };
   }
@@ -1626,7 +1658,7 @@ function getMockMenuItems() {
         id: "tt1",
         name: "Cà phê kem muối",
         price: 35000,
-        category: "Traditional",
+        category: "Coffee",
         imageUrl: "/assets/taotao/dishes/ca_phe_kem_muoi.jpg",
         description: "Cà phê Robusta thơm đậm kết hợp lớp kem muối sánh ngậy béo mặn đặc trưng quán Táo Tào.",
         tag: "signature"
@@ -1635,7 +1667,7 @@ function getMockMenuItems() {
         id: "tt2",
         name: "Trà sữa Ô Long phô mai",
         price: 42000,
-        category: "Latte",
+        category: "MilkTea",
         imageUrl: "/assets/taotao/dishes/tra_sua_olong_pho_mai.jpg",
         description: "Trà ô long đậm vị kết hợp phô mai tươi béo ngậy thơm lừng khó cưỡng.",
         tag: "best_seller"
@@ -1644,7 +1676,7 @@ function getMockMenuItems() {
         id: "tt3",
         name: "Hồng trà phô mai",
         price: 38000,
-        category: "Latte",
+        category: "MilkTea",
         imageUrl: "/assets/taotao/dishes/hong_tra_pho_mai.jpg",
         description: "Hồng trà thanh ngọt dịu mát quyện cùng lớp kem phô mai béo mịn màng.",
         tag: "trending"
@@ -1653,7 +1685,7 @@ function getMockMenuItems() {
         id: "tt4",
         name: "Chanh leo dừa non",
         price: 39000,
-        category: "Traditional",
+        category: "FruitTea",
         imageUrl: "/assets/taotao/dishes/chanh_leo_dua_non.jpg",
         description: "Vị chua ngọt thanh mát giải nhiệt từ chanh leo kết hợp cùi dừa non tươi giòn sần sật.",
         tag: "signature"
@@ -1662,7 +1694,7 @@ function getMockMenuItems() {
         id: "tt5",
         name: "Matcha nhài Macchiato",
         price: 45000,
-        category: "Latte",
+        category: "MilkTea",
         imageUrl: "/assets/taotao/dishes/matcha_nhai_machiato.jpg",
         description: "Matcha Nhật Bản thơm ngát hương hoa nhài thanh tao kết hợp kem Macchiato bồng bềnh béo dịu.",
         tag: "best_seller"

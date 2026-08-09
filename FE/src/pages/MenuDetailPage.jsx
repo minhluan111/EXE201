@@ -383,7 +383,7 @@ export default function MenuDetailPage() {
                     color: "#FFD700", fontSize: 13, fontWeight: 700,
                     boxShadow: "var(--shadow-sm)", zIndex: 10
                   }}>
-                    🎁 Combo Ưu Đãi (Click để chuyển ảnh)
+                    🎁 Combo Ưu Đãi
                   </div>
                 ) : badge && (
                   <div style={{

@@ -215,26 +215,26 @@ const COM_GA_GALLERY = [
 ];
 
 const TAOTAO_GALLERY = [
-  { url: "/assets/taotao/decor/k_gian.jpg", h: 280, label: "Không gian quán ấm cúng Táo Tào" },
-  { url: "/assets/taotao/decor/k_gian_1.jpg", h: 220, label: "Góc ban công thoáng mát" },
-  { url: "/assets/taotao/decor/k_gian_2.jpg", h: 260, label: "Bàn sofa êm ái trò chuyện" },
-  { url: "/assets/taotao/decor/ko_gian_quan.jpg", h: 240, label: "Quầy pha chế chuyên nghiệp" },
-  { url: "/assets/taotao/decor/ko_gian_quan_1.jpg", h: 280, label: "Khu vực ngoài trời xanh mát" },
-  { url: "/assets/taotao/decor/ko_gian_quan_2.jpg", h: 230, label: "Góc check-in Táo Tào" },
+  { url: "/assets/taotao/decor/k_gian.jpg", h: 280, label: "Góc hoài niệm" },
+  { url: "/assets/taotao/decor/k_gian_1.jpg", h: 220, label: "Mái ngói xưa" },
+  { url: "/assets/taotao/decor/k_gian_2.jpg", h: 260, label: "Góc xưa" },
+  { url: "/assets/taotao/decor/ko_gian_quan.jpg", h: 240, label: "Không gian quán" },
+  { url: "/assets/taotao/decor/ko_gian_quan_1.jpg", h: 280, label: "Không gian quán" },
+  { url: "/assets/taotao/decor/ko_gian_quan_2.jpg", h: 230, label: "Không gian quán" },
 ];
 
 const EM_COFFEE_GALLERY = [
-  { url: "/assets/emcoffee/decor/space_1.jpg", h: 280, label: "Không gian tầng trệt xanh mát" },
-  { url: "/assets/emcoffee/decor/space_2.jpg", h: 230, label: "Góc bàn làm việc yên tĩnh" },
-  { url: "/assets/emcoffee/decor/space_3.jpg", h: 260, label: "Góc cửa sổ đón nắng tự nhiên" },
-  { url: "/assets/emcoffee/decor/space_4.jpg", h: 240, label: "Quầy bar cà phê hiện đại" },
-  { url: "/assets/emcoffee/decor/space_5.jpg", h: 280, label: "Góc đọc sách thư giãn" },
-  { url: "/assets/emcoffee/decor/space_6.jpg", h: 230, label: "Không gian check-in Em Coffee" },
+  { url: "/assets/emcoffee/decor/space_1.jpg", h: 280, label: "Em coffee đón bạn" },
+  { url: "/assets/emcoffee/decor/space_2.jpg", h: 230, label: "Các món nước" },
+  { url: "/assets/emcoffee/decor/space_3.jpg", h: 260, label: "Không gian bàn trong nhà" },
+  { url: "/assets/emcoffee/decor/space_4.jpg", h: 240, label: "Không gian quán" },
+  { url: "/assets/emcoffee/decor/space_5.jpg", h: 280, label: "Góc ngoài trời" },
+  { url: "/assets/emcoffee/decor/space_6.jpg", h: 230, label: "Không gian trong quán" },
 ];
 
 const HAN_HUYEN_GALLERY = [
-  { url: "/assets/hanhuyen/decor/Ko gian(1).jpg", h: 280, label: "Góc sân vườn hoài niệm" },
-  { url: "/assets/hanhuyen/decor/Ko gian(2).jpg", h: 230, label: "Bàn sofa gỗ ấm cúng" },
+  { url: "/assets/hanhuyen/decor/Ko gian(1).jpg", h: 280, label: "Góc tường hoài niệm" },
+  { url: "/assets/hanhuyen/decor/Ko gian(2).jpg", h: 230, label: "Không gian lối đi" },
   { url: "/assets/hanhuyen/decor/Ko gian(3).jpg", h: 260, label: "Góc nhỏ tĩnh lặng" },
   { url: "/assets/hanhuyen/decor/Ko gian(4).jpg", h: 240, label: "Ban công lộng gió ngắm phố" },
   { url: "/assets/hanhuyen/decor/Ko gian(5).jpg", h: 280, label: "Không gian hàn huyên tâm tình" },
@@ -242,11 +242,11 @@ const HAN_HUYEN_GALLERY = [
 ];
 
 const COCHIN_GALLERY = [
-  { url: "/assets/cochin/decor/Ko gian(1).jpg", h: 280, label: "Không gian nhà kính Bistro" },
-  { url: "/assets/cochin/decor/Ko gian(2).jpg", h: 230, label: "Góc bàn tiệc ngoài trời thoáng đãng" },
-  { url: "/assets/cochin/decor/Ko gian(3).jpg", h: 270, label: "Khu vực quầy bar sang trọng" },
-  { url: "/assets/cochin/decor/Ko gian(4).jpg", h: 240, label: "Góc check-in cây xanh tươi mát" },
-  { url: "/assets/cochin/decor/Ko gian(5).jpg", h: 280, label: "Bàn sofa êm dịu thư thái" },
+  { url: "/assets/cochin/decor/Ko gian(1).jpg", h: 280, label: "Không gian xanh" },
+  { url: "/assets/cochin/decor/Ko gian(2).jpg", h: 230, label: "Không gian quán" },
+  { url: "/assets/cochin/decor/Ko gian(3).jpg", h: 270, label: "Không gian cây xanh" },
+  { url: "/assets/cochin/decor/Ko gian(4).jpg", h: 240, label: "Không gian cây xanh" },
+  { url: "/assets/cochin/decor/Ko gian(5).jpg", h: 280, label: "Bàn ngoài trời thoáng mát" },
   { url: "/assets/cochin/decor/Ko gian(6).jpg", h: 240, label: "Góc cửa sổ đón nắng" },
 ];
 

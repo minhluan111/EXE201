@@ -13,22 +13,42 @@
         const storedIsMonQuanChat = localStorage.getItem("tenant_is_monquanchat") === "true";
         const storedIsHoaTeaRoom = localStorage.getItem("tenant_is_hoatearoom") === "true";
 
+        const isTaoTao = host.includes("taotao") || host.includes("táo tào") || localStorage.getItem("tenant_is_taotao") === "true";
         const isMonari = host.includes("monari") || storedIsMonari;
         const isComGa = host.includes("comga") || host.includes("ông bách") || host.includes("ong bach") || storedIsComGa;
+        const isEmCoffee = host.includes("emcoffee") || host.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true";
+        const isHanHuyen = host.includes("hanhuyen") || host.includes("hàn huyên") || localStorage.getItem("tenant_is_hanhuyen") === "true";
+        const isCochin = host.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true";
         const isComTam = host.includes("comtam") || storedIsComTam;
         const isSamHouse = host.includes("samhouse") || storedIsSamHouse;
         const isMonQuanChat = host.includes("quang") || host.includes("monquanchat") || storedIsMonQuanChat;
         const isHoaTeaRoom = host.includes("hoa") || host.includes("hoatearoom") || storedIsHoaTeaRoom;
 
         const fav = document.getElementById("favicon-link");
-        if (isMonari) {
+        if (isTaoTao) {
+          document.title = "Táo Tào cà phê";
+          document.documentElement.setAttribute('data-tenant', 'taotao');
+          if (fav) { fav.href = "/assets/taotao/logo.jpg"; fav.type = "image/jpeg"; }
+        } else if (isMonari) {
           document.title = "MONARI";
           document.documentElement.setAttribute('data-tenant', 'monari');
           if (fav) { fav.href = "/assets/monari/decor/logo.png"; fav.type = "image/png"; }
         } else if (isComGa) {
           document.title = "Cơm Gà Ông Bách";
           document.documentElement.setAttribute('data-tenant', 'comga');
-          if (fav) { fav.href = "/assets/comgaongbach/decor/logo.jpg"; fav.type = "image/jpeg"; }
+          if (fav) { fav.href = "/assets/comgaongbach/decor/logo.png"; fav.type = "image/png"; }
+        } else if (isEmCoffee) {
+          document.title = "Em Coffee";
+          document.documentElement.setAttribute('data-tenant', 'emcoffee');
+          if (fav) { fav.href = "/assets/emcoffee/logo.jpg"; fav.type = "image/jpeg"; }
+        } else if (isHanHuyen) {
+          document.title = "Quán Nước Hàn Huyên";
+          document.documentElement.setAttribute('data-tenant', 'hanhuyen');
+          if (fav) { fav.href = "/assets/hanhuyen/Logo.jpg"; fav.type = "image/jpeg"; }
+        } else if (isCochin) {
+          document.title = "Cochin Café";
+          document.documentElement.setAttribute('data-tenant', 'cochin');
+          if (fav) { fav.href = "/assets/cochin/logo.png"; fav.type = "image/png"; }
         } else if (isComTam) {
           document.title = "Cơm Tấm Ngọ";
           document.documentElement.setAttribute('data-tenant', 'comtam');

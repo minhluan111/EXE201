@@ -99,7 +99,7 @@ export function TenantProvider({ children }) {
         if (isTaoTao) {
           normalizedData.name = "Táo Tào cà phê";
           normalizedData.logo = "/assets/taotao/logo.jpg";
-          if (!normalizedData.address) normalizedData.address = "32A Thống Nhất, P. 10, Gò Vấp, TP.HCM";
+          if (!normalizedData.address) normalizedData.address = "102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ, Vietnam";
         } else if (isMonari) {
           normalizedData.name = "MONARI";
           normalizedData.logo = "/assets/monari/decor/logo.png";
@@ -130,7 +130,7 @@ export function TenantProvider({ children }) {
           if (!normalizedData.address) normalizedData.address = "45/3 Hàn Huyên, Bến Nghé, Quận 1, TP.HCM";
         } else if (isCochin) {
           normalizedData.name = "Cochin Café";
-          normalizedData.logo = "/assets/cochin/logo.jpg";
+          normalizedData.logo = "/assets/cochin/logo.png";
           if (!normalizedData.address) normalizedData.address = "12 Đặng Dung, Tân Định, Quận 1, TP.HCM";
         } else if (isHoaTeaRoom) {
           normalizedData.name = "Hòa Tea Room";
@@ -145,10 +145,15 @@ export function TenantProvider({ children }) {
         setTenant(normalizedData);
         document.title = normalizedData.name;
 
-        const favicon = document.querySelector("link[rel*='icon']");
-        if (favicon && normalizedData.logo) {
+        let favicon = document.querySelector("link[rel*='icon']");
+        if (!favicon) {
+          favicon = document.createElement("link");
+          favicon.rel = "icon";
+          document.head.appendChild(favicon);
+        }
+        if (normalizedData.logo) {
           favicon.href = normalizedData.logo;
-          if (isMonari) favicon.type = "image/png";
+          favicon.type = normalizedData.logo.endsWith(".png") ? "image/png" : "image/jpeg";
         }
 
       } catch (err) {
@@ -175,7 +180,7 @@ export function TenantProvider({ children }) {
             name: "Táo Tào cà phê",
             tenantName: "taotao",
             logo: "/assets/taotao/logo.jpg",
-            address: "32A Thống Nhất, P. 10, Gò Vấp, TP.HCM",
+            address: "102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ, Vietnam",
             hotline: "0901 234 567",
             email: "contact@taotaocafe.vn",
             openHours: "07:00 – 22:30",

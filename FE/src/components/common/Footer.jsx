@@ -44,7 +44,7 @@ export default function Footer() {
 
   const brandName = tenant?.name || "Quán";
   const brandDesc = isTaoTao
-    ? "Tiệm cà phê ấm cúng mang đến hương vị cà phê kem muối béo ngậy đặc trưng, trà phô mai sánh mịn và các món trà trái cây tươi ngọt lành tại Gò Vấp, Hồ Chí Minh."
+    ? "Tiệm cà phê ấm cúng mang đến hương vị cà phê kem muối béo ngậy đặc trưng, trà phô mai sánh mịn và các món trà trái cây dừa non tươi ngọt lành tại 102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ."
     : isMonari
     ? "Tiệm trà và bánh ngọt thủ công với set bánh trung thu cao cấp, coco matcha tươi mát, nước dừa quế hoa và không gian ấm cúng thư thái tại Đông Hòa, Hồ Chí Minh."
     : isComGa
@@ -66,10 +66,10 @@ export default function Footer() {
     : "Quán matcha cao cấp mang triết lý trà đạo Nhật Bản đến với Cần Thơ. Từng tách trà là một hành trình tĩnh tại và thiền định.";
 
   const infoItems = [
-    { icon: MapPin, text: tenant?.address || "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam" },
-    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || "09:30 – 21:30"}\nMỗi ngày trong tuần` },
-    { icon: Phone,  text: tenant?.hotline || "0938 123 789" },
-    { icon: Mail,   text: tenant?.email || "contact@comgaongbach.com" },
+    { icon: MapPin, text: tenant?.address || (isTaoTao ? "102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ, Vietnam" : "146 Đường GS1, Đông Hòa, Hồ Chí Minh, Vietnam") },
+    { icon: Clock,  text: `Mở cửa: ${tenant?.openHours || (isTaoTao ? "07:00 – 22:30" : "09:30 – 21:30")}\nMỗi ngày trong tuần` },
+    { icon: Phone,  text: tenant?.hotline || (isTaoTao ? "0901 234 567" : "0938 123 789") },
+    { icon: Mail,   text: tenant?.email || (isTaoTao ? "contact@taotaocafe.vn" : "contact@restaurant.com") },
   ];
 
   const watermarkEmoji = isTaoTao ? "🍎" :

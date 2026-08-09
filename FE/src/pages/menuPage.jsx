@@ -19,16 +19,16 @@ const MATCHA_CATEGORIES = [
 
 const TAOTAO_CATEGORIES = [
   { key: "all",        label: "Tất cả",               emoji: "🍎" },
-  { key: "Traditional",label: "Cà Phê & Kem Muối",    emoji: "☕" },
-  { key: "Latte",      label: "Trà Sữa & Kem Phô Mai", emoji: "🧀" },
-  { key: "Desserts",   label: "Tráng Miệng",          emoji: "🍰" },
+  { key: "Coffee",     label: "Cà phê & Kem muối",    emoji: "☕" },
+  { key: "MilkTea",    label: "Trà sữa & Phô mai",    emoji: "🧀" },
+  { key: "FruitTea",   label: "Trà trái cây & Dừa non", emoji: "🥥" },
 ];
 
 const EM_COFFEE_CATEGORIES = [
   { key: "all",        label: "Tất cả",              emoji: "☕" },
-  { key: "Coffee",     label: "Cà Phê Phin & Phindi", emoji: "☕" },
-  { key: "FruitTea",   label: "Trà Hoa & Trái Cây",   emoji: "🍃" },
-  { key: "Latte",      label: "Cacao & Sữa Tươi",     emoji: "🥛" },
+  { key: "Coffee",     label: "Cà phê & Phindi",     emoji: "☕" },
+  { key: "FruitTea",   label: "Trà hoa & Trái cây",   emoji: "🍃" },
+  { key: "Latte",      label: "Matcha & Cacao Latte", emoji: "🥛" },
 ];
 
 const HAN_HUYEN_CATEGORIES = [
