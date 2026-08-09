@@ -181,6 +181,149 @@ html.dark[data-tenant="monquanchat"] {
   --glass-border: rgba(139, 26, 26, 0.20);
 }
 
+html[data-tenant="emcoffee"] {
+  --matcha:       #8B5A2B;
+  --matcha-light: #A76D36;
+  --matcha-dark:  #5E3B1B;
+  --forest:       #6F4E37;
+  --forest-dark:  #4A3324;
+  --bg:           #FAF7F2;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #F2EBE1;
+  --cream:        #E8DDD0;
+  --text:         #221812;
+  --text-muted:   #735F53;
+  --text-light:   #A69488;
+  --border:       rgba(139, 90, 43, 0.18);
+  --glass-bg:     rgba(250, 247, 242, 0.75);
+  --glass-border: rgba(139, 90, 43, 0.20);
+}
+
+html.dark[data-tenant="emcoffee"] {
+  --matcha:       #D4A373;
+  --matcha-light: #E6BE94;
+  --matcha-dark:  #B08050;
+  --forest:       #C59465;
+  --forest-dark:  #4A3324;
+  --bg:           #120E0B;
+  --bg-card:      #1A1410;
+  --bg-alt:       #241D17;
+  --cream:        #2F241C;
+  --text:         #F7F2EC;
+  --text-muted:   #BCABA0;
+  --text-light:   #8C7D73;
+  --border:       rgba(212, 163, 115, 0.18);
+  --glass-bg:     rgba(18, 14, 11, 0.85);
+  --glass-border: rgba(212, 163, 115, 0.20);
+}
+
+html[data-tenant="taotao"] {
+  --matcha:       #721C16;
+  --matcha-light: #9B2E22;
+  --matcha-dark:  #4A120E;
+  --forest:       #4A120E;
+  --forest-dark:  #2D0B08;
+  --bg:           #F9F5F4;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #F2E8E6;
+  --cream:        #EADCD9;
+  --text:         #2A1C1B;
+  --text-muted:   #7E6360;
+  --text-light:   #B39996;
+  --border:       rgba(114, 28, 22, 0.18);
+  --glass-bg:     rgba(249, 245, 244, 0.75);
+  --glass-border: rgba(114, 28, 22, 0.20);
+}
+
+html.dark[data-tenant="taotao"] {
+  --matcha:       #9B2E22;
+  --matcha-light: #B53629;
+  --matcha-dark:  #721C16;
+  --forest:       #721C16;
+  --forest-dark:  #4A120E;
+  --bg:           #150D0C;
+  --bg-card:      #1F1312;
+  --bg-alt:       #281817;
+  --cream:        #33201E;
+  --text:         #F7EFEF;
+  --text-muted:   #B89C99;
+  --text-light:   #8A6E6A;
+  --border:       rgba(155, 46, 34, 0.18);
+  --glass-bg:     rgba(21, 13, 12, 0.85);
+  --glass-border: rgba(155, 46, 34, 0.20);
+}
+
+html[data-tenant="hanhuyen"] {
+  --matcha:       #618269;
+  --matcha-light: #7A9D83;
+  --matcha-dark:  #45634D;
+  --forest:       #45634D;
+  --forest-dark:  #2E4534;
+  --bg:           #F7F9F6;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #EDF2EA;
+  --cream:        #E2E8DF;
+  --text:         #2B332C;
+  --text-muted:   #6C7D70;
+  --text-light:   #A1B3A6;
+  --border:       rgba(97, 130, 105, 0.18);
+  --glass-bg:     rgba(247, 249, 246, 0.75);
+  --glass-border: rgba(97, 130, 105, 0.20);
+}
+
+html.dark[data-tenant="hanhuyen"] {
+  --matcha:       #7A9D83;
+  --matcha-light: #94B89D;
+  --matcha-dark:  #618269;
+  --forest:       #618269;
+  --forest-dark:  #45634D;
+  --bg:           #141A16;
+  --bg-card:      #1C241E;
+  --bg-alt:       #242E27;
+  --cream:        #2E3B32;
+  --text:         #F0F4F1;
+  --text-muted:   #A3B8A8;
+  --text-light:   #758C7A;
+  --border:       rgba(122, 157, 131, 0.18);
+  --glass-bg:     rgba(20, 26, 22, 0.85);
+  --glass-border: rgba(122, 157, 131, 0.20);
+}
+
+html[data-tenant="cochin"] {
+  --matcha:       #2A5944;
+  --matcha-light: #C88A3E;
+  --matcha-dark:  #1B3D2E;
+  --forest:       #19382A;
+  --forest-dark:  #0F241B;
+  --bg:           #F8F9F6;
+  --bg-card:      #FFFFFF;
+  --bg-alt:       #EEF2EC;
+  --cream:        #E2E8DF;
+  --text:         #1E2B24;
+  --text-muted:   #5C7065;
+  --text-light:   #92A69B;
+  --border:       rgba(42, 89, 68, 0.16);
+  --glass-bg:     rgba(248, 249, 246, 0.75);
+  --glass-border: rgba(42, 89, 68, 0.18);
+}
+
+html.dark[data-tenant="cochin"] {
+  --matcha:       #4E8A6D;
+  --matcha-light: #E0A96D;
+  --matcha-dark:  #2A5944;
+  --forest:       #386B54;
+  --forest-dark:  #1B3D2E;
+  --bg:           #0F1813;
+  --bg-card:      #16241C;
+  --bg-alt:       #1E3026;
+  --cream:        #263B30;
+  --text:         #EDF4F0;
+  --text-muted:   #9AB3A5;
+  --text-light:   #688273;
+  --border:       rgba(78, 138, 109, 0.20);
+  --glass-bg:     rgba(15, 24, 19, 0.85);
+  --glass-border: rgba(78, 138, 109, 0.22);
+}
 /* ─────────────────────────────────────────────
    BASE
 ───────────────────────────────────────────── */

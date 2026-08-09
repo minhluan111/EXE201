@@ -31,6 +31,14 @@ export default function ProtectedRoute({ children, roleRequired }) {
   if (roleRequired === "staff_or_manager" && user.role !== "staff" && user.role !== "manager") {
     return <Navigate to="/" replace />;
   }
+
+  if (
+    (roleRequired === "admin_or_manager" || roleRequired === "manager_or_admin") &&
+    user.role !== "admin" &&
+    user.role !== "manager"
+  ) {
+    return <Navigate to="/" replace />;
+  }
   
   return children;
 }

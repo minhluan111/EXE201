@@ -9,6 +9,7 @@ import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import muiTheme from "./theme/muiTheme.js";
 import { useAuth } from "./context/AuthContext.jsx";
+import DevTenantSwitcher from "./components/common/DevTenantSwitcher.jsx";
 import "./index.css";
 
 function ScrollToTop() {
@@ -82,6 +83,7 @@ function Layout() {
       </main>
       {!isRestricted && <Footer />}
       {showChatBubble && <FloatingChatBubble />}
+      <DevTenantSwitcher />
     </>
   );
 }

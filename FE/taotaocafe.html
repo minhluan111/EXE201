@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link id="favicon-link" rel="icon" type="image/jpeg" href="/assets/taotao/logo.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Táo Tào cà phê</title>
+    <meta property="og:title" content="Táo Tào cà phê" />
+    <meta property="og:image" content="/assets/taotao/logo.jpg" />
+    <script>
+      (function() {
+        const fav = document.getElementById("favicon-link");
+        document.title = "Táo Tào cà phê";
+        document.documentElement.setAttribute('data-tenant', 'taotao');
+        if (fav) fav.href = "/assets/taotao/logo.jpg";
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
