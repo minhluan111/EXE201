@@ -5,7 +5,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*)(thocoffee|tho)(.*)"
+          "value": "(.*)(thocoffee|tho|artisan)(.*)"
         }
       ],
       "destination": "/tho.html"
@@ -15,10 +15,50 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*)(taotao|taotaocafe)(.*)"
+          "value": "(.*)(taotao|taotaocafe|taotaocoffee)(.*)"
         }
       ],
       "destination": "/taotao.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(cochin|cochincafe|cochin-cafe)(.*)"
+        }
+      ],
+      "destination": "/cochin.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(emcoffee|em-coffee)(.*)"
+        }
+      ],
+      "destination": "/emcoffee.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(hanhuyen|han-huyen|quannuochanhuyen)(.*)"
+        }
+      ],
+      "destination": "/hanhuyen.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(comga|ongbach|comgaongbach|comga-ongbach)(.*)"
+        }
+      ],
+      "destination": "/comga.html"
     },
     {
       "source": "/(.*)",
@@ -35,47 +75,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*)(comga|ongbach)(.*)"
-        }
-      ],
-      "destination": "/comga.html"
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*)emcoffee(.*)"
-        }
-      ],
-      "destination": "/emcoffee.html"
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*)hanhuyen(.*)"
-        }
-      ],
-      "destination": "/hanhuyen.html"
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*)cochin(.*)"
-        }
-      ],
-      "destination": "/cochin.html"
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*)comtam(.*)"
+          "value": "(.*)(comtam|com-tam|comtamno)(.*)"
         }
       ],
       "destination": "/comtam.html"
@@ -85,7 +85,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*)samhouse(.*)"
+          "value": "(.*)(samhouse|sam-house|samhouses)(.*)"
         }
       ],
       "destination": "/samhouse.html"
@@ -95,7 +95,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*)(quang|monquanchat)(.*)"
+          "value": "(.*)(quang|monquanchat|mon-quan-chat)(.*)"
         }
       ],
       "destination": "/monquanchat.html"
@@ -105,7 +105,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*)hoa(.*)"
+          "value": "(.*)(hoa|hoatearoom|hoa-tea-room)(.*)"
         }
       ],
       "destination": "/hoatearoom.html"

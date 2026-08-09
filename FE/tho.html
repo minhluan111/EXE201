@@ -4,17 +4,29 @@
     <meta charset="UTF-8" />
     <link id="favicon-link" rel="icon" type="image/png" href="/assets/thocoffee/decor/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>THÔ'S Artisan Coffee</title>
+    <title>THÔ'S Artisan Coffee · Cà Phê Thủ Công & Bánh Nướng</title>
+    <meta name="description" content="Không gian Wabi-Sabi mộc mạc tại 254 Đặng Văn Bi, Thủ Đức. Thưởng thức Cold Brew, Cà phê kem muối và bánh nướng tươi ngon." />
+
+    <!-- Open Graph / Facebook / Zalo / Messenger -->
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="THÔ'S Artisan Coffee" />
+    <meta property="og:description" content="Không gian Wabi-Sabi mộc mạc tại 254 Đặng Văn Bi, Thủ Đức. Thưởng thức Cold Brew, Cà phê kem muối và bánh nướng tươi ngon." />
     <meta property="og:image" content="/assets/thocoffee/decor/logo.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="THÔ'S Artisan Coffee" />
+    <meta name="twitter:description" content="Không gian Wabi-Sabi mộc mạc tại 254 Đặng Văn Bi, Thủ Đức. Thưởng thức Cold Brew, Cà phê kem muối và bánh nướng tươi ngon." />
+    <meta name="twitter:image" content="/assets/thocoffee/decor/logo.png" />
+
     <script>
       (function() {
-        document.title = "THÔ'S Artisan Coffee";
+        document.title = "THÔ'S Artisan Coffee · Cà Phê Thủ Công & Bánh Nướng";
         document.documentElement.setAttribute('data-tenant', 'thocoffee');
-        localStorage.setItem("tenant_is_tho", "true");
-        localStorage.setItem("dev_tenant_domain", "thocoffee.localhost");
-        const fav = document.getElementById("favicon-link");
-        if (fav) { fav.href = "/assets/thocoffee/decor/logo.png"; fav.type = "image/png"; }
+        localStorage.setItem('tenant_is_thocoffee', 'true');
+        localStorage.setItem('dev_tenant_domain', 'thocoffee.localhost');
+        const fav = document.getElementById('favicon-link');
+        if (fav) { fav.href = '/assets/thocoffee/decor/logo.png'; fav.type = 'image/png'; }
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />

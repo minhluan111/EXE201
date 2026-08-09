@@ -4,21 +4,35 @@
     <meta charset="UTF-8" />
     <link id="favicon-link" rel="icon" type="image/jpeg" href="/assets/taotao/logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Táo Tào cà phê</title>
+    <title>Táo Tào cà phê · Cà Phê Muối & Trà Kem Phô Mai</title>
+    <meta name="description" content="Tiệm cà phê ấm cúng tại 102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ. Cà phê kem muối béo ngậy đặc trưng và trà sữa phô mai." />
+
+    <!-- Open Graph / Facebook / Zalo / Messenger -->
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="Táo Tào cà phê" />
+    <meta property="og:description" content="Tiệm cà phê ấm cúng tại 102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ. Cà phê kem muối béo ngậy đặc trưng và trà sữa phô mai." />
     <meta property="og:image" content="/assets/taotao/logo.jpg" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Táo Tào cà phê" />
+    <meta name="twitter:description" content="Tiệm cà phê ấm cúng tại 102/16 Đ. Lê Lai, Ninh Kiều, Cần Thơ. Cà phê kem muối béo ngậy đặc trưng và trà sữa phô mai." />
+    <meta name="twitter:image" content="/assets/taotao/logo.jpg" />
+
     <script>
       (function() {
-        const fav = document.getElementById("favicon-link");
-        document.title = "Táo Tào cà phê";
+        document.title = "Táo Tào cà phê · Cà Phê Muối & Trà Kem Phô Mai";
         document.documentElement.setAttribute('data-tenant', 'taotao');
-        if (fav) fav.href = "/assets/taotao/logo.jpg";
+        localStorage.setItem('tenant_is_taotao', 'true');
+        localStorage.setItem('dev_tenant_domain', 'taotao.localhost');
+        const fav = document.getElementById('favicon-link');
+        if (fav) { fav.href = '/assets/taotao/logo.jpg'; fav.type = 'image/jpeg'; }
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>

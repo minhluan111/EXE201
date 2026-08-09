@@ -1,9 +1,43 @@
-<!doctype html><html lang="vi">  <head>    <meta charset="UTF-8" />    <link id="favicon-link" rel="icon" type="image/png" href="/assets/hoatearoom/decor/logo.png" />    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    <title>Hòa Tea Room</title>
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link id="favicon-link" rel="icon" type="image/png" href="/assets/hoatearoom/decor/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hòa Tea Room · Trà Thơm & Vẽ Ly Sáng Tạo</title>
+    <meta name="description" content="Không gian thưởng trà thanh tịnh, trà sữa lài thơm ngát cùng trải nghiệm tô vẽ ly gốm thư giãn tại Dĩ An." />
+
+    <!-- Open Graph / Facebook / Zalo / Messenger -->
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="Hòa Tea Room" />
+    <meta property="og:description" content="Không gian thưởng trà thanh tịnh, trà sữa lài thơm ngát cùng trải nghiệm tô vẽ ly gốm thư giãn tại Dĩ An." />
     <meta property="og:image" content="/assets/hoatearoom/decor/logo.png" />
-    <meta property="og:title" content="Yakishime" />
-    <meta property="og:image" content="/assets/images/logo.jpg" />
-    <meta property="og:title" content="Yakishime" />
-    <meta property="og:image" content="/assets/images/logo.jpg" />
-    <meta property="og:title" content="Yakishime" />
-    <meta property="og:image" content="/assets/images/logo.jpg" />    <script>      (function() {        const urlParams = new URLSearchParams(window.location.search);        const tenantQuery = urlParams.get("tenant") || "";        const host = (tenantQuery + " " + window.location.hostname).toLowerCase();        const storedIsComTam = localStorage.getItem("tenant_is_comtam") === "true";        const storedIsSamHouse = localStorage.getItem("tenant_is_samhouse") === "true";        const storedIsMonQuanChat = localStorage.getItem("tenant_is_monquanchat") === "true";        const storedIsHoaTeaRoom = localStorage.getItem("tenant_is_hoatearoom") === "true";        const isComTam = host.includes("comtam") || storedIsComTam;        const isSamHouse = host.includes("samhouse") || storedIsSamHouse;        const isMonQuanChat = host.includes("quang") || host.includes("monquanchat") || storedIsMonQuanChat;        const isHoaTeaRoom = host.includes("hoa") || host.includes("hoatearoom") || storedIsHoaTeaRoom;        const fav = document.getElementById("favicon-link");        if (isComTam) {          document.title = "Cơm Tấm Ngọ";          document.documentElement.setAttribute('data-tenant', 'comtam');          if (fav) fav.href = "/assets/comtamno/logo.jpg";        } else if (isSamHouse) {          document.title = "Sam Houses";          document.documentElement.setAttribute('data-tenant', 'samhouse');          if (fav) fav.href = "/assets/samhouse/decor/logo.png";        } else if (isMonQuanChat) {          document.title = "Món Quảng Chất";          document.documentElement.setAttribute('data-tenant', 'monquanchat');          if (fav) fav.href = "/assets/monquanchat/decor/logo.png";        } else if (isHoaTeaRoom) {          document.title = "Hòa Tea Room";          document.documentElement.setAttribute('data-tenant', 'hoatearoom');          if (fav) fav.href = "/assets/hoatearoom/decor/logo.png";        } else {          document.title = "Yakishime";          document.documentElement.setAttribute('data-tenant', 'matcha');          if (fav) fav.href = "/assets/images/logo.jpg";        }      })();    </script>    <link rel="preconnect" href="https://fonts.googleapis.com" />    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />    <link      href="https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"      rel="stylesheet"    />  </head>  <body>    <div id="root"></div>    <script type="module" src="/src/main.jsx"></script>  </body></html>
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hòa Tea Room" />
+    <meta name="twitter:description" content="Không gian thưởng trà thanh tịnh, trà sữa lài thơm ngát cùng trải nghiệm tô vẽ ly gốm thư giãn tại Dĩ An." />
+    <meta name="twitter:image" content="/assets/hoatearoom/decor/logo.png" />
+
+    <script>
+      (function() {
+        document.title = "Hòa Tea Room · Trà Thơm & Vẽ Ly Sáng Tạo";
+        document.documentElement.setAttribute('data-tenant', 'hoatearoom');
+        localStorage.setItem('tenant_is_hoatearoom', 'true');
+        localStorage.setItem('dev_tenant_domain', 'hoatearoom.localhost');
+        const fav = document.getElementById('favicon-link');
+        if (fav) { fav.href = '/assets/hoatearoom/decor/logo.png'; fav.type = 'image/png'; }
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

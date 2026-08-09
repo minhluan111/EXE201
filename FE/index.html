@@ -1,80 +1,86 @@
-<!doctype html><html lang="vi">  <head>    <meta charset="UTF-8" />    <link id="favicon-link" rel="icon" type="image/png" href="/assets/monari/decor/logo.png" />    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    <title>MONARI</title>
-    <meta property="og:title" content="MONARI" />
-    <meta property="og:image" content="/assets/monari/decor/logo.png" />
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link id="favicon-link" rel="icon" type="image/jpeg" href="/assets/images/logo.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hệ Thống Đặt Bàn & Đặt Món Trực Tuyến</title>
+    <meta name="description" content="Trải nghiệm đặt bàn trực quan trên sơ đồ quán và khám phá menu món ngon phong phú." />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Hệ Thống Đặt Bàn & Đặt Món Trực Tuyến" />
+    <meta property="og:description" content="Trải nghiệm đặt bàn trực quan trên sơ đồ quán và khám phá menu món ngon phong phú." />
+    <meta property="og:image" content="/assets/images/logo.jpg" />
+
     <script>
       (function() {
         const urlParams = new URLSearchParams(window.location.search);
         const tenantQuery = urlParams.get("tenant") || "";
         const host = (tenantQuery + " " + window.location.hostname + " " + window.location.pathname).toLowerCase();
-        const storedIsMonari = localStorage.getItem("tenant_is_monari") === "true";
-        const storedIsComGa = localStorage.getItem("tenant_is_comga") === "true";
-        const storedIsComTam = localStorage.getItem("tenant_is_comtam") === "true";
-        const storedIsSamHouse = localStorage.getItem("tenant_is_samhouse") === "true";
-        const storedIsMonQuanChat = localStorage.getItem("tenant_is_monquanchat") === "true";
-        const storedIsHoaTeaRoom = localStorage.getItem("tenant_is_hoatearoom") === "true";
-        const storedIsTho = localStorage.getItem("tenant_is_tho") === "true";
-
-        const isTho = host.includes("thocoffee") || host.includes("tho") || host.includes("thô") || host.includes("artisan") || storedIsTho;
-        const isTaoTao = !isTho && (host.includes("taotao") || host.includes("táo tào") || localStorage.getItem("tenant_is_taotao") === "true");
-        const isMonari = !isTho && (host.includes("monari") || storedIsMonari);
-        const isComGa = !isTho && (host.includes("comga") || host.includes("ông bách") || host.includes("ong bach") || storedIsComGa);
-        const isEmCoffee = !isTho && (host.includes("emcoffee") || host.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true");
-        const isHanHuyen = !isTho && (host.includes("hanhuyen") || host.includes("hàn huyên") || localStorage.getItem("tenant_is_hanhuyen") === "true");
-        const isCochin = !isTho && (host.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true");
-        const isComTam = !isTho && (host.includes("comtam") || storedIsComTam);
-        const isSamHouse = !isTho && (host.includes("samhouse") || storedIsSamHouse);
-        const isMonQuanChat = !isTho && (host.includes("quang") || host.includes("monquanchat") || storedIsMonQuanChat);
-        const isHoaTeaRoom = !isTho && (host.includes("hoa") || host.includes("hoatearoom") || storedIsHoaTeaRoom);
 
         const fav = document.getElementById("favicon-link");
-        if (isTho) {
-          document.title = "THÔ'S ARTISAN COFFEE";
+
+        if (host.includes("thocoffee") || host.includes("tho") || host.includes("artisan") || localStorage.getItem("tenant_is_thocoffee") === "true") {
+          document.title = "THÔ'S Artisan Coffee · Cà Phê Thủ Công & Bánh Nướng";
           document.documentElement.setAttribute('data-tenant', 'thocoffee');
           if (fav) { fav.href = "/assets/thocoffee/decor/logo.png"; fav.type = "image/png"; }
-        } else if (isTaoTao) {
-          document.title = "Táo Tào cà phê";
+        } else if (host.includes("taotao") || host.includes("táo tào") || localStorage.getItem("tenant_is_taotao") === "true") {
+          document.title = "Táo Tào cà phê · Cà Phê Muối & Trà Kem Phô Mai";
           document.documentElement.setAttribute('data-tenant', 'taotao');
           if (fav) { fav.href = "/assets/taotao/logo.jpg"; fav.type = "image/jpeg"; }
-        } else if (isMonari) {
-          document.title = "MONARI";
-          document.documentElement.setAttribute('data-tenant', 'monari');
-          if (fav) { fav.href = "/assets/monari/decor/logo.png"; fav.type = "image/png"; }
-        } else if (isComGa) {
-          document.title = "Cơm Gà Ông Bách";
-          document.documentElement.setAttribute('data-tenant', 'comga');
-          if (fav) { fav.href = "/assets/comgaongbach/decor/logo.png"; fav.type = "image/png"; }
-        } else if (isEmCoffee) {
-          document.title = "Em Coffee";
-          document.documentElement.setAttribute('data-tenant', 'emcoffee');
-          if (fav) { fav.href = "/assets/emcoffee/logo.jpg"; fav.type = "image/jpeg"; }
-        } else if (isHanHuyen) {
-          document.title = "Quán Nước Hàn Huyên";
-          document.documentElement.setAttribute('data-tenant', 'hanhuyen');
-          if (fav) { fav.href = "/assets/hanhuyen/Logo.jpg"; fav.type = "image/jpeg"; }
-        } else if (isCochin) {
-          document.title = "Cochin Café";
+        } else if (host.includes("cochin") || localStorage.getItem("tenant_is_cochin") === "true") {
+          document.title = "Cochin Café · Bistro Nhà Kính & Trà Thảo Mộc";
           document.documentElement.setAttribute('data-tenant', 'cochin');
           if (fav) { fav.href = "/assets/cochin/logo.png"; fav.type = "image/png"; }
-        } else if (isComTam) {
-          document.title = "Cơm Tấm Ngọ";
+        } else if (host.includes("emcoffee") || host.includes("em") || localStorage.getItem("tenant_is_emcoffee") === "true") {
+          document.title = "Em Coffee · Cà Phê Rang Mộc & Không Gian Xanh";
+          document.documentElement.setAttribute('data-tenant', 'emcoffee');
+          if (fav) { fav.href = "/assets/emcoffee/logo.jpg"; fav.type = "image/jpeg"; }
+        } else if (host.includes("hanhuyen") || host.includes("hàn huyên") || localStorage.getItem("tenant_is_hanhuyen") === "true") {
+          document.title = "Quán Nước Hàn Huyên · Hoài Niệm & Bình Yên";
+          document.documentElement.setAttribute('data-tenant', 'hanhuyen');
+          if (fav) { fav.href = "/assets/hanhuyen/Logo.jpg"; fav.type = "image/jpeg"; }
+        } else if (host.includes("comga") || host.includes("ông bách") || host.includes("ong bach") || localStorage.getItem("tenant_is_comga") === "true") {
+          document.title = "Cơm Gà Ông Bách · Hương Vị Gia Truyền Đậm Đà";
+          document.documentElement.setAttribute('data-tenant', 'comga');
+          if (fav) { fav.href = "/assets/comgaongbach/decor/logo.png"; fav.type = "image/png"; }
+        } else if (host.includes("monari") || localStorage.getItem("tenant_is_monari") === "true") {
+          document.title = "MONARI · Bánh Ngọt Thủ Công & Trà Thơm";
+          document.documentElement.setAttribute('data-tenant', 'monari');
+          if (fav) { fav.href = "/assets/monari/decor/logo.png"; fav.type = "image/png"; }
+        } else if (host.includes("comtam") || localStorage.getItem("tenant_is_comtam") === "true") {
+          document.title = "Cơm Tấm Ngọ · Đậm Đà Vị Quê Hương";
           document.documentElement.setAttribute('data-tenant', 'comtam');
           if (fav) { fav.href = "/assets/comtamno/logo.jpg"; fav.type = "image/jpeg"; }
-        } else if (isSamHouse) {
-          document.title = "Sam Houses";
+        } else if (host.includes("samhouse") || localStorage.getItem("tenant_is_samhouse") === "true") {
+          document.title = "Cafe Sam Houses · Cà Phê & Không Gian Kết Nối";
           document.documentElement.setAttribute('data-tenant', 'samhouse');
           if (fav) { fav.href = "/assets/samhouse/decor/logo.png"; fav.type = "image/png"; }
-        } else if (isMonQuanChat) {
-          document.title = "Món Quảng Chất";
+        } else if (host.includes("quang") || host.includes("monquanchat") || localStorage.getItem("tenant_is_monquanchat") === "true") {
+          document.title = "Món Quảng Chất · Tinh Hoa Ẩm Thực Miền Trung";
           document.documentElement.setAttribute('data-tenant', 'monquanchat');
           if (fav) { fav.href = "/assets/monquanchat/decor/logo.png"; fav.type = "image/png"; }
-        } else if (isHoaTeaRoom) {
-          document.title = "Hòa Tea Room";
+        } else if (host.includes("hoa") || host.includes("hoatearoom") || localStorage.getItem("tenant_is_hoatearoom") === "true") {
+          document.title = "Hòa Tea Room · Trà Thơm & Vẽ Ly Sáng Tạo";
           document.documentElement.setAttribute('data-tenant', 'hoatearoom');
           if (fav) { fav.href = "/assets/hoatearoom/decor/logo.png"; fav.type = "image/png"; }
         } else {
-          document.title = "Yakishime";
+          document.title = "Yakishime · Trà Đạo Zen & Uji Matcha";
           document.documentElement.setAttribute('data-tenant', 'matcha');
           if (fav) { fav.href = "/assets/images/logo.jpg"; fav.type = "image/jpeg"; }
         }
       })();
-    </script>    <link rel="preconnect" href="https://fonts.googleapis.com" />    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />    <link      href="https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"      rel="stylesheet"    />  </head>  <body>    <div id="root"></div>    <script type="module" src="/src/main.jsx"></script>  </body></html>
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
