@@ -133,7 +133,7 @@ export default function DashboardPage() {
           >
             <Grid container spacing={3} sx={{ mb: 6 }}>
               {stats.map((stat, i) => (
-                <Grid item xs={12} sm={6} lg={4} key={i}>
+                <Grid xs={12} sm={6} lg={4} key={i}>
                   <motion.div variants={itemVariants}>
                     <Card
                       sx={{

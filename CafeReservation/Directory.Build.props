@@ -1,7 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <UseArtifactsOutput>true</UseArtifactsOutput>
-    <ArtifactsPath>$(MSBuildThisFileDirectory).artifacts</ArtifactsPath>
-    <RollForward>Major</RollForward>
-  </PropertyGroup>
-</Project>
