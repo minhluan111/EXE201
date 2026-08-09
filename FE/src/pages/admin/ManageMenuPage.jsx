@@ -520,8 +520,8 @@ export default function ManageMenuPage() {
             }}
           >
             <CardContent sx={{ p: 3 }}>
-              <Grid container spacing={2} sx={{ alignItems: "center" }}>
-                <Grid xs={12} sm={6} md={3.5}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={6} md={3.5}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Tìm kiếm món ăn
                   </Typography>
@@ -546,7 +546,7 @@ export default function ManageMenuPage() {
                   />
                 </Grid>
 
-                <Grid xs={12} sm={6} md={2.5}>
+                <Grid item xs={12} sm={6} md={2.5}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Danh mục
                   </Typography>
@@ -573,7 +573,7 @@ export default function ManageMenuPage() {
                   </FormControl>
                 </Grid>
 
-                <Grid xs={12} sm={6} md={2.5}>
+                <Grid item xs={12} sm={6} md={2.5}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Nhãn đặc trưng
                   </Typography>
@@ -600,7 +600,7 @@ export default function ManageMenuPage() {
                   </FormControl>
                 </Grid>
 
-                <Grid xs={12} sm={6} md={2.5}>
+                <Grid item xs={12} sm={6} md={2.5}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Sắp xếp theo
                   </Typography>
@@ -625,7 +625,7 @@ export default function ManageMenuPage() {
                   </FormControl>
                 </Grid>
 
-                <Grid xs={12} sm={12} md={1}>
+                <Grid item xs={12} sm={12} md={1}>
                   <Typography
                     sx={{
                       fontSize: "13px",
@@ -865,7 +865,7 @@ export default function ManageMenuPage() {
             </Box>
 
             <Grid container spacing={2}>
-              <Grid xs={6}>
+              <Grid item xs={6}>
                 <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                   Danh mục
                 </Typography>
@@ -887,7 +887,7 @@ export default function ManageMenuPage() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid xs={6}>
+              <Grid item xs={6}>
                 <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                   Nhãn hiển thị
                 </Typography>
@@ -1300,7 +1300,7 @@ export default function ManageMenuPage() {
                         <AccordionDetails sx={{ p: 1.5 }}>
                           <Grid container spacing={1.5}>
                             {group.items.map((item) => (
-                              <Grid xs={12} sm={6} key={item.id}>
+                              <Grid item xs={12} sm={6} key={item.id}>
                                 <Box
                                   onClick={() => {
                                     const newSelected = { ...comboData.selectedItems };

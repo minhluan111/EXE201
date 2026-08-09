@@ -250,8 +250,8 @@ export default function ManageTablesPage() {
             }}
           >
             <CardContent sx={{ p: 3 }}>
-              <Grid container spacing={2} sx={{ alignItems: "center" }}>
-                <Grid xs={12} sm={6} md={4}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={6} md={4}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Tìm kiếm loại bàn / đặc điểm
                   </Typography>
@@ -276,7 +276,7 @@ export default function ManageTablesPage() {
                   />
                 </Grid>
 
-                <Grid xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={3}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Khu vực
                   </Typography>
@@ -303,7 +303,7 @@ export default function ManageTablesPage() {
                   </FormControl>
                 </Grid>
 
-                <Grid xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={3}>
                   <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8 }}>
                     Sắp xếp theo
                   </Typography>
@@ -328,7 +328,7 @@ export default function ManageTablesPage() {
                   </FormControl>
                 </Grid>
 
-                <Grid xs={12} sm={6} md={2}>
+                <Grid item xs={12} sm={6} md={2}>
                   <Typography
                     sx={{
                       fontSize: "13px",
@@ -507,7 +507,7 @@ export default function ManageTablesPage() {
                       </Typography>
 
                       <Grid container spacing={2} sx={{ pt: 2, borderTop: "1px solid var(--border)" }}>
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                           <Box sx={{ textAlign: "center", p: 1.5, borderRadius: 3, bgcolor: "var(--bg-alt)" }}>
                             <Typography sx={{ fontSize: "12px", color: "var(--text-muted)" }}>Số lượng bàn</Typography>
                             <Typography sx={{ fontSize: "20px", fontWeight: 700, color: "var(--matcha)" }}>
@@ -602,7 +602,7 @@ export default function ManageTablesPage() {
             </Box>
 
             <Grid container spacing={2}>
-              <Grid xs={6}>
+              <Grid item xs={6}>
                 <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
                   👥 Số lượng người cho phép
                 </Typography>
@@ -621,7 +621,7 @@ export default function ManageTablesPage() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid xs={6}>
+              <Grid item xs={6}>
                 <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", mb: 0.8, display: "flex", alignItems: "center", gap: 0.5 }}>
                   📊 Số lượng bàn
                 </Typography>

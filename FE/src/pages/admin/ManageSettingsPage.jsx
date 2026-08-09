@@ -169,7 +169,7 @@ export default function ManageSettingsPage() {
         <form onSubmit={handleSave}>
           <Grid container spacing={3}>
             {/* THÔNG TIN NHÀ HÀNG */}
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <Card sx={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "20px" }}>
                 <CardContent sx={{ p: 4 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
@@ -179,7 +179,7 @@ export default function ManageSettingsPage() {
                     </Typography>
                   </Box>
                   <Grid container spacing={2}>
-                    <Grid xs={12} sm={6}>
+                    <Grid item xs={12} sm={6}>
                       <TextField
                         fullWidth
                         label="Địa chỉ nhà hàng"
@@ -189,7 +189,7 @@ export default function ManageSettingsPage() {
                         size="small"
                       />
                     </Grid>
-                    <Grid xs={12} sm={6}>
+                    <Grid item xs={12} sm={6}>
                       <TextField
                         fullWidth
                         label="Số điện thoại liên hệ"
@@ -199,7 +199,7 @@ export default function ManageSettingsPage() {
                         size="small"
                       />
                     </Grid>
-                    <Grid xs={12} sm={6}>
+                    <Grid item xs={12} sm={6}>
                       <TextField
                         fullWidth
                         label="Chuỗi giờ mở cửa (Ví dụ: 08:00 - 22:00)"
@@ -209,7 +209,7 @@ export default function ManageSettingsPage() {
                         size="small"
                       />
                     </Grid>
-                    <Grid xs={12} sm={6}>
+                    <Grid item xs={12} sm={6}>
                       <TextField
                         fullWidth
                         label="Link Google Map URL"
@@ -226,18 +226,16 @@ export default function ManageSettingsPage() {
                         size="small"
                         placeholder="https://maps.app.goo.gl/..."
                         helperText={parsingMap ? "⏳ Đang tự động đọc thông tin từ Google Maps..." : "* Link gg map sẽ tự động dán dữ liệu từ gg map sang"}
-                        slotProps={{
-                          input: {
-                            endAdornment: parsingMap ? (
-                              <InputAdornment position="end">
-                                <CircularProgress size={18} color="inherit" />
-                              </InputAdornment>
-                            ) : (
-                              <InputAdornment position="end">
-                                <Wand2 size={16} color="var(--matcha)" />
-                              </InputAdornment>
-                            ),
-                          },
+                        InputProps={{
+                          endAdornment: parsingMap ? (
+                            <InputAdornment position="end">
+                              <CircularProgress size={18} color="inherit" />
+                            </InputAdornment>
+                          ) : (
+                            <InputAdornment position="end">
+                              <Wand2 size={16} color="var(--matcha)" />
+                            </InputAdornment>
+                          ),
                         }}
                       />
                     </Grid>
@@ -247,7 +245,7 @@ export default function ManageSettingsPage() {
             </Grid>
 
             {/* KHUNG GIỜ HOẠT ĐỘNG CHUẨN */}
-            <Grid xs={12} md={6}>
+            <Grid item xs={12} md={6}>
               <Card sx={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "20px", height: "100%" }}>
                 <CardContent sx={{ p: 4 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
@@ -257,29 +255,29 @@ export default function ManageSettingsPage() {
                     </Typography>
                   </Box>
                   <Grid container spacing={2}>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         type="time"
                         label="Giờ Mở Cửa"
                         value={form.openingTime}
                         onChange={(e) => handleChange("openingTime", e.target.value)}
-                        slotProps={{ inputLabel: { shrink: true } }}
+                        InputLabelProps={{ shrink: true }}
                         size="small"
                       />
                     </Grid>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         type="time"
                         label="Giờ Đóng Cửa"
                         value={form.closingTime}
                         onChange={(e) => handleChange("closingTime", e.target.value)}
-                        slotProps={{ inputLabel: { shrink: true } }}
+                        InputLabelProps={{ shrink: true }}
                         size="small"
                       />
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                       <Typography variant="body2" sx={{ color: "var(--text-muted)", fontSize: 13, mt: 1 }}>
                         📌 Lưu ý: Hệ thống sẽ chặn các lịch đặt ngoài khung giờ phục vụ chuẩn này.
                       </Typography>
@@ -290,7 +288,7 @@ export default function ManageSettingsPage() {
             </Grid>
 
             {/* QUY ĐỊNH THỜI GIAN ĐẶT & HỦY BÀN */}
-            <Grid xs={12} md={6}>
+            <Grid item xs={12} md={6}>
               <Card sx={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "20px", height: "100%" }}>
                 <CardContent sx={{ p: 4 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
@@ -300,7 +298,7 @@ export default function ManageSettingsPage() {
                     </Typography>
                   </Box>
                   <Grid container spacing={2}>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         type="number"
@@ -311,7 +309,7 @@ export default function ManageSettingsPage() {
                         helperText="Số phút đặt trước giờ đến"
                       />
                     </Grid>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         type="number"
@@ -322,7 +320,7 @@ export default function ManageSettingsPage() {
                         helperText="Hạn chót khách được hủy"
                       />
                     </Grid>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         type="number"
@@ -333,7 +331,7 @@ export default function ManageSettingsPage() {
                         helperText="Số phút trễ hẹn tối đa"
                       />
                     </Grid>
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         type="number"
@@ -350,7 +348,7 @@ export default function ManageSettingsPage() {
             </Grid>
 
             {/* CẤU HÌNH NGƯỠNG ĐÁNH GIÁ RỦI RO (DECISION ENGINE THRESHOLDS) */}
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <Card sx={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "20px" }}>
                 <CardContent sx={{ p: 4 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
@@ -364,7 +362,7 @@ export default function ManageSettingsPage() {
                     Quy tắc bắt buộc: <strong>Ngưỡng Cao &lt; Ngưỡng Trung Bình &lt; Ngưỡng Thấp</strong>.
                   </Alert>
                   <Grid container spacing={2}>
-                    <Grid xs={12} sm={4}>
+                    <Grid item xs={12} sm={4}>
                       <TextField
                         fullWidth
                         type="number"
@@ -375,7 +373,7 @@ export default function ManageSettingsPage() {
                         helperText="Khoảng cách ngắn hơn mốc này = Rủi ro cao (Đỏ)"
                       />
                     </Grid>
-                    <Grid xs={12} sm={4}>
+                    <Grid item xs={12} sm={4}>
                       <TextField
                         fullWidth
                         type="number"
@@ -386,7 +384,7 @@ export default function ManageSettingsPage() {
                         helperText="Khoảng cách trong mốc này = Rủi ro vừa (Cam)"
                       />
                     </Grid>
-                    <Grid xs={12} sm={4}>
+                    <Grid item xs={12} sm={4}>
                       <TextField
                         fullWidth
                         type="number"
@@ -403,7 +401,7 @@ export default function ManageSettingsPage() {
             </Grid>
 
             {/* BUTTON SAVE */}
-            <Grid xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
               <Button
                 variant="outlined"
                 startIcon={<RefreshCw size={16} />}
