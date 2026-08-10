@@ -293,6 +293,9 @@ export default function BookingPage() {
               }
               return table.max_seats === 5;
             }
+            if (numPeople === 2) {
+              return table.max_seats === 2;
+            }
             return table.max_seats >= numPeople;
           });
 
