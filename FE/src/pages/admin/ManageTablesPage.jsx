@@ -135,7 +135,8 @@ export default function ManageTablesPage() {
   const handleOpenEdit = (item) => {
     setEditingId(item.id);
     const matchSeats = String(item.tableType || "").match(/^(\d+)-Seat\s+(.*)$/);
-    const maxSeats = matchSeats ? matchSeats[1] : "2";
+    const matchDigits = String(item.tableType || "").match(/^(\d+)/);
+    const maxSeats = matchSeats ? matchSeats[1] : (matchDigits ? matchDigits[1] : "2");
     const displayTableType = matchSeats ? matchSeats[2] : item.tableType;
     setFormData({
       tableType: displayTableType,
@@ -616,8 +617,14 @@ export default function ManageTablesPage() {
                       "& fieldset": { border: "none" },
                     }}
                   >
+                    <MenuItem value="1">1 người (Bàn đơn / Bar)</MenuItem>
                     <MenuItem value="2">2 người (Bàn đôi)</MenuItem>
-                    <MenuItem value="4">4 người (Bàn nhóm)</MenuItem>
+                    <MenuItem value="3">3 người (Bàn 3 người)</MenuItem>
+                    <MenuItem value="4">4 người (Bàn nhóm 4)</MenuItem>
+                    <MenuItem value="5">5 người (Bàn 5 người)</MenuItem>
+                    <MenuItem value="6">6 người (Bàn lớn 6 người)</MenuItem>
+                    <MenuItem value="8">8 người (Bàn lớn 8 người)</MenuItem>
+                    <MenuItem value="10">10 người (Bàn họp 10 người)</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
