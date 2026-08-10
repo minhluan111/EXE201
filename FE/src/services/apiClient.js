@@ -1181,17 +1181,27 @@ export async function adminCheckInBooking({ token, id, checkInImageUrl, checkInN
 
 // AUTH – Forgot / Reset Password
 export async function authForgotPassword({ email }) {
-  return await requestJson("/api/auth/forgot-password", {
+  const result = await request("/api/auth/forgot-password", {
     method: "POST",
-    body: { email },
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
   });
+  if (!result.ok) {
+    return { ok: false, message: result.data?.message || result.error || "Gửi yêu cầu thất bại." };
+  }
+  return { ok: true, data: result.data };
 }
 
 export async function authResetPassword({ token, newPassword, confirmPassword }) {
-  return await requestJson("/api/auth/reset-password", {
+  const result = await request("/api/auth/reset-password", {
     method: "POST",
-    body: { token, newPassword, confirmPassword },
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, newPassword, confirmPassword }),
   });
+  if (!result.ok) {
+    return { ok: false, message: result.data?.message || result.error || "Đặt lại mật khẩu thất bại." };
+  }
+  return { ok: true, data: result.data };
 }
 
 // RESTAURANT INFO & FEEDBACK

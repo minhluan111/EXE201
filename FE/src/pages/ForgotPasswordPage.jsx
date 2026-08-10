@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, AlertCircle, Leaf, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Mail, AlertCircle, Leaf, ArrowLeft, CheckCircle2, Coffee } from "lucide-react";
 import { authForgotPassword } from "@/services/apiClient";
 import { useTenant } from "@/context/TenantContext";
 
