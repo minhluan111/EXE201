@@ -265,39 +265,65 @@ export default function BookingPage() {
             return;
           }
 
-          const suitableTables = res.data.filter((table) => {
+          const suitableTables = (() => {
             if (isTho) {
-              if (numPeople === 1) {
-                return table.max_seats === 1 || table.max_seats === 2;
-              }
-              if (numPeople === 2) {
-                return table.max_seats === 2;
-              }
-              return table.max_seats === 4;
+              return res.data.filter((table) => {
+                if (numPeople === 1) {
+                  return table.max_seats === 1 || table.max_seats === 2;
+                }
+                if (numPeople === 2) {
+                  return table.max_seats === 2;
+                }
+                return table.max_seats === 4;
+              });
             }
             if (isMonari) {
-              if (numPeople <= 2) {
-                return table.max_seats === 2;
-              }
-              if (numPeople <= 4) {
-                return table.max_seats === 4;
-              }
-              return table.max_seats === 8;
+              return res.data.filter((table) => {
+                if (numPeople <= 2) {
+                  return table.max_seats === 2;
+                }
+                if (numPeople <= 4) {
+                  return table.max_seats === 4;
+                }
+                return table.max_seats === 8;
+              });
             }
             if (isComGa) {
-              if (numPeople <= 3) {
-                return table.max_seats === 3;
-              }
-              if (numPeople === 4) {
-                return table.max_seats === 4;
-              }
-              return table.max_seats === 5;
+              return res.data.filter((table) => {
+                if (numPeople <= 3) {
+                  return table.max_seats === 3;
+                }
+                if (numPeople === 4) {
+                  return table.max_seats === 4;
+                }
+                return table.max_seats === 5;
+              });
             }
-            if (numPeople === 2) {
-              return table.max_seats === 2;
+
+            // General / Dynamic Tenant Logic:
+            // 1. If exact capacity tables exist (e.g. max_seats === numPeople), return only exact matches
+            const exactMatches = res.data.filter(
+              (t) => Number(t.max_seats) === Number(numPeople),
+            );
+            if (exactMatches.length > 0) {
+              return exactMatches;
             }
-            return table.max_seats >= numPeople;
-          });
+
+            // 2. If no exact match exists, find the smallest viable table capacity >= numPeople (e.g., 3-seat if no 2-seat exists)
+            const validTables = res.data.filter(
+              (t) => Number(t.max_seats) >= Number(numPeople),
+            );
+            if (validTables.length > 0) {
+              const minCapacity = Math.min(
+                ...validTables.map((t) => Number(t.max_seats)),
+              );
+              return validTables.filter(
+                (t) => Number(t.max_seats) === minCapacity,
+              );
+            }
+
+            return res.data.filter((t) => Number(t.max_seats) >= Number(numPeople));
+          })();
 
           setFloorTables(suitableTables);
 
