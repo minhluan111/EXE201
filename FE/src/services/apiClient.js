@@ -1260,10 +1260,14 @@ export async function restaurantInfoGet() {
     };
   }
 
-  const mapEmbedUrl =
-    result.data.mapUrl && result.data.mapUrl.includes("embed")
-      ? result.data.mapUrl
-      : defaultMapUrl;
+  const rawMapUrl = result.data.mapUrl || result.data.MapUrl || result.data.map_url || "";
+  const mapEmbedUrl = rawMapUrl
+    ? (rawMapUrl.includes("embed")
+        ? rawMapUrl
+        : `https://maps.google.com/maps?q=${encodeURIComponent(rawMapUrl)}&t=&z=15&ie=UTF8&iwloc=&output=embed`)
+    : (result.data.address
+        ? `https://maps.google.com/maps?q=${encodeURIComponent(result.data.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+        : defaultMapUrl);
 
   return {
     ok: true,
@@ -1273,6 +1277,7 @@ export async function restaurantInfoGet() {
       hotline: result.data.phone,
       email: result.data.tenantName ? `${result.data.tenantName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/\s+/g, "")}@gmail.com` : "hello@yakicafe.local",
       openHours: result.data.openingHours,
+      mapUrl: rawMapUrl,
       mapEmbedUrl,
       themeColor: result.data.themeColor || result.data.ThemeColor || null,
       logo: result.data.logo || result.data.Logo || null

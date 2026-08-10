@@ -61,29 +61,37 @@ export default function ContactPage() {
     window.dispatchEvent(new Event("feedback-submitted"));
   };
 
-  const mapUrl = isTaoTao
-    ? "https://maps.google.com/maps?q=102/16+Đường+Lê+Lai,+Ninh+Kiều,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isMonari
-    ? "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isComGa
-    ? "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isTho
-    ? "https://maps.google.com/maps?q=254+Đặng+Văn+Bi,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isEmCoffee
-    ? "https://maps.google.com/maps?q=27+Võ+Văn+Ngân,+Linh+Chiểu,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isHanHuyen
-    ? "https://maps.google.com/maps?q=45+Hàn+Huyên,+Bến+Nghé,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isCochin
-    ? "https://maps.google.com/maps?q=12+Đặng+Dung,+Tân+Định,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isComTam
-    ? "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isSamHouse
-    ? "https://maps.google.com/maps?q=Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isMonQuanChat
-    ? "https://maps.google.com/maps?q=201+QL1K,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : isHoaTeaRoom
-    ? "https://maps.google.com/maps?q=18/2+Đường+số+4,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    : (info?.mapEmbedUrl || "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed");
+  const getEmbedMapUrl = () => {
+    // 1. Prioritize backend mapEmbedUrl / mapUrl if configured by Admin
+    const backendUrl = info?.mapEmbedUrl || info?.mapUrl;
+    if (backendUrl) {
+      if (backendUrl.includes("embed")) {
+        return backendUrl;
+      }
+      return `https://maps.google.com/maps?q=${encodeURIComponent(backendUrl)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    }
+
+    // 2. If info has address from backend, use backend address
+    if (info?.address) {
+      return `https://maps.google.com/maps?q=${encodeURIComponent(info.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    }
+
+    // 3. Fallback defaults if backend data is not yet loaded
+    if (isTaoTao) return "https://maps.google.com/maps?q=102/16+Đường+Lê+Lai,+Ninh+Kiều,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isMonari) return "https://maps.google.com/maps?q=250+Trần+Hưng+Đạo,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isComGa) return "https://maps.google.com/maps?q=146+Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isTho) return "https://maps.google.com/maps?q=254+Đặng+Văn+Bi,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isEmCoffee) return "https://maps.google.com/maps?q=27+Võ+Văn+Ngân,+Linh+Chiểu,+Thủ+Đức,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isHanHuyen) return "https://maps.google.com/maps?q=45+Hàn+Huyên,+Bến+Nghé,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isCochin) return "https://maps.google.com/maps?q=12+Đặng+Dung,+Tân+Định,+Quận+1,+Hồ+Chí+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isComTam) return "https://maps.google.com/maps?q=106+Đường+GS1,+Khu+Phố+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isSamHouse || isMonQuanChat) return "https://maps.google.com/maps?q=Đường+GS1,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    if (isHoaTeaRoom) return "https://maps.google.com/maps?q=18/2+Đường+số+4,+Đông+Hòa,+Dĩ+An,+Bình+Dương&t=&z=15&ie=UTF8&iwloc=&output=embed";
+
+    return "https://maps.google.com/maps?q=57+Nguyễn+Cư+Trinh,+Cần+Thơ&t=&z=15&ie=UTF8&iwloc=&output=embed";
+  };
+
+  const mapUrl = getEmbedMapUrl();
 
   if (!info) {
     return (
