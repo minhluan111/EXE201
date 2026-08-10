@@ -1,118 +1,131 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(thocoffee|tho|artisan)(.*)"
         }
       ],
-      "destination": "/tho.html"
+      "dest": "/tho.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(taotao|taotaocafe|taotaocoffee)(.*)"
         }
       ],
-      "destination": "/taotao.html"
+      "dest": "/taotao.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(cochin|cochincafe|cochin-cafe)(.*)"
         }
       ],
-      "destination": "/cochin.html"
+      "dest": "/cochin.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(emcoffee|em-coffee)(.*)"
         }
       ],
-      "destination": "/emcoffee.html"
+      "dest": "/emcoffee.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(hanhuyen|han-huyen|quannuochanhuyen)(.*)"
         }
       ],
-      "destination": "/hanhuyen.html"
+      "dest": "/hanhuyen.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(comga|ongbach|comgaongbach|comga-ongbach)(.*)"
         }
       ],
-      "destination": "/comga.html"
+      "dest": "/comga.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)monari(.*)"
         }
       ],
-      "destination": "/monari.html"
+      "dest": "/monari.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(comtam|com-tam|comtamno)(.*)"
         }
       ],
-      "destination": "/comtam.html"
+      "dest": "/comtam.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(samhouse|sam-house|samhouses)(.*)"
         }
       ],
-      "destination": "/samhouse.html"
+      "dest": "/samhouse.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(quang|monquanchat|mon-quan-chat)(.*)"
         }
       ],
-      "destination": "/monquanchat.html"
+      "dest": "/monquanchat.html"
     },
     {
-      "source": "/(.*)",
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
       "has": [
         {
           "type": "host",
           "value": "(.*)(hoa|hoatearoom|hoa-tea-room)(.*)"
         }
       ],
-      "destination": "/hoatearoom.html"
+      "dest": "/hoatearoom.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.*)(yakishime|yaki)(.*)"
+        }
+      ],
+      "dest": "/yakishime.html"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/(?!assets/|favicon\\.ico)(.*)",
+      "dest": "/index.html"
     }
   ]
 }
